@@ -1,0 +1,4 @@
+package anticheat
+
+class CheatActions {
+}
