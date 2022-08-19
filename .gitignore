@@ -1,0 +1,10 @@
+## intellij
+.idea/
+*.iml
+
+## maven
+target/
+
+## project
+logs/
+wz/
