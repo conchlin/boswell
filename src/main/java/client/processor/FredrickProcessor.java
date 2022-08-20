@@ -110,7 +110,7 @@ public class FredrickProcessor {
     }
     
     private static void removeFredrickLog(Connection con, int cid) throws SQLException {
-        try (PreparedStatement ps = con.prepareStatement("DELETE FROM fredstorage WHERE cid = ?")) {
+        try (PreparedStatement ps = con.prepareStatement("DELETE FROM fred_storage WHERE cid = ?")) {
             ps.setInt(1, cid);
             ps.execute();
         }
@@ -121,7 +121,7 @@ public class FredrickProcessor {
             Connection con = DatabaseConnection.getConnection();
             
             removeFredrickLog(con, cid);
-            try (PreparedStatement ps = con.prepareStatement("INSERT INTO fredstorage (cid, daynotes, timestamp) VALUES (?, 0, ?)")) {
+            try (PreparedStatement ps = con.prepareStatement("INSERT INTO fred_storage (cid, daynotes, timestamp) VALUES (?, 0, ?)")) {
                 ps.setInt(1, cid);
                 ps.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
                 ps.execute();
@@ -168,7 +168,7 @@ public class FredrickProcessor {
             
             List<Pair<Integer, Integer>> expiredCids = new LinkedList<>();
             List<Pair<Pair<Integer, String>, Integer>> notifCids = new LinkedList<>();
-            try (PreparedStatement ps = con.prepareStatement("SELECT * FROM fredstorage f LEFT JOIN (SELECT id, name, world, lastLogoutTime FROM characters) AS c ON c.id = f.cid")) {
+            try (PreparedStatement ps = con.prepareStatement("SELECT * FROM fred_storage f LEFT JOIN (SELECT id, name, world, lastLogoutTime FROM characters) AS c ON c.id = f.cid")) {
                 try (ResultSet rs = ps.executeQuery()) {
                     long curTime = System.currentTimeMillis();
                     
@@ -204,7 +204,7 @@ public class FredrickProcessor {
             }
             
             if (!expiredCids.isEmpty()) {
-                try (PreparedStatement ps = con.prepareStatement("DELETE FROM inventoryitems WHERE type = ? AND characterid = ?")) {
+                try (PreparedStatement ps = con.prepareStatement("DELETE FROM inventory_items WHERE type = ? AND characterid = ?")) {
                     ps.setInt(1, ItemFactory.MERCHANT.getValue());
 
                     for (Pair<Integer, Integer> cid : expiredCids) {
@@ -234,7 +234,7 @@ public class FredrickProcessor {
                 
                 removeFredrickReminders(expiredCids);
                 
-                try (PreparedStatement ps = con.prepareStatement("DELETE FROM fredstorage WHERE cid = ?")) {
+                try (PreparedStatement ps = con.prepareStatement("DELETE FROM fred_storage WHERE cid = ?")) {
                     for (Pair<Integer, Integer> cid : expiredCids) {
                         ps.setInt(1, cid.getLeft());
                         ps.addBatch();
@@ -245,7 +245,7 @@ public class FredrickProcessor {
             }
             
             if (!notifCids.isEmpty()) {
-                try (PreparedStatement ps = con.prepareStatement("UPDATE fredstorage SET daynotes = ? WHERE cid = ?")) {
+                try (PreparedStatement ps = con.prepareStatement("UPDATE fred_storage SET daynotes = ? WHERE cid = ?")) {
                     for (Pair<Pair<Integer, String>, Integer> cid : notifCids) {
                         ps.setInt(1, cid.getRight());
                         ps.setInt(2, cid.getLeft().getLeft());
@@ -268,7 +268,7 @@ public class FredrickProcessor {
     private static boolean deleteFredrickItems(int cid) {
         try {
             Connection con = DatabaseConnection.getConnection();
-            try (PreparedStatement ps = con.prepareStatement("DELETE FROM inventoryitems WHERE type = ? AND characterid = ?")) {
+            try (PreparedStatement ps = con.prepareStatement("DELETE FROM inventory_items WHERE type = ? AND characterid = ?")) {
                 ps.setInt(1, ItemFactory.MERCHANT.getValue());
                 ps.setInt(2, cid);
                 ps.execute();

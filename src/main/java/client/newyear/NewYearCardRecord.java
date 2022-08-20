@@ -133,7 +133,7 @@ public class NewYearCardRecord {
             
     public static void saveNewYearCard(NewYearCardRecord newyear) {
         try (Connection con = DatabaseConnection.getConnection()) {
-            try (PreparedStatement ps = con.prepareStatement("INSERT INTO newyear VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+            try (PreparedStatement ps = con.prepareStatement("INSERT INTO new_year VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
                 ps.setInt(1, newyear.senderId);
                 ps.setString(2, newyear.senderName);
                 ps.setInt(3, newyear.receiverId);
@@ -164,7 +164,7 @@ public class NewYearCardRecord {
         newyear.dateReceived = System.currentTimeMillis();
         
         try (Connection con = DatabaseConnection.getConnection()) {
-            try (PreparedStatement ps = con.prepareStatement("UPDATE newyear SET received=1, timereceived=? WHERE id=?")) {
+            try (PreparedStatement ps = con.prepareStatement("UPDATE new_year SET received=1, timereceived=? WHERE id=?")) {
                 ps.setLong(1, newyear.dateReceived);
                 ps.setInt(2, newyear.id);
         
@@ -180,7 +180,7 @@ public class NewYearCardRecord {
         if(nyc != null) return nyc;
         
         try (Connection con = DatabaseConnection.getConnection()) {
-            try (PreparedStatement ps = con.prepareStatement("SELECT * FROM newyear WHERE id = ?")) {
+            try (PreparedStatement ps = con.prepareStatement("SELECT * FROM new_year WHERE id = ?")) {
                 ps.setInt(1, cardid);
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
@@ -201,7 +201,7 @@ public class NewYearCardRecord {
     
     public static void loadPlayerNewYearCards(MapleCharacter chr) {
         try (Connection con = DatabaseConnection.getConnection()) {
-            try (PreparedStatement ps = con.prepareStatement("SELECT * FROM newyear WHERE senderid = ? OR receiverid = ?")) {
+            try (PreparedStatement ps = con.prepareStatement("SELECT * FROM new_year WHERE senderid = ? OR receiverid = ?")) {
                 ps.setInt(1, chr.getId());
                 ps.setInt(2, chr.getId());
                 try (ResultSet rs = ps.executeQuery()) {
@@ -244,23 +244,20 @@ public class NewYearCardRecord {
     public void startNewYearCardTask() {
         if(sendTask != null) return;
         
-        sendTask = TimerManager.getInstance().register(new Runnable() {
-            @Override
-            public void run() {
-                Server server = Server.getInstance();
-                
-                int world = server.getCharacterWorld(receiverId);
-                if(world == -1) {
-                    sendTask.cancel(false);
-                    sendTask = null;
-                    
-                    return;
-                }
-                
-                MapleCharacter target = server.getWorld(world).getPlayerStorage().getCharacterById(receiverId);
-                if(target != null && target.isLoggedinWorld()) {
-                    target.announce(MaplePacketCreator.onNewYearCardRes(target, NewYearCardRecord.this, 0xC, 0));
-                }
+        sendTask = TimerManager.getInstance().register(() -> {
+            Server server = Server.getInstance();
+
+            int world = server.getCharacterWorld(receiverId);
+            if(world == -1) {
+                sendTask.cancel(false);
+                sendTask = null;
+
+                return;
+            }
+
+            MapleCharacter target = server.getWorld(world).getPlayerStorage().getCharacterById(receiverId);
+            if(target != null && target.isLoggedinWorld()) {
+                target.announce(MaplePacketCreator.onNewYearCardRes(target, NewYearCardRecord.this, 0xC, 0));
             }
         }, 1000 * 60 * 60); //1 Hour
     }
@@ -276,7 +273,7 @@ public class NewYearCardRecord {
         Server.getInstance().removeNewYearCard(id);
         
         try (Connection con = DatabaseConnection.getConnection()) {
-            try (PreparedStatement ps = con.prepareStatement("DELETE FROM newyear WHERE id = ?")) {
+            try (PreparedStatement ps = con.prepareStatement("DELETE FROM new_year WHERE id = ?")) {
                 ps.setInt(1, id);
                 ps.executeUpdate();
             }
@@ -345,7 +342,7 @@ public class NewYearCardRecord {
     
     public static void startPendingNewYearCardRequests() {
         try (Connection con = DatabaseConnection.getConnection()) {
-            try (PreparedStatement ps = con.prepareStatement("SELECT * FROM newyear WHERE timereceived = 0 AND senderdiscard = 0")) {
+            try (PreparedStatement ps = con.prepareStatement("SELECT * FROM new_year WHERE timereceived = 0 AND senderdiscard = 0")) {
                 try (ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
                         NewYearCardRecord newyear = new NewYearCardRecord(rs.getInt("senderid"), rs.getString("sendername"), rs.getInt("receiverid"), rs.getString("receivername"), rs.getString("message"));

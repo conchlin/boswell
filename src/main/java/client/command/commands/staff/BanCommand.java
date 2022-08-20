@@ -58,7 +58,7 @@ public class BanCommand extends Command {
             try {
                 Connection con = DatabaseConnection.getConnection();
                 if (ip.matches("/[0-9]{1,3}\\..*")) {
-                    ps = con.prepareStatement("INSERT INTO ipbans VALUES (DEFAULT, ?, ?)");
+                    ps = con.prepareStatement("INSERT INTO ip_bans VALUES (DEFAULT, ?, ?)");
                     ps.setString(1, ip);
                     ps.setString(2, String.valueOf(target.getClient().getAccID()));
 

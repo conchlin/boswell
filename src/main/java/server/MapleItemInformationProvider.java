@@ -1289,7 +1289,7 @@ public class MapleItemInformationProvider {
         Connection con = null;
         try {
             con = DatabaseConnection.getConnection();
-            ps = con.prepareStatement("SELECT cardid, mobid FROM monstercarddata");
+            ps = con.prepareStatement("SELECT cardid, mobid FROM monster_card_data");
             rs = ps.executeQuery();
             while (rs.next()) {
                 monsterBookID.put(rs.getInt(1), rs.getInt(2));
@@ -1795,7 +1795,7 @@ public class MapleItemInformationProvider {
             }
 
             Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("SELECT stat, value FROM makerreagentdata WHERE itemid = ?");
+            PreparedStatement ps = con.prepareStatement("SELECT stat, value FROM maker_reagent_data WHERE itemid = ?");
             ps.setInt(1, itemId);
             ResultSet rs = ps.executeQuery();
             if(rs.next()) {
@@ -1854,7 +1854,7 @@ public class MapleItemInformationProvider {
         } else {
             try {
                 Connection con = DatabaseConnection.getConnection();
-                PreparedStatement ps = con.prepareStatement("SELECT req_level, req_maker_level, req_meso, quantity FROM makercreatedata WHERE itemid = ?");
+                PreparedStatement ps = con.prepareStatement("SELECT req_level, req_maker_level, req_meso, quantity FROM maker_create_data WHERE itemid = ?");
                 ps.setInt(1, toCreate);
                 ResultSet rs = ps.executeQuery();
                 
@@ -1874,7 +1874,7 @@ public class MapleItemInformationProvider {
                 rs.close();
                 makerEntry = new MakerItemCreateEntry(cost, reqLevel, reqMakerLevel);
                 makerEntry.addGainItem(toCreate, toGive);
-                ps = con.prepareStatement("SELECT req_item, count FROM makerrecipedata WHERE itemid = ?");
+                ps = con.prepareStatement("SELECT req_item, count FROM maker_recipe_data WHERE itemid = ?");
                 ps.setInt(1, toCreate);
                 rs = ps.executeQuery();
                 
@@ -1920,7 +1920,7 @@ public class MapleItemInformationProvider {
         Connection con;
         try {
             con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement("SELECT req_item, count FROM makerrecipedata WHERE itemid = ? AND req_item >= 4260000 AND req_item < 4270000");
+             PreparedStatement ps = con.prepareStatement("SELECT req_item, count FROM maker_recipe_data WHERE itemid = ? AND req_item >= 4260000 AND req_item < 4270000");
             ps.setInt(1, itemId);
             ResultSet rs = ps.executeQuery();
 
@@ -1944,7 +1944,7 @@ public class MapleItemInformationProvider {
         Connection con;
         try {
             con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("SELECT req_meso FROM makercreatedata WHERE itemid = ?");
+            PreparedStatement ps = con.prepareStatement("SELECT req_meso FROM maker_create_data WHERE itemid = ?");
             ps.setInt(1, itemId);
             ResultSet rs = ps.executeQuery();
 

@@ -103,7 +103,7 @@ public class MaplePet extends Item {
             Connection con = DatabaseConnection.getConnection();
 
             Statements.Delete.from("pets").where("petid", petid).execute(con);
-            Statements.Delete.from("petignores").where("petid", petid).execute(con);
+            Statements.Delete.from("pet_ignores").where("petid", petid).execute(con);
 
             con.close();
             owner.resetExcluded(petid);

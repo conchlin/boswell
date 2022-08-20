@@ -51,10 +51,10 @@ public class UnBanCommand extends Command {
             PreparedStatement p = con.prepareStatement("UPDATE accounts SET banned = false WHERE id = " + aid);
             p.executeUpdate();
 
-            p = con.prepareStatement("DELETE FROM ipbans WHERE aid = " + aid);
+            p = con.prepareStatement("DELETE FROM ip_bans WHERE aid = " + aid);
             p.executeUpdate();
 
-            p = con.prepareStatement("DELETE FROM macbans WHERE aid = " + aid);
+            p = con.prepareStatement("DELETE FROM mac_bans WHERE aid = " + aid);
             p.executeUpdate();
 
             con.close();

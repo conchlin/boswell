@@ -158,7 +158,7 @@ public final class RingActionHandler extends AbstractMaplePacketHandler {
                 int marriageItemId = rs.getInt("marriageItemId");
                 
                 if (marriageItemId > 0) {
-                    PreparedStatement ps2 = con.prepareStatement("UPDATE inventoryitems SET expiration=0 WHERE itemid=? AND characterid=?");
+                    PreparedStatement ps2 = con.prepareStatement("UPDATE inventory_items SET expiration=0 WHERE itemid=? AND characterid=?");
                     ps2.setInt(1, marriageItemId);
                     ps2.setInt(2, characterId);
                     

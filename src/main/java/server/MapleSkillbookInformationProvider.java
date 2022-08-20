@@ -248,7 +248,7 @@ public class MapleSkillbookInformationProvider {
         try {
             con = DatabaseConnection.getConnection();
             
-            PreparedStatement ps = con.prepareStatement("SELECT itemid FROM reactordrops WHERE itemid >= ? AND itemid < ?;");
+            PreparedStatement ps = con.prepareStatement("SELECT itemid FROM reactor_drops WHERE itemid >= ? AND itemid < ?;");
             ps.setInt(1, skillbookMinItemid);
             ps.setInt(2, skillbookMaxItemid);
             ResultSet rs = ps.executeQuery();

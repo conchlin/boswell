@@ -128,13 +128,13 @@ public class DueyProcessor {
         ResultSet rs = null;
         try {
             con = DatabaseConnection.getConnection();
-            ps = con.prepareStatement("SELECT SenderName, Type FROM dueypackages WHERE ReceiverId = ? AND Checked = true ORDER BY Type DESC");
+            ps = con.prepareStatement("SELECT SenderName, Type FROM duey_packages WHERE ReceiverId = ? AND Checked = true ORDER BY Type DESC");
             ps.setInt(1, player.getId());
             rs = ps.executeQuery();
             if (rs.next()) {
                 try {
                     Connection con2 = DatabaseConnection.getConnection();
-                    pss = con2.prepareStatement("UPDATE dueypackages SET Checked = false where ReceiverId = ?");
+                    pss = con2.prepareStatement("UPDATE duey_packages SET Checked = false where ReceiverId = ?");
                     pss.setInt(1, player.getId());
                     pss.executeUpdate();
                     pss.close();
@@ -175,7 +175,7 @@ public class DueyProcessor {
         try {
             Connection con = DatabaseConnection.getConnection();
             
-            PreparedStatement ps = con.prepareStatement("DELETE FROM dueypackages WHERE PackageId = ?");
+            PreparedStatement ps = con.prepareStatement("DELETE FROM duey_packages WHERE PackageId = ?");
             ps.setInt(1, packageId);
             ps.executeUpdate();
             ps.close();
@@ -217,7 +217,7 @@ public class DueyProcessor {
         List<DueyPackage> packages = new LinkedList<>();
         try {
             Connection con = DatabaseConnection.getConnection();
-            try (PreparedStatement ps = con.prepareStatement("SELECT * FROM dueypackages dp WHERE ReceiverId = ?")) {
+            try (PreparedStatement ps = con.prepareStatement("SELECT * FROM duey_packages dp WHERE ReceiverId = ?")) {
                 ps.setInt(1, chr.getId());
                 try (ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
@@ -245,7 +245,7 @@ public class DueyProcessor {
         
             try {
                 con = DatabaseConnection.getConnection();
-                ps = con.prepareStatement("INSERT INTO dueypackages (ReceiverId, SenderName, Mesos, TimeStamp, Message, Type, Checked) VALUES (?, ?, ?, ?, ?, ?, 1)", Statement.RETURN_GENERATED_KEYS);
+                ps = con.prepareStatement("INSERT INTO duey_packages (ReceiverId, SenderName, Mesos, TimeStamp, Message, Type, Checked) VALUES (?, ?, ?, ?, ?, ?, 1)", Statement.RETURN_GENERATED_KEYS);
                 ps.setInt(1, toCid);
                 ps.setString(2, sender);
                 ps.setInt(3, mesos);
@@ -449,7 +449,7 @@ public class DueyProcessor {
                     DueyPackage dp = null;
                     
                     Connection con = DatabaseConnection.getConnection();
-                    try (PreparedStatement ps = con.prepareStatement("SELECT * FROM dueypackages dp WHERE PackageId = ?")) {
+                    try (PreparedStatement ps = con.prepareStatement("SELECT * FROM duey_packages dp WHERE PackageId = ?")) {
                         ps.setInt(1, packageId);
                         
                         try (ResultSet rs = ps.executeQuery()) {
@@ -536,7 +536,7 @@ public class DueyProcessor {
             Timestamp ts = new Timestamp(c.getTime().getTime());
 
             Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("SELECT PackageId FROM dueypackages WHERE TimeStamp < ?");
+            PreparedStatement ps = con.prepareStatement("SELECT PackageId FROM duey_packages WHERE TimeStamp < ?");
             ps.setTimestamp(1, ts);
 
             List<Integer> toRemove = new LinkedList<>();
@@ -551,7 +551,7 @@ public class DueyProcessor {
                 removePackageFromDB(pid);
             }
 
-            ps = con.prepareStatement("DELETE FROM dueypackages WHERE TimeStamp < ?");
+            ps = con.prepareStatement("DELETE FROM duey_packages WHERE TimeStamp < ?");
             ps.setTimestamp(1, ts);
             ps.executeUpdate();
             ps.close();

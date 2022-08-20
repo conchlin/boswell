@@ -126,18 +126,6 @@ CREATE TABLE bbs_threads (
     localthreadid integer
 );
 
-CREATE TABLE blog_posts (
-    id bigserial primary key NOT NULL,
-    title character varying(255),
-    text text,
-    pinned boolean DEFAULT false,
-    priority integer DEFAULT 0,
-    visible boolean DEFAULT false,
-    inserted_at timestamp(0) without time zone NOT NULL,
-    updated_at timestamp(0) without time zone NOT NULL,
-    collapsed boolean DEFAULT false
-);
-
 CREATE TABLE boss_logs (
     id bigserial primary key NOT NULL,
     characterid integer,
@@ -698,11 +686,6 @@ CREATE TABLE mts_items (
     transfer integer DEFAULT 0,
     vicious integer DEFAULT 0,
     flag integer DEFAULT 0
-);
-
-CREATE TABLE name_reserves (
-    accid integer,
-    name character varying(14)
 );
 
 CREATE TABLE new_year (

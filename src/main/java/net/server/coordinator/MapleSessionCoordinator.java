@@ -126,7 +126,7 @@ public class MapleSessionCoordinator {
             loginRelevance++;
         }
         
-        try (PreparedStatement ps = con.prepareStatement("UPDATE hwidaccounts SET relevance = ?, expiresat = ? WHERE accountid = ? AND hwid LIKE ?")) {
+        try (PreparedStatement ps = con.prepareStatement("UPDATE hwid_accounts SET relevance = ?, expiresat = ? WHERE accountid = ? AND hwid LIKE ?")) {
             ps.setInt(1, loginRelevance);
             ps.setTimestamp(2, nextTimestamp);
             ps.setInt(3, accountId);
@@ -137,7 +137,7 @@ public class MapleSessionCoordinator {
     }
     
     private static void registerAccessAccount(Connection con, String remoteHwid, int accountId) throws SQLException {
-        try (PreparedStatement ps = con.prepareStatement("INSERT INTO hwidaccounts (accountid, hwid, expiresat) VALUES (?, ?, ?)")) {
+        try (PreparedStatement ps = con.prepareStatement("INSERT INTO hwid_accounts (accountid, hwid, expiresat) VALUES (?, ?, ?)")) {
             ps.setInt(1, accountId);
             ps.setString(2, remoteHwid);
             ps.setTimestamp(3, new java.sql.Timestamp(Server.getInstance().getCurrentTime() + hwidExpirationUpdate(0)));
@@ -151,7 +151,7 @@ public class MapleSessionCoordinator {
             Connection con = DatabaseConnection.getConnection();
             int hwidCount = 0;
             
-            try (PreparedStatement ps = con.prepareStatement("SELECT SQL_CACHE hwid FROM hwidaccounts WHERE accountid = ?")) {
+            try (PreparedStatement ps = con.prepareStatement("SELECT SQL_CACHE hwid FROM hwid_accounts WHERE accountid = ?")) {
                 ps.setInt(1, accountId);
                 try (ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
@@ -183,7 +183,7 @@ public class MapleSessionCoordinator {
             Connection con = DatabaseConnection.getConnection();
             int hwidCount = 0;
             
-            try (PreparedStatement ps = con.prepareStatement("SELECT SQL_CACHE * FROM hwidaccounts WHERE accountid = ?")) {
+            try (PreparedStatement ps = con.prepareStatement("SELECT SQL_CACHE * FROM hwid_accounts WHERE accountid = ?")) {
                 ps.setInt(1, accountId);
                 try (ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
@@ -546,7 +546,7 @@ public class MapleSessionCoordinator {
     public void runUpdateHwidHistory() {
         try {
             Connection con = DatabaseConnection.getConnection();
-            try (PreparedStatement ps = con.prepareStatement("DELETE FROM hwidaccounts WHERE expiresat < CURRENT_TIMESTAMP")) {
+            try (PreparedStatement ps = con.prepareStatement("DELETE FROM hwid_accounts WHERE expiresat < CURRENT_TIMESTAMP")) {
                 ps.execute();
             } finally {
                 con.close();

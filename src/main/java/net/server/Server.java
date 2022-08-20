@@ -797,7 +797,7 @@ public class Server {
 
         System.out.println("Listening on port 8484\r\n\r\n");
 
-        System.out.println("Avenue is now online.\r\n");
+        System.out.println("Boswell is now online.\r\n");
         online = true;
 
         MapleSkillbookInformationProvider.getInstance();

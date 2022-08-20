@@ -71,7 +71,7 @@ public class MapleExpeditionBossLog {
     public static void resetBosslogs() {
         try ( Connection con = DatabaseConnection.getConnection()) {
             PreparedStatement ps;
-            ps = con.prepareStatement("TRUNCATE bosslogs"); // delete all entries
+            ps = con.prepareStatement("TRUNCATE boss_logs"); // delete all entries
             ps.executeUpdate();
             ps.close();
             con.close();
@@ -85,7 +85,7 @@ public class MapleExpeditionBossLog {
         try {
             Connection con = DatabaseConnection.getConnection();
             PreparedStatement ps;
-            ps = con.prepareStatement("SELECT COUNT(*) FROM bosslogs WHERE characterid = ? AND bosstype = ?");
+            ps = con.prepareStatement("SELECT COUNT(*) FROM boss_logs WHERE characterid = ? AND bosstype = ?");
             ps.setInt(1, cid);
             ps.setObject(2, boss.name(), java.sql.Types.OTHER);
             ResultSet rs = ps.executeQuery();
@@ -107,7 +107,7 @@ public class MapleExpeditionBossLog {
     private static void insertPlayerEntry(int cid, BossLogEntry boss) {
         try {
             Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("INSERT INTO bosslogs (characterid, bosstype) VALUES (?,?)");
+            PreparedStatement ps = con.prepareStatement("INSERT INTO boss_logs (characterid, bosstype) VALUES (?,?)");
             ps.setInt(1, cid);
             ps.setObject(2, boss.name(), java.sql.Types.OTHER);
             ps.executeUpdate();

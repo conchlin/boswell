@@ -1176,26 +1176,4 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     public void completeDaily(String challenge, boolean chance) {
         MapleDaily.completeDaily(challenge, getPlayer(), chance);
     }
-
-    /* name reserve - lazy impl we runnin out of time :( */
-
-    public void addNameReserve(String name) {
-        NameReservation.getInstance().addNameReserve(getClient(), name);
-    }
-
-    public boolean hasNameReserve() {
-        return NameReservation.getInstance().hasNameReserve(getClient());
-    }
-
-    public boolean isNameAvailable(String name) {
-        return NameReservation.getInstance().isNameAvailable(name);
-    }
-
-    public void removeNameReserve() {
-        NameReservation.getInstance().removeNameReserve(getClient());
-    }
-
-    public String getNameReserve() {
-        return NameReservation.getInstance().getNameReserved(getClient());
-    }
 }

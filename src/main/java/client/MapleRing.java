@@ -88,7 +88,7 @@ public class MapleRing implements Comparable<MapleRing> {
             ps.executeBatch();
             ps.close();
             
-            ps = con.prepareStatement("UPDATE inventoryequipment SET ringid=-1 WHERE ringid=?");
+            ps = con.prepareStatement("UPDATE inventory_equipment SET ringid=-1 WHERE ringid=?");
             ps.setInt(1, ring.getRingId());
             ps.addBatch();
             

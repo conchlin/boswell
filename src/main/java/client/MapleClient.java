@@ -224,7 +224,7 @@ public class MapleClient {
         boolean ret = false;
         try {
             Connection con = DatabaseConnection.getConnection();
-            try (PreparedStatement ps = con.prepareStatement("SELECT COUNT(*) FROM ipbans WHERE ? LIKE CONCAT(ip, '%')")) {
+            try (PreparedStatement ps = con.prepareStatement("SELECT COUNT(*) FROM ip_bans WHERE ? LIKE CONCAT(ip, '%')")) {
                 ps.setString(1, session.getRemoteAddress().toString());
                 try (ResultSet rs = ps.executeQuery()) {
                     rs.next();
@@ -248,7 +248,7 @@ public class MapleClient {
         boolean ret = false;
         PreparedStatement ps = null;
         try (Connection con = DatabaseConnection.getConnection()) {
-            ps = con.prepareStatement("SELECT COUNT(*) FROM hwidbans WHERE hwid LIKE ?");
+            ps = con.prepareStatement("SELECT COUNT(*) FROM hwid_bans WHERE hwid LIKE ?");
             ps.setString(1, hwid);
             ResultSet rs = ps.executeQuery();
             if (rs != null && rs.next()) {
@@ -278,7 +278,7 @@ public class MapleClient {
         boolean ret = false;
         int i;
         try {
-            StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM macbans WHERE mac IN (");
+            StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM mac_bans WHERE mac IN (");
             for (i = 0; i < macs.size(); i++) {
                 sql.append("?");
                 if (i != macs.size() - 1) {
@@ -349,7 +349,7 @@ public class MapleClient {
     public void banHWID() {
         try (Connection con = DatabaseConnection.getConnection()) {
             loadHWIDIfNescessary();
-            Statements.Insert.into("hwidbans").add("hwid", hwid).execute(con);
+            Statements.Insert.into("hwid_bans").add("hwid", hwid).execute(con);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -360,12 +360,12 @@ public class MapleClient {
             loadMacsIfNescessary();
 
             List<String> filtered = new LinkedList<>();
-            try (PreparedStatement ps = con.prepareStatement("SELECT filter FROM macfilters"); ResultSet rs = ps.executeQuery()) {
+            try (PreparedStatement ps = con.prepareStatement("SELECT filter FROM mac_filters"); ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     filtered.add(rs.getString("filter"));
                 }
             }
-            try (PreparedStatement ps = con.prepareStatement("INSERT INTO macbans (mac, aid) VALUES (?, ?)")) {
+            try (PreparedStatement ps = con.prepareStatement("INSERT INTO mac_bans (mac, aid) VALUES (?, ?)")) {
                 for (String mac : macs) {
                     boolean matched = false;
                     for (String filter : filtered) {

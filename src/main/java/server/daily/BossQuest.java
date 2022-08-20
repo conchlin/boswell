@@ -53,7 +53,7 @@ public class BossQuest {
     }
 
     public static void saveBossQuest(MapleCharacter player, Connection con) throws SQLException  {
-        Statements.Delete.from("bossquest").where("id", player.getId()).execute(con);
+        Statements.Delete.from("boss_quest").where("id", player.getId()).execute(con);
         Statements.BatchInsert statement = new Statements.BatchInsert("bossquest");
         for (Map.Entry<Integer, Integer> entry : bossLimit.entrySet()) {
             statement.add("id", entry.getKey());
@@ -69,7 +69,7 @@ public class BossQuest {
 
     public static void resetBPQ() {
         try (Connection con = DatabaseConnection.getConnection()) {
-            Statements.Update("bossquest")
+            Statements.Update("boss_quest")
                     .set("attempts", 0)
                     .where("id", "> 1") // everyone
                     .execute(con);

@@ -94,7 +94,7 @@ public class CashShop {
                 inventory.add(item.getLeft());
             }
 
-            ps = con.prepareStatement("SELECT sn FROM wishlists WHERE charid = ?");
+            ps = con.prepareStatement("SELECT sn FROM wish_lists WHERE charid = ?");
             ps.setInt(1, characterId);
             rs = ps.executeQuery();
 
@@ -296,9 +296,9 @@ public class CashShop {
         }
 
         factory.saveItems(itemsWithType, accountId, con);
-        Statements.Delete.from("wishlists").where("charid", characterId).execute(con);
+        Statements.Delete.from("wish_lists").where("charid", characterId).execute(con);
 
-        Statements.BatchInsert statement = new Statements.BatchInsert("wishlists");
+        Statements.BatchInsert statement = new Statements.BatchInsert("wish_lists");
         for (int sn : wishList) {
             statement.add("charid", characterId);
             statement.add("sn", sn);

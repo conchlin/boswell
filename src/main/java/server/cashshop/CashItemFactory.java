@@ -67,7 +67,7 @@ public class CashItemFactory {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM cs_moddedcommodity");
+            ps = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM cs_modded_commodity");
             rs = ps.executeQuery();
             while (rs.next()) {
                 SpecialCashItem cash = new SpecialCashItem(rs.getInt("sn"), rs.getInt("item_id"));
@@ -103,7 +103,7 @@ public class CashItemFactory {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM cs_blockeditems");
+            ps = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM cs_blocked_items");
             rs = ps.executeQuery();
             while (rs.next()) {
                 blockedCashItems.add(rs.getInt("sn"));
@@ -120,7 +120,7 @@ public class CashItemFactory {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM cs_discountedcategories");
+            ps = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM cs_discounted_categories");
             rs = ps.executeQuery();
             while (rs.next()) {
                 discountedCategories.add(new CategoryDiscount(rs.getInt("category"), rs.getInt("subcategory"), rs.getInt("discount_rate")));
@@ -137,7 +137,7 @@ public class CashItemFactory {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM cs_limitedgoods");
+            ps = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM cs_limited_goods");
             rs = ps.executeQuery();
             while (rs.next()) {
                 LimitedGoods goods = new LimitedGoods(rs.getInt("start_sn"), rs.getInt("end_sn"));
@@ -170,7 +170,7 @@ public class CashItemFactory {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM cs_zerogoods");
+            ps = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM cs_zero_goods");
             rs = ps.executeQuery();
             while (rs.next()) {
                 LimitedGoods goods = new LimitedGoods(rs.getInt("start_sn"), rs.getInt("end_sn"));

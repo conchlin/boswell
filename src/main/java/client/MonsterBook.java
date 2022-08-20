@@ -155,7 +155,7 @@ public final class MonsterBook {
     public void load(Connection con) throws SQLException {
         lock.lock();
         try {
-            try (PreparedStatement ps = con.prepareStatement("SELECT cardid, level FROM monsterbook WHERE charid = ? ORDER BY cardid ASC")) {
+            try (PreparedStatement ps = con.prepareStatement("SELECT cardid, level FROM monster_book WHERE charid = ? ORDER BY cardid ASC")) {
                 ps.setInt(1, owner.getId());
                 try (ResultSet rs = ps.executeQuery()) {
                     int cardid, level;
@@ -185,9 +185,9 @@ public final class MonsterBook {
             return;
         }
 
-        Statements.Delete.from("monsterbook").where("charid", owner.getId());
+        Statements.Delete.from("monster_book").where("charid", owner.getId());
 
-        Statements.BatchInsert statement = new Statements.BatchInsert("monsterbook");
+        Statements.BatchInsert statement = new Statements.BatchInsert("monster_book");
         for (Entry<Integer, Integer> all : cardSet) {
             statement.add("charid", owner.getId());
             statement.add("cardid", all.getKey());
