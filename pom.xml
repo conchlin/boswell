@@ -68,12 +68,6 @@
             <version>42.2.9</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>30.1.1-jre</version>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-stdlib-jdk8 -->
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>

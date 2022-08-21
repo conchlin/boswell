@@ -1,16 +1,12 @@
 package server.maps;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ListMultimap;
+import tools.MultiMap;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class NostalgicMap { 
 
-    private static HashMap<Integer, String> nostalgicRates = new HashMap<>() {{ // <mob, expModifier>
+    private static final HashMap<Integer, String> nostalgicRates = new HashMap<>() {{ // <mob, expModifier>
         // string because maps cant do doubles :(
         put(9400640, "0.50"); // jester
         put(9400639, "0.80"); // dead scarecrow
@@ -64,7 +60,7 @@ public class NostalgicMap {
     }};
 
 
-    private static ListMultimap<Integer, Integer> nostalgicMap = ArrayListMultimap.create(); // <map, mob>
+    private static final MultiMap<Integer, Integer> nostalgicMap = new MultiMap<>();
 
     /**
      * Grabs the string value used to modify the exprate
@@ -193,9 +189,9 @@ public class NostalgicMap {
     /**
      * Returns list of all mob values associated with map key
      */
-    public static List getNostalgicMobs(int map) {
-        List matches = new ArrayList();
-        for (Map.Entry<Integer, Integer> entry : nostalgicMap.entries()) {
+    public static List<Collection<Integer>> getNostalgicMobs(int map) {
+        List<Collection<Integer>> matches = new ArrayList<>();
+        for (Map.Entry<Integer, Collection<Integer>> entry : nostalgicMap.entrySet()) {
             if (entry.getKey().equals(map)) {
                 matches.add(entry.getValue());
             }
@@ -207,9 +203,6 @@ public class NostalgicMap {
      * Check if certain map is part of the nostalgic buff system
      */
     public static boolean isNostalgicMap(int map) {
-        if (nostalgicMap.containsKey(map)) {
-            return true;
-        }
-        return false;
+        return nostalgicMap.containsKey(map);
     }
 }

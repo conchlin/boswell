@@ -1,16 +1,12 @@
 package server.partyquest;
 
 import client.MapleCharacter;
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import server.Statements;
 import tools.DatabaseConnection;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 public class BossQuest {
