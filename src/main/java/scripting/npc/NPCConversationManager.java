@@ -35,9 +35,6 @@ import provider.MapleData;
 import provider.MapleDataProviderFactory;
 import scripting.AbstractPlayerInteraction;
 import server.*;
-import server.daily.DailyLogin;
-import server.daily.MapleDaily;
-import server.daily.MapleDailyProgress;
 import server.events.gm.MapleEvent;
 import server.gachapon.MapleGach;
 import server.gachapon.MapleGach.MapleGachaponItem;
@@ -56,7 +53,6 @@ import client.MapleClient;
 import client.MapleJob;
 import client.MapleSkinColor;
 import client.MapleStat;
-import server.skills.Skill;
 import client.inventory.Item;
 import client.inventory.ItemFactory;
 import client.inventory.MaplePet;
@@ -75,7 +71,7 @@ import server.expeditions.MapleExpeditionType;
 import server.partyquest.AriantColiseum;
 import server.partyquest.MonsterCarnival;
 import tools.packets.Wedding;
-import server.daily.PQTour;
+import server.partyquest.PQTour;
 
 import java.awt.Point;
 import java.util.Arrays;
@@ -1161,19 +1157,5 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public String getTourPQ() {
         return PQTour.getTourPQ();
-    }
-
-    /* boswell daily code */
-
-    public boolean hasDailyEntry(String challenge) {
-        return MapleDaily.hasCompletedEntry(challenge, getPlayer().getId());
-    }
-
-    public boolean hasProgressEntry(String challenge) {
-        return MapleDailyProgress.hasProgressEntry(challenge, getPlayer().getId());
-    }
-
-    public void completeDaily(String challenge, boolean chance) {
-        MapleDaily.completeDaily(challenge, getPlayer(), chance);
     }
 }

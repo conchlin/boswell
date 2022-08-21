@@ -39,7 +39,6 @@ import scripting.event.EventInstanceManager;
 import scripting.event.EventManager;
 import scripting.npc.NPCScriptManager;
 import server.MapleItemInformationProvider;
-import server.daily.MapleDaily;
 import server.expeditions.MapleExpedition;
 import server.expeditions.MapleExpeditionType;
 import server.life.MapleLifeFactory;

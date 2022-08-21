@@ -23,7 +23,6 @@ package scripting.event;
 
 import client.MapleCharacter;
 import server.skills.PlayerSkill;
-import server.skills.Skill;
 import constants.ItemConstants;
 import constants.ServerConstants;
 import net.server.audit.LockCollector;
@@ -38,7 +37,7 @@ import provider.MapleDataProviderFactory;
 import scripting.AbstractPlayerInteraction;
 import scripting.event.worker.EventScriptScheduler;
 import server.*;
-import server.daily.PQTour;
+import server.partyquest.PQTour;
 import server.expeditions.MapleExpedition;
 import server.life.MapleLifeFactory;
 import server.life.MapleMonster;

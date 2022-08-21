@@ -1,4 +1,4 @@
-package server.daily;
+package server.partyquest;
 
 import client.MapleCharacter;
 import com.google.common.collect.HashBasedTable;

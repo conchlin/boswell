@@ -59,9 +59,6 @@ import scripting.item.ItemScriptManager;
 import server.*;
 import server.MapleItemInformationProvider.ScriptedItem;
 import server.achievements.WorldTour;
-import server.daily.BossQuest;
-import server.daily.DailyLogin;
-import server.daily.MapleDailyProgress;
 import server.events.MapleEvents;
 import server.events.RescueGaga;
 import server.events.gm.MapleFitness;
@@ -71,10 +68,7 @@ import server.loot.MapleLootManager;
 import server.maps.*;
 import server.maps.MapleMiniGame.MiniGameResult;
 import server.maps.event.FishingLagoon;
-import server.partyquest.AriantColiseum;
-import server.partyquest.MonsterCarnival;
-import server.partyquest.MonsterCarnivalParty;
-import server.partyquest.PartyQuest;
+import server.partyquest.*;
 import server.quest.MapleQuest;
 import server.skills.*;
 import tools.*;
@@ -95,7 +89,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import server.daily.MapleDaily;
 
 public class MapleCharacter extends AbstractMapleCharacterObject {
     private static final MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
@@ -160,7 +153,6 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     private EventInstanceManager eventInstance = null;
     private MapleHiredMerchant hiredMerchant = null;
     private MapleClient client;
-    private MapleDaily daily;
     private BossQuest bossQuest;
     private MapleGuildCharacter mgc = null;
     private MaplePartyCharacter mpc = null;
@@ -262,8 +254,6 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     private int bossRepeats = 0;
     private long banishTime = 0;
     private List<String> finishedWorldTour = new ArrayList<>();
-    public static ListMultimap<Integer, String> completedDailies = ArrayListMultimap.create(); // <charId, challenge>
-    public static Table<Integer, String, Integer> dailyProgress = HashBasedTable.create();
     private WeakReference<MapleMap> ownedMap = new WeakReference<>(null);
     protected long login_time = System.currentTimeMillis();
     private int distanceHackCounter = 0;
@@ -1491,7 +1481,6 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         this.mapTransitioning.set(true);
 
         //this.unregisterChairBuff();
-        DailyLogin.onlineDurationCheck(this);
         this.clearBanishPlayerData();
         MapleTrade.cancelTrade(this, MapleTrade.TradeResult.UNSUCCESSFUL_ANOTHER_MAP);
         this.closePlayerInteractions();
@@ -3258,10 +3247,6 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 
     public MapleClient getClient() {
         return client;
-    }
-    
-    public MapleDaily getDaily() {
-        return daily;
     }
 
     public AbstractPlayerInteraction getAbstractPlayerInteraction() {
@@ -5854,26 +5839,6 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                 rs.close();
                 ps.close();
 
-                String dailysql = "SELECT * FROM daily WHERE charid = ?";
-                ps = con.prepareStatement(dailysql);
-                ps.setInt(1, charid);
-                rs = ps.executeQuery();
-                while (rs.next()) {
-                    ret.completedDailies.put(charid, rs.getString("challenge"));
-                }
-                rs.close();
-                ps.close();
-
-                String dailyprogsql = "SELECT * FROM daily_progress WHERE charid = ?";
-                ps = con.prepareStatement(dailyprogsql);
-                ps.setInt(1, charid);
-                rs = ps.executeQuery();
-                while (rs.next()) {
-                    ret.dailyProgress.put(charid, rs.getString("challenge"), rs.getInt("num"));
-                }
-                rs.close();
-                ps.close();
-
                 String bpqsql = "SELECT * FROM boss_quest WHERE id = ?";
                 ps = con.prepareStatement(bpqsql);
                 ps.setInt(1, charid);
@@ -7035,27 +7000,6 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         statement.execute(con);
     }
 
-    public void saveDailies(Connection con) throws SQLException {
-        Statements.Delete.from("daily").where("charid", id).execute(con);
-        Statements.BatchInsert statement = new Statements.BatchInsert("daily");
-        for (Map.Entry<Integer, String> entry : completedDailies.entries()) {
-            statement.add("charid", entry.getKey());
-            statement.add("challenge", entry.getValue());
-        }
-        statement.execute(con);
-    }
-
-    public void saveDailyProgress(Connection con) throws SQLException {
-        Statements.Delete.from("daily_progress").where("charid", id).execute(con);
-        Statements.BatchInsert statement = new Statements.BatchInsert("daily_progress");
-        for (Table.Cell<Integer, String, Integer> entry : dailyProgress.cellSet()) {
-            statement.add("charid", id);
-            statement.add("challenge", entry.getColumnKey());
-            statement.add("num", entry.getValue());
-        }
-        statement.execute(con);
-    }
-
     public void saveAreaInfo(Connection con) throws SQLException {
         Statements.Delete.from("area_info").where("charid", id).execute(con);
         Statements.BatchInsert statement = new Statements.BatchInsert("area_info");
@@ -7187,8 +7131,6 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
             saveAreaInfo(con);
             saveEventStats(con);
             saveWorldTour(con);
-            saveDailies(con);
-            saveDailyProgress(con);
             BossQuest.saveBossQuest(this, con);
 
             con.commit();

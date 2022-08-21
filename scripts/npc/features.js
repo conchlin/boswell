@@ -67,8 +67,6 @@ var features = new Array(
                     + "an alternative in the form of our #eHP World Tour#n. By defeating bosses you gain permanent HP! \r\n\r\n" 
                     + "#eFor a list of all bosses involved you can check your player profile on the website or use the @achievements command!#n"],
     ["Fishing", "TBD"],
-    ["Daily Challenges", "Trying to break up the daily grind? You can now spice up your gameplay with Daily Challenges! \r\n\r\n" 
-                        + "#eTo get more information on this system you can use the @daily command.#n"],
     ["Revamped End-game", populateEndGame()],
     ["Custom Website", "Our website is completely unique to us and has been built from the ground up. It is a wonderful tool " 
                         + "to stay up-to-date on server ongoings. It also has many features and information that updates in " 

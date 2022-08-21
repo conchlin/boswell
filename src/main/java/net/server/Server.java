@@ -56,8 +56,6 @@ import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 import server.*;
 import server.cashshop.CashItemFactory;
-import server.daily.MapleDailyProgress;
-import server.expeditions.MapleExpeditionBossLog;
 import server.life.MaplePlayerNPCFactory;
 import server.maps.NostalgicMap;
 import server.quest.MapleQuest;
@@ -739,13 +737,10 @@ public class Server {
         tMan.register(new InvitationWorker(), 30 * 1000, 30 * 1000);
 
         tMan.scheduleAtMidnight(new BossLogWorker());
-        tMan.scheduleAtMidnight(new DailyChallengeWorker());
         tMan.scheduleAtMidnight(new BossQuestWorker());
 
         long timeToTake = System.currentTimeMillis();
-        MapleDailyProgress.populateScavList();
         NostalgicMap.populateNostalgicMobList();
-        System.out.println("Dailies loaded in " + ((System.currentTimeMillis() - timeToTake) / 1000.0) + " seconds");
 
         timeToTake = System.currentTimeMillis();
         SkillFactory.loadAllSkills();

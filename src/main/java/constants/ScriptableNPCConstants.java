@@ -19,9 +19,6 @@ public class ScriptableNPCConstants {
         add(new Pair<>(9200000, "Cody"));
         add(new Pair<>(9000032, "AgentW"));
         add(new Pair<>(9201088, "Barry"));
-        add(new Pair<>(2041027, "Mason The Collector")); // daily challenge
-        add(new Pair<>(9110113, "Shururu")); // daily challenge
-        add(new Pair<>(1094000, "Bart")); // daily challenge
     }};
     
 }

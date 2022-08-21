@@ -28,7 +28,6 @@ import client.inventory.MapleInventoryType;
 import constants.ServerConstants;
 import net.server.Server;
 import server.MapleItemInformationProvider;
-import server.daily.MapleDaily;
 import tools.FilePrinter;
 import tools.MaplePacketCreator;
 

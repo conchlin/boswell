@@ -5,7 +5,7 @@ import client.MapleClient;
 import client.command.Command;
 
 import static constants.ServerConstants.ENABLE_PQ_TOUR_FEATURE;
-import static server.daily.PQTour.getTourPQ;
+import static server.partyquest.PQTour.getTourPQ;
 
 public class PqTourCommand extends Command {
     {

@@ -1,6 +1,6 @@
 package net.server.worker;
 
-import server.daily.BossQuest;
+import server.partyquest.BossQuest;
 
 public class BossQuestWorker implements Runnable {
     @Override

@@ -200,9 +200,7 @@ public class CommandsExecutor {
         addCommand("features", FeaturesCommand.class);
         addCommand("roll", RollCommand.class);
         addCommand("pqtour", PqTourCommand.class);
-        addCommand(new String[]{"daily", "dailies"}, DailyCommand.class);
         addCommand(new String[]{"trophy"}, TrophyCommand.class);
-        //addCommand(new String[]{"suggestion", "suggestions"}, SuggestionCommand.class);
 
         commandsNameDesc.add(levelCommandsCursor);
     }
@@ -363,7 +361,6 @@ public class CommandsExecutor {
         addCommand("shutdown", 4, ShutdownCommand.class);
         addCommand("clearquestcache", 4, ClearQuestCacheCommand.class);
         addCommand("clearquest", 4, ClearQuestCommand.class);
-        addCommand("cleardaily", 4, ClearDailyCommand.class);
         addCommand("supplyratecoupon", 4, SupplyRateCouponCommand.class);
         addCommand("spawnallpnpcs", 4, SpawnAllPNpcsCommand.class);
         addCommand("eraseallpnpcs", 4, EraseAllPNpcsCommand.class);

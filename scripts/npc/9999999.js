@@ -143,9 +143,7 @@ function action(mode, type, selection) {
             cm.sendSimple("Which of our server features would you like to access?\r\n\r\n"
                 + "#L1##bI'd like to check out the Boswell's feature list\r\n"
                 + "#L2##bI'd like to learn about the trophy system\r\n"
-                + "#L3##bI'd like to participate in the daily trophy challenge!\r\n"
-                + "#L4##bI'd like to reserve an IGN!\r\n"
-                + "#L5##bI'd like to know about the Weekly PQ Tour");
+                + "#L3##bI'd like to know about the Weekly PQ Tour");
 
         } else if (status === 1) {
 
@@ -158,14 +156,6 @@ function action(mode, type, selection) {
                 cm.openNpc(9200000, "TrophyExchange");
 
             } else if (selection === 3) {
-                cm.dispose();
-                cm.openNpc(9201051, "dailies");
-
-            } else if (selection === 4) {
-                cm.dispose();
-                cm.openNpc(9001104, "nameReserve");
-
-            } else if (selection === 5) {
                 cm.sendOk("The Weekly PQ Tour highlights a different party quest each week."
                 + " The featured party quest will have a chance to drop Chaos/White Scrolls.\r\n\r\n"
                 + " This week's featured party quest is: #e" + cm.getTourPQ());
