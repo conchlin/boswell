@@ -55,7 +55,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.PriorityQueue;
-import java.util.WeakHashMap;
 import java.util.concurrent.ScheduledFuture;
 
 import scripting.event.EventInstanceManager;
@@ -81,7 +80,7 @@ import net.server.channel.CharacterIdChannelPair;
 import net.server.guild.MapleGuild;
 import net.server.guild.MapleGuildCharacter;
 import net.server.guild.MapleGuildSummary;
-import tools.DatabaseConnection;
+import net.database.DatabaseConnection;
 import tools.MaplePacketCreator;
 import tools.Pair;
 import net.server.audit.locks.MonitoredLockType;

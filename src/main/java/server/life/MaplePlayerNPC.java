@@ -51,7 +51,7 @@ import server.maps.AbstractMapleMapObject;
 import server.maps.MapleMap;
 import server.maps.MapleMapObject;
 import server.maps.MapleMapObjectType;
-import tools.DatabaseConnection;
+import net.database.DatabaseConnection;
 import tools.MaplePacketCreator;
 import tools.Pair;
 

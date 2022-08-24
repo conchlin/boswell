@@ -27,6 +27,8 @@ import client.listeners.DamageListener;
 import client.listeners.MobKilledEvent;
 import client.listeners.MobKilledListener;
 import constants.*;
+import net.database.DatabaseConnection;
+import net.database.Statements;
 import server.cashshop.CashShop;
 import client.autoban.AutobanFactory;
 import client.autoban.AutobanManager;

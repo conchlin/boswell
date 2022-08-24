@@ -25,8 +25,7 @@ package net.server.channel.handlers;
 
 import client.MapleClient;
 import client.MapleCharacter;
-import client.inventory.Item;
-import client.inventory.manipulator.MapleInventoryManipulator;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -38,11 +37,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import net.AbstractMaplePacketHandler;
 import net.server.Server;
-import server.cashshop.CashShop;
 import server.MapleItemInformationProvider;
-import tools.DatabaseConnection;
+import net.database.DatabaseConnection;
 import tools.FilePrinter;
-import tools.MaplePacketCreator;
 import tools.Pair;
 import tools.data.input.SeekableLittleEndianAccessor;
 

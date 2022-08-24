@@ -28,7 +28,7 @@ import client.MapleClient;
 import client.MapleCharacter;
 import net.server.Server;
 import server.TimerManager;
-import tools.DatabaseConnection;
+import net.database.DatabaseConnection;
 import tools.MaplePacketCreator;
 
 import java.sql.Connection;

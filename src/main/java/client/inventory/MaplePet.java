@@ -24,11 +24,11 @@ package client.inventory;
 import client.MapleCharacter;
 import constants.ExpTable;
 import server.MapleItemInformationProvider;
-import server.Statements;
+import net.database.Statements;
 import server.movement.AbsoluteLifeMovement;
 import server.movement.LifeMovement;
 import server.movement.LifeMovementFragment;
-import tools.DatabaseConnection;
+import net.database.DatabaseConnection;
 import tools.MaplePacketCreator;
 import tools.Pair;
 

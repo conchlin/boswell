@@ -36,7 +36,7 @@ import java.sql.ResultSet;
 import java.util.LinkedList;
 import java.util.List;
 import server.maps.MapleMap;
-import tools.DatabaseConnection;
+import net.database.DatabaseConnection;
 import tools.Pair;
 
 public class PnpcRemoveCommand extends Command {

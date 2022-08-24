@@ -34,7 +34,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import scripting.event.EventManager;
-import tools.DatabaseConnection;
+import net.database.DatabaseConnection;
 import tools.Pair;
 
 /**

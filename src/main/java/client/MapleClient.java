@@ -22,9 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package client;
 
 import java.io.*;
-import java.net.HttpURLConnection;
 import java.net.InetAddress;
-import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
@@ -35,7 +33,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -47,7 +44,8 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Lock;
 
 import com.google.gson.JsonObject;
-import server.Statements;
+import net.database.DatabaseConnection;
+import net.database.Statements;
 import tools.*;
 
 import javax.script.ScriptEngine;

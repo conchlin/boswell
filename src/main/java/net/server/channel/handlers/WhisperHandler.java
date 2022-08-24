@@ -28,7 +28,7 @@ import java.sql.SQLException;
 import constants.ServerConstants;
 import net.AbstractMaplePacketHandler;
 import net.server.world.World;
-import tools.DatabaseConnection;
+import net.database.DatabaseConnection;
 import tools.FilePrinter;
 import tools.LogHelper;
 import tools.MaplePacketCreator;

@@ -28,8 +28,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import net.AbstractMaplePacketHandler;
-import server.Statements;
-import tools.DatabaseConnection;
+import net.database.Statements;
+import net.database.DatabaseConnection;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 

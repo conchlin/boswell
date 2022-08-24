@@ -48,7 +48,7 @@ import server.life.MaplePlayerNPC;
 import server.life.MaplePlayerNPCFactory;
 import scripting.event.EventInstanceManager;
 import server.partyquest.GuardianSpawnPoint;
-import tools.DatabaseConnection;
+import net.database.DatabaseConnection;
 import tools.Rect;
 import tools.Size;
 import tools.StringUtil;

@@ -23,7 +23,7 @@ package client;
 
 import net.server.audit.locks.MonitoredLockType;
 import net.server.audit.locks.factory.MonitoredReentrantLockFactory;
-import server.Statements;
+import net.database.Statements;
 import tools.MaplePacketCreator;
 
 import java.sql.Connection;

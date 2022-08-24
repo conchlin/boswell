@@ -26,9 +26,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import server.Statements;
+import net.database.Statements;
 import tools.Pair;
-import tools.DatabaseConnection;
+import net.database.DatabaseConnection;
 
 /**
  *

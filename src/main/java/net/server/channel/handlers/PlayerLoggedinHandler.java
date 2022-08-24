@@ -21,17 +21,12 @@
  */
 package net.server.channel.handlers;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.AbstractMaplePacketHandler;
 import net.server.PlayerBuffValueHolder;
@@ -44,16 +39,14 @@ import net.server.world.MaplePartyCharacter;
 import net.server.world.PartyOperation;
 import net.server.world.World;
 import server.skills.SkillFactory;
-import tools.DatabaseConnection;
+import net.database.DatabaseConnection;
 import tools.MaplePacketCreator;
-import tools.Pair;
 import tools.data.input.SeekableLittleEndianAccessor;
 import client.BuddyList;
 import client.BuddylistEntry;
 import client.CharacterNameAndId;
 import client.MapleCharacter;
 import client.MapleClient;
-import client.MapleDisease;
 import client.MapleFamily;
 import client.MapleKeyBinding;
 import client.inventory.Equip;
@@ -64,16 +57,12 @@ import client.inventory.MaplePet;
 import constants.GameConstants;
 import constants.ScriptableNPCConstants;
 import constants.ServerConstants;
-import java.util.Collections;
-import java.util.Comparator;
+
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-import net.server.coordinator.MapleEventRecallCoordinator;
+
 import net.server.coordinator.MapleSessionCoordinator;
 import org.apache.mina.core.session.IoSession;
-import server.skills.MobSkill;
-import scripting.event.EventInstanceManager;
 import tools.packets.Wedding;
 
 public final class PlayerLoggedinHandler extends AbstractMaplePacketHandler {

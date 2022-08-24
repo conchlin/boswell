@@ -46,7 +46,7 @@ import provider.MapleDataProviderFactory;
 import provider.MapleDataTool;
 import server.skills.PlayerSkill;
 import server.skills.SkillFactory;
-import tools.DatabaseConnection;
+import net.database.DatabaseConnection;
 import tools.FilePrinter;
 import tools.MaplePacketCreator;
 import tools.Pair;

@@ -34,7 +34,7 @@ import javax.script.ScriptException;
 import scripting.AbstractScriptManager;
 import server.maps.MapleReactor;
 import server.maps.ReactorDropEntry;
-import tools.DatabaseConnection;
+import net.database.DatabaseConnection;
 import tools.FilePrinter;
 
 /**

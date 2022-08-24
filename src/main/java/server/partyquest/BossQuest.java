@@ -1,8 +1,8 @@
 package server.partyquest;
 
 import client.MapleCharacter;
-import server.Statements;
-import tools.DatabaseConnection;
+import net.database.Statements;
+import net.database.DatabaseConnection;
 
 import java.sql.Connection;
 import java.sql.SQLException;

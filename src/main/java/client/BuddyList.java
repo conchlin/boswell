@@ -32,7 +32,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import net.server.PlayerStorage;
-import tools.DatabaseConnection;
+import net.database.DatabaseConnection;
 import tools.MaplePacketCreator;
 
 public class BuddyList {

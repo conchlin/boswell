@@ -27,7 +27,7 @@ import client.inventory.Item;
 import client.inventory.MapleInventoryType;
 import client.inventory.MaplePet;
 import constants.ItemConstants;
-import constants.MapConstants;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import tools.DatabaseConnection;
+import net.database.DatabaseConnection;
 import tools.MaplePacketCreator;
 
 /**

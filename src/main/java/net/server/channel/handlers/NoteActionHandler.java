@@ -26,7 +26,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import net.AbstractMaplePacketHandler;
-import tools.DatabaseConnection;
+import net.database.DatabaseConnection;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 import client.MapleClient;

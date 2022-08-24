@@ -42,7 +42,7 @@ import java.util.concurrent.locks.Lock;
 import net.server.audit.locks.factory.MonitoredReentrantLockFactory;
 import net.server.Server;
 import server.MapleItemInformationProvider;
-import tools.DatabaseConnection;
+import net.database.DatabaseConnection;
 import tools.MaplePacketCreator;
 import tools.Pair;
 import net.server.audit.locks.MonitoredLockType;

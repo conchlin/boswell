@@ -35,7 +35,7 @@ import client.MapleCharacter;
 import client.MapleClient;
 import java.awt.Point;
 import server.maps.MapleMap;
-import tools.DatabaseConnection;
+import net.database.DatabaseConnection;
 import tools.MaplePacketCreator;
 
 public class PnpcCommand extends Command {

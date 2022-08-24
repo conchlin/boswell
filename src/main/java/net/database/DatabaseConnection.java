@@ -1,4 +1,4 @@
-package tools;
+package net.database;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,6 +9,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 import constants.ServerConstants;
+import tools.FilePrinter;
 
 /**
  * @author Frz - Big Daddy

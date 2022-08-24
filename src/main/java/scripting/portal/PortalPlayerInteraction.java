@@ -28,7 +28,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import scripting.AbstractPlayerInteraction;
 import server.MaplePortal;
-import tools.DatabaseConnection;
+import net.database.DatabaseConnection;
 import tools.MaplePacketCreator;
 
 public class PortalPlayerInteraction extends AbstractPlayerInteraction {

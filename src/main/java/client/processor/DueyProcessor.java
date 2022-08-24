@@ -48,7 +48,7 @@ import net.server.channel.Channel;
 import server.DueyPackage;
 import server.MapleItemInformationProvider;
 import server.MapleTrade;
-import tools.DatabaseConnection;
+import net.database.DatabaseConnection;
 import tools.FilePrinter;
 import tools.MaplePacketCreator;
 import tools.Pair;

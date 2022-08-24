@@ -21,7 +21,7 @@
 package server.life;
 
 import constants.ItemConstants;
-import constants.ServerConstants;
+
 import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -40,7 +40,7 @@ import provider.MapleDataProviderFactory;
 import provider.MapleDataTool;
 import server.MapleItemInformationProvider;
 import server.skills.MobSkill;
-import tools.DatabaseConnection;
+import net.database.DatabaseConnection;
 import tools.Pair;
 import tools.Randomizer;
 

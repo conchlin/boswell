@@ -24,12 +24,10 @@ package net.server.channel.handlers;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.Calendar;
 
 import net.AbstractMaplePacketHandler;
 import net.server.Server;
-import tools.DatabaseConnection;
+import net.database.DatabaseConnection;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 import client.MapleCharacter;

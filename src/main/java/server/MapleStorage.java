@@ -22,13 +22,14 @@ import client.MapleClient;
 import client.inventory.Item;
 import client.inventory.ItemFactory;
 import client.inventory.MapleInventoryType;
+import net.database.Statements;
 import net.server.audit.locks.MonitoredLockType;
 import net.server.audit.locks.factory.MonitoredReentrantLockFactory;
 import provider.MapleData;
 import provider.MapleDataProvider;
 import provider.MapleDataProviderFactory;
 import provider.MapleDataTool;
-import tools.DatabaseConnection;
+import net.database.DatabaseConnection;
 import tools.MaplePacketCreator;
 import tools.Pair;
 

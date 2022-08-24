@@ -27,7 +27,7 @@ import constants.ServerConstants;
 import net.server.Server;
 import net.server.audit.locks.MonitoredLockType;
 import net.server.audit.locks.factory.MonitoredReentrantLockFactory;
-import tools.DatabaseConnection;
+import net.database.DatabaseConnection;
 import tools.Pair;
 
 import java.sql.Connection;
@@ -36,7 +36,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
-import server.Statements;
+import net.database.Statements;
 
 /*
  * @author Flav
