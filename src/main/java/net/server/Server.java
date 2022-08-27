@@ -701,6 +701,8 @@ public class Server {
 
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 
+        DatabaseConnection.initialize();
+
         try (Connection con = DatabaseConnection.getConnection()) {
             Statements.Update("accounts").set("loggedin", 0).execute(con);
             Statements.Update("characters").set("hasmerchant", false).execute(con);

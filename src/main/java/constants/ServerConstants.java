@@ -11,7 +11,6 @@ public class ServerConstants {
     public static String DB_URL = "";
     public static String DB_USER = "";
     public static String DB_PASS = "";
-    public static final boolean DB_CONNECTION_POOL = true;      //Installs a connection pool to hub DB connections. Set false to default.
     
     //Server Version
     public static short VERSION = 83;
