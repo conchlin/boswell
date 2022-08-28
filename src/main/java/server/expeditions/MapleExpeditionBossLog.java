@@ -69,12 +69,10 @@ public class MapleExpeditionBossLog {
     }
 
     public static void resetBosslogs() {
-        try ( Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps;
-            ps = con.prepareStatement("TRUNCATE boss_logs"); // delete all entries
-            ps.executeUpdate();
-            ps.close();
-            con.close();
+        try (Connection con = DatabaseConnection.getConnection()) {
+            try (PreparedStatement ps = con.prepareStatement("TRUNCATE boss_logs")) { // delete all entries
+                ps.executeUpdate();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -82,21 +80,19 @@ public class MapleExpeditionBossLog {
 
     private static int countPlayerEntries(int cid, BossLogEntry boss) {
         int ret_count = 0;
-        try {
-            Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps;
-            ps = con.prepareStatement("SELECT COUNT(*) FROM boss_logs WHERE characterid = ? AND bosstype = ?");
-            ps.setInt(1, cid);
-            ps.setObject(2, boss.name(), java.sql.Types.OTHER);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                ret_count = rs.getInt(1);
-            } else {
-                ret_count = -1;
+        try (Connection con = DatabaseConnection.getConnection()) {
+            try (PreparedStatement ps = con.prepareStatement("SELECT COUNT(*) FROM boss_logs WHERE characterid = ? AND bosstype = ?")) {
+                ps.setInt(1, cid);
+                ps.setObject(2, boss.name(), java.sql.Types.OTHER);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        ret_count = rs.getInt(1);
+                    } else {
+                        ret_count = -1;
+                    }
+                }
             }
-            rs.close();
-            ps.close();
-            con.close();
+
             return ret_count;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -105,14 +101,12 @@ public class MapleExpeditionBossLog {
     }
 
     private static void insertPlayerEntry(int cid, BossLogEntry boss) {
-        try {
-            Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("INSERT INTO boss_logs (characterid, bosstype) VALUES (?,?)");
-            ps.setInt(1, cid);
-            ps.setObject(2, boss.name(), java.sql.Types.OTHER);
-            ps.executeUpdate();
-            ps.close();
-            con.close();
+            try (Connection con = DatabaseConnection.getConnection()) {
+            try (PreparedStatement ps = con.prepareStatement("INSERT INTO boss_logs (characterid, bosstype) VALUES (?,?)")) {
+                ps.setInt(1, cid);
+                ps.setObject(2, boss.name(), java.sql.Types.OTHER);
+                ps.executeUpdate();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

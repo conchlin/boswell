@@ -145,74 +145,64 @@ public class MapleSessionCoordinator {
             ps.executeUpdate();
         }
     }
-    
+
     private static boolean associateHwidAccountIfAbsent(String remoteHwid, int accountId) {
-        try {
-            Connection con = DatabaseConnection.getConnection();
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement("SELECT SQL_CACHE hwid FROM hwid_accounts WHERE accountid = ?")) {
             int hwidCount = 0;
-            
-            try (PreparedStatement ps = con.prepareStatement("SELECT SQL_CACHE hwid FROM hwid_accounts WHERE accountid = ?")) {
-                ps.setInt(1, accountId);
-                try (ResultSet rs = ps.executeQuery()) {
-                    while (rs.next()) {
-                        String rsHwid = rs.getString("hwid");
-                        if (rsHwid.contentEquals(remoteHwid)) {
-                            return false;
-                        }
-                        
-                        hwidCount++;
+            ps.setInt(1, accountId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String rsHwid = rs.getString("hwid");
+                    if (rsHwid.contentEquals(remoteHwid)) {
+                        return false;
                     }
+
+                    hwidCount++;
                 }
-                
-                if (hwidCount < ServerConstants.MAX_ALLOWED_ACCOUNT_HWID) {
-                    registerAccessAccount(con, remoteHwid, accountId);
-                    return true;
-                }
-            } finally {
-                con.close();
+            }
+
+            if (hwidCount < ServerConstants.MAX_ALLOWED_ACCOUNT_HWID) {
+                registerAccessAccount(con, remoteHwid, accountId);
+                return true;
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        
+
         return false;
     }
-    
+
     private static boolean attemptAccessAccount(String nibbleHwid, int accountId, boolean routineCheck) {
-        try {
-            Connection con = DatabaseConnection.getConnection();
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement("SELECT SQL_CACHE * FROM hwid_accounts WHERE accountid = ?")) {
             int hwidCount = 0;
-            
-            try (PreparedStatement ps = con.prepareStatement("SELECT SQL_CACHE * FROM hwid_accounts WHERE accountid = ?")) {
-                ps.setInt(1, accountId);
-                try (ResultSet rs = ps.executeQuery()) {
-                    while (rs.next()) {
-                        String rsHwid = rs.getString("hwid");
-                        if (rsHwid.endsWith(nibbleHwid)) {
-                            if (!routineCheck) {
-                                // better update HWID relevance as soon as the login is authenticated
-                                
-                                int loginRelevance = rs.getInt("relevance");
-                                updateAccessAccount(con, rsHwid, accountId, loginRelevance);
-                            }
-                            
-                            return true;
+            ps.setInt(1, accountId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String rsHwid = rs.getString("hwid");
+                    if (rsHwid.endsWith(nibbleHwid)) {
+                        if (!routineCheck) {
+                            // better update HWID relevance as soon as the login is authenticated
+
+                            int loginRelevance = rs.getInt("relevance");
+                            updateAccessAccount(con, rsHwid, accountId, loginRelevance);
                         }
-                        
-                        hwidCount++;
+
+                        return true;
                     }
+
+                    hwidCount++;
                 }
-                
-                if (hwidCount < ServerConstants.MAX_ALLOWED_ACCOUNT_HWID) {
-                    return true;
-                }
-            } finally {
-                con.close();
+            }
+
+            if (hwidCount < ServerConstants.MAX_ALLOWED_ACCOUNT_HWID) {
+                return true;
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        
+
         return false;
     }
     
@@ -542,15 +532,11 @@ public class MapleSessionCoordinator {
         cachedHostHwids.put(remoteHost, remoteHwid);
         cachedHostTimeout.put(remoteHost, Server.getInstance().getCurrentTime() + 604800000);   // 1 week-time entry
     }
-    
+
     public void runUpdateHwidHistory() {
-        try {
-            Connection con = DatabaseConnection.getConnection();
-            try (PreparedStatement ps = con.prepareStatement("DELETE FROM hwid_accounts WHERE expiresat < CURRENT_TIMESTAMP")) {
-                ps.execute();
-            } finally {
-                con.close();
-            }
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement("DELETE FROM hwid_accounts WHERE expiresat < CURRENT_TIMESTAMP")) {
+            ps.execute();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

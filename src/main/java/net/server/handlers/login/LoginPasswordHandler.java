@@ -48,20 +48,17 @@ public final class LoginPasswordHandler implements MaplePacketHandler {
         slea.skip(6);   // localhost masked the initial part with zeroes...
         byte[] hwidNibbles = slea.read(4);
         int loginok = c.login(login, pwd, HexTool.toCompressedString(hwidNibbles));
-        Connection con = null;
-        PreparedStatement ps = null;
 
         if (loginok <= -10) { // -10 means migration to bcrypt, -23 means TOS wasn't accepted
-            try {
-                con = DatabaseConnection.getConnection();
-                ps = con.prepareStatement("UPDATE accounts SET password = ? WHERE name = ?;");
-                ps.setString(1, BCrypt.hashpw(pwd, BCrypt.gensalt("$2b", 12)));
-                ps.setString(2, login.toLowerCase());
-                ps.executeUpdate();
+            try (Connection con = DatabaseConnection.getConnection()) {
+                try (PreparedStatement ps = con.prepareStatement("UPDATE accounts SET password = ? WHERE name = ?;")) {
+                    ps.setString(1, BCrypt.hashpw(pwd, BCrypt.gensalt("$2b", 12)));
+                    ps.setString(2, login.toLowerCase());
+                    ps.executeUpdate();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             } finally {
-                disposeSql(con, ps);
                 loginok = (loginok == -10) ? 0 : 23;
             }
         }
@@ -89,13 +86,11 @@ public final class LoginPasswordHandler implements MaplePacketHandler {
         }
         if (c.finishLogin() == 0) {
             c.checkChar(c.getAccID());
-            try {
-                con = DatabaseConnection.getConnection();
+            try (Connection con = DatabaseConnection.getConnection()) {
                 Statements.Update statement = Statements.Update("accounts");
                 statement.cond("name", login.toLowerCase());
                 statement.set("lastknownip", c.getSession().getRemoteAddress().toString());
                 statement.execute(con);
-                con.close();
             } catch (SQLException e) {
                 e.printStackTrace();
                 FilePrinter.print(FilePrinter.LOGIN_ATTEMPTS, "Updating the lastknownip "
@@ -110,14 +105,5 @@ public final class LoginPasswordHandler implements MaplePacketHandler {
     private static void login(MapleClient c) {
         c.announce(MaplePacketCreator.getAuthSuccess(c));//why the fk did I do c.getAccountName()?
         Server.getInstance().registerLoginState(c);
-    }
-
-    private static void disposeSql(Connection con, PreparedStatement ps) {
-        try {
-            if (con != null) con.close();
-            if (ps != null) ps.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 }

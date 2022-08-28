@@ -64,15 +64,12 @@ public class MapleStorage {
     }
 
     private static MapleStorage create(int id, int world) {
-        try {
-            Connection con = DatabaseConnection.getConnection();
+        try (Connection con = DatabaseConnection.getConnection()) {
             try (PreparedStatement ps = con.prepareStatement("INSERT INTO storages (accountid, world, slots, meso) VALUES (?, ?, 16, 0)")) {
                 ps.setInt(1, id);
                 ps.setInt(2, world);
                 ps.executeUpdate();
             }
-
-            con.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -82,28 +79,21 @@ public class MapleStorage {
     public static MapleStorage loadOrCreateFromDB(int id, int world) {
         MapleStorage ret = null;
         int storeId;
-        try {
-            Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("SELECT storageid, slots, meso FROM storages WHERE accountid = ? AND world = ?");
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement("SELECT storageid, slots, meso FROM storages WHERE accountid = ? AND world = ?")) {
             ps.setInt(1, id);
             ps.setInt(2, world);
-            ResultSet rs = ps.executeQuery();
-            if (!rs.next()) {
-                rs.close();
-                ps.close();
-                con.close();
-                return create(id, world);
-            } else {
-                storeId = rs.getInt("storageid");
-                ret = new MapleStorage(storeId, (byte) rs.getInt("slots"), rs.getInt("meso"));
-                rs.close();
-                ps.close();
-                for (Pair<Item, MapleInventoryType> item : ItemFactory.STORAGE.loadItems(ret.id, false)) {
-                    ret.items.add(item.getLeft());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    return create(id, world);
+                } else {
+                    storeId = rs.getInt("storageid");
+                    ret = new MapleStorage(storeId, (byte) rs.getInt("slots"), rs.getInt("meso"));
+                    for (Pair<Item, MapleInventoryType> item : ItemFactory.STORAGE.loadItems(ret.id, false)) {
+                        ret.items.add(item.getLeft());
+                    }
                 }
             }
-
-            con.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

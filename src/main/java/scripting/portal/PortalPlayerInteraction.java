@@ -45,39 +45,21 @@ public class PortalPlayerInteraction extends AbstractPlayerInteraction {
     }
 
     public boolean hasLevel30Character() {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        Connection con = null;
-        try {
-            con = DatabaseConnection.getConnection();
-            ps = con.prepareStatement("SELECT level FROM characters WHERE accountid = ?");
-            ps.setInt(1, getPlayer().getAccountID());
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                if (rs.getInt("level") >= 30) {
-                    ps.close();
-                    rs.close();
-                    return true;
+        try (Connection con = DatabaseConnection.getConnection()) {
+            try (PreparedStatement ps = con.prepareStatement("SELECT level FROM characters WHERE accountid = ?")) {
+                ps.setInt(1, getPlayer().getAccountID());
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        if (rs.getInt("level") >= 30) {
+                            return true;
+                        }
+                    }
                 }
             }
         } catch (SQLException sqle) {
             sqle.printStackTrace();
-        } finally {
-            try {
-                if (ps != null && !ps.isClosed()) {
-                    ps.close();
-                }
-                if (rs != null && !rs.isClosed()) {
-                    rs.close();
-                }
-                if (con != null && !con.isClosed()) {
-                    con.close();
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
         }
-        
+
         return getPlayer().getLevel() >= 30;
     }
     

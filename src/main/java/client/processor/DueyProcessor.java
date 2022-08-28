@@ -91,21 +91,20 @@ public class DueyProcessor {
             return code;
         }
     }
-    
+
     private static Pair<Integer, Integer> getAccountCharacterIdFromCNAME(String name) {
-        try {
-            Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("SELECT id,accountid FROM characters WHERE name = ?");
-            ps.setString(1, name);
-            
-            Pair<Integer, Integer> id_ = null;
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    id_ = new Pair<>(rs.getInt("accountid"), rs.getInt("id"));
+        Pair<Integer, Integer> id_ = null;
+        try (Connection con = DatabaseConnection.getConnection()) {
+            try (PreparedStatement ps = con.prepareStatement("SELECT id,accountid FROM characters WHERE name = ?")) {
+                ps.setString(1, name);
+
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        id_ = new Pair<>(rs.getInt("accountid"), rs.getInt("id"));
+                    }
                 }
             }
-            ps.close();
-            con.close();
+
             return id_;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -120,69 +119,42 @@ public class DueyProcessor {
         }
         return new Timestamp(cal.getTime().getTime());
     }
-    
+
     private static void showDueyNotification(MapleClient c, MapleCharacter player) {
-        Connection con = null;
-        PreparedStatement ps = null;
-        PreparedStatement pss = null;
-        ResultSet rs = null;
-        try {
-            con = DatabaseConnection.getConnection();
-            ps = con.prepareStatement("SELECT SenderName, Type FROM duey_packages WHERE ReceiverId = ? AND Checked = true ORDER BY Type DESC");
-            ps.setInt(1, player.getId());
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                try {
-                    Connection con2 = DatabaseConnection.getConnection();
-                    pss = con2.prepareStatement("UPDATE duey_packages SET Checked = false where ReceiverId = ?");
-                    pss.setInt(1, player.getId());
-                    pss.executeUpdate();
-                    pss.close();
-                    con2.close();
-                    
-                    c.announce(MaplePacketCreator.sendDueyParcelReceived(rs.getString("SenderName"), rs.getInt("Type") == 1));
-                } catch (SQLException e) {
-                    e.printStackTrace();
+        try (Connection con = DatabaseConnection.getConnection()) {
+            try (PreparedStatement ps = con.prepareStatement("SELECT SenderName, Type FROM duey_packages WHERE ReceiverId = ? AND Checked = true ORDER BY Type DESC")) {
+                ps.setInt(1, player.getId());
+                try (ResultSet rs = ps.executeQuery();) {
+                    if (rs.next()) {
+                        try (Connection con2 = DatabaseConnection.getConnection()) {
+                            try (PreparedStatement pss = con2.prepareStatement("UPDATE duey_packages SET Checked = false where ReceiverId = ?")) {
+                                pss.setInt(1, player.getId());
+                                pss.executeUpdate();
+                            }
+                            c.announce(MaplePacketCreator.sendDueyParcelReceived(rs.getString("SenderName"), rs.getInt("Type") == 1));
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (pss != null) {
-                    pss.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
         }
     }
 
     private static void deletePackageFromInventoryDB(Connection con, int packageId) throws SQLException {
         ItemFactory.DUEY.saveItems(new LinkedList<Pair<Item, MapleInventoryType>>(), packageId, con);
     }
-    
+
     private static void removePackageFromDB(int packageId) {
-        try {
-            Connection con = DatabaseConnection.getConnection();
-            
-            PreparedStatement ps = con.prepareStatement("DELETE FROM duey_packages WHERE PackageId = ?");
-            ps.setInt(1, packageId);
-            ps.executeUpdate();
-            ps.close();
-            
+        try (Connection con = DatabaseConnection.getConnection()) {
+            try (PreparedStatement ps = con.prepareStatement("DELETE FROM duey_packages WHERE PackageId = ?")) {
+                ps.setInt(1, packageId);
+                ps.executeUpdate();
+            }
+
             deletePackageFromInventoryDB(con, packageId);
-            
-            con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -215,8 +187,7 @@ public class DueyProcessor {
     
     private static List<DueyPackage> loadPackages(MapleCharacter chr) {
         List<DueyPackage> packages = new LinkedList<>();
-        try {
-            Connection con = DatabaseConnection.getConnection();
+        try (Connection con = DatabaseConnection.getConnection()) {
             try (PreparedStatement ps = con.prepareStatement("SELECT * FROM duey_packages dp WHERE ReceiverId = ?")) {
                 ps.setInt(1, chr.getId());
                 try (ResultSet rs = ps.executeQuery()) {
@@ -228,78 +199,51 @@ public class DueyProcessor {
                     }
                 }
             }
-            
-            con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         
         return packages;
     }
-    
-    private static int createPackage(int mesos, String message, String sender, int toCid, boolean quick) {
-        try {
-            Connection con = null;
-            PreparedStatement ps = null;
-            ResultSet rs = null;
-        
-            try {
-                con = DatabaseConnection.getConnection();
-                ps = con.prepareStatement("INSERT INTO duey_packages (ReceiverId, SenderName, Mesos, TimeStamp, Message, Type, Checked) VALUES (?, ?, ?, ?, ?, ?, 1)", Statement.RETURN_GENERATED_KEYS);
-                ps.setInt(1, toCid);
-                ps.setString(2, sender);
-                ps.setInt(3, mesos);
-                ps.setTimestamp(4, getCurrentDate(quick));
-                ps.setString(5, message);
-                ps.setInt(6, quick ? 1 : 0);
 
-                int updateRows = ps.executeUpdate();
-                if (updateRows < 1) {
-                    FilePrinter.printError(FilePrinter.INSERT_CHAR, "Error trying to create package [mesos: " + mesos + ", " + sender + ", quick: " + quick + ", to CharacterId: " + toCid + "]");
-                    return -1;
-                }
-                
-                int packageId;
-                rs = ps.getGeneratedKeys();
+    private static int createPackage(int mesos, String message, String sender, int toCid, boolean quick) {
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement("INSERT INTO duey_packages (ReceiverId, SenderName, Mesos, TimeStamp, Message, Type, Checked) VALUES (?, ?, ?, ?, ?, ?, 1)", Statement.RETURN_GENERATED_KEYS)) {
+            ps.setInt(1, toCid);
+            ps.setString(2, sender);
+            ps.setInt(3, mesos);
+            ps.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
+            ps.setString(5, message);
+            ps.setInt(6, quick ? 1 : 0);
+
+            int updateRows = ps.executeUpdate();
+            if (updateRows < 1) {
+                return -1;
+            }
+            final int packageId;
+            try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) {
                     packageId = rs.getInt(1);
                 } else {
-                    FilePrinter.printError(FilePrinter.INSERT_CHAR, "Failed inserting package [mesos: " + mesos + ", " + sender + ", quick: " + quick + ", to CharacterId: " + toCid + "]");
                     return -1;
                 }
-                
-                return packageId;
-            } finally {
-                if (rs != null && !rs.isClosed()) {
-                    rs.close();
-                }
-                
-                if (ps != null && !ps.isClosed()) {
-                    ps.close();
-                }
-                
-                if (con != null && !con.isClosed()) {
-                    con.close();
-                }
             }
+
+            return packageId;
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         }
-        
+
         return -1;
     }
     
     private static boolean insertPackageItem(int packageId, Item item) {
-        try {
             Pair<Item, MapleInventoryType> dueyItem = new Pair<>(item, MapleInventoryType.getByType(item.getItemType()));
-            Connection con = DatabaseConnection.getConnection();
+            try (Connection con = DatabaseConnection.getConnection()) {
             ItemFactory.DUEY.saveItems(Collections.singletonList(dueyItem), packageId, con);
-            con.close();
-            
             return true;
         } catch (SQLException sqle) {
             sqle.printStackTrace();
-            
             return false;
         }
     }
@@ -441,31 +385,27 @@ public class DueyProcessor {
             }
         }
     }
-    
+
     public static void dueyClaimPackage(MapleClient c, int packageId) {
         if (c.tryacquireClient()) {
             try {
-                try {
-                    DueyPackage dp = null;
-                    
-                    Connection con = DatabaseConnection.getConnection();
+                DueyPackage dp = null;
+                try (Connection con = DatabaseConnection.getConnection()) {
                     try (PreparedStatement ps = con.prepareStatement("SELECT * FROM duey_packages dp WHERE PackageId = ?")) {
                         ps.setInt(1, packageId);
-                        
+
                         try (ResultSet rs = ps.executeQuery()) {
                             if (rs.next()) {
                                 dp = getPackageFromDB(rs);
                             }
                         }
                     }
-                    con.close();
-                    
                     if (dp == null) {
                         c.announce(MaplePacketCreator.sendDueyMSG(Actions.TOCLIENT_RECV_UNKNOWN_ERROR.getCode()));
                         FilePrinter.printError(FilePrinter.EXPLOITS + c.getPlayer().getName() + ".txt", c.getPlayer().getName() + " tried to receive package from duey with id " + packageId);
                         return;
                     }
-                    
+
                     if (dp.isDeliveringTime()) {
                         c.announce(MaplePacketCreator.sendDueyMSG(Actions.TOCLIENT_RECV_UNKNOWN_ERROR.getCode()));
                         return;
@@ -477,10 +417,10 @@ public class DueyProcessor {
                             c.announce(MaplePacketCreator.sendDueyMSG(Actions.TOCLIENT_RECV_UNKNOWN_ERROR.getCode()));
                             return;
                         }
-                        
+
                         if (!MapleInventoryManipulator.checkSpace(c, dpItem.getItemId(), dpItem.getQuantity(), dpItem.getOwner())) {
                             int itemid = dpItem.getItemId();
-                            if(MapleItemInformationProvider.getInstance().isPickupRestricted(itemid) && c.getPlayer().getInventory(ItemConstants.getInventoryType(itemid)).findById(itemid) != null) {
+                            if (MapleItemInformationProvider.getInstance().isPickupRestricted(itemid) && c.getPlayer().getInventory(ItemConstants.getInventoryType(itemid)).findById(itemid) != null) {
                                 c.announce(MaplePacketCreator.sendDueyMSG(Actions.TOCLIENT_RECV_RECEIVER_WITH_UNIQUE.getCode()));
                             } else {
                                 c.announce(MaplePacketCreator.sendDueyMSG(Actions.TOCLIENT_RECV_NO_FREE_SLOTS.getCode()));
@@ -491,9 +431,9 @@ public class DueyProcessor {
                             MapleInventoryManipulator.addFromDrop(c, dpItem, false);
                         }
                     }
-                    
+
                     c.getPlayer().gainMeso(dp.getMesos(), false);
-                    
+
                     dueyRemovePackage(c, packageId, false);
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -527,36 +467,32 @@ public class DueyProcessor {
             insertPackageItem(packageId, item);
         }
     }
-    
-        public static void runDueyExpireSchedule() {
-        try {
-            Calendar c = Calendar.getInstance();
-            c.add(Calendar.DATE, -30);
 
-            Timestamp ts = new Timestamp(c.getTime().getTime());
+    public static void runDueyExpireSchedule() {
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DATE, -30);
 
-            Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("SELECT PackageId FROM duey_packages WHERE TimeStamp < ?");
-            ps.setTimestamp(1, ts);
+        Timestamp ts = new Timestamp(c.getTime().getTime());
 
-            List<Integer> toRemove = new LinkedList<>();
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    toRemove.add(rs.getInt("PackageId"));
+        try (Connection con = DatabaseConnection.getConnection()) {
+            try (PreparedStatement ps = con.prepareStatement("SELECT PackageId FROM duey_packages WHERE TimeStamp < ?")) {
+                ps.setTimestamp(1, ts);
+
+                List<Integer> toRemove = new LinkedList<>();
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        toRemove.add(rs.getInt("PackageId"));
+                    }
+                }
+                for (Integer pid : toRemove) {
+                    removePackageFromDB(pid);
                 }
             }
-            ps.close();
 
-            for (Integer pid : toRemove) {
-                removePackageFromDB(pid);
+            try (PreparedStatement ps = con.prepareStatement("DELETE FROM duey_packages WHERE TimeStamp < ?")) {
+                ps.setTimestamp(1, ts);
+                ps.executeUpdate();
             }
-
-            ps = con.prepareStatement("DELETE FROM duey_packages WHERE TimeStamp < ?");
-            ps.setTimestamp(1, ts);
-            ps.executeUpdate();
-            ps.close();
-
-            con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

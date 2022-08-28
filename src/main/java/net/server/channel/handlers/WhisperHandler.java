@@ -101,20 +101,19 @@ public final class WhisperHandler extends AbstractMaplePacketHandler {
                     c.announce(MaplePacketCreator.getFindReply(victim.getName(), victim.getMap().getId(), 1));
                 }
             } else if (c.getPlayer().isGM()) { // not found
-                try {
-                    Connection con = DatabaseConnection.getConnection();
-                    PreparedStatement ps = con.prepareStatement("SELECT gm FROM characters WHERE name = ?");
-                    ps.setString(1, recipient);
-                    ResultSet rs = ps.executeQuery();
-                    if (rs.next()) {
-                        if (rs.getInt("gm") >= c.getPlayer().gmLevel()) {
-                            c.announce(MaplePacketCreator.getWhisperReply(recipient, (byte) 0));
-                            return;
+                try (Connection con = DatabaseConnection.getConnection()) {
+                    try (PreparedStatement ps = con.prepareStatement("SELECT gm FROM characters WHERE name = ?")) {
+                        ps.setString(1, recipient);
+                        try (ResultSet rs = ps.executeQuery()) {
+                            if (rs.next()) {
+                                if (rs.getInt("gm") >= c.getPlayer().gmLevel()) {
+                                    c.announce(MaplePacketCreator.getWhisperReply(recipient, (byte) 0));
+                                    return;
+                                }
+                            }
                         }
                     }
-                    rs.close();
-                    ps.close();
-                    con.close();
+
                     byte channel = (byte) (c.getWorldServer().find(recipient) - 1);
                     if (channel > -1) {
                         c.announce(MaplePacketCreator.getFindReply(recipient, channel, 3));

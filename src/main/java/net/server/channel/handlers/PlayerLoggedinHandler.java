@@ -38,6 +38,7 @@ import net.server.guild.MapleGuild;
 import net.server.world.MaplePartyCharacter;
 import net.server.world.PartyOperation;
 import net.server.world.World;
+import server.quest.requirements.PetRequirement;
 import server.skills.SkillFactory;
 import net.database.DatabaseConnection;
 import tools.MaplePacketCreator;
@@ -416,50 +417,28 @@ public final class PlayerLoggedinHandler extends AbstractMaplePacketHandler {
             c.announce(MaplePacketCreator.getAfterLoginError(10));
         }
     }
-    
+
     private static void showDueyNotification(MapleClient c, MapleCharacter player) {
-        Connection con = null;
-        PreparedStatement ps = null;
-        PreparedStatement pss = null;
-        ResultSet rs = null;
-        try {
-            con = DatabaseConnection.getConnection();
-            ps = con.prepareStatement("SELECT Type FROM duey_packages WHERE ReceiverId = ? AND Checked = true ORDER BY Type DESC");
-            ps.setInt(1, player.getId());
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                try {
-                    Connection con2 = DatabaseConnection.getConnection();
-                    pss = con2.prepareStatement("UPDATE duey_packages SET Checked = false WHERE ReceiverId = ?");
-                    pss.setInt(1, player.getId());
-                    pss.executeUpdate();
-                    pss.close();
-                    con2.close();
-                    
-                    c.announce(MaplePacketCreator.sendDueyParcelNotification(rs.getInt("Type") == 1));
-                } catch (SQLException e) {
-                    e.printStackTrace();
+        try (Connection con = DatabaseConnection.getConnection()) {
+            try (PreparedStatement ps = con.prepareStatement("SELECT Type FROM duey_packages WHERE ReceiverId = ? AND Checked = true ORDER BY Type DESC")) {
+                ps.setInt(1, player.getId());
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        try (Connection con2 = DatabaseConnection.getConnection()) {
+                            try (PreparedStatement pss = con2.prepareStatement("UPDATE duey_packages SET Checked = false WHERE ReceiverId = ?")) {
+                                pss.setInt(1, player.getId());
+                                pss.executeUpdate();
+                            }
+
+                            c.announce(MaplePacketCreator.sendDueyParcelNotification(rs.getInt("Type") == 1));
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (pss != null) {
-                    pss.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
         }
     }
 }

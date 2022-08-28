@@ -95,7 +95,7 @@ public class MaplePlayerNPC extends AbstractMapleMapObject {
         setPosition(new Point(CX, CY));
         setObjectId(oid);
     }
-    
+
     public MaplePlayerNPC(ResultSet rs) {
         try {
             CY = rs.getInt("cy");
@@ -115,20 +115,19 @@ public class MaplePlayerNPC extends AbstractMapleMapObject {
             worldJobRank = rs.getInt("worldjobrank");
             overallJobRank = GameConstants.getOverallJobRankByScriptId(scriptId);
             job = rs.getInt("job");
-            
+
             setPosition(new Point(rs.getInt("x"), CY));
             setObjectId(rs.getInt("id"));
-            
-            Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("SELECT equippos, equipid FROM playernpcs_equip WHERE npcid = ?");
-            ps.setInt(1, rs.getInt("id"));
-            ResultSet rs2 = ps.executeQuery();
-            while (rs2.next()) {
-                equips.put(rs2.getShort("equippos"), rs2.getInt("equipid"));
+
+            try (Connection con = DatabaseConnection.getConnection()) {
+                try (PreparedStatement ps = con.prepareStatement("SELECT equippos, equipid FROM playernpcs_equip WHERE npcid = ?")) {
+                    ps.setInt(1, rs.getInt("id"));
+                    ResultSet rs2 = ps.executeQuery();
+                    while (rs2.next()) {
+                        equips.put(rs2.getShort("equippos"), rs2.getInt("equipid"));
+                    }
+                }
             }
-            rs2.close();
-            ps.close();
-            con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -220,63 +219,65 @@ public class MaplePlayerNPC extends AbstractMapleMapObject {
     }
 
     private static void getRunningMetadata() {
-        try {
-            Connection con = DatabaseConnection.getConnection();
-
+        try (Connection con = DatabaseConnection.getConnection()) {
             getRunningOverallRanks(con);
             getRunningWorldRanks(con);
             getRunningWorldJobRanks(con);
-
-            con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     private static void getRunningOverallRanks(Connection con) throws SQLException {
-        PreparedStatement ps = con.prepareStatement("SELECT max(overallrank) FROM playernpcs");
-        ResultSet rs = ps.executeQuery();
-
-        if(rs.next()) {
-            runningOverallRank.set(rs.getInt(1) + 1);
-        } else {
-            runningOverallRank.set(1);
+        try {
+            try (PreparedStatement ps = con.prepareStatement("SELECT max(overallrank) FROM playernpcs")) {
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        runningOverallRank.set(rs.getInt(1) + 1);
+                    } else {
+                        runningOverallRank.set(1);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
-        rs.close();
-        ps.close();
     }
 
     private static void getRunningWorldRanks(Connection con) throws SQLException {
         int numWorlds = Server.getInstance().getWorldsSize();
-        for(int i = 0; i < numWorlds; i++) {
+        for (int i = 0; i < numWorlds; i++) {
             runningWorldRank.add(new AtomicInteger(1));
         }
-
-        PreparedStatement ps = con.prepareStatement("SELECT world, max(worldrank) FROM playernpcs GROUP BY world ORDER BY world");
-        ResultSet rs = ps.executeQuery();
-
-        while(rs.next()) {
-            int wid = rs.getInt(1);
-            if(wid < numWorlds) {
-                runningWorldRank.get(wid).set(rs.getInt(2) + 1);
+        try {
+            try (PreparedStatement ps = con.prepareStatement("SELECT world, max(worldrank) FROM playernpcs GROUP BY world ORDER BY world")) {
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        int wid = rs.getInt(1);
+                        if (wid < numWorlds) {
+                            runningWorldRank.get(wid).set(rs.getInt(2) + 1);
+                        }
+                    }
+                }
             }
-        }
 
-        rs.close();
-        ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void getRunningWorldJobRanks(Connection con) throws SQLException {
-        PreparedStatement ps = con.prepareStatement("SELECT world, job, max(worldjobrank) FROM playernpcs GROUP BY world, job ORDER BY world, job");
-        ResultSet rs = ps.executeQuery();
-
-        while(rs.next()) {
-            runningWorldJobRank.put(new Pair<>(rs.getInt(1), rs.getInt(2)), new AtomicInteger(rs.getInt(3) + 1));
+        try {
+            try (PreparedStatement ps = con.prepareStatement("SELECT world, job, max(worldjobrank) FROM playernpcs GROUP BY world, job ORDER BY world, job")) {
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        runningWorldJobRank.put(new Pair<>(rs.getInt(1), rs.getInt(2)), new AtomicInteger(rs.getInt(3) + 1));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
-        rs.close();
-        ps.close();
     }
 
     private static int getAndIncrementRunningWorldJobRanks(int world, int job) {
@@ -291,25 +292,22 @@ public class MaplePlayerNPC extends AbstractMapleMapObject {
     
     public static boolean canSpawnPlayerNpc(String name, int mapid) {
         boolean ret = true;
-        
-        try {
-            Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("SELECT name FROM playernpcs WHERE name LIKE ? AND map = ?");
-            ps.setString(1, name);
-            ps.setInt(2, mapid);
-            
-            ResultSet rs = ps.executeQuery();
-            if(rs.next()) {
-                ret = false;
+
+        try (Connection con = DatabaseConnection.getConnection()) {
+            try (PreparedStatement ps = con.prepareStatement("SELECT name FROM playernpcs WHERE name LIKE ? AND map = ?")) {
+                ps.setString(1, name);
+                ps.setInt(2, mapid);
+
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        ret = false;
+                    }
+                }
             }
-            
-            rs.close();
-            ps.close();
-            con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return ret;
     }
     
@@ -320,63 +318,56 @@ public class MaplePlayerNPC extends AbstractMapleMapObject {
         CY = newPos.y;
         FH = map.getFootholds().findBelow(newPos).getId();
         
-        try {
-            Connection con = DatabaseConnection.getConnection();
-            
-            PreparedStatement ps = con.prepareStatement("UPDATE playernpcs SET x = ?, cy = ?, fh = ?, rx0 = ?, rx1 = ? WHERE id = ?");
-            ps.setInt(1, newPos.x);
-            ps.setInt(2, CY);
-            ps.setInt(3, FH);
-            ps.setInt(4, RX0);
-            ps.setInt(5, RX1);
-            ps.setInt(6, getObjectId());
-            ps.executeUpdate();
-            
-            ps.close();
-            con.close();
+        try (Connection con = DatabaseConnection.getConnection()) {
+            try (PreparedStatement ps = con.prepareStatement("UPDATE playernpcs SET x = ?, cy = ?, fh = ?, rx0 = ?, rx1 = ? WHERE id = ?")) {
+                ps.setInt(1, newPos.x);
+                ps.setInt(2, CY);
+                ps.setInt(3, FH);
+                ps.setInt(4, RX0);
+                ps.setInt(5, RX1);
+                ps.setInt(6, getObjectId());
+                ps.executeUpdate();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-    
+
     private static void fetchAvailableScriptIdsFromDb(byte branch, List<Integer> list) {
-        try {
+        try (Connection con = DatabaseConnection.getConnection()) {
             int branchLen = (branch < 26) ? 100 : 400;
             int branchSid = 9900000 + (branch * 100);
             int nextBranchSid = branchSid + branchLen;
             Set<Integer> usedScriptIds = new HashSet<>();
-            
-            Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("SELECT scriptid FROM playernpcs WHERE scriptid >= ? AND scriptid < ? ORDER BY scriptid");
-            ps.setInt(1, branchSid);
-            ps.setInt(2, nextBranchSid);
-            
-            ResultSet rs = ps.executeQuery();
-            while(rs.next()) {
-                usedScriptIds.add(rs.getInt(1));
-            }
-            
-            List<Integer> availables = new ArrayList<>(20);
-            int j = 0;
-            for(int i = branchSid; i < nextBranchSid; i++) {
-                if(!usedScriptIds.contains(i)) {
-                    availables.add(i);
-                    j++;
-                    
-                    if(j == 20) {
-                        break;
+
+            try (PreparedStatement ps = con.prepareStatement("SELECT scriptid FROM playernpcs WHERE scriptid >= ? AND scriptid < ? ORDER BY scriptid")) {
+                ps.setInt(1, branchSid);
+                ps.setInt(2, nextBranchSid);
+
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        usedScriptIds.add(rs.getInt(1));
                     }
                 }
-            }
 
-            rs.close();
-            ps.close();
-            con.close();
-            
-            for(int i = availables.size() - 1; i >= 0; i--) {
-                list.add(availables.get(i));
+                List<Integer> availables = new ArrayList<>(20);
+                int j = 0;
+                for (int i = branchSid; i < nextBranchSid; i++) {
+                    if (!usedScriptIds.contains(i)) {
+                        availables.add(i);
+                        j++;
+
+                        if (j == 20) {
+                            break;
+                        }
+                    }
+                }
+
+                for (int i = availables.size() - 1; i >= 0; i--) {
+                    list.add(availables.get(i));
+                }
             }
-        } catch(SQLException sqle) {
+        } catch (SQLException sqle) {
             sqle.printStackTrace();
         }
     }
@@ -399,103 +390,102 @@ public class MaplePlayerNPC extends AbstractMapleMapObject {
         
         return availablesBranch.remove(availablesBranch.size() - 1);
     }
-    
+
     private static MaplePlayerNPC createPlayerNPCInternal(MapleMap map, Point pos, MapleCharacter chr) {
         int mapId = map.getId();
-        
-        if(!canSpawnPlayerNpc(chr.getName(), mapId)) {
+
+        if (!canSpawnPlayerNpc(chr.getName(), mapId)) {
             return null;
         }
-        
+
         byte branch = GameConstants.getHallOfFameBranch(chr.getJob(), mapId);
-        
         int scriptId = getNextScriptId(branch);
         if (scriptId == -1) {
             return null;
         }
-        
-        if(pos == null) {
-            if(GameConstants.isPodiumHallOfFameMap(map.getId())) {
+
+        if (pos == null) {
+            if (GameConstants.isPodiumHallOfFameMap(map.getId())) {
                 pos = MaplePlayerNPCPodium.getNextPlayerNpcPosition(map);
             } else {
                 pos = MaplePlayerNPCPositioner.getNextPlayerNpcPosition(map);
             }
-            
-            if(pos == null) {
+
+            if (pos == null) {
                 return null;
             }
         }
-        
-        if(ServerConstants.USE_DEBUG) System.out.println("GOT SID " + scriptId + " POS " + pos);
-        
+
+        if (ServerConstants.USE_DEBUG) System.out.println("GOT SID " + scriptId + " POS " + pos);
+
         int worldId = chr.getWorld();
         int jobId = (chr.getJob().getId() / 100) * 100;
-        
+
         MaplePlayerNPC ret;
-        int npcId;
-        try {
-            Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM playernpcs WHERE scriptid = ?");
-            ps.setInt(1, scriptId);
-            ResultSet rs = ps.executeQuery();
-            if (!rs.next()) {   // creates new playernpc if scriptid doesn't exist
-                rs.close();
-                ps.close();
-
-                ps = con.prepareStatement("INSERT INTO playernpcs (name, hair, face, skin, gender, x, cy, world, map, scriptid, dir, fh, rx0, rx1, worldrank, overallrank, worldjobrank, job) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-                ps.setString(1, chr.getName());
-                ps.setInt(2, chr.getHair());
-                ps.setInt(3, chr.getFace());
-                ps.setInt(4, chr.getSkinColor().getId());
-                ps.setInt(5, chr.getGender());
-                ps.setInt(6, pos.x);
-                ps.setInt(7, pos.y);
-                ps.setInt(8, worldId);
-                ps.setInt(9, mapId);
-                ps.setInt(10, scriptId);
-                ps.setInt(11, 1);    // default direction
-                ps.setInt(12, map.getFootholds().findBelow(pos).getId());
-                ps.setInt(13, pos.x + 50);
-                ps.setInt(14, pos.x - 50);
-                ps.setInt(15, runningWorldRank.get(worldId).getAndIncrement());
-                ps.setInt(16, runningOverallRank.getAndIncrement());
-                ps.setInt(17, getAndIncrementRunningWorldJobRanks(worldId, jobId));
-                ps.setInt(18, jobId);
-                
-                ps.executeUpdate();
-
-                rs = ps.getGeneratedKeys();
-                rs.next();
-                npcId = rs.getInt(1);
-                rs.close();
-                ps.close();
-
-                ps = con.prepareStatement("INSERT INTO playernpcs_equip (npcid, equipid, equippos) VALUES (?, ?, ?)");
-                ps.setInt(1, npcId);
-                for (Item equip : chr.getInventory(MapleInventoryType.EQUIPPED)) {
-                    int position = Math.abs(equip.getPosition());
-                    if ((position < 12 && position > 0) || (position > 100 && position < 112)) {
-                        ps.setInt(2, equip.getItemId());
-                        ps.setInt(3, equip.getPosition());
-                        ps.addBatch();
+        try (Connection con = DatabaseConnection.getConnection()) {
+            boolean createNew = false;
+            try (PreparedStatement ps = con.prepareStatement("SELECT * FROM playernpcs WHERE scriptid = ?")) {
+                ps.setInt(1, scriptId);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (!rs.next()) {
+                        createNew = true;
                     }
                 }
-                ps.executeBatch();
-                ps.close();
+            }
 
-                ps = con.prepareStatement("SELECT * FROM playernpcs WHERE id = ?");
-                ps.setInt(1, npcId);
-                rs = ps.executeQuery();
+            if (createNew) {
+                final int npcId;
+                try (PreparedStatement ps = con.prepareStatement("INSERT INTO playernpcs (name, hair, face, skin, gender, x, cy, world, map, scriptid, dir, fh, rx0, rx1, worldrank, overallrank, worldjobrank, job) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
+                    ps.setString(1, chr.getName());
+                    ps.setInt(2, chr.getHair());
+                    ps.setInt(3, chr.getFace());
+                    ps.setInt(4, chr.getSkinColor().getId());
+                    ps.setInt(5, chr.getGender());
+                    ps.setInt(6, pos.x);
+                    ps.setInt(7, pos.y);
+                    ps.setInt(8, worldId);
+                    ps.setInt(9, mapId);
+                    ps.setInt(10, scriptId);
+                    ps.setInt(11, 1);    // default direction
+                    ps.setInt(12, map.getFootholds().findBelow(pos).getId());
+                    ps.setInt(13, pos.x + 50);
+                    ps.setInt(14, pos.x - 50);
+                    ps.setInt(15, runningWorldRank.get(worldId).getAndIncrement());
+                    ps.setInt(16, runningOverallRank.getAndIncrement());
+                    ps.setInt(17, getAndIncrementRunningWorldJobRanks(worldId, jobId));
+                    ps.setInt(18, jobId);
 
-                rs.next();
-                ret = new MaplePlayerNPC(rs);
+                    ps.executeUpdate();
+
+                    try (ResultSet rs = ps.getGeneratedKeys()) {
+                        rs.next();
+                        npcId = rs.getInt(1);
+                    }
+                }
+
+                try (PreparedStatement ps = con.prepareStatement("INSERT INTO playernpcs_equip (npcid, equipid, equippos) VALUES (?, ?, ?)")) {
+                    ps.setInt(1, npcId);
+                    for (Item equip : chr.getInventory(MapleInventoryType.EQUIPPED)) {
+                        int position = Math.abs(equip.getPosition());
+                        if ((position < 12 && position > 0) || (position > 100 && position < 112)) {
+                            ps.setInt(2, equip.getItemId());
+                            ps.setInt(3, equip.getPosition());
+                            ps.addBatch();
+                        }
+                    }
+                    ps.executeBatch();
+                }
+
+                try (PreparedStatement ps = con.prepareStatement("SELECT * FROM playernpcs WHERE id = ?")) {
+                    ps.setInt(1, npcId);
+                    try (ResultSet rs = ps.executeQuery()) {
+                        rs.next();
+                        ret = new MaplePlayerNPC(rs);
+                    }
+                }
             } else {
                 ret = null;
             }
-
-            rs.close();
-            ps.close();
-            con.close();
 
             return ret;
         } catch (SQLException e) {

@@ -56,8 +56,7 @@ public class PnpcRemoveCommand extends Command {
         int ypos = pos.y;
         
         List<Pair<Integer, Pair<Integer, Integer>>> toRemove = new LinkedList<>();
-        try {
-            Connection con = DatabaseConnection.getConnection();
+        try (Connection con = DatabaseConnection.getConnection()) {
             PreparedStatement ps;
             
             if (npcId > -1) {
@@ -79,20 +78,17 @@ public class PnpcRemoveCommand extends Command {
                 ps.setInt(7, ypos + 50);
             }
             
-            ResultSet rs = ps.executeQuery();
-            while (true) {
-                rs.beforeFirst();
-                if (!rs.next()) {
-                    break;
+            try (ResultSet rs = ps.executeQuery()) {
+                while (true) {
+                    rs.beforeFirst();
+                    if (!rs.next()) {
+                        break;
+                    }
+
+                    toRemove.add(new Pair<>(rs.getInt("life"), new Pair<>(rs.getInt("x"), rs.getInt("y"))));
+                    rs.deleteRow();
                 }
-                
-                toRemove.add(new Pair<>(rs.getInt("life"), new Pair<>(rs.getInt("x"), rs.getInt("y"))));
-                rs.deleteRow();
             }
-            
-            rs.close();
-            ps.close();
-            con.close();
         } catch (SQLException e) {
             e.printStackTrace();
             player.dropMessage(5, "Failed to remove pNPC from the database.");

@@ -80,19 +80,16 @@ public final class ReportHandler extends AbstractMaplePacketHandler {
 	}
 
 	public void addReport(int reporterid, int victimid, int reason, String description, String chatlog) {
-		Connection con;
-		try {
-                        con = DatabaseConnection.getConnection();
-			PreparedStatement ps = con.prepareStatement("INSERT INTO reports (reporttime, reporterid, victimid, reason, chatlog, description) VALUES (now(), ?, ?, ?, ?, ?)");
-			ps.setInt(1, reporterid);
-			ps.setInt(2, victimid);
-			ps.setInt(3, reason);
-			ps.setString(4, chatlog);
-			ps.setString(5, description);
-			ps.addBatch();
-			ps.executeBatch();
-			ps.close();
-                        con.close();
+           try (Connection con = DatabaseConnection.getConnection()) {
+			try (PreparedStatement ps = con.prepareStatement("INSERT INTO reports (reporttime, reporterid, victimid, reason, chatlog, description) VALUES (now(), ?, ?, ?, ?, ?)")) {
+				ps.setInt(1, reporterid);
+				ps.setInt(2, victimid);
+				ps.setInt(3, reason);
+				ps.setString(4, chatlog);
+				ps.setString(5, description);
+				ps.addBatch();
+				ps.executeBatch();
+			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		}

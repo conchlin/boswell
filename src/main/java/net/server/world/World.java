@@ -587,16 +587,13 @@ public class World {
     }
 
     public void setOfflineGuildStatus(int guildid, int guildrank, int cid) {
-        try {
-            Connection con = DatabaseConnection.getConnection();
+        try (Connection con = DatabaseConnection.getConnection()) {
             try (PreparedStatement ps = con.prepareStatement("UPDATE characters SET guildid = ?, guildrank = ? WHERE id = ?")) {
                 ps.setInt(1, guildid);
                 ps.setInt(2, guildrank);
                 ps.setInt(3, cid);
                 ps.execute();
             }
-            
-            con.close();
         } catch (SQLException se) {
             se.printStackTrace();
         }
@@ -1718,18 +1715,13 @@ public class World {
     
     private void setPlayerNpcMapData(int mapid, int step, int podium, boolean silent) {
         if(!silent) {
-            try {
-                Connection con = DatabaseConnection.getConnection();
-                
+            try (Connection con = DatabaseConnection.getConnection()) {
                 if(step != -1) {
                     executePlayerNpcMapDataUpdate(con, false, pnpcStep, step, id, mapid);
                 }
-                
                 if(podium != -1) {
                     executePlayerNpcMapDataUpdate(con, true, pnpcPodium, podium, id, mapid);
                 }
-                
-                con.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -1838,10 +1830,9 @@ public class World {
     }
     
     private static Pair<Integer, Pair<Integer, Integer>> getRelationshipCoupleFromDb(int id, boolean usingMarriageId) {
-        try {
-            Connection con = DatabaseConnection.getConnection();
+        try (Connection con = DatabaseConnection.getConnection()) {
             Integer mid = null, hid = null, wid = null;
-            
+
             PreparedStatement ps;
             if(usingMarriageId) {
                 ps = con.prepareStatement("SELECT * FROM marriages WHERE marriageid = ?");
@@ -1852,16 +1843,13 @@ public class World {
                 ps.setInt(2, id);
             }
             
-            ResultSet rs = ps.executeQuery();
-            if(rs.next()) {
-                mid = rs.getInt("marriageid");
-                hid = rs.getInt("husbandid");
-                wid = rs.getInt("wifeid");
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    mid = rs.getInt("marriageid");
+                    hid = rs.getInt("husbandid");
+                    wid = rs.getInt("wifeid");
+                }
             }
-            
-            rs.close();
-            ps.close();
-            con.close();
             
             return (mid == null) ? null : new Pair<>(mid, new Pair<>(hid, wid));
         } catch (SQLException se) {
@@ -1876,23 +1864,21 @@ public class World {
         pushRelationshipCouple(new Pair<>(ret, new Pair<>(groomId, brideId)));
         return ret;
     }
-    
+
     private static int addRelationshipToDb(int groomId, int brideId) {
-        try {
-            Connection con = DatabaseConnection.getConnection();
+        int ret;
+        try (Connection con = DatabaseConnection.getConnection()) {
+            try (PreparedStatement ps = con.prepareStatement("INSERT INTO marriages (husbandid, wifeid) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS)) {
+                ps.setInt(1, groomId);
+                ps.setInt(2, brideId);
+                ps.executeUpdate();
 
-            PreparedStatement ps = con.prepareStatement("INSERT INTO marriages (husbandid, wifeid) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
-            ps.setInt(1, groomId);
-            ps.setInt(2, brideId);
-            ps.executeUpdate();
+                try (ResultSet rs = ps.getGeneratedKeys()) {
+                    rs.next();
+                    ret = rs.getInt(1);
+                }
+            }
 
-            ResultSet rs = ps.getGeneratedKeys();
-            rs.next();
-            int ret = rs.getInt(1);
-            
-            rs.close();
-            ps.close();
-            con.close();
             return ret;
         } catch (SQLException se) {
             se.printStackTrace();
@@ -1910,14 +1896,11 @@ public class World {
     }
     
     private static void deleteRelationshipFromDb(int playerId) {
-        try {
-            Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("DELETE FROM marriages WHERE marriageid = ?");
-            ps.setInt(1, playerId);
-            ps.executeUpdate();
-            
-            ps.close();
-            con.close();
+        try (Connection con = DatabaseConnection.getConnection()) {
+            try (PreparedStatement ps = con.prepareStatement("DELETE FROM marriages WHERE marriageid = ?")) {
+                ps.setInt(1, playerId);
+                ps.executeUpdate();
+            }
         } catch (SQLException se) {
             se.printStackTrace();
         }

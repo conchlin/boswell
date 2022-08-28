@@ -51,18 +51,20 @@ public class MapleRing implements Comparable<MapleRing> {
     }
 
     public static MapleRing loadFromDb(int ringId) {
-        try {
-            MapleRing ret = null;
-            Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM rings WHERE id = ?"); // Get ring details..
-            ps.setInt(1, ringId);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                ret = new MapleRing(ringId, rs.getInt("partnerRingId"), rs.getInt("partnerChrId"), rs.getInt("itemid"), rs.getString("partnerName"));
+        MapleRing ret = null;
+        try (Connection con = DatabaseConnection.getConnection()) {
+            try (PreparedStatement ps = con.prepareStatement("SELECT * FROM rings WHERE id = ?")) { // Get ring details..
+                ps.setInt(1, ringId);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        ret = new MapleRing(ringId, rs.getInt("partnerRingId"),
+                                rs.getInt("partnerChrId"),
+                                rs.getInt("itemid"),
+                                rs.getString("partnerName"));
+                    }
+                }
             }
-            rs.close();
-            ps.close();
-            con.close();
+
             return ret;
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -71,49 +73,43 @@ public class MapleRing implements Comparable<MapleRing> {
     }
 
     public static void removeRing(final MapleRing ring) {
-        try {
-            if (ring == null) {
-                return;
+        if (ring == null) {
+            return;
+        }
+
+        try (Connection con = DatabaseConnection.getConnection()) {
+
+            try (PreparedStatement ps = con.prepareStatement("DELETE FROM rings WHERE id=?")) {
+                ps.setInt(1, ring.getRingId());
+                ps.addBatch();
+
+                ps.setInt(1, ring.getPartnerRingId());
+                ps.addBatch();
+
+                ps.executeBatch();
             }
-            
-            Connection con = DatabaseConnection.getConnection();
-            
-            PreparedStatement ps = con.prepareStatement("DELETE FROM rings WHERE id=?");
-            ps.setInt(1, ring.getRingId());
-            ps.addBatch();
-            
-            ps.setInt(1, ring.getPartnerRingId());
-            ps.addBatch();
-            
-            ps.executeBatch();
-            ps.close();
-            
-            ps = con.prepareStatement("UPDATE inventory_equipment SET ringid=-1 WHERE ringid=?");
-            ps.setInt(1, ring.getRingId());
-            ps.addBatch();
-            
-            ps.setInt(1, ring.getPartnerRingId());
-            ps.addBatch();
-            
-            ps.executeBatch();
-            ps.close();
-            
-            con.close();
+            try (PreparedStatement ps = con.prepareStatement("UPDATE inventory_equipment SET ringid=-1 WHERE ringid=?")) {
+                ps.setInt(1, ring.getRingId());
+                ps.addBatch();
+
+                ps.setInt(1, ring.getPartnerRingId());
+                ps.addBatch();
+
+                ps.executeBatch();
+            }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
-    
-    public static Pair<Integer, Integer> createRing(int itemid, final MapleCharacter partner1, final MapleCharacter partner2) {
-        try {
-            if (partner1 == null) {
-                return new Pair<>(-3, -3);
-            } else if (partner2 == null) {
-                return new Pair<>(-2, -2);
-            }
-            
-            Connection con = DatabaseConnection.getConnection();
 
+    public static Pair<Integer, Integer> createRing(int itemid, final MapleCharacter partner1, final MapleCharacter partner2) {
+        if (partner1 == null) {
+            return new Pair<>(-3, -3);
+        } else if (partner2 == null) {
+            return new Pair<>(-2, -2);
+        }
+
+        try (Connection con = DatabaseConnection.getConnection()) {
             Statements.Insert statement = new Statements.Insert("rings");
             statement.add("itemid", itemid);
             statement.add("partnerchrid", partner2.getId());
@@ -134,7 +130,6 @@ public class MapleRing implements Comparable<MapleRing> {
             update.cond("id", ringid1);
             update.execute(con);
 
-            con.close();
             return new Pair<>(ringid1, ringid2);
         } catch (SQLException ex) {
             ex.printStackTrace();

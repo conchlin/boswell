@@ -43,21 +43,17 @@ public class UnBanCommand extends Command {
             player.yellowMessage("Syntax: !unban <playername>");
             return;
         }
-
-        try {
-            Connection con = DatabaseConnection.getConnection();
-            int aid = MapleCharacter.getAccountIdByName(params[0]);
-
-            PreparedStatement p = con.prepareStatement("UPDATE accounts SET banned = false WHERE id = " + aid);
-            p.executeUpdate();
-
-            p = con.prepareStatement("DELETE FROM ip_bans WHERE aid = " + aid);
-            p.executeUpdate();
-
-            p = con.prepareStatement("DELETE FROM mac_bans WHERE aid = " + aid);
-            p.executeUpdate();
-
-            con.close();
+        int aid = MapleCharacter.getAccountIdByName(params[0]);
+        try (Connection con = DatabaseConnection.getConnection()) {
+            try (PreparedStatement p = con.prepareStatement("UPDATE accounts SET banned = false WHERE id = " + aid)) {
+                p.executeUpdate();
+            }
+            try (PreparedStatement p = con.prepareStatement("DELETE FROM ip_bans WHERE aid = " + aid)) {
+                p.executeUpdate();
+            }
+            try (PreparedStatement p = con.prepareStatement("DELETE FROM mac_bans WHERE aid = " + aid)) {
+                p.executeUpdate();
+            }
         } catch (Exception e) {
             e.printStackTrace();
             player.message("Failed to unban " + params[0]);

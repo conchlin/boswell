@@ -75,22 +75,21 @@ public class MaplePet extends Item {
     }
 
     public static MaplePet loadFromDb(int itemid, short position, int petid) {
-        try {
+        try (Connection con = DatabaseConnection.getConnection()) {
             MaplePet ret = new MaplePet(itemid, position, petid);
-            Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("SELECT name, level, closeness, fullness, summoned, flag FROM pets WHERE petid = ?"); // Get pet details..
-            ps.setInt(1, petid);
-            ResultSet rs = ps.executeQuery();
-            rs.next();
-            ret.setName(rs.getString("name"));
-            ret.setCloseness(Math.min(rs.getInt("closeness"), 30000));
-            ret.setLevel((byte) Math.min(rs.getByte("level"), 30));
-            ret.setFullness(Math.min(rs.getInt("fullness"), 100));
-            ret.setSummoned(rs.getBoolean("summoned"));
-            ret.setPetFlag(rs.getInt("flag"));
-            rs.close();
-            ps.close();
-            con.close();
+            try (PreparedStatement ps = con.prepareStatement("SELECT name, level, closeness, fullness, summoned, flag FROM pets WHERE petid = ?")) { // Get pet details..
+                ps.setInt(1, petid);
+                try (ResultSet rs = ps.executeQuery()) {
+                    rs.next();
+                    ret.setName(rs.getString("name"));
+                    ret.setCloseness(Math.min(rs.getInt("closeness"), 30000));
+                    ret.setLevel((byte) Math.min(rs.getByte("level"), 30));
+                    ret.setFullness(Math.min(rs.getInt("fullness"), 100));
+                    ret.setSummoned(rs.getBoolean("summoned"));
+                    ret.setPetFlag(rs.getInt("flag"));
+                }
+            }
+
             return ret;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -99,13 +98,9 @@ public class MaplePet extends Item {
     }
 
     public static void deleteFromDb(MapleCharacter owner, int petid) {
-        try {
-            Connection con = DatabaseConnection.getConnection();
-
+        try (Connection con = DatabaseConnection.getConnection()) {
             Statements.Delete.from("pets").where("petid", petid).execute(con);
             Statements.Delete.from("pet_ignores").where("petid", petid).execute(con);
-
-            con.close();
             owner.resetExcluded(petid);
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -113,8 +108,7 @@ public class MaplePet extends Item {
     }
 
     public void saveToDb() {
-        try {
-            Connection con = DatabaseConnection.getConnection();
+        try (Connection con = DatabaseConnection.getConnection()) {
 
             Statements.Update statement = Statements.Update("pets");
             statement.cond("petid", getUniqueId());
@@ -126,15 +120,13 @@ public class MaplePet extends Item {
             statement.set("flag", getPetFlag());
 
             statement.execute(con);
-            con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     public static int createPet(int itemid) {
-        try {
-            Connection con = DatabaseConnection.getConnection();
+        try (Connection con = DatabaseConnection.getConnection()) {
 
             Statements.Insert statement = new Statements.Insert("pets");
             statement.add("name", MapleItemInformationProvider.getInstance().getName(itemid));
@@ -145,7 +137,6 @@ public class MaplePet extends Item {
             statement.add("flag", 0);
 
             int ret = statement.execute(con);
-            con.close();
             return ret;
         } catch (SQLException e) {
             e.printStackTrace();

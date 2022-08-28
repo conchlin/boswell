@@ -82,8 +82,7 @@ public class ReactorScriptManager extends AbstractScriptManager {
         List<ReactorDropEntry> ret = drops.get(rid);
         if (ret == null) {
             ret = new LinkedList<>();
-            try {
-                Connection con = DatabaseConnection.getConnection();
+            try (Connection con = DatabaseConnection.getConnection()) {
                 try (PreparedStatement ps = con.prepareStatement("SELECT itemid, chance, questid FROM reactor_drops WHERE reactorid = ? AND chance >= 0")) {
                     ps.setInt(1, rid);
                     try (ResultSet rs = ps.executeQuery()) {
@@ -92,8 +91,6 @@ public class ReactorScriptManager extends AbstractScriptManager {
                         }
                     }
                 }
-                
-                con.close();
             } catch (Throwable e) {
                 FilePrinter.printError(FilePrinter.REACTOR + rid + ".txt", e);
             }

@@ -38,6 +38,8 @@ import java.util.*;
 import java.util.concurrent.locks.Lock;
 import net.database.Statements;
 
+import javax.xml.crypto.Data;
+
 /*
  * @author Flav
  */
@@ -73,42 +75,30 @@ public class CashShop {
             factory = ItemFactory.CASH_OVERALL;
         }
 
-        Connection con = DatabaseConnection.getConnection();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = con.prepareStatement("SELECT nxCredit, maplePoint, nxPrepaid FROM accounts WHERE id = ?");
-            ps.setInt(1, accountId);
-            rs = ps.executeQuery();
-
-            if (rs.next()) {
-                this.nxCredit = rs.getInt("nxCredit");
-                this.maplePoint = rs.getInt("maplePoint");
-                this.nxPrepaid = rs.getInt("nxPrepaid");
+        try (Connection con = DatabaseConnection.getConnection()) {
+            try (PreparedStatement ps = con.prepareStatement("SELECT nxCredit, maplePoint, nxPrepaid FROM accounts WHERE id = ?")) {
+                ps.setInt(1, accountId);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        this.nxCredit = rs.getInt("nxCredit");
+                        this.maplePoint = rs.getInt("maplePoint");
+                        this.nxPrepaid = rs.getInt("nxPrepaid");
+                    }
+                }
             }
-
-            rs.close();
-            ps.close();
 
             for (Pair<Item, MapleInventoryType> item : factory.loadItems(accountId, false)) {
                 inventory.add(item.getLeft());
             }
 
-            ps = con.prepareStatement("SELECT sn FROM wish_lists WHERE charid = ?");
-            ps.setInt(1, characterId);
-            rs = ps.executeQuery();
-
-            while (rs.next()) {
-                wishList.add(rs.getInt("sn"));
+            try (PreparedStatement ps = con.prepareStatement("SELECT sn FROM wish_lists WHERE charid = ?")) {
+                ps.setInt(1, characterId);
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        wishList.add(rs.getInt("sn"));
+                    }
+                }
             }
-
-            rs.close();
-            ps.close();
-            con.close();
-        } finally {
-            if (ps != null && !ps.isClosed()) ps.close();
-            if (rs != null && !rs.isClosed()) rs.close();
-            if (con != null && !con.isClosed()) con.close();
         }
     }
 
@@ -231,41 +221,38 @@ public class CashShop {
 
     public List<Pair<Item, String>> loadGifts() {
         List<Pair<Item, String>> gifts = new ArrayList<>();
-        Connection con = null;
 
-        try {
-            con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM gifts WHERE \"to\" = ?");
-            ps.setInt(1, characterId);
-            ResultSet rs = ps.executeQuery();
+        try (Connection con = DatabaseConnection.getConnection()) {
+            try (PreparedStatement ps = con.prepareStatement("SELECT * FROM gifts WHERE \"to\" = ?")) {
+                ps.setInt(1, characterId);
+                try (ResultSet rs = ps.executeQuery()) {
 
-            while (rs.next()) {
-                notes++;
-                CashItem cItem = CashItemFactory.getItem(rs.getInt("sn"));
-                Item item = cItem.toItem();
-                Equip equip = null;
-                item.setGiftFrom(rs.getString("from"));
-                if (item.getInventoryType().equals(MapleInventoryType.EQUIP)) {
-                    equip = (Equip) item;
-                    equip.setRingId(rs.getInt("ringid"));
-                    gifts.add(new Pair<>(equip, rs.getString("message")));
-                } else
-                    gifts.add(new Pair<>(item, rs.getString("message")));
+                    while (rs.next()) {
+                        notes++;
+                        CashItem cItem = CashItemFactory.getItem(rs.getInt("sn"));
+                        Item item = cItem.toItem();
+                        Equip equip = null;
+                        item.setGiftFrom(rs.getString("from"));
+                        if (item.getInventoryType().equals(MapleInventoryType.EQUIP)) {
+                            equip = (Equip) item;
+                            equip.setRingId(rs.getInt("ringid"));
+                            gifts.add(new Pair<>(equip, rs.getString("message")));
+                        } else
+                            gifts.add(new Pair<>(item, rs.getString("message")));
 
-                if (CashItemFactory.isPackage(cItem.getItemId())) { //Packages never contains a ring
-                    for (Item packageItem : CashItemFactory.getPackage(cItem.getItemId())) {
-                        packageItem.setGiftFrom(rs.getString("from"));
-                        addToInventory(packageItem);
+                        if (CashItemFactory.isPackage(cItem.getItemId())) { //Packages never contains a ring
+                            for (Item packageItem : CashItemFactory.getPackage(cItem.getItemId())) {
+                                packageItem.setGiftFrom(rs.getString("from"));
+                                addToInventory(packageItem);
+                            }
+                        } else {
+                            addToInventory(equip == null ? item : equip);
+                        }
                     }
-                } else {
-                    addToInventory(equip == null ? item : equip);
                 }
             }
 
-            rs.close();
-            ps.close();
             Statements.Delete.from("gifts").where("\"to\"", characterId).execute(con);
-            con.close();
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         }

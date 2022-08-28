@@ -59,29 +59,22 @@ public class MapleAlliance {
         this.name = name;
         allianceId = id;
         String[] ranks = {"Master", "Jr. Master", "Member", "Member", "Member"};
-        for (int i = 0; i < 5; i++) {
-            rankTitles[i] = ranks[i];
-        }
+        System.arraycopy(ranks, 0, rankTitles, 0, 5);
     }
-    
+
     public static boolean canBeUsedAllianceName(String name) {
         if (name.contains(" ") || name.length() > 12) {
             return false;
         }
-        try {
-            ResultSet rs;
-            Connection con = DatabaseConnection.getConnection();
+        try (Connection con = DatabaseConnection.getConnection()) {
             try (PreparedStatement ps = con.prepareStatement("SELECT name FROM alliance WHERE name = ?")) {
                 ps.setString(1, name);
-                rs = ps.executeQuery();
-                if (rs.next()) {
-                    ps.close();
-                    rs.close();
-                    return false;
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return false;
+                    }
                 }
             }
-            rs.close();
-            con.close();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -147,39 +140,32 @@ public class MapleAlliance {
 
         return alliance;
     }
-    
+
     public static MapleAlliance createAllianceOnDb(List<Integer> guilds, String name) {
         // will create an alliance, where the first guild listed is the leader and the alliance name MUST BE already checked for unicity.
-        
         int id = -1;
-        try {
-            Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("INSERT INTO alliance (name) VALUES (?)", PreparedStatement.RETURN_GENERATED_KEYS);
-            
-            ps.setString(1, name);
-            ps.executeUpdate();
-            try (ResultSet rs = ps.getGeneratedKeys()) {
-                rs.next();
-                id = rs.getInt(1);
-            }
-            
-            for(int i = 0; i < guilds.size(); i++) {
-                int guild = guilds.get(i);
-                
-                ps = con.prepareStatement("INSERT INTO allianceguilds (allianceid, guildid) VALUES (?, ?)");
-                ps.setInt(1, id);
-                ps.setInt(2, guild);
+        try (Connection con = DatabaseConnection.getConnection()) {
+            try (PreparedStatement ps = con.prepareStatement("INSERT INTO alliance (name) VALUES (?)", PreparedStatement.RETURN_GENERATED_KEYS)) {
+                ps.setString(1, name);
                 ps.executeUpdate();
-                ps.close();
+                try (ResultSet rs = ps.getGeneratedKeys()) {
+                    rs.next();
+                    id = rs.getInt(1);
+                }
+
+                for (int guild : guilds) {
+                    try (PreparedStatement psg = con.prepareStatement("INSERT INTO allianceguilds (allianceid, guildid) VALUES (?, ?)")) {
+                        psg.setInt(1, id);
+                        psg.setInt(2, guild);
+                        psg.executeUpdate();
+                    }
+                }
             }
-            
-            ps.close();
-            con.close();
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
-        
+
         return (new MapleAlliance(name, id));
     }
 
@@ -188,44 +174,37 @@ public class MapleAlliance {
             return null;
         }
         MapleAlliance alliance = new MapleAlliance(null, -1);
-        try {
-            Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM alliance WHERE id = ?");
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-            if (!rs.next()) {
-                rs.close();
-                ps.close();
-                con.close();
-                return null;
+        try (Connection con = DatabaseConnection.getConnection()) {
+            try (PreparedStatement ps = con.prepareStatement("SELECT * FROM alliance WHERE id = ?")) {
+                ps.setInt(1, id);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (!rs.next()) {
+                        return null;
+                    }
+
+                    alliance.allianceId = id;
+                    alliance.capacity = rs.getInt("capacity");
+                    alliance.name = rs.getString("name");
+                    alliance.notice = rs.getString("notice");
+
+                    String ranks[] = new String[5];
+                    ranks[0] = rs.getString("rank1");
+                    ranks[1] = rs.getString("rank2");
+                    ranks[2] = rs.getString("rank3");
+                    ranks[3] = rs.getString("rank4");
+                    ranks[4] = rs.getString("rank5");
+                    alliance.rankTitles = ranks;
+                }
             }
-            alliance.allianceId = id;
-            alliance.capacity = rs.getInt("capacity");
-            alliance.name = rs.getString("name");
-            alliance.notice = rs.getString("notice");
-            
-            String ranks[] = new String[5];
-            ranks[0] = rs.getString("rank1");
-            ranks[1] = rs.getString("rank2");
-            ranks[2] = rs.getString("rank3");
-            ranks[3] = rs.getString("rank4");
-            ranks[4] = rs.getString("rank5");
-            alliance.rankTitles = ranks;
-            
-            ps.close();
-            rs.close();
-            
-            ps = con.prepareStatement("SELECT guildid FROM allianceguilds WHERE allianceid = ?");
-            ps.setInt(1, id);
-            rs = ps.executeQuery();
-            
-            while(rs.next()) {
-                alliance.addGuild(rs.getInt("guildid"));
+
+            try (PreparedStatement ps = con.prepareStatement("SELECT guildid FROM allianceguilds WHERE allianceid = ?")) {
+                ps.setInt(1, id);
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        alliance.addGuild(rs.getInt("guildid"));
+                    }
+                }
             }
-            
-            ps.close();
-            rs.close();
-            con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -233,38 +212,30 @@ public class MapleAlliance {
     }
 
     public void saveToDB() {
-        try {
-            Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("UPDATE alliance SET capacity = ?, notice = ?, rank1 = ?, rank2 = ?, rank3 = ?, rank4 = ?, rank5 = ? WHERE id = ?");
-            ps.setInt(1, this.capacity);
-            ps.setString(2, this.notice);
-            
-            ps.setString(3, this.rankTitles[0]);
-            ps.setString(4, this.rankTitles[1]);
-            ps.setString(5, this.rankTitles[2]);
-            ps.setString(6, this.rankTitles[3]);
-            ps.setString(7, this.rankTitles[4]);
-            
-            ps.setInt(8, this.allianceId);
-            ps.executeUpdate();
-            ps.close();
-            
-            ps = con.prepareStatement("DELETE FROM allianceguilds WHERE allianceid = ?");
-            ps.setInt(1, this.allianceId);
-            ps.executeUpdate();
-            ps.close();
-            
-            for(int i = 0; i < guilds.size(); i++) {
-                int guild = guilds.get(i);
-                
-                ps = con.prepareStatement("INSERT INTO allianceguilds (allianceid, guildid) VALUES (?, ?)");
-                ps.setInt(1, this.allianceId);
-                ps.setInt(2, guild);
+            try (Connection con = DatabaseConnection.getConnection()) {
+            try (PreparedStatement ps = con.prepareStatement("UPDATE alliance SET capacity = ?, notice = ?, rank1 = ?, rank2 = ?, rank3 = ?, rank4 = ?, rank5 = ? WHERE id = ?")) {
+                ps.setInt(1, this.capacity);
+                ps.setString(2, this.notice);
+                ps.setString(3, this.rankTitles[0]);
+                ps.setString(4, this.rankTitles[1]);
+                ps.setString(5, this.rankTitles[2]);
+                ps.setString(6, this.rankTitles[3]);
+                ps.setString(7, this.rankTitles[4]);
+                ps.setInt(8, this.allianceId);
                 ps.executeUpdate();
-                ps.close();
             }
             
-            con.close();
+            try (PreparedStatement ps = con.prepareStatement("DELETE FROM allianceguilds WHERE allianceid = ?")){
+                    ps.setInt(1, this.allianceId);
+                    ps.executeUpdate();
+                }
+                for (int guild : guilds) {
+                    try (PreparedStatement ps = con.prepareStatement("INSERT INTO allianceguilds (allianceid, guildid) VALUES (?, ?)")) {
+                        ps.setInt(1, this.allianceId);
+                        ps.setInt(2, guild);
+                        ps.executeUpdate();
+                    }
+                }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -272,7 +243,6 @@ public class MapleAlliance {
     
     public static void disbandAlliance(int allianceId) {
         try (Connection con = DatabaseConnection.getConnection()) {
-
             Statements.Delete.from("alliance").where("id", allianceId).execute(con);
             Statements.Delete.from("allianceguilds").where("allianceid", allianceId).execute(con);
 

@@ -119,33 +119,29 @@ public class MapleMapFactory {
     }
 
     private void loadLifeFromDb(MapleMap map) {
-        try {
-            Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM plife WHERE map = ? and world = ?");
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement("SELECT * FROM plife WHERE map = ? and world = ?");) {
             ps.setInt(1, map.getId());
             ps.setInt(2, map.getWorld());
 
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                int id = rs.getInt("life");
-                String type = rs.getString("type");
-                int cy = rs.getInt("cy");
-                int f = rs.getInt("f");
-                int fh = rs.getInt("fh");
-                int rx0 = rs.getInt("rx0");
-                int rx1 = rs.getInt("rx1");
-                int x = rs.getInt("x");
-                int y = rs.getInt("y");
-                int hide = rs.getInt("hide");
-                int mobTime = rs.getInt("mobtime");
-                int team = rs.getInt("team");
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    int id = rs.getInt("life");
+                    String type = rs.getString("type");
+                    int cy = rs.getInt("cy");
+                    int f = rs.getInt("f");
+                    int fh = rs.getInt("fh");
+                    int rx0 = rs.getInt("rx0");
+                    int rx1 = rs.getInt("rx1");
+                    int x = rs.getInt("x");
+                    int y = rs.getInt("y");
+                    int hide = rs.getInt("hide");
+                    int mobTime = rs.getInt("mobtime");
+                    int team = rs.getInt("team");
 
-                loadLifeRaw(map, id, type, cy, f, fh, rx0, rx1, x, y, hide, mobTime, team);
+                    loadLifeRaw(map, id, type, cy, f, fh, rx0, rx1, x, y, hide, mobTime, team);
+                }
             }
-
-            rs.close();
-            ps.close();
-            con.close();
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         }
@@ -291,8 +287,7 @@ public class MapleMapFactory {
             map.setSeats(seats);
         }
         if (event == null) {
-            try {
-                Connection con = DatabaseConnection.getConnection();
+            try (Connection con = DatabaseConnection.getConnection()) {
                 try (PreparedStatement ps = con.prepareStatement("SELECT * FROM playernpcs WHERE map = ? AND world = ?")) {
                     ps.setInt(1, omapid);
                     ps.setInt(2, world);
@@ -302,7 +297,6 @@ public class MapleMapFactory {
                         }
                     }
                 }
-                con.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }

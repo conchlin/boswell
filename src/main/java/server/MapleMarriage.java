@@ -118,7 +118,7 @@ public class MapleMarriage extends EventInstanceManager {
             } else if (chr.getId() == brideid) {
                 groom = false;
             }
-        } catch (NumberFormatException nfe) {}
+        } catch (NumberFormatException ignored) {}
 
         return groom;
     }
@@ -126,11 +126,11 @@ public class MapleMarriage extends EventInstanceManager {
     public static boolean claimGiftItems(MapleClient c, MapleCharacter chr) {
         List<Item> gifts = loadGiftItemsFromDb(c, chr.getId());
         if (MapleInventory.checkSpot(chr, gifts)) {
-            try {
-                Connection con = DatabaseConnection.getConnection();
-                ItemFactory.MARRIAGE_GIFTS.saveItems(new LinkedList<Pair<Item, MapleInventoryType>>(), chr.getId(), con);
-                con.close();
-            } catch (SQLException sqle) {}
+            try (Connection con = DatabaseConnection.getConnection()) {
+                ItemFactory.MARRIAGE_GIFTS.saveItems(new LinkedList<>(), chr.getId(), con);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
 
             for (Item item : gifts) {
                 MapleInventoryManipulator.addFromDrop(chr.getClient(), item, false);
@@ -164,7 +164,7 @@ public class MapleMarriage extends EventInstanceManager {
     public void saveGiftItemsToDb(MapleClient c, boolean groom, int cid) {
         MapleMarriage.saveGiftItemsToDb(c, getGiftItems(c, groom), cid);
     }
-    
+
     public static void saveGiftItemsToDb(MapleClient c, List<Item> giftItems, int cid) {
         List<Pair<Item, MapleInventoryType>> items = new LinkedList<>();
         for (Item it : giftItems) {
@@ -173,12 +173,10 @@ public class MapleMarriage extends EventInstanceManager {
 
         if (c.tryacquireClient()) {
             try {
-                try {
-                    Connection con = DatabaseConnection.getConnection();
+                try (Connection con = DatabaseConnection.getConnection()) {
                     ItemFactory.MARRIAGE_GIFTS.saveItems(items, cid, con);
-                    con.close();
-                } catch (SQLException sqle) {
-                    sqle.printStackTrace();
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
             } finally {
                 c.releaseClient();

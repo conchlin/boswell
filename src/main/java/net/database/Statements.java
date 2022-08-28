@@ -78,12 +78,11 @@ public class Statements {
 
             if (ps.executeUpdate() <= 0) return -1;
 
-            ResultSet rs = ps.getGeneratedKeys();
-            if (rs.next()) {
-                int ret = rs.getInt(1);
-                rs.close();
-                ps.close();
-                return ret;
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    int ret = rs.getInt(1);
+                    return ret;
+                }
             }
 
             return -1;

@@ -56,21 +56,19 @@ public final class NoteActionHandler extends AbstractMaplePacketHandler {
             for (int i = 0; i < num; i++) {
                 int id = slea.readInt();
                 slea.readByte(); //Fame, but we read it from the database :)
-                PreparedStatement ps;
-                try {
-                    Connection con = DatabaseConnection.getConnection();
-                    ps = con.prepareStatement("SELECT fame FROM notes WHERE id=? AND deleted=0");
-                    ps.setInt(1, id);
-                    ResultSet rs = ps.executeQuery();
-                    if (rs.next())
-                            fame += rs.getInt("fame");
-                    rs.close();
 
-                    ps = con.prepareStatement("UPDATE notes SET deleted = 1 WHERE id = ?");
-                    ps.setInt(1, id);
-                    ps.executeUpdate();
-                    ps.close();
-                    con.close();
+                try (Connection con = DatabaseConnection.getConnection()) {
+                    try (PreparedStatement ps = con.prepareStatement("SELECT fame FROM notes WHERE id=? AND deleted=0")) {
+                        ps.setInt(1, id);
+                        try (ResultSet rs = ps.executeQuery()) {
+                            if (rs.next())
+                                fame += rs.getInt("fame");
+                        }
+                    }
+                    try (PreparedStatement ps = con.prepareStatement("UPDATE notes SET deleted = 1 WHERE id = ?")) {
+                        ps.setInt(1, id);
+                        ps.executeUpdate();
+                    }
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }

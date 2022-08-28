@@ -242,27 +242,20 @@ public class MapleSkillbookInformationProvider {
             ioe.printStackTrace();
         }
     }
-    
-    private static void fetchSkillbooksFromReactors() {
-        Connection con = null;
-        try {
-            con = DatabaseConnection.getConnection();
-            
-            PreparedStatement ps = con.prepareStatement("SELECT itemid FROM reactor_drops WHERE itemid >= ? AND itemid < ?;");
-            ps.setInt(1, skillbookMinItemid);
-            ps.setInt(2, skillbookMaxItemid);
-            ResultSet rs = ps.executeQuery();
 
-            if (rs.isBeforeFirst()) {
-                while(rs.next()) {
-                    foundSkillbooks.put(rs.getInt("itemid"), SkillBookEntry.REACTOR);
+    private static void fetchSkillbooksFromReactors() {
+        try (Connection con = DatabaseConnection.getConnection()) {
+            try (PreparedStatement ps = con.prepareStatement("SELECT itemid FROM reactor_drops WHERE itemid >= ? AND itemid < ?;")) {
+                ps.setInt(1, skillbookMinItemid);
+                ps.setInt(2, skillbookMaxItemid);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.isBeforeFirst()) {
+                        while (rs.next()) {
+                            foundSkillbooks.put(rs.getInt("itemid"), SkillBookEntry.REACTOR);
+                        }
+                    }
                 }
             }
-
-            rs.close();
-            ps.close();
-            
-            con.close();
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         }

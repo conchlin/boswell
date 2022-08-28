@@ -100,10 +100,8 @@ public class FredrickProcessor {
     }
     
     public static void removeFredrickLog(int cid) {
-        try {
-            Connection con = DatabaseConnection.getConnection();
+        try (Connection con = DatabaseConnection.getConnection()) {
             removeFredrickLog(con, cid);
-            con.close();
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         }
@@ -115,19 +113,15 @@ public class FredrickProcessor {
             ps.execute();
         }
     }
-    
+
     public static void insertFredrickLog(int cid) {
-        try {
-            Connection con = DatabaseConnection.getConnection();
-            
+        try (Connection con = DatabaseConnection.getConnection()) {
             removeFredrickLog(con, cid);
             try (PreparedStatement ps = con.prepareStatement("INSERT INTO fred_storage (cid, daynotes, timestamp) VALUES (?, 0, ?)")) {
                 ps.setInt(1, cid);
                 ps.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
                 ps.execute();
             }
-            
-            con.close();
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         }
@@ -146,8 +140,7 @@ public class FredrickProcessor {
             }
         }
         
-        try {
-            Connection con = DatabaseConnection.getConnection();
+        try (Connection con = DatabaseConnection.getConnection()) {
             try (PreparedStatement ps = con.prepareStatement("DELETE FROM notes WHERE from LIKE ? AND \"to\" LIKE ?")) {
                 ps.setString(1, "FREDRICK");
                 
@@ -156,16 +149,13 @@ public class FredrickProcessor {
                     ps.executeBatch();
                 }
             }
-            con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
     
     public static void runFredrickSchedule() {
-        try {
-            Connection con = DatabaseConnection.getConnection();
-            
+        try (Connection con = DatabaseConnection.getConnection()) {
             List<Pair<Integer, Integer>> expiredCids = new LinkedList<>();
             List<Pair<Pair<Integer, String>, Integer>> notifCids = new LinkedList<>();
             try (PreparedStatement ps = con.prepareStatement("SELECT * FROM fred_storage f LEFT JOIN (SELECT id, name, world, lastLogoutTime FROM characters) AS c ON c.id = f.cid")) {
@@ -258,22 +248,18 @@ public class FredrickProcessor {
                     ps.executeBatch();
                 }
             }
-            
-            con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     private static boolean deleteFredrickItems(int cid) {
-        try {
-            Connection con = DatabaseConnection.getConnection();
+        try (Connection con = DatabaseConnection.getConnection()) {
             try (PreparedStatement ps = con.prepareStatement("DELETE FROM inventory_items WHERE type = ? AND characterid = ?")) {
                 ps.setInt(1, ItemFactory.MERCHANT.getValue());
                 ps.setInt(2, cid);
                 ps.execute();
             }
-            con.close();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();

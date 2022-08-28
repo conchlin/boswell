@@ -49,114 +49,114 @@ import tools.data.input.SeekableLittleEndianAccessor;
  * @author Ronan (HeavenMS)
  */
 public final class CouponCodeHandler extends AbstractMaplePacketHandler {
-    
+
     private static List<Pair<Integer, Pair<Integer, Integer>>> getNXCodeItems(MapleCharacter chr, Connection con, int codeid) throws SQLException {
         Map<Integer, Integer> couponItems = new HashMap<>();
         Map<Integer, Integer> couponPoints = new HashMap<>(5);
-        
-        PreparedStatement ps = con.prepareStatement("SELECT * FROM nxcode_items WHERE codeid = ?");
-        ps.setInt(1, codeid);
+        try {
+            try (PreparedStatement ps = con.prepareStatement("SELECT * FROM nxcode_items WHERE codeid = ?")) {
+                ps.setInt(1, codeid);
 
-        ResultSet rs = ps.executeQuery();
-        while (rs.next()) {
-            int type = rs.getInt("type"), quantity = rs.getInt("quantity");
-            
-            if (type < 5) {
-                Integer i = couponPoints.get(type);
-                if (i != null) {
-                    couponPoints.put(type, i + quantity);
-                } else {
-                    couponPoints.put(type, quantity);
-                }
-            } else {
-                int item = rs.getInt("item");
-                
-                Integer i = couponItems.get(item);
-                if (i != null) {
-                    couponItems.put(item, i + quantity);
-                } else {
-                    couponItems.put(item, quantity);
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        int type = rs.getInt("type"), quantity = rs.getInt("quantity");
+
+                        if (type < 5) {
+                            Integer i = couponPoints.get(type);
+                            if (i != null) {
+                                couponPoints.put(type, i + quantity);
+                            } else {
+                                couponPoints.put(type, quantity);
+                            }
+                        } else {
+                            int item = rs.getInt("item");
+
+                            Integer i = couponItems.get(item);
+                            if (i != null) {
+                                couponItems.put(item, i + quantity);
+                            } else {
+                                couponItems.put(item, quantity);
+                            }
+                        }
+                    }
                 }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        
-        rs.close();
-        ps.close();
-        
+
         List<Pair<Integer, Pair<Integer, Integer>>> ret = new LinkedList<>();
         if (!couponItems.isEmpty()) {
             for (Entry<Integer, Integer> e : couponItems.entrySet()) {
                 int item = e.getKey(), qty = e.getValue();
-                
+
                 if (MapleItemInformationProvider.getInstance().getName(item) == null) {
                     item = 4000000;
                     qty = 1;
-                    
+
                     FilePrinter.printError(FilePrinter.UNHANDLED_EVENT, "Error trying to redeem itemid " + item + " from codeid " + codeid + ".");
                 }
-                
+
                 if (!chr.canHold(item, qty)) {
                     return null;
                 }
-                
+
                 ret.add(new Pair<>(5, new Pair<>(item, qty)));
             }
         }
-        
+
         if (!couponPoints.isEmpty()) {
             for (Entry<Integer, Integer> e : couponPoints.entrySet()) {
                 ret.add(new Pair<>(e.getKey(), new Pair<>(777, e.getValue())));
             }
         }
-        
+
         return ret;
     }
-    
+
     private static Pair<Integer, List<Pair<Integer, Pair<Integer, Integer>>>> getNXCodeResult(MapleCharacter chr, String code) {
         MapleClient c = chr.getClient();
+        int codeid = 0;
         List<Pair<Integer, Pair<Integer, Integer>>> ret = new LinkedList<>();
-        try {
-            if (!c.attemptCsCoupon()) {
-                return new Pair<>(-5, null);
+        if (!c.attemptCsCoupon()) {
+            return new Pair<>(-5, null);
+        }
+
+        try (Connection con = DatabaseConnection.getConnection()) {
+            try (PreparedStatement ps = con.prepareStatement("SELECT * FROM nxcode WHERE code = ?")) {
+                ps.setString(1, code);
+
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (!rs.next()) {
+                        return new Pair<>(-1, null);
+                    }
+
+                    if (rs.getString("retriever") != null) {
+                        return new Pair<>(-2, null);
+                    }
+
+                    if (rs.getLong("expiration") < Server.getInstance().getCurrentTime()) {
+                        return new Pair<>(-3, null);
+                    }
+
+                    codeid = rs.getInt("id");
+                }
             }
-            
-            Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM nxcode WHERE code = ?");
-            ps.setString(1, code);
-            
-            ResultSet rs = ps.executeQuery();
-            if (!rs.next()) {
-                return new Pair<>(-1, null);
-            }
-            
-            if (rs.getString("retriever") != null) {
-                return new Pair<>(-2, null);
-            }
-            
-            if (rs.getLong("expiration") < Server.getInstance().getCurrentTime()) {
-                return new Pair<>(-3, null);
-            }
-            
-            int codeid = rs.getInt("id");
-            rs.close();
-            ps.close();
-            
+
             ret = getNXCodeItems(chr, con, codeid);
             if (ret == null) {
                 return new Pair<>(-4, null);
             }
-            
-            ps = con.prepareStatement("UPDATE nxcode SET retriever = ? WHERE code = ?");
-            ps.setString(1, chr.getName());
-            ps.setString(2, code);
-            ps.executeUpdate();
-            
-            ps.close();
-            con.close();
+
+            try (PreparedStatement ps = con.prepareStatement("UPDATE nxcode SET retriever = ? WHERE code = ?")) {
+                ps.setString(1, chr.getName());
+                ps.setString(2, code);
+                ps.executeUpdate();
+            }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        
+
         c.resetCsCoupon();
         return new Pair<>(0, ret);
     }

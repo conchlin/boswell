@@ -183,23 +183,21 @@ public class Server {
     }
 
     private void loadPlayerNpcMapStepFromDb() {
-        try {
-            List<World> wlist = this.getWorlds();
+        List<World> wlist = this.getWorlds();
 
-            Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM playernpcs_field");
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement("SELECT * FROM playernpcs_field")) {
 
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                int world = rs.getInt("world"), map = rs.getInt("map"), step = rs.getInt("step"), podium = rs.getInt("podium");
-
-                World w = wlist.get(world);
-                if (w != null) w.setPlayerNpcMapData(map, step, podium);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    int world = rs.getInt("world"),
+                            map = rs.getInt("map"),
+                            step = rs.getInt("step"),
+                            podium = rs.getInt("podium");
+                    World w = wlist.get(world);
+                    if (w != null) w.setPlayerNpcMapData(map, step, podium);
+                }
             }
-
-            rs.close();
-            ps.close();
-            con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -552,42 +550,38 @@ public class Server {
 
         long timeClear = System.currentTimeMillis() - 14 * 24 * 60 * 60 * 1000;
 
-        PreparedStatement ps = con.prepareStatement("SELECT * FROM nxcode WHERE expiration <= ?");
-        ps.setLong(1, timeClear);
-        ResultSet rs = ps.executeQuery();
+        try (PreparedStatement ps = con.prepareStatement("SELECT * FROM nxcode WHERE expiration <= ?")) {
+            ps.setLong(1, timeClear);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.isLast()) {
+                    try (PreparedStatement ps2 = con.prepareStatement("DELETE FROM nxcode_items WHERE codeid = ?")) {
+                        while (rs.next()) {
+                            ps2.setInt(1, rs.getInt("id"));
+                            ps2.addBatch();
+                        }
+                        ps2.executeBatch();
+                    }
 
-        if (!rs.isLast()) {
-            PreparedStatement ps2 = con.prepareStatement("DELETE FROM nxcode_items WHERE codeid = ?");
-            while (rs.next()) {
-                ps2.setInt(1, rs.getInt("id"));
-                ps2.addBatch();
+                    try (PreparedStatement ps3 = con.prepareStatement("DELETE FROM nxcode WHERE expiration <= ?")) {
+                        ps3.setLong(1, timeClear);
+                        ps3.executeUpdate();
+                    }
+                }
             }
-            ps2.executeBatch();
-            ps2.close();
-
-            ps2 = con.prepareStatement("DELETE FROM nxcode WHERE expiration <= ?");
-            ps2.setLong(1, timeClear);
-            ps2.executeUpdate();
-            ps2.close();
         }
-
-        rs.close();
-        ps.close();
     }
 
     private void loadCouponRates(Connection c) throws SQLException {
-        PreparedStatement ps = c.prepareStatement("SELECT couponid, rate FROM nxcoupons");
-        ResultSet rs = ps.executeQuery();
+        try (PreparedStatement ps = c.prepareStatement("SELECT couponid, rate FROM nxcoupons")) {
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    int cid = rs.getInt("couponid");
+                    int rate = rs.getInt("rate");
 
-        while (rs.next()) {
-            int cid = rs.getInt("couponid");
-            int rate = rs.getInt("rate");
-
-            couponRates.put(cid, rate);
+                    couponRates.put(cid, rate);
+                }
+            }
         }
-
-        rs.close();
-        ps.close();
     }
 
     public List<Integer> getActiveCoupons() {
@@ -630,19 +624,18 @@ public class Server {
 
             try (Connection con = DatabaseConnection.getConnection()) {
                 int weekdayMask = (1 << weekDay);
-                PreparedStatement ps = con.prepareStatement("SELECT couponid FROM nxcoupons WHERE (activeday & ?) = ? AND starthour <= ? AND endhour > ?");
-                ps.setInt(1, weekdayMask);
-                ps.setInt(2, weekdayMask);
-                ps.setInt(3, hourDay);
-                ps.setInt(4, hourDay);
+                try (PreparedStatement ps = con.prepareStatement("SELECT couponid FROM nxcoupons WHERE (activeday & ?) = ? AND starthour <= ? AND endhour > ?")) {
+                    ps.setInt(1, weekdayMask);
+                    ps.setInt(2, weekdayMask);
+                    ps.setInt(3, hourDay);
+                    ps.setInt(4, hourDay);
 
-                ResultSet rs = ps.executeQuery();
-                while (rs.next()) {
-                    activeCoupons.add(rs.getInt("couponid"));
+                    try (ResultSet rs = ps.executeQuery()) {
+                        while (rs.next()) {
+                            activeCoupons.add(rs.getInt("couponid"));
+                        }
+                    }
                 }
-
-                rs.close();
-                ps.close();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -710,7 +703,6 @@ public class Server {
             cleanNxcodeCoupons(con);
             loadCouponRates(con);
             updateActiveCoupons();
-
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         }
@@ -1313,7 +1305,7 @@ public class Server {
     private static Pair<Short, List<List<MapleCharacter>>> loadAccountCharactersViewFromDb(int accId, int wlen) {
         short characterCount = 0;
         List<List<MapleCharacter>> wchars = new ArrayList<>(wlen);
-        for (int i = 0; i < wlen; i++) wchars.add(i, new LinkedList<MapleCharacter>());
+        for (int i = 0; i < wlen; i++) wchars.add(i, new LinkedList<>());
 
         List<MapleCharacter> chars = new LinkedList<>();
         int curWorld = 0;
@@ -1331,29 +1323,29 @@ public class Server {
                 playerEquips.add(ae.getLeft());
             }
 
-            Connection con = DatabaseConnection.getConnection();
-            try (PreparedStatement ps = con.prepareStatement("SELECT * FROM characters WHERE accountid = ? ORDER BY world, id")) {
-                ps.setInt(1, accId);
-                try (ResultSet rs = ps.executeQuery()) {
-                    while (rs.next()) {
-                        characterCount++;
+            try (Connection con = DatabaseConnection.getConnection()) {
+                try (PreparedStatement ps = con.prepareStatement("SELECT * FROM characters WHERE accountid = ? ORDER BY world, id")) {
+                    ps.setInt(1, accId);
+                    try (ResultSet rs = ps.executeQuery()) {
+                        while (rs.next()) {
+                            characterCount++;
 
-                        int cworld = rs.getByte("world");
-                        if (cworld >= wlen) continue;
+                            int cworld = rs.getByte("world");
+                            if (cworld >= wlen) continue;
 
-                        if (cworld > curWorld) {
-                            wchars.add(curWorld, chars);
+                            if (cworld > curWorld) {
+                                wchars.add(curWorld, chars);
 
-                            curWorld = cworld;
-                            chars = new LinkedList<>();
+                                curWorld = cworld;
+                                chars = new LinkedList<>();
+                            }
+
+                            Integer cid = rs.getInt("id");
+                            chars.add(MapleCharacter.loadCharacterEntryFromDB(rs, accPlayerEquips.get(cid)));
                         }
-
-                        Integer cid = rs.getInt("id");
-                        chars.add(MapleCharacter.loadCharacterEntryFromDB(rs, accPlayerEquips.get(cid)));
                     }
                 }
             }
-            con.close();
 
             wchars.add(curWorld, chars);
         } catch (SQLException sqle) {
@@ -1364,21 +1356,17 @@ public class Server {
     }
 
     public void loadAllAccountsCharactersView() {
-        try {
-            Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("SELECT id FROM accounts");
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                int accountId = rs.getInt("id");
-                if (isFirstAccountLogin(accountId)) {
-                    loadAccountCharactersView(accountId, 0, 0);
+        try (Connection con = DatabaseConnection.getConnection()) {
+            try (PreparedStatement ps = con.prepareStatement("SELECT id FROM accounts")) {
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        int accountId = rs.getInt("id");
+                        if (isFirstAccountLogin(accountId)) {
+                            loadAccountCharactersView(accountId, 0, 0);
+                        }
+                    }
                 }
             }
-
-            rs.close();
-            ps.close();
-            con.close();
         } catch (SQLException se) {
             se.printStackTrace();
         }
