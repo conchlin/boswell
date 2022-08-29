@@ -781,9 +781,10 @@ public class Server {
             ex.printStackTrace();
         }
 
-        httpServer = new HttpServer();
-        httpWorker = new HttpWorker();
-
+        if (ServerConstants.HTTP_SERVER) {
+            httpServer = new HttpServer();
+            httpWorker = new HttpWorker();
+        }
         System.out.println("Listening on port 8484\r\n\r\n");
 
         System.out.println("Boswell is now online.\r\n");

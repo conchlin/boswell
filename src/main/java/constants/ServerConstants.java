@@ -27,7 +27,8 @@ public class ServerConstants {
     public static final double PQ_BONUS_EXP_RATE = 0.0;             // Rate for the PQ exp reward.
 
     // Boswell Feature Config
-    public static final boolean ENABLE_PQ_TOUR_FEATURE = true;      //Allows the Custom PQ Tour Feature
+    public static final boolean ENABLE_PQ_TOUR_FEATURE = true;      // Allows the Custom PQ Tour Feature
+    public static final boolean HTTP_SERVER = false;                // Allows utilization of the boswell HTTP server for web compat
 
     //Login Configuration
     public static boolean GM_SERVER = false;                     //Allows flexibility for staff to log on before players and open the server to non-GM connections
