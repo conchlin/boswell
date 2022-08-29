@@ -1924,7 +1924,7 @@ public class World {
         for(MapleParty p : pList) {
             p.disposeLocks();
         }
-        
+
         disposeLocks();
     }
     
@@ -2000,7 +2000,8 @@ public class World {
         
         players.disconnectAll();
         players = null;
-        
+
+        DatabaseConnection.close();
         clearWorldData();
         System.out.println("Finished shutting down world " + id + "\r\n");
     }

@@ -96,7 +96,7 @@ public class DatabaseConnection {
      * Properly close the DataSource
      * This should ONLY be called when shutting down the server
      */
-    public void close() {
+    public static void close() {
         ds.close();
     }
 }
