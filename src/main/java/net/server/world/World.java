@@ -1339,9 +1339,7 @@ public class World {
     }
     
     public void registerPetHunger(MapleCharacter chr, byte petSlot) {
-        if(chr.isGM() && ServerConstants.GM_PETS_NEVER_HUNGRY) {
-            return;
-        }
+        if(chr.isGM()) return;
         
         Integer key = getPetKey(chr, petSlot);
         
@@ -1399,9 +1397,7 @@ public class World {
     }
     
     public void registerMountHunger(MapleCharacter chr) {
-        if(chr.isGM() && ServerConstants.GM_PETS_NEVER_HUNGRY) {
-            return;
-        }
+        if(chr.isGM()) return;
         
         Integer key = chr.getId();
         activeMountsLock.lock();

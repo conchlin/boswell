@@ -74,9 +74,6 @@ public final class SpecialMoveHandler extends AbstractMaplePacketHandler {
                 return;
             } else if (skillid != Corsair.BATTLE_SHIP) {
                 int cooldownTime = effect.getCooldown();
-                if(MapleStatEffect.isHerosWill(skillid) && ServerConstants.USE_FAST_REUSE_HERO_WILL) {
-                    cooldownTime /= 60;
-                }
                 
                 c.announce(MaplePacketCreator.skillCooldown(skillid, cooldownTime));
                 ScheduledFuture<?> timer = TimerManager.getInstance().schedule(

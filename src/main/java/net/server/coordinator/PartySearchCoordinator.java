@@ -376,7 +376,6 @@ public class PartySearchCoordinator {
             if (leader.isLoggedinWorld()) {
                 if (settings != null) {
                     recycledLeaders.add(new Pair<>(leader, settings));
-                    if (ServerConstants.USE_DEBUG && leader.isGM()) leader.dropMessage(5, "Your Party Search token session is now on waiting queue for up to 7 minutes, to get it working right away please stop your Party Search and retry again later.");
                 } else {
                     leader.dropMessage(5, "Your Party Search token session expired, please stop your Party Search and retry again later.");
                 }

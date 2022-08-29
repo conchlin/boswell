@@ -45,7 +45,6 @@ public class LevelCommand extends Command {
         player.setLevel(Math.min(Integer.parseInt(params[0]), player.getMaxClassLevel()) - 1);
 
         player.resetPlayerRates();
-        if (ServerConstants.USE_ADD_RATES_BY_LEVEL) player.setPlayerRates();
         player.setWorldRates();
 
         player.levelUp(false);

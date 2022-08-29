@@ -1094,10 +1094,8 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
             createDragon();
         }
 
-        if (ServerConstants.USE_ANNOUNCE_CHANGEJOB) {
-            if (!this.isGM()) {
-                broadcastAcquaintances(6, "[" + GameConstants.ordinal(GameConstants.getJobBranch(newJob)) + " Job] " + name + " has just become a " + GameConstants.getJobName(this.job.getId()) + ".");    // thanks Vcoc for noticing job name appearing in uppercase here
-            }
+        if (!this.isGM()) {
+            broadcastAcquaintances(6, "[" + GameConstants.ordinal(GameConstants.getJobBranch(newJob)) + " Job] " + name + " has just become a " + GameConstants.getJobName(this.job.getId()) + ".");    // thanks Vcoc for noticing job name appearing in uppercase here
         }
     }
 
@@ -1202,14 +1200,6 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     }
 
     public void changeMapBanish(int mapid, String portal, String msg) {
-        if (ServerConstants.USE_SPIKES_AVOID_BANISH) {
-            for (Item it : this.getInventory(MapleInventoryType.EQUIPPED).list()) {
-                if ((it.getFlag() & ItemConstants.SPIKES) == ItemConstants.SPIKES) {
-                    return;
-                }
-            }
-        }
-
         int banMap = this.getMapId();
         int banSp = this.getMap().findClosestPlayerSpawnpoint(this.getPosition()).getId();
         long banTime = System.currentTimeMillis();
@@ -4959,12 +4949,6 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         }
     }
 
-    public void setPlayerRates() {
-        this.expRate *= GameConstants.getPlayerBonusExpRate(this.level / 20);
-        this.mesoRate *= GameConstants.getPlayerBonusMesoRate(this.level / 20);
-        this.dropRate *= GameConstants.getPlayerBonusDropRate(this.level / 20);
-    }
-
     public void revertLastPlayerRates() {
         this.expRate /= GameConstants.getPlayerBonusExpRate((this.level - 1) / 20);
         this.mesoRate /= GameConstants.getPlayerBonusMesoRate((this.level - 1) / 20);
@@ -5092,49 +5076,34 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     private List<Integer> activateCouponsEffects() {
         List<Integer> toCommitEffect = new LinkedList<>();
 
-        if (ServerConstants.USE_STACK_COUPON_RATES) {
-            for (Entry<Integer, Integer> coupon : activeCoupons.entrySet()) {
-                int couponId = coupon.getKey();
-                int couponQty = coupon.getValue();
+        int maxExpRate = 1, maxDropRate = 1, maxExpCouponId = -1, maxDropCouponId = -1;
 
-                toCommitEffect.add(couponId);
+        for (Entry<Integer, Integer> coupon : activeCoupons.entrySet()) {
+            int couponId = coupon.getKey();
 
-                if (ItemConstants.isExpCoupon(couponId)) {
-                    setExpCouponRate(couponId, couponQty);
-                } else {
-                    setDropCouponRate(couponId, couponQty);
+            if (ItemConstants.isExpCoupon(couponId)) {
+                if (maxExpRate < getCouponMultiplier(couponId)) {
+                    maxExpCouponId = couponId;
+                    maxExpRate = getCouponMultiplier(couponId);
+                }
+            } else {
+                if (maxDropRate < getCouponMultiplier(couponId)) {
+                    maxDropCouponId = couponId;
+                    maxDropRate = getCouponMultiplier(couponId);
                 }
             }
-        } else {
-            int maxExpRate = 1, maxDropRate = 1, maxExpCouponId = -1, maxDropCouponId = -1;
-
-            for (Entry<Integer, Integer> coupon : activeCoupons.entrySet()) {
-                int couponId = coupon.getKey();
-
-                if (ItemConstants.isExpCoupon(couponId)) {
-                    if (maxExpRate < getCouponMultiplier(couponId)) {
-                        maxExpCouponId = couponId;
-                        maxExpRate = getCouponMultiplier(couponId);
-                    }
-                } else {
-                    if (maxDropRate < getCouponMultiplier(couponId)) {
-                        maxDropCouponId = couponId;
-                        maxDropRate = getCouponMultiplier(couponId);
-                    }
-                }
-            }
-
-            if (maxExpCouponId > -1) {
-                toCommitEffect.add(maxExpCouponId);
-            }
-            if (maxDropCouponId > -1) {
-                toCommitEffect.add(maxDropCouponId);
-            }
-
-            this.expCoupon = maxExpRate;
-            this.dropCoupon = maxDropRate;
-            this.mesoCoupon = maxDropRate;
         }
+
+        if (maxExpCouponId > -1) {
+            toCommitEffect.add(maxExpCouponId);
+        }
+        if (maxDropCouponId > -1) {
+            toCommitEffect.add(maxDropCouponId);
+        }
+
+        this.expCoupon = maxExpRate;
+        this.dropCoupon = maxDropRate;
+        this.mesoCoupon = maxDropRate;
 
         this.expRate *= this.expCoupon;
         this.dropRate *= this.dropCoupon;
@@ -8462,11 +8431,8 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 
     private Collection<Item> getUpgradeableEquipList() {
         Collection<Item> fullList = getInventory(MapleInventoryType.EQUIPPED).list();
-        if (ServerConstants.USE_EQUIPMNT_LVLUP_CASH) {
-            return fullList;
-        }
-
         Collection<Item> eqpList = new LinkedHashSet<>();
+
         for (Item it : fullList) {
             if (!ii.isCash(it.getItemId())) {
                 eqpList.add(it);

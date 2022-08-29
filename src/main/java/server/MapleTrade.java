@@ -113,19 +113,18 @@ public class MapleTrade {
 
     private void completeTrade() {
         byte result;
-        boolean show = ServerConstants.USE_DEBUG;
         items.clear();
         meso = 0;
         
         for (Item item : exchangeItems) {
             MapleKarmaManipulator.toggleKarmaFlagToUntradeable(item);
-            MapleInventoryManipulator.addFromDrop(chr.getClient(), item, show);
+            MapleInventoryManipulator.addFromDrop(chr.getClient(), item, false);
         }
         
         if (exchangeMeso > 0) {
             int fee = getFee(exchangeMeso);
             
-            chr.gainMeso(exchangeMeso - fee, show, true, show);
+            chr.gainMeso(exchangeMeso - fee, false, true, false);
             if(fee > 0) {
                 chr.dropMessage(1, "Transaction completed. You received " + GameConstants.numberWithCommas(exchangeMeso - fee) + " mesos due to trade fees.");
             } else {
@@ -146,13 +145,11 @@ public class MapleTrade {
     }
 
     private void cancel(byte result) {
-        boolean show = ServerConstants.USE_DEBUG;
-        
         for (Item item : items) {
-            MapleInventoryManipulator.addFromDrop(chr.getClient(), item, show);
+            MapleInventoryManipulator.addFromDrop(chr.getClient(), item, false);
         }
         if (meso > 0) {
-            chr.gainMeso(meso, show, true, show);
+            chr.gainMeso(meso, false, true, false);
         }
         meso = 0;
         if (items != null) {

@@ -232,9 +232,7 @@ public final class PlayerLoggedinHandler extends AbstractMaplePacketHandler {
 
                 c.announce(MaplePacketCreator.getCharInfo(player));
                 if (!player.isHidden()) {
-                    if(player.isGM() && ServerConstants.USE_AUTOHIDE_GM) {
-                        player.toggleHide(true);
-                    }
+                    player.toggleHide(true); // auto-hide for GMs
                 }
                 player.sendKeymap();
                 player.sendMacros();
@@ -390,7 +388,6 @@ public final class PlayerLoggedinHandler extends AbstractMaplePacketHandler {
                 if (player.getMap().getHPDec() > 0) player.resetHpDecreaseTask();
 
                 player.resetPlayerRates();
-                if(ServerConstants.USE_ADD_RATES_BY_LEVEL == true) player.setPlayerRates();
                 player.setWorldRates();
                 player.updateCouponRates();
                 player.setLoginTime();

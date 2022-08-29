@@ -286,9 +286,7 @@ public class MapleHiredMerchant extends AbstractMapleMapObject {
                         pItem.setDoesExist(false);
                     }
 
-                    if(ServerConstants.USE_ANNOUNCE_SHOPITEMSOLD) {   // idea thanks to Vcoc
-                        announceItemSold(newItem, price, getQuantityLeft(pItem.getItem().getItemId()));
-                    }
+                    announceItemSold(newItem, price, getQuantityLeft(pItem.getItem().getItemId()));
 
                     MapleCharacter owner = Server.getInstance().getWorld(world).getPlayerStorage().getCharacterByName(ownerName);
                     if (owner != null) {

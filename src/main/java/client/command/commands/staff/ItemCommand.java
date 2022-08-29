@@ -57,11 +57,6 @@ public class ItemCommand extends Command {
         short quantity = 1;
         if(params.length >= 2) quantity = Short.parseShort(params[1]);
 
-        if (ServerConstants.BLOCK_GENERATE_CASH_ITEM && ii.isCash(itemId)) {
-            player.yellowMessage("You cannot create a cash item with this command.");
-            return;
-        }
-
         if (ItemConstants.isPet(itemId)) {
             int petId = MaplePet.createPet(itemId);
             MapleInventoryManipulator.addById(c, itemId, quantity, player.getName(), petId, -1);

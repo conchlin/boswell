@@ -440,13 +440,6 @@ public class MapleStatEffect {
                 } /*else if (isExpIncrease(sourceid)) { TODO: do we need this? what is this
                     addBuffStatPairToListIfNotZero(statups, MapleBuffStat.EXP_INCREASE, MapleDataTool.getInt("expinc", source, 0));
                 }*/
-            } else {
-               /* if (isMapChair(sourceid)) { // TODO what is mapchair?
-                    addBuffStatPairToListIfNotZero(statups, MapleBuffStat.MAP_CHAIR, 1);
-                } else */if ((sourceid == Beginner.NIMBLE_FEET || sourceid == Noblesse.NIMBLE_FEET || sourceid == Evan.NIMBLE_FEET || sourceid == Legend.AGILE_BODY) && ServerConstants.USE_ULTRA_NIMBLE_FEET == true) {
-                    ret.jump = (short) (ret.speed * 4);
-                    ret.speed *= 15;
-                }
             }
 
             addBuffStatPairToListIfNotZero(statups, MapleBuffStat.WATK, Integer.valueOf(ret.watk));
@@ -472,9 +465,6 @@ public class MapleStatEffect {
 
         int x = MapleDataTool.getInt("x", source, 0);
 
-        if ((sourceid == Beginner.RECOVERY || sourceid == Noblesse.RECOVERY || sourceid == Evan.RECOVERY || sourceid == Legend.RECOVERY) && ServerConstants.USE_ULTRA_RECOVERY == true) {
-            x *= 10;
-        }
         ret.x = x;
         ret.y = MapleDataTool.getInt("y", source, 0);
 

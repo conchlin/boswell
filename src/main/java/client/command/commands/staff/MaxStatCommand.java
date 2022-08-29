@@ -40,7 +40,6 @@ public class MaxStatCommand extends Command {
         player.gainExp(-player.getExp(), false, false);
         player.setLevel(255);
         player.resetPlayerRates();
-        if (ServerConstants.USE_ADD_RATES_BY_LEVEL) player.setPlayerRates();
         player.setWorldRates();
         player.updateStrDexIntLuk(Short.MAX_VALUE);
         player.setFame(13337);

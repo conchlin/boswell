@@ -77,8 +77,6 @@ public class MaplePlayerNPCPodium {
     
     private static Point reorganizePlayerNpcs(MapleMap map, int newStep, List<MapleMapObject> mmoList) {
         if(!mmoList.isEmpty()) {
-            if(ServerConstants.USE_DEBUG) System.out.println("Reorganizing pnpc map, step " + newStep);
-            
             List<MaplePlayerNPC> playerNpcs = new ArrayList<>(mmoList.size());
             for(MapleMapObject mmo : mmoList) {
                 playerNpcs.add((MaplePlayerNPC) mmo);
