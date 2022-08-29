@@ -73,22 +73,13 @@ public class AramiaTree {
         announceProgress(c);
 
         switch (reactor.getState()) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5: {
+            case 0, 1, 2, 3, 4, 5 -> {
                 if (aramiaTree >= 1000 * (1 + reactor.getState())) {
                     reactor.setState((byte) (reactor.getState() + 1));
                     map.broadcastMessage(MaplePacketCreator.triggerReactor(reactor, reactor.getState()));
-                    break;
                 }
-                break;
             }
-            default: {
-                break;
-            }
+            default -> {}
         }
 
         if (aramiaTree >= 5000) { // time for the tree to explode

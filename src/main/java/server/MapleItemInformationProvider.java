@@ -985,12 +985,8 @@ public class MapleItemInformationProvider {
     public Equip randomizeStats(Equip equip, MapleStat[] stats) {
         for (MapleStat stat : stats) {
             switch (stat) {
-                case HP:
-                case MP:
-                    equip.setStat(stat, getRandStat(equip.getStat(stat), 10));
-                    break;
-                default:
-                    equip.setStat(stat, getRandStat(equip.getStat(stat), 5));
+                case HP, MP -> equip.setStat(stat, getRandStat(equip.getStat(stat), 10));
+                default -> equip.setStat(stat, getRandStat(equip.getStat(stat), 5));
             }
         }
         return equip;
@@ -999,12 +995,8 @@ public class MapleItemInformationProvider {
     public Equip randomizeStats(Equip equip, MapleBuffStat[] buffStats) {
         for (MapleBuffStat buffStat : buffStats) {
             switch (buffStat) {
-                case WDEF:
-                case MDEF:
-                    equip.setStat(buffStat, getRandStat(equip.getStat(buffStat), 10));
-                    break;
-                default:
-                    equip.setStat(buffStat, getRandStat(equip.getStat(buffStat), 5));
+                case WDEF, MDEF -> equip.setStat(buffStat, getRandStat(equip.getStat(buffStat), 10));
+                default -> equip.setStat(buffStat, getRandStat(equip.getStat(buffStat), 5));
             }
         }
         return equip;
@@ -1447,20 +1439,10 @@ public class MapleItemInformationProvider {
     }
 
     public final boolean isTwoHanded(int itemId) {
-        switch (getWeaponType(itemId)) {
-            case GENERAL2H_SWING:
-            case BOW:
-            case CLAW:
-            case CROSSBOW:
-            case POLE_ARM_SWING:
-            case SPEAR_STAB:
-            case SWORD2H:
-            case GUN:
-            case KNUCKLE:
-                return true;
-            default:
-                return false;
-        }
+        return switch (getWeaponType(itemId)) {
+            case GENERAL2H_SWING, BOW, CLAW, CROSSBOW, POLE_ARM_SWING, SPEAR_STAB, SWORD2H, GUN, KNUCKLE -> true;
+            default -> false;
+        };
     }
 
     public boolean isCash(int itemId) {
@@ -1741,28 +1723,15 @@ public class MapleItemInformationProvider {
         } else if(range > 11) {
             return 4260008;
         } else {
-     switch(range) {
-                case 5:
-                    return 4260001;
-
-                case 6:
-                    return 4260002;
-
-                case 7:
-                    return 4260003;
-
-                case 8:
-                    return 4260004;
-
-                case 9:
-                    return 4260005;
-
-                case 10:
-                    return 4260006;
-
-                default:
-                    return 4260007;
-            }
+            return switch (range) {
+                case 5 -> 4260001;
+                case 6 -> 4260002;
+                case 7 -> 4260003;
+                case 8 -> 4260004;
+                case 9 -> 4260005;
+                case 10 -> 4260006;
+                default -> 4260007;
+            };
         }
     }
 

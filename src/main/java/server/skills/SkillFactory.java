@@ -147,12 +147,10 @@ public class SkillFactory {
                 if (data.getChildByPath("prepare/action") != null) {
                     action = true;
                 } else {
-                    switch (id) {
-                        case Gunslinger.INVISIBLE_SHOT:
-                        case Corsair.HYPNOTIZE:
-                            action = true;
-                            break;
-                    }
+                    action = switch (id) {
+                        case Gunslinger.INVISIBLE_SHOT, Corsair.HYPNOTIZE -> true;
+                        default -> action;
+                    };
                 }
             } else {
                 action = true;

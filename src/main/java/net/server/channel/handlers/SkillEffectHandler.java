@@ -52,29 +52,14 @@ public final class SkillEffectHandler extends AbstractMaplePacketHandler {
         int speed = slea.readByte();
         byte aids = slea.readByte();//Mmmk
         switch (skillId) {
-            case FPMage.EXPLOSION:
-            case FPArchMage.BIG_BANG:
-            case ILArchMage.BIG_BANG:
-            case Bishop.BIG_BANG:
-            case Bowmaster.HURRICANE:
-            case Marksman.PIERCING_ARROW:
-            case ChiefBandit.CHAKRA:
-            case Brawler.CORKSCREW_BLOW:
-            case Gunslinger.GRENADE:
-            case Corsair.RAPID_FIRE:
-            case WindArcher.HURRICANE:
-            case NightWalker.POISON_BOMB:
-            case ThunderBreaker.CORKSCREW_BLOW:
-            case Paladin.MONSTER_MAGNET:
-            case DarkKnight.MONSTER_MAGNET:
-            case Hero.MONSTER_MAGNET:
-            case Evan.FIRE_BREATH:
-            case Evan.ICE_BREATH:
-                c.getPlayer().getMap().broadcastMessage(c.getPlayer(), MaplePacketCreator.skillEffect(c.getPlayer(), skillId, level, flags, speed, aids), false);
-                return;
-            default:
-                System.out.println(c.getPlayer() + " entered SkillEffectHandler without being handled using " + skillId + ".");
-                return;
+            case FPMage.EXPLOSION, FPArchMage.BIG_BANG, ILArchMage.BIG_BANG,
+                    Bishop.BIG_BANG, Bowmaster.HURRICANE, Marksman.PIERCING_ARROW,
+                    ChiefBandit.CHAKRA, Brawler.CORKSCREW_BLOW, Gunslinger.GRENADE,
+                    Corsair.RAPID_FIRE, WindArcher.HURRICANE, NightWalker.POISON_BOMB,
+                    ThunderBreaker.CORKSCREW_BLOW, Paladin.MONSTER_MAGNET,
+                    DarkKnight.MONSTER_MAGNET, Hero.MONSTER_MAGNET, Evan.FIRE_BREATH, Evan.ICE_BREATH
+                    -> c.getPlayer().getMap().broadcastMessage(c.getPlayer(), MaplePacketCreator.skillEffect(c.getPlayer(), skillId, level, flags, speed, aids), false);
+            default -> System.out.println(c.getPlayer() + " entered SkillEffectHandler without being handled using " + skillId + ".");
         }
     }
 }

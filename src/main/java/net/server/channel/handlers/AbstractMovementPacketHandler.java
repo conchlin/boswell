@@ -39,10 +39,8 @@ public abstract class AbstractMovementPacketHandler extends AbstractMaplePacketH
 
         for (byte i = 0; i < numCommands; i++) {
             byte command = lea.readByte();
-            switch (command) {
-                case 0: // normal move
-                case 5:
-                case 17: { // Float
+            switch (command) { // normal move
+                case 0, 5, 17 -> { // Float
                     short xpos = lea.readShort();
                     short ypos = lea.readShort();
                     short velocityX = lea.readShort();
@@ -54,46 +52,37 @@ public abstract class AbstractMovementPacketHandler extends AbstractMaplePacketH
                     alm.setFh(fhId);
                     alm.setPixelsPerSecond(new Point(velocityX, velocityY));
                     res.add(alm);
-                    break;
                 }
-                case 1:
-                case 2:
-                case 6: // fj
-                case 12:
-                case 13: // Shot-jump-back thing
-                case 16: // Float
-                case 18:
-                case 19: // Springs on maps
-                case 20: // Aran Combat Step
-                case 22: {
+                // fj
+                // Shot-jump-back thing
+                // Float
+                // Springs on maps
+                // Aran Combat Step
+                case 1, 2, 6, 12, 13, 16, 18, 19, 20, 22 -> {
                     short velocityX = lea.readShort();
                     short velocityY = lea.readShort();
                     byte bMoveAction = lea.readByte();
                     short tElapsed = lea.readShort();
                     RelativeLifeMovement rlm = new RelativeLifeMovement(command, new Point(velocityX, velocityY), tElapsed, bMoveAction);
                     res.add(rlm);
-                    break;
                 }
-                case 3:
-                case 4: // tele... -.-
-                case 7: // assaulter
-                case 8: // assassinate
-                case 9: // rush
-                case 11: //chair
-                {
-                    short xpos = lea.readShort();
-                    short ypos = lea.readShort();
-                    short fhId = lea.readShort();
-                    byte bMoveAction = lea.readByte();
-                    short tElapsed = lea.readShort();
-                    TeleportMovement tm = new TeleportMovement(command, new Point(xpos, ypos), fhId, tElapsed, bMoveAction);
-                    res.add(tm);
-                    break;
-                }
-                case 10: // Change Equip
-                    res.add(new ChangeEquip(lea.readByte()));
-                    break;
-                case 14: { //This case causes map objects to disappear and reappear
+                // tele... -.-
+                // assaulter
+                // assassinate
+                // rush
+                case 3, 4, 7, 8, 9, 11 -> //chair
+                        {
+                            short xpos = lea.readShort();
+                            short ypos = lea.readShort();
+                            short fhId = lea.readShort();
+                            byte bMoveAction = lea.readByte();
+                            short tElapsed = lea.readShort();
+                            TeleportMovement tm = new TeleportMovement(command, new Point(xpos, ypos), fhId, tElapsed, bMoveAction);
+                            res.add(tm);
+                        }
+                case 10 -> // Change Equip
+                        res.add(new ChangeEquip(lea.readByte()));
+                case 14 -> { //This case causes map objects to disappear and reappear
                     short xpos = lea.readShort();
                     short ypos = lea.readShort();
                     short fhId = lea.readShort();
@@ -103,9 +92,8 @@ public abstract class AbstractMovementPacketHandler extends AbstractMaplePacketH
 				    /*	UnknownMovement unkM = new UnknownMovement(command, new Point(xpos, ypos), duration, newstate);
 					    unkM.setUnk(fhId);
 					    res.add(unkM); */
-                    break;
                 }
-                case 15: {
+                case 15 -> {
                     short xpos = lea.readShort();
                     short ypos = lea.readShort();
                     short xwobble = lea.readShort();
@@ -122,20 +110,19 @@ public abstract class AbstractMovementPacketHandler extends AbstractMaplePacketH
                     jdm.setPixelsPerSecond(new Point(xwobble, ywobble));
                     jdm.setOriginFh(ofh);
                     res.add(jdm);
-                    break;
                 }
-                case 21: {//Causes aran to do weird stuff when attacking o.o
+                case 21 -> {//Causes aran to do weird stuff when attacking o.o
                     /*byte newstate = lea.readByte();
                      short unk = lea.readShort();
                      AranMovement am = new AranMovement(command, null, unk, newstate);
                      res.add(am);*/
                     byte newstate = lea.readByte();
                     short duration = lea.readShort();
-                    break;
                 }
-                default:
+                default -> {
                     System.out.println("Unhandled Case:" + command);
                     return null;
+                }
             }
         }
         return res;
@@ -145,7 +132,7 @@ public abstract class AbstractMovementPacketHandler extends AbstractMaplePacketH
         for (LifeMovementFragment move : movement) {
             if (move instanceof LifeMovement) {
                 if (move instanceof AbsoluteLifeMovement) {
-                    Point position = ((LifeMovement) move).getPosition();
+                    Point position = move.getPosition();
                     position.y += yoffset;
                     target.setPosition(position);
                 }

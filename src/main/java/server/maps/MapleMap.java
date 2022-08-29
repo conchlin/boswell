@@ -1915,23 +1915,14 @@ public class MapleMap {
 
         if (monster.getDropPeriodTime() > 0) {
             switch (monster.getId()) {
-                case 9300102: // Watchhog (mount)
-                    monsterItemDrop(monster, monster.getDropPeriodTime() / 3);
-                    break;
-                case 9300061: // Moon Bunny (HPQ)
-                    monsterItemDrop(monster, monster.getDropPeriodTime() / 3);
-                    break;
-                case 9300093: // tylus
-                    monsterItemDrop(monster, monster.getDropPeriodTime());
-                    break;
-                case 9400326: // idk
-                case 9400331:
-                case 9400336:
-                    monsterItemDrop(monster, monster.getDropPeriodTime());
-                    break;
-                default:
-                    FilePrinter.printError(FilePrinter.UNHANDLED_EVENT, "UNCODED TIMED MOB DETECTED: " + monster.getId());
-                    break;
+                case 9300102 -> // Watchhog (mount)
+                        monsterItemDrop(monster, monster.getDropPeriodTime() / 3);
+                case 9300061 -> // Moon Bunny (HPQ)
+                        monsterItemDrop(monster, monster.getDropPeriodTime() / 3);
+                case 9300093 -> // tylus
+                        monsterItemDrop(monster, monster.getDropPeriodTime());
+                case 9400326, 9400331, 9400336 -> monsterItemDrop(monster, monster.getDropPeriodTime());
+                default -> FilePrinter.printError(FilePrinter.UNHANDLED_EVENT, "UNCODED TIMED MOB DETECTED: " + monster.getId());
             }
         }
 
@@ -2801,18 +2792,10 @@ public class MapleMap {
     }
 
     private static boolean isNonRangedType(MapleMapObjectType type) {
-        switch (type) {
-            case NPC:
-            case PLAYER:
-            case HIRED_MERCHANT:
-            case PLAYER_NPC:
-            case DRAGON:
-            case MIST:
-            case KITE:
-                return true;
-            default:
-                return false;
-        }
+        return switch (type) {
+            case NPC, PLAYER, HIRED_MERCHANT, PLAYER_NPC, DRAGON, MIST, KITE -> true;
+            default -> false;
+        };
     }
 
     private void sendObjectPlacement(MapleClient c) {
@@ -3745,14 +3728,11 @@ public class MapleMap {
     }
 
     public MapleSnowball getSnowball(int team) {
-        switch (team) {
-            case 0:
-                return snowball0;
-            case 1:
-                return snowball1;
-            default:
-                return null;
-        }
+        return switch (team) {
+            case 0 -> snowball0;
+            case 1 -> snowball1;
+            default -> null;
+        };
     }
 
     private boolean specialEquip() {//Maybe I shouldn't use fieldType :\
@@ -4028,66 +4008,39 @@ public class MapleMap {
     }
 
     public boolean isCPQMap() {
-        switch (this.getId()) {
-            case 980000101:
-            case 980000201:
-            case 980000301:
-            case 980000401:
-            case 980000501:
-            case 980000601:
-            case 980031100:
-            case 980032100:
-            case 980033100:
-                return true;
-        }
-        return false;
+        return switch (this.getId()) {
+            case 980000101, 980000201, 980000301, 980000401, 980000501,
+                    980000601, 980031100, 980032100, 980033100 -> true;
+            default -> false;
+        };
     }
 
     public boolean isCPQMap2() {
-        switch (this.getId()) {
-            case 980031100:
-            case 980032100:
-            case 980033100:
-                return true;
-        }
-        return false;
+        return switch (this.getId()) {
+            case 980031100, 980032100, 980033100 -> true;
+            default -> false;
+        };
     }
 
     public boolean isCPQLobby() {
-        switch (this.getId()) {
-            case 980000100:
-            case 980000200:
-            case 980000300:
-            case 980000400:
-            case 980000500:
-            case 980000600:
-                return true;
-        }
-        return false;
+        return switch (this.getId()) {
+            case 980000100, 980000200, 980000300, 980000400, 980000500, 980000600 -> true;
+            default -> false;
+        };
     }
 
     public boolean isBlueCPQMap() {
-        switch (this.getId()) {
-            case 980000501:
-            case 980000601:
-            case 980031200:
-            case 980032200:
-            case 980033200:
-                return true;
-        }
-        return false;
+        return switch (this.getId()) {
+            case 980000501, 980000601, 980031200, 980032200, 980033200 -> true;
+            default -> false;
+        };
     }
 
     public boolean isPurpleCPQMap() {
-        switch (this.getId()) {
-            case 980000301:
-            case 980000401:
-            case 980031200:
-            case 980032200:
-            case 980033200:
-                return true;
-        }
-        return false;
+        return switch (this.getId()) {
+            case 980000301, 980000401, 980031200, 980032200, 980033200 -> true;
+            default -> false;
+        };
     }
 
     public Point getRandomSP(int team) {
@@ -4206,35 +4159,19 @@ public class MapleMap {
     }
 
     public boolean isCPQWinnerMap() {
-        switch (this.getId()) {
-            case 980000103:
-            case 980000203:
-            case 980000303:
-            case 980000403:
-            case 980000503:
-            case 980000603:
-            case 980031300:
-            case 980032300:
-            case 980033300:
-                return true;
-        }
-        return false;
+        return switch (this.getId()) {
+            case 980000103, 980000203, 980000303, 980000403, 980000503,
+                    980000603, 980031300, 980032300, 980033300 -> true;
+            default -> false;
+        };
     }
 
     public boolean isCPQLoserMap() {
-        switch (this.getId()) {
-            case 980000104:
-            case 980000204:
-            case 980000304:
-            case 980000404:
-            case 980000504:
-            case 980000604:
-            case 980031400:
-            case 980032400:
-            case 980033400:
-                return true;
-        }
-        return false;
+        return switch (this.getId()) {
+            case 980000104, 980000204, 980000304, 980000404, 980000504,
+                    980000604, 980031400, 980032400, 980033400 -> true;
+            default -> false;
+        };
     }
 
     public void runCharacterStatUpdate() {

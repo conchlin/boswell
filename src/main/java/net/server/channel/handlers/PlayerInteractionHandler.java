@@ -309,12 +309,8 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
                                 game.addVisitor(chr);
                                 chr.setMiniGame(game);
                                 switch (game.getGameType()) {
-                                    case OMOK:
-                                        game.sendOmok(c, game.getPieceType());
-                                        break;
-                                    case MATCH_CARD:
-                                        game.sendMatchCard(c, game.getPieceType());
-                                        break;
+                                    case OMOK -> game.sendOmok(c, game.getPieceType());
+                                    case MATCH_CARD -> game.sendMatchCard(c, game.getPieceType());
                                 }
                             } else {
                                 chr.getClient().announce(MaplePacketCreator.getMiniRoomError(2));

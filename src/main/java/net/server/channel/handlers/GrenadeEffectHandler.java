@@ -40,17 +40,15 @@ public class GrenadeEffectHandler extends AbstractMaplePacketHandler {
         Point position = new Point(slea.readInt(), slea.readInt());
         int keyDown = slea.readInt();
         int skillId = slea.readInt();
-       
+
         switch (skillId) {
-            case NightWalker.POISON_BOMB:
-            case Gunslinger.GRENADE:
+            case NightWalker.POISON_BOMB, Gunslinger.GRENADE -> {
                 int skillLevel = chr.getSkillLevel(skillId);
                 if (skillLevel > 0) {
                     chr.getMap().broadcastMessage(chr, MaplePacketCreator.throwGrenade(chr.getId(), position, keyDown, skillId, skillLevel), position);
                 }
-                break;
-            default:
-                FilePrinter.printError(FilePrinter.UNHANDLED_EVENT, "The skill id: " + skillId + " is not coded in " + this.getClass().getName() + ".");
+            }
+            default -> FilePrinter.printError(FilePrinter.UNHANDLED_EVENT, "The skill id: " + skillId + " is not coded in " + this.getClass().getName() + ".");
         }
     }
  

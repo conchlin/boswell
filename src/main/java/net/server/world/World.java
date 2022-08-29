@@ -879,26 +879,15 @@ public class World {
             throw new IllegalArgumentException("no party with the specified partyid exists");
         }
         switch (operation) {
-            case JOIN:
-                party.addMember(target);
-                break;
-            case EXPEL:
-            case LEAVE:
-                party.removeMember(target);
-                break;
-            case DISBAND:
-                disbandParty(partyid);
-                break;
-            case SILENT_UPDATE:
-            case LOG_ONOFF:
-                party.updateMember(target);
-                break;
-            case CHANGE_LEADER:
+            case JOIN -> party.addMember(target);
+            case EXPEL, LEAVE -> party.removeMember(target);
+            case DISBAND -> disbandParty(partyid);
+            case SILENT_UPDATE, LOG_ONOFF -> party.updateMember(target);
+            case CHANGE_LEADER -> {
                 MapleCharacter mc = party.getLeader().getPlayer();
                 MapleCharacter newLeader = target.getPlayer();
                 EventInstanceManager eim = mc.getEventInstance();
-                
-                if(eim != null && eim.isEventLeader(mc)) {
+                if (eim != null && eim.isEventLeader(mc)) {
                     eim.changedLeader(newLeader);
                 } else {
                     int oldLeaderMapid = mc.getMapId();
@@ -906,16 +895,15 @@ public class World {
                     if (MapleMiniDungeonInfo.isDungeonMap(oldLeaderMapid)) {
                         if (oldLeaderMapid != newLeader.getMapId()) {
                             MapleMiniDungeon mmd = newLeader.getClient().getChannelServer().getMiniDungeon(oldLeaderMapid);
-                            if(mmd != null) {
+                            if (mmd != null) {
                                 mmd.close();
                             }
                         }
                     }
                 }
                 party.setLeader(target);
-                break;
-            default:
-                System.out.println("Unhandled updateParty operation " + operation.name());
+            }
+            default -> System.out.println("Unhandled updateParty operation " + operation.name());
         }
         updateParty(party, operation, target);
     }

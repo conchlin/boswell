@@ -334,36 +334,24 @@ public class GameConstants {
     }
     
     public static boolean isHallOfFameMap(int mapid) {
-        switch(mapid) {
-            case 102000004:     // warrior
-            case 101000004:     // magician
-            case 100000204:     // bowman
-            case 103000008:     // thief
-            case 120000105:     // pirate
-            case 130000100:     // cygnus
-            case 130000101:     // other cygnus
-            case 130000110:     // cygnus 2nd floor
-            case 130000120:     // cygnus 3rd floor (beginners)
-            case 140010110:     // aran
-                return true;
-                
-            default:
-                return false;
-        }
+        return switch (mapid) {
+            // ids in order:
+            // warrior, magician, bowman, thief, pirate, cygnus,
+            // other cygnus, cygnus 2nd floor, cygnus 3rd floor (beginners), aran
+            case 102000004, 101000004, 100000204, 103000008, 120000105, 130000100,
+                    130000101, 130000110, 130000120, 140010110 ->     // aran
+                    true;
+            default -> false;
+        };
     }
     
     public static boolean isPodiumHallOfFameMap(int mapid) {
-        switch(mapid) {
-            case 102000004:     // warrior
-            case 101000004:     // magician
-            case 100000204:     // bowman
-            case 103000008:     // thief
-            case 120000105:     // pirate
-                return true;
-                
-            default:
-                return false;
-        }
+        return switch (mapid) {
+            // warrior, magician, bowman, thief, pirate
+            case 102000004, 101000004, 100000204, 103000008, 120000105 ->
+                    true;
+            default -> false;
+        };
     }
     
     public static byte getHallOfFameBranch(MapleJob job, int mapid) {
@@ -465,35 +453,22 @@ public class GameConstants {
     
     public static int getJobMaxLevel(MapleJob job) {
         int jobBranch = getJobBranch(job);
-        
-        switch(jobBranch) {
-            case 0:
-                return 10;   // beginner
-                
-            case 1:
-                return 30;   // 1st job
-                
-            case 2:
-                return 70;   // 2nd job
-                
-            case 3:
-                return 120;   // 3rd job
-                
-            default:
-                return (job.getId() / 1000 == 1) ? 120 : 250;   // 4th job: cygnus is 120, rest is 200
-        }
+
+        return switch (jobBranch) {
+            case 0 -> 10;   // beginner
+            case 1 -> 30;   // 1st job
+            case 2 -> 70;   // 2nd job
+            case 3 -> 120;   // 3rd job
+            default -> (job.getId() / 1000 == 1) ? 120 : 250;   // 4th job: cygnus is 120, rest is 200
+        };
     }
     
     public static int getHiddenSkill(final int skill) {
-        switch (skill) {
-            case Aran.HIDDEN_FULL_DOUBLE:
-            case Aran.HIDDEN_FULL_TRIPLE:
-                return Aran.FULL_SWING;
-            case Aran.HIDDEN_OVER_DOUBLE:
-            case Aran.HIDDEN_OVER_TRIPLE:
-                return Aran.OVER_SWING;
-        }
-        return skill;
+        return switch (skill) {
+            case Aran.HIDDEN_FULL_DOUBLE, Aran.HIDDEN_FULL_TRIPLE -> Aran.FULL_SWING;
+            case Aran.HIDDEN_OVER_DOUBLE, Aran.HIDDEN_OVER_TRIPLE -> Aran.OVER_SWING;
+            default -> skill;
+        };
     }
     
     public static int getSkillBook(final int job) {
@@ -574,13 +549,8 @@ public class GameConstants {
         if(FieldLimit.CANNOTMIGRATE.check(map.getFieldLimit())) {   // maps that cannot access cash shop cannot access merchants too (except FM rooms).
             return true;
         }
-        
-        switch(map.getId()) {
-            case 910000000:
-                return true;
-        }
-        
-        return false;
+
+        return map.getId() == 910000000;
     }
     
     public static boolean isDojo(int mapid) {
@@ -614,22 +584,10 @@ public class GameConstants {
     }
     
     public static boolean hasSPTable(MapleJob job) {
-        switch (job) {
-            case EVAN:
-            case EVAN1:
-            case EVAN2:
-            case EVAN3:
-            case EVAN4:
-            case EVAN5:
-            case EVAN6:
-            case EVAN7:
-            case EVAN8:
-            case EVAN9:
-            case EVAN10:
-                return true;
-            default:
-                return false;
-        }
+        return switch (job) {
+            case EVAN, EVAN1, EVAN2, EVAN3, EVAN4, EVAN5, EVAN6, EVAN7, EVAN8, EVAN9, EVAN10 -> true;
+            default -> false;
+        };
     }
         
     public static int getMonsterHP(final int level) {
@@ -641,15 +599,10 @@ public class GameConstants {
     
     public static String ordinal(int i) {
         String[] sufixes = new String[] { "th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th" };
-        switch (i % 100) {
-            case 11:
-            case 12:
-            case 13:
-                return i + "th";
-                
-            default:
-                return i + sufixes[i % 10];
-        }
+        return switch (i % 100) {
+            case 11, 12, 13 -> i + "th";
+            default -> i + sufixes[i % 10];
+        };
     }
     
     public synchronized static String numberWithCommas(int i) {

@@ -77,16 +77,9 @@ public class PNGMapleCanvas implements MapleCanvas {
         @SuppressWarnings ("unused")
         byte[] rowPointers = new byte[maxHeight];
         switch (getFormat()) {
-            case 1:
-            case 513:
-                sizeUncompressed = getHeight() * getWidth() * 4;
-                break;
-            case 2:
-                sizeUncompressed = getHeight() * getWidth() * 8;
-                break;
-            case 517:
-                sizeUncompressed = getHeight() * getWidth() / 128;
-                break;
+            case 1, 513 -> sizeUncompressed = getHeight() * getWidth() * 4;
+            case 2 -> sizeUncompressed = getHeight() * getWidth() * 8;
+            case 517 -> sizeUncompressed = getHeight() * getWidth() / 128;
         }
         size8888 = getHeight() * getWidth() * 8;
         if (size8888 > maxWriteBuf) {

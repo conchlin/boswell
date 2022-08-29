@@ -2307,21 +2307,12 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 
 
     protected boolean dispelSkills(int skillid) {
-        switch (skillid) {
-            case DarkKnight.BEHOLDER:
-            case FPArchMage.ELQUINES:
-            case ILArchMage.IFRIT:
-            case Priest.SUMMON_DRAGON:
-            case Bishop.BAHAMUT:
-            case Ranger.PUPPET:
-            case Ranger.SILVER_HAWK:
-            case Sniper.PUPPET:
-            case Sniper.GOLDEN_EAGLE:
-            case Hermit.SHADOW_PARTNER:
-                return true;
-            default:
-                return false;
-        }
+        return switch (skillid) {
+            case DarkKnight.BEHOLDER, FPArchMage.ELQUINES, ILArchMage.IFRIT, Priest.SUMMON_DRAGON,
+                    Bishop.BAHAMUT, Ranger.PUPPET, Ranger.SILVER_HAWK, Sniper.PUPPET,
+                    Sniper.GOLDEN_EAGLE, Hermit.SHADOW_PARTNER -> true;
+            default -> false;
+        };
     }
     public void changeFaceExpression(int emote) {
         long timeNow = Server.getInstance().getCurrentTime();
@@ -3157,14 +3148,11 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     }
 
     private static int getJobMapChair(MapleJob job) {
-        switch (job.getId() / 1000) {
-            case 0:
-                return Beginner.MAP_CHAIR;
-            case 1:
-                return Noblesse.MAP_CHAIR;
-            default:
-                return Legend.MAP_CHAIR;
-        }
+        return switch (job.getId() / 1000) {
+            case 0 -> Beginner.MAP_CHAIR;
+            case 1 -> Noblesse.MAP_CHAIR;
+            default -> Legend.MAP_CHAIR;
+        };
     }
 
   /*  public boolean unregisterChairBuff() {
@@ -3819,23 +3807,17 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 
     public int getMiniGamePoints(MiniGameResult type, boolean omok) {
         if (omok) {
-            switch (type) {
-                case WIN:
-                    return omokwins;
-                case LOSS:
-                    return omoklosses;
-                default:
-                    return omokties;
-            }
+            return switch (type) {
+                case WIN -> omokwins;
+                case LOSS -> omoklosses;
+                default -> omokties;
+            };
         } else {
-            switch (type) {
-                case WIN:
-                    return matchcardwins;
-                case LOSS:
-                    return matchcardlosses;
-                default:
-                    return matchcardties;
-            }
+            return switch (type) {
+                case WIN -> matchcardwins;
+                case LOSS -> matchcardlosses;
+                default -> matchcardties;
+            };
         }
     }
 
@@ -6307,29 +6289,22 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
             int tstr = 4, tdex = 4, tint = 4, tluk = 4;
 
             switch (job.getId()) {
-                case 100:
-                case 1100:
-                case 2100:
+                case 100, 1100, 2100 -> {
                     tstr = 35;
                     tsp += ((getLevel() - 10) * 3);
-                    break;
-                case 200:
-                case 1200:
+                }
+                case 200, 1200 -> {
                     tint = 20;
                     tsp += ((getLevel() - 8) * 3);
-                    break;
-                case 300:
-                case 1300:
-                case 400:
-                case 1400:
+                }
+                case 300, 1300, 400, 1400 -> {
                     tdex = 25;
                     tsp += ((getLevel() - 10) * 3);
-                    break;
-                case 500:
-                case 1500:
+                }
+                case 500, 1500 -> {
                     tdex = 20;
                     tsp += ((getLevel() - 10) * 3);
-                    break;
+                }
             }
 
             tap -= tstr;
@@ -9231,23 +9206,23 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
             int randVal = fish.getInstance().getFishingReward();
 
             switch (randVal) {
-                case 0: // Meso
+                case 0 -> { // Meso
                     final int money = Randomizer.rand(10, 25000);
                     getClient().announceHint("[Fishing] You have gained " + money + " mesos!", 500);
                     gainMeso(money, true);
-                    break;
-                case 1: // EXP
+                }
+                case 1 -> { // EXP
                     final int lowGain = Randomizer.rand(1, 500);
                     final int highGain = Randomizer.rand(4000, 10000);
-                    int expGain = getLevel() > 50 ? highGain : lowGain; 
+                    int expGain = getLevel() > 50 ? highGain : lowGain;
                     gainExp(expGain, true, true, true);
                     getClient().announceHint("[Fishing] You have gained " + expGain + "exp!", 500);
-                    break;
-                default:
+                }
+                default -> {
                     MapleInventoryManipulator.addById(getClient(), randVal, (short) 1);
                     getClient().announceHint(
                             "[Fishing] You have reeled in one " + MapleItemInformationProvider.getInstance().getName(randVal), 500);
-                    break;
+                }
             }
         }, time, time);
     }

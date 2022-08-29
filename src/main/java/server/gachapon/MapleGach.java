@@ -53,12 +53,8 @@ public class MapleGach {
          * @return seasonal gach or not
          */
         public boolean isSeasonalEventGach(int npcId) {
-            switch (npcId) {
-                case 9999999: // all events handled through nina
-                    return true;
-                default:
-                    return false;
-            }
+            // all events handled through nina
+            return npcId == 9999999;
         }
 
         private int getTier() {

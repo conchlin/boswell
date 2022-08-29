@@ -158,7 +158,7 @@ public class AssignAPProcessor {
             MapleCharacter player = c.getPlayer();
 
             switch (APFrom) {
-                case 64: // str
+                case 64 -> { // str
                     if (player.getStr() < 5) {
                         player.message("You don't have the minimum STR required to swap.");
                         c.announce(MaplePacketCreator.enableActions());
@@ -169,8 +169,8 @@ public class AssignAPProcessor {
                         c.announce(MaplePacketCreator.enableActions());
                         return false;
                     }
-                    break;
-                case 128: // dex
+                }
+                case 128 -> { // dex
                     if (player.getDex() < 5) {
                         player.message("You don't have the minimum DEX required to swap.");
                         c.announce(MaplePacketCreator.enableActions());
@@ -181,8 +181,8 @@ public class AssignAPProcessor {
                         c.announce(MaplePacketCreator.enableActions());
                         return false;
                     }
-                    break;
-                case 256: // int
+                }
+                case 256 -> { // int
                     if (player.getInt() < 5) {
                         player.message("You don't have the minimum INT required to swap.");
                         c.announce(MaplePacketCreator.enableActions());
@@ -193,8 +193,8 @@ public class AssignAPProcessor {
                         c.announce(MaplePacketCreator.enableActions());
                         return false;
                     }
-                    break;
-                case 512: // luk
+                }
+                case 512 -> { // luk
                     if (player.getLuk() < 5) {
                         player.message("You don't have the minimum LUK required to swap.");
                         c.announce(MaplePacketCreator.enableActions());
@@ -205,8 +205,8 @@ public class AssignAPProcessor {
                         c.announce(MaplePacketCreator.enableActions());
                         return false;
                     }
-                    break;
-                case 2048: // HP
+                }
+                case 2048 -> { // HP
                     if (ServerConstants.USE_ENFORCE_HPMP_SWAP) {
                         if (APTo != 8192) {
                             player.message("You can only swap HP ability points to MP.");
@@ -214,13 +214,11 @@ public class AssignAPProcessor {
                             return false;
                         }
                     }
-
                     if (player.getHpMpApUsed() < 1) {
                         player.message("You don't have enough HPMP stat points to spend on AP Reset.");
                         c.announce(MaplePacketCreator.enableActions());
                         return false;
                     }
-
                     int hp = player.getMaxHp();
                     int level_ = player.getLevel();
                     if (hp < level_ * 14 + 148) {
@@ -228,15 +226,12 @@ public class AssignAPProcessor {
                         c.announce(MaplePacketCreator.enableActions());
                         return false;
                     }
-
                     int curHp = player.getHp();
                     int hplose = -takeHp(player.getJob());
-
                     player.assignHP(hplose, -1);
                     player.updateHp(Math.max(1, curHp + hplose));
-
-                    break;
-                case 8192: // MP
+                }
+                case 8192 -> { // MP
                     if (ServerConstants.USE_ENFORCE_HPMP_SWAP) {
                         if (APTo != 2048) {
                             player.message("You can only swap MP ability points to HP.");
@@ -244,17 +239,14 @@ public class AssignAPProcessor {
                             return false;
                         }
                     }
-
                     if (player.getHpMpApUsed() < 1) {
                         player.message("You don't have enough HPMP stat points to spend on AP Reset.");
                         c.announce(MaplePacketCreator.enableActions());
                         return false;
                     }
-
                     int mp = player.getMaxMp();
                     int level = player.getLevel();
                     MapleJob job = player.getJob();
-
                     boolean canWash = true;
                     if (job.isA(MapleJob.SPEARMAN) && mp < 4 * level + 156) {
                         canWash = false;
@@ -265,23 +257,20 @@ public class AssignAPProcessor {
                     } else if (mp < level * 14 + 148) {
                         canWash = false;
                     }
-
                     if (!canWash) {
                         player.message("You don't have the minimum MP pool required to swap.");
                         c.announce(MaplePacketCreator.enableActions());
                         return false;
                     }
-
                     int curMp = player.getMp();
                     int mplose = -takeMp(job);
-
                     player.assignMP(mplose, -1);
                     player.updateMp(Math.max(0, curMp + mplose));
-
-                    break;
-                default:
+                }
+                default -> {
                     c.announce(MaplePacketCreator.updatePlayerStats(MaplePacketCreator.EMPTY_STATUPDATE, true, player));
                     return false;
+                }
             }
 
             addStat(player, APTo, true);

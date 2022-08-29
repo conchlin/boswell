@@ -99,25 +99,15 @@ public class MapleSessionCoordinator {
         } else {
             subdegreeTime = 1 + (3 * degree);
         }
+
+        baseTime = switch (degree) {
+            case 0 -> 2;       // 2 hours
+            case 1 -> 24;      // 1 day
+            case 2 -> 168;     // 7 days
+            default -> 1680;    // 70 days
+        };
         
-        switch(degree) {
-            case 0:
-                baseTime = 2;       // 2 hours
-                break;
-                
-            case 1:
-                baseTime = 24;      // 1 day
-                break;
-                
-            case 2:
-                baseTime = 168;     // 7 days
-                break;
-                
-            default:
-                baseTime = 1680;    // 70 days
-        }
-        
-        return 3600000 * (baseTime + subdegreeTime);
+        return 3600000L * (baseTime + subdegreeTime);
     }
     
     private static void updateAccessAccount(Connection con, String remoteHwid, int accountId, int loginRelevance) throws SQLException {

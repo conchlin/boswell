@@ -87,32 +87,20 @@ public enum MapleJob {
     }
 
     public static MapleJob getBy5ByteEncoding(int encoded) {
-        switch (encoded) {
-            case 2:
-                return WARRIOR;
-            case 4:
-                return MAGICIAN;
-            case 8:
-                return BOWMAN;
-            case 16:
-                return THIEF;
-            case 32:
-                return PIRATE;
-            case 1024:
-                return NOBLESSE;
-            case 2048:
-                return DAWNWARRIOR1;
-            case 4096:
-                return BLAZEWIZARD1;
-            case 8192:
-                return WINDARCHER1;
-            case 16384:
-                return NIGHTWALKER1;
-            case 32768:
-                return THUNDERBREAKER1;
-            default:
-                return BEGINNER;
-        }
+        return switch (encoded) {
+            case 2 -> WARRIOR;
+            case 4 -> MAGICIAN;
+            case 8 -> BOWMAN;
+            case 16 -> THIEF;
+            case 32 -> PIRATE;
+            case 1024 -> NOBLESSE;
+            case 2048 -> DAWNWARRIOR1;
+            case 4096 -> BLAZEWIZARD1;
+            case 8192 -> WINDARCHER1;
+            case 16384 -> NIGHTWALKER1;
+            case 32768 -> THUNDERBREAKER1;
+            default -> BEGINNER;
+        };
     }
 
     public boolean isBeginner(MapleJob beginners) {

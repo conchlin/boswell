@@ -63,59 +63,37 @@ public enum MapleStat {
     }
 
     public static MapleStat getBy5ByteEncoding(int encoded) {
-        switch (encoded) {
-            case 64:
-                return STR;
-            case 128:
-                return DEX;
-            case 256:
-                return INT;
-            case 512:
-                return LUK;
-        }
-        return null;
+        return switch (encoded) {
+            case 64 -> STR;
+            case 128 -> DEX;
+            case 256 -> INT;
+            case 512 -> LUK;
+            default -> null;
+        };
     }
 
     public static MapleStat getByString(String type) {
-        if (type.equals("SKIN")) {
-            return SKIN;
-        } else if (type.equals("FACE")) {
-            return FACE;
-        } else if (type.equals("HAIR")) {
-            return HAIR;
-        } else if (type.equals("LEVEL")) {
-            return LEVEL;
-        } else if (type.equals("JOB")) {
-            return JOB;
-        } else if (type.equals("STR")) {
-            return STR;
-        } else if (type.equals("DEX")) {
-            return DEX;
-        } else if (type.equals("INT")) {
-            return INT;
-        } else if (type.equals("LUK")) {
-            return LUK;
-        } else if (type.equals("HP")) {
-            return HP;
-        } else if (type.equals("MAXHP")) {
-            return MAXHP;
-        } else if (type.equals("MP")) {
-            return MP;
-        } else if (type.equals("MAXMP")) {
-            return MAXMP;
-        } else if (type.equals("AVAILABLEAP")) {
-            return AVAILABLEAP;
-        } else if (type.equals("AVAILABLESP")) {
-            return AVAILABLESP;
-        } else if (type.equals("EXP")) {
-            return EXP;
-        } else if (type.equals("FAME")) {
-            return FAME;
-        } else if (type.equals("MESO")) {
-            return MESO;
-        } else if (type.equals("PET")) {
-            return PET;
-        }
-        return null;
+        return switch (type) {
+            case "SKIN" -> SKIN;
+            case "FACE" -> FACE;
+            case "HAIR" -> HAIR;
+            case "LEVEL" -> LEVEL;
+            case "JOB" -> JOB;
+            case "STR" -> STR;
+            case "DEX" -> DEX;
+            case "INT" -> INT;
+            case "LUK" -> LUK;
+            case "HP" -> HP;
+            case "MAXHP" -> MAXHP;
+            case "MP" -> MP;
+            case "MAXMP" -> MAXMP;
+            case "AVAILABLEAP" -> AVAILABLEAP;
+            case "AVAILABLESP" -> AVAILABLESP;
+            case "EXP" -> EXP;
+            case "FAME" -> FAME;
+            case "MESO" -> MESO;
+            case "PET" -> PET;
+            default -> null;
+        };
     }
 }

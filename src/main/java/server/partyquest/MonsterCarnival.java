@@ -134,15 +134,11 @@ public class MonsterCarnival {
             if (team == -1) {
                 team = 1;
             }
-            String teamS = "";
-            switch (team) {
-                case 0:
-                    teamS = LanguageConstants.getMessage(chrMap, LanguageConstants.CPQRed);
-                    break;
-                case 1:
-                    teamS = LanguageConstants.getMessage(chrMap, LanguageConstants.CPQBlue);
-                    break;
-            }
+            String teamS = switch (team) {
+                case 0 -> LanguageConstants.getMessage(chrMap, LanguageConstants.CPQRed);
+                case 1 -> LanguageConstants.getMessage(chrMap, LanguageConstants.CPQBlue);
+                default -> "";
+            };
             chrMap.dropMessage(5, teamS + LanguageConstants.getMessage(chrMap, LanguageConstants.CPQPlayerExit));
         }
         earlyFinish();
@@ -455,13 +451,11 @@ public class MonsterCarnival {
     }
 
     public MapleCharacter getEnemyLeader(int team) {
-        switch (team) {
-            case 0:
-                return leader2;
-            case 1:
-                return leader1;
-        }
-        return null;
+        return switch (team) {
+            case 0 -> leader2;
+            case 1 -> leader1;
+            default -> null;
+        };
     }
 
     public int getBlueCP() {

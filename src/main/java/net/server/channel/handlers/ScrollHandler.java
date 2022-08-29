@@ -188,14 +188,12 @@ public final class ScrollHandler extends AbstractMaplePacketHandler {
 
     private static boolean canScroll(int scrollid, int itemid) {
         int sid = scrollid / 100;
-        
-        switch(sid) {
-            case 20492: //scroll for accessory (pendant, belt, ring)
-                return canScroll(2041100, itemid) || canScroll(2041200, itemid) || canScroll(2041300, itemid);
-                
-            default:
-                return (scrollid / 100) % 100 == (itemid / 10000) % 100;
+
+        if (sid == 20492) {
+            //scroll for accessory (pendant, belt, ring)
+            return canScroll(2041100, itemid) || canScroll(2041200, itemid) || canScroll(2041300, itemid);
         }
+        return (scrollid / 100) % 100 == (itemid / 10000) % 100;
     }
     
     private static void announceCannotScroll(MapleClient c, boolean legendarySpirit) {

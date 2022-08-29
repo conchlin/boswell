@@ -107,31 +107,17 @@ public final class ItemConstants {
     }
 
     public static boolean isIncMaxHpItem(int itemid) {
-        switch (itemid) {
-            case 2022366:
-            case 2022384:
-            case 2022393:
-            case 2022402:
-            case 2022411:
-            case 2022420:
-            case 2022375:
-                return true;
-        }
-        return false;
+        return switch (itemid) {
+            case 2022366, 2022384, 2022393, 2022402, 2022411, 2022420, 2022375 -> true;
+            default -> false;
+        };
     }
 
     public static boolean isIncMaxMpItem(int itemid) {
-        switch (itemid) {
-            case 2022367:
-            case 2022376:
-            case 2022385:
-            case 2022394:
-            case 2022403:
-            case 2022412:
-            case 2022421:
-                return true;
-        }
-        return false;
+        return switch (itemid) {
+            case 2022367, 2022376, 2022385, 2022394, 2022403, 2022412, 2022421 -> true;
+            default -> false;
+        };
     }
 
     public static boolean isPermanentItem(int itemId) {
@@ -286,17 +272,17 @@ public final class ItemConstants {
     }
     
     public static boolean isGachNotificationPrize(int itemId) {
-        switch(itemId) {
-            case 2340000: // white scroll
-            case 2049100: // chaos scroll
-            case 1102084: // pink gaia cape
-            case 1102041: // pink adventurer cape
-            case 1102042: // purple adventurer cape
-            case 1102086: // purple gaia cape
-            case 1082149: // brown work gloves
-                return true;
-            default:
-                return false;
-        }
+        return switch (itemId) {
+            // white scroll
+            // chaos scroll
+            // pink gaia cape
+            // pink adventurer cape
+            // purple adventurer cape
+            // purple gaia cape
+            // brown work gloves
+            case 2340000, 2049100, 1102084, 1102041, 1102042, 1102086, 1082149 ->
+                    true;
+            default -> false;
+        };
     }
 }

@@ -44,16 +44,13 @@ public class GiveNxCommand extends Command {
         int value, type = 1;
         if (params.length > 1) {
             if (params[0].length() == 2) {
-                switch (params[0]) {
-                    case "mp":  // maplePoint
-                        type = 2;
-                        break;
-                    case "np":  // nxPrepaid
-                        type = 4;
-                        break;
-                    default:
-                        type = 1;
-                }
+                type = switch (params[0]) {
+                    case "mp" ->  // maplePoint
+                            2;
+                    case "np" ->  // nxPrepaid
+                            4;
+                    default -> 1;
+                };
                 typeStr = params[0];
                 
                 if (params.length > 2) {

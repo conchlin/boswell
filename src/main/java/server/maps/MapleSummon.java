@@ -91,12 +91,9 @@ public class MapleSummon extends AbstractAnimatedMapleMapObject {
     }
 
     public final boolean isPuppet() {
-	switch (skill) {
-	    case 3111002:
-	    case 3211002:
-	    case 13111004:
-		return true;
-	}
-	return false;
+        return switch (skill) {
+            case 3111002, 3211002, 13111004 -> true;
+            default -> false;
+        };
     }
 }

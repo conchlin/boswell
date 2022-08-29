@@ -191,18 +191,15 @@ public final class RangedAttackHandler extends AbstractDealDamageHandler {
                     visProjectile = 0;
                 }
                 
-                byte[] packet;
-                switch (attack.skill) {
-                    case 3121004: // Hurricane
-                    case 3221001: // Pierce
-                    case 5221004: // Rapid Fire
-                    case 13111002: // KoC Hurricane
-                        packet = MaplePacketCreator.rangedAttack(chr, attack.skill, attack.skilllevel, attack.rangedirection, attack.numAttackedAndDamage, visProjectile, attack.allDamage, attack.speed, attack.direction, attack.display);
-                        break;
-                    default:
-                        packet = MaplePacketCreator.rangedAttack(chr, attack.skill, attack.skilllevel, attack.stance, attack.numAttackedAndDamage, visProjectile, attack.allDamage, attack.speed, attack.direction, attack.display);
-                        break;
-                }
+                byte[] packet = switch (attack.skill) {
+                    // Hurricane
+                    // Pierce
+                    // Rapid Fire
+                    // KoC Hurricane
+                    case 3121004, 3221001, 5221004, 13111002 ->
+                            MaplePacketCreator.rangedAttack(chr, attack.skill, attack.skilllevel, attack.rangedirection, attack.numAttackedAndDamage, visProjectile, attack.allDamage, attack.speed, attack.direction, attack.display);
+                    default -> MaplePacketCreator.rangedAttack(chr, attack.skill, attack.skilllevel, attack.stance, attack.numAttackedAndDamage, visProjectile, attack.allDamage, attack.speed, attack.direction, attack.display);
+                };
                 chr.getMap().broadcastMessage(chr, packet, false, true);
                 
                 if (attack.skill != 0) {

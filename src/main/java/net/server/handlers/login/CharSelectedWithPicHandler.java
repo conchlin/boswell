@@ -16,22 +16,13 @@ import client.MapleClient;
 public class CharSelectedWithPicHandler extends AbstractMaplePacketHandler {
 
     private static int parseAntiMulticlientError(AntiMulticlientResult res) {
-        switch (res) {
-            case REMOTE_PROCESSING:
-                return 10;
-
-            case REMOTE_LOGGEDIN:
-                return 7;
-
-            case REMOTE_NO_MATCH:
-                return 17;
-                
-            case COORDINATOR_ERROR:
-                return 8;
-                
-            default:
-                return 9;
-        }
+        return switch (res) {
+            case REMOTE_PROCESSING -> 10;
+            case REMOTE_LOGGEDIN -> 7;
+            case REMOTE_NO_MATCH -> 17;
+            case COORDINATOR_ERROR -> 8;
+            default -> 9;
+        };
     }
     
     @Override

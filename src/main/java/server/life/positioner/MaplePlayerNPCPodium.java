@@ -43,26 +43,18 @@ import tools.MaplePacketCreator;
  */
 public class MaplePlayerNPCPodium {
     private static int getPlatformPosX(int platform) {
-        switch(platform) {
-            case 0:
-                return -50;
-                
-            case 1:
-                return -170;
-                
-            default:
-                return 70;
-        }
+        return switch (platform) {
+            case 0 -> -50;
+            case 1 -> -170;
+            default -> 70;
+        };
     }
     
     private static int getPlatformPosY(int platform) {
-        switch(platform) {
-            case 0:
-                return -47;
-                
-            default:
-                return 40;
+        if (platform == 0) {
+            return -47;
         }
+        return 40;
     }
     
     private static Point calcNextPos(int rank, int step) {

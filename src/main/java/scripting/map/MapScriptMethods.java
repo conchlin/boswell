@@ -37,23 +37,17 @@ public class MapScriptMethods extends AbstractPlayerInteraction {
 
     public void displayAranIntro() {
         switch (c.getPlayer().getMapId()) {
-            case 914090010:
+            case 914090010 -> {
                 lockUI();
                 c.announce(MaplePacketCreator.showIntro("Effect/Direction1.img/aranTutorial/Scene0"));
-                break;
-            case 914090011:
-                c.announce(MaplePacketCreator.showIntro("Effect/Direction1.img/aranTutorial/Scene1" + c.getPlayer().getGender()));
-                break;
-            case 914090012:
-                c.announce(MaplePacketCreator.showIntro("Effect/Direction1.img/aranTutorial/Scene2" + c.getPlayer().getGender()));
-                break;
-            case 914090013:
-                c.announce(MaplePacketCreator.showIntro("Effect/Direction1.img/aranTutorial/Scene3"));
-                break;
-            case 914090100:
+            }
+            case 914090011 -> c.announce(MaplePacketCreator.showIntro("Effect/Direction1.img/aranTutorial/Scene1" + c.getPlayer().getGender()));
+            case 914090012 -> c.announce(MaplePacketCreator.showIntro("Effect/Direction1.img/aranTutorial/Scene2" + c.getPlayer().getGender()));
+            case 914090013 -> c.announce(MaplePacketCreator.showIntro("Effect/Direction1.img/aranTutorial/Scene3"));
+            case 914090100 -> {
                 lockUI();
                 c.announce(MaplePacketCreator.showIntro("Effect/Direction1.img/aranTutorial/HandedPoleArm" + c.getPlayer().getGender()));
-                break;
+            }
         }
     }
 

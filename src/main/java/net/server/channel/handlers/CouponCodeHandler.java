@@ -162,22 +162,13 @@ public final class CouponCodeHandler extends AbstractMaplePacketHandler {
     }
     
     private static int parseCouponResult(int res) {
-        switch (res) {
-            case -1:
-                return 0xB0;
-                
-            case -2:
-                return 0xB3;
-            
-            case -3:
-                return 0xB2;
-            
-            case -4:
-                return 0xBB;
-                
-            default:
-                return 0xB1;
-        }
+        return switch (res) {
+            case -1 -> 0xB0;
+            case -2 -> 0xB3;
+            case -3 -> 0xB2;
+            case -4 -> 0xBB;
+            default -> 0xB1;
+        };
     }
     
     @Override

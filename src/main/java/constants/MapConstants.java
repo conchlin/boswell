@@ -15,25 +15,31 @@ public class MapConstants {
     public static final int FISH_LAGOON = 741000200;
     
     public static boolean isRestrictedFMMap(int mapid) {
-        switch (mapid) {
-            case 240040700: // - Leafre - Cave of Life - Entrance    //HT Maps
-            case 240050000: // - Cave of Life - Cave Entrance
-            case 240060200: // - Cave of Life - Horntail's Cave
-            case 280030000: // - Last Mission - Zakum's Altar        //Zakum Maps
-            case 211042200: // - El Nath - The Cave of Trial III
-            case 211042300: // - El Nath - The Door to Zakum
-            case 211042400: // - El Nath - Entrance to Zakum Altar
-            case 220080000: // - Ludibrium - Deep Inside the Clocktower    //Papulatis Maps
-            case 220080001: // - Ludibrium - Origin of Clocktower
-            case 551030200: // - Malaysia - Spooky World                 //Scar & Targ
-            case 970010000: // Maple Hill (Aramia Event)
-            case 741000200: // fishing lagoon
-            case 280020000: // zakum JQ stage 1
-            case 280020001: // zakum JQ stage 2
-                return true;
-            default:
-                return false;
-        }
+        return switch (mapid) {
+            // - Leafre - Cave of Life - Entrance
+            // HT Maps
+            // - Cave of Life - Cave Entrance
+            // - Cave of Life - Horntail's Cave
+            // - Last Mission - Zakum's Altar
+            // Zakum Maps
+            // - El Nath - The Cave of Trial III
+            // - El Nath - The Door to Zakum
+            // - El Nath - Entrance to Zakum Altar
+            // - Ludibrium - Deep Inside the Clocktower
+            // Papulatis Maps
+            // - Ludibrium - Origin of Clocktower
+            // - Malaysia - Spooky World
+            // Scar & Targ
+            // Maple Hill (Aramia Event)
+            // fishing lagoon
+            // zakum JQ stage 1
+            // zakum JQ stage 2
+            case 240040700, 240050000, 240060200, 280030000, 211042200, 211042300,
+                    211042400, 220080000, 220080001, 551030200, 970010000, 741000200,
+                    280020000, 280020001 -> // zakum JQ stage 2
+                    true;
+            default -> false;
+        };
     }
 
     public static boolean isMapleIsland(int mapid) {

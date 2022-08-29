@@ -324,61 +324,29 @@ public class Equip extends Item {
     }
 
        public void setStat(MapleStat stat, short amount) {
-        switch (stat) {
-            case INT:
-                setInt(amount);
-                break;
-            case STR:
-                setStr(amount);
-                break;
-            case LUK:
-                setLuk(amount);
-                break;
-            case DEX:
-                setDex(amount);
-                break;
-            case HP:
-                setHp(amount);
-                break;
-            case MP:
-                setMp(amount);
-                break;
-            default:
-                FilePrinter.printError(FilePrinter.ITEM, "invalid stat to get. use its setter instead.");
-        }
+           switch (stat) {
+               case INT -> setInt(amount);
+               case STR -> setStr(amount);
+               case LUK -> setLuk(amount);
+               case DEX -> setDex(amount);
+               case HP -> setHp(amount);
+               case MP -> setMp(amount);
+               default -> FilePrinter.printError(FilePrinter.ITEM, "invalid stat to get. use its setter instead.");
+           }
     }
 
     public void setStat(MapleBuffStat stat, short amount) {
         switch (stat) {
-            case WATK:
-                setWatk(amount);
-                break;
-            case MATK:
-                setMatk(amount);
-                break;
-            case ACC:
-                setAcc(amount);
-                break;
-            case SPEED:
-                setSpeed(amount);
-                break;
-            case JUMP:
-                setJump(amount);
-                break;
-            case AVOID:
-                setAvoid(amount);
-                break;
-            case WDEF:
-                setWdef(amount);
-                break;
-            case MDEF:
-                setMdef(amount);
-                break;
-            case HANDS:
-                setHands(amount);
-                break;
-            default:
-                FilePrinter.printError(FilePrinter.ITEM, "invalid stat to get. use its setter instead.");
+            case WATK -> setWatk(amount);
+            case MATK -> setMatk(amount);
+            case ACC -> setAcc(amount);
+            case SPEED -> setSpeed(amount);
+            case JUMP -> setJump(amount);
+            case AVOID -> setAvoid(amount);
+            case WDEF -> setWdef(amount);
+            case MDEF -> setMdef(amount);
+            case HANDS -> setHands(amount);
+            default -> FilePrinter.printError(FilePrinter.ITEM, "invalid stat to get. use its setter instead.");
         }
     }
 

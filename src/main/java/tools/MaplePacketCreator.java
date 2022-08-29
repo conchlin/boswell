@@ -2162,55 +2162,49 @@ public class MaplePacketCreator {
         mplew.writeShort(SendOpcode.NEW_YEAR_CARD_RES.getValue());
         mplew.write(mode);
         switch (mode) {
-            case 4: // Successfully sent a New Year Card\r\n to %s. 
-            case 6: // Successfully received a New Year Card. 
-                encodeNewYearCard(newyear, mplew);
-                break;
+            case 4, 6 ->
+                    // Successfully sent a New Year Card\r\n to %s.
+                    // Successfully received a New Year Card.
+                    encodeNewYearCard(newyear, mplew);
+            case 8 -> // Successfully deleted a New Year Card.
+                    mplew.writeInt(newyear.getId());
+            case 5, 7, 9, 0xB ->
+                    // Nexon's stupid and makes 4 modes do the same operation..
+                    mplew.write(msg);
 
-            case 8: // Successfully deleted a New Year Card. 
-                mplew.writeInt(newyear.getId());
-                break;
-
-            case 5: // Nexon's stupid and makes 4 modes do the same operation.. 
-            case 7:
-            case 9:
-            case 0xB:
-                // 0x10: You have no free slot to store card.\r\ntry later on please. 
-                // 0x11: You have no card to send. 
-                // 0x12: Wrong inventory information ! 
-                // 0x13: Cannot find such character ! 
-                // 0x14: Incoherent Data ! 
-                // 0x15: An error occured during DB operation. 
-                // 0x16: An unknown error occured ! 
-                // 0xF: You cannot send a card to yourself ! 
-                mplew.write(msg);
-                break;
-
-            case 0xA:   // GetUnreceivedList_Done
+            // 0x10: You have no free slot to store card.\r\ntry later on please.
+            // 0x11: You have no card to send.
+            // 0x12: Wrong inventory information !
+            // 0x13: Cannot find such character !
+            // 0x14: Incoherent Data !
+            // 0x15: An error occured during DB operation.
+            // 0x16: An unknown error occured !
+            // 0xF: You cannot send a card to yourself !
+            case 0xA -> {
+                // GetUnreceivedList_Done
                 int nSN = 1;
                 mplew.writeInt(nSN);
-                if ((nSN - 1) <= 98 && nSN > 0) {//lol nexon are you kidding 
+                if ((nSN - 1) <= 98 && nSN > 0) {//lol nexon are you kidding
                     for (int i = 0; i < nSN; i++) {
                         mplew.writeInt(newyear.getId());
                         mplew.writeInt(newyear.getSenderId());
                         mplew.writeMapleAsciiString(newyear.getSenderName());
                     }
                 }
-                break;
-
-            case 0xC:   // NotiArrived
+            }
+            case 0xC -> {
+                // NotiArrived
                 mplew.writeInt(newyear.getId());
                 mplew.writeMapleAsciiString(newyear.getSenderName());
-                break;
-
-            case 0xD:   // BroadCast_AddCardInfo
+            }
+            case 0xD -> {
+                // BroadCast_AddCardInfo
                 mplew.writeInt(newyear.getId());
                 mplew.writeInt(user.getId());
-                break;
-
-            case 0xE:   // BroadCast_RemoveCardInfo
-                mplew.writeInt(newyear.getId());
-                break;
+            }
+            case 0xE ->
+                    // BroadCast_RemoveCardInfo
+                    mplew.writeInt(newyear.getId());
         }
         return mplew.getPacket();
     }
@@ -2571,28 +2565,24 @@ public class MaplePacketCreator {
             mplew.write(mod.getInventoryType());
             mplew.writeShort(mod.getMode() == 2 ? mod.getOldPosition() : mod.getPosition());
             switch (mod.getMode()) {
-                case 0: {//add item
+                case 0 -> {//add item
                     addItemInfo(mplew, mod.getItem(), true);
-                    break;
                 }
-                case 1: {//update quantity
+                case 1 -> {//update quantity
                     mplew.writeShort(mod.getQuantity());
-                    break;
                 }
-                case 2: {//move                  
+                case 2 -> {//move
                     mplew.writeShort(mod.getPosition());
                     if (mod.getPosition() < 0 || mod.getOldPosition() < 0) {
                         addMovement = mod.getOldPosition() < 0 ? 1 : 2;
                     }
-                    break;
                 }
-                case 3: {//remove
+                case 3 -> {//remove
                     if (mod.getPosition() < 0) {
                         addMovement = 2;
                     }
-                    break;
                 }
-                case 4: { //itemexp
+                case 4 -> { //itemexp
                     Equip equip = (Equip) mod.getItem();
                     mplew.writeInt(equip.getItemExp());
                 }
@@ -4007,9 +3997,7 @@ public class MaplePacketCreator {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendOpcode.PARTY_OPERATION.getValue());
         switch (op) {
-            case DISBAND:
-            case EXPEL:
-            case LEAVE:
+            case DISBAND, EXPEL, LEAVE -> {
                 mplew.write(0x0C);
                 mplew.writeInt(party.getId());
                 mplew.writeInt(target.getId());
@@ -4026,25 +4014,24 @@ public class MaplePacketCreator {
                     mplew.writeMapleAsciiString(target.getName());
                     addPartyStatus(forChannel, party, mplew, false);
                 }
-                break;
-            case JOIN:
+            }
+            case JOIN -> {
                 mplew.write(0xF);
                 mplew.writeInt(party.getId());
                 mplew.writeMapleAsciiString(target.getName());
                 addPartyStatus(forChannel, party, mplew, false);
-                break;
-            case SILENT_UPDATE:
-            case LOG_ONOFF:
+            }
+            case SILENT_UPDATE, LOG_ONOFF -> {
                 mplew.write(0x7);
                 mplew.writeInt(party.getId());
                 addPartyStatus(forChannel, party, mplew, false);
-                break;
-            case CHANGE_LEADER:
+            }
+            case CHANGE_LEADER -> {
                 mplew.write(0x1B);
                 mplew.writeInt(target.getId());
                 mplew.write(0);
-                break;
-            case MYSTIC_DOOR:
+            }
+            case MYSTIC_DOOR -> {
                 mplew.writeShort(0x23);
                 if (target.getDoor() != null) {
                     mplew.writeInt(target.getDoor().getTown().getId());
@@ -4055,7 +4042,7 @@ public class MaplePacketCreator {
                     mplew.writeInt(999999999);
                     mplew.writeInt(0);
                 }
-                break;
+            }
         }
         return mplew.getPacket();
     }
@@ -5701,13 +5688,10 @@ public class MaplePacketCreator {
         mplew.writeShort(SendOpcode.FREDRICK.getValue());
         mplew.write(op);
 
-        switch (op) {
-            case 0x24:
-                mplew.skip(8);
-                break;
-            default:
-                mplew.write(0);
-                break;
+        if (op == 0x24) {
+            mplew.skip(8);
+        } else {
+            mplew.write(0);
         }
 
         return mplew.getPacket();

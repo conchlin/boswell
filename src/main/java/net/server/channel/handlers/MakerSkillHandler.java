@@ -148,38 +148,32 @@ public final class MakerSkillHandler extends AbstractMaplePacketHandler {
         short createStatus = getCreateStatus(c, recipe);
 
         switch (createStatus) {
-            case -1:// non-available for Maker itemid has been tried to forge
+            case -1 -> {// non-available for Maker itemid has been tried to forge
                 FilePrinter.printError(FilePrinter.EXPLOITS, "Player " + c.getPlayer().getName() + " tried to craft itemid " + toCreate + " using the Maker skill.");
                 c.announce(MaplePacketCreator.serverNotice(1, "The requested item could not be crafted on this operation."));
                 c.announce(MaplePacketCreator.makerEnableActions());
-                break;
-
-            case 1: // no items
+            }
+            case 1 -> { // no items
                 c.announce(MaplePacketCreator.serverNotice(1, "You don't have all required items in your inventory to make " + ii.getName(toCreate) + "."));
                 c.announce(MaplePacketCreator.makerEnableActions());
-                break;
-
-            case 2: // no meso
+            }
+            case 2 -> { // no meso
                 c.announce(MaplePacketCreator.serverNotice(1, "You don't have enough mesos (" + GameConstants.numberWithCommas(recipe.getCost()) + ") to complete this operation."));
                 c.announce(MaplePacketCreator.makerEnableActions());
-                break;
-
-            case 3: // no req level
+            }
+            case 3 -> { // no req level
                 c.announce(MaplePacketCreator.serverNotice(1, "You don't have enough level to complete this operation."));
                 c.announce(MaplePacketCreator.makerEnableActions());
-                break;
-
-            case 4: // no req skill level
+            }
+            case 4 -> { // no req skill level
                 c.announce(MaplePacketCreator.serverNotice(1, "You don't have enough Maker level to complete this operation."));
                 c.announce(MaplePacketCreator.makerEnableActions());
-                break;
-
-            case 5: // inventory full
+            }
+            case 5 -> { // inventory full
                 c.announce(MaplePacketCreator.serverNotice(1, "Your inventory is full."));
                 c.announce(MaplePacketCreator.makerEnableActions());
-                break;
-
-            default:
+            }
+            default -> {
                 if (toDisassemble != -1) {
                     MapleInventoryManipulator.removeFromSlot(c, MapleInventoryType.EQUIP, (short) pos, (short) 1, false);
                 } else {
@@ -188,7 +182,6 @@ public final class MakerSkillHandler extends AbstractMaplePacketHandler {
 
                     }
                 }
-
                 int cost = recipe.getCost();
                 boolean strengthen = false;
                 if (stimulantid == -1 && reagentids.isEmpty()) {
@@ -197,7 +190,7 @@ public final class MakerSkillHandler extends AbstractMaplePacketHandler {
                     for (Pair<Integer, Integer> p : recipe.getGainItems()) {
                         //strengthening
                         // left is id, right is quantity
-                        if(p.getLeft() >= 4250000 && p.getLeft() <= 4251402) { // gem check bc maybe other cases apply here
+                        if (p.getLeft() >= 4250000 && p.getLeft() <= 4251402) { // gem check bc maybe other cases apply here
                             int newGem = calculateGemReward(p.getLeft());
                             short gemAmt = getGemQuantity(newGem, p.getLeft());
                             c.getAbstractPlayerInteraction().gainItem(newGem, gemAmt, false);
@@ -231,13 +224,12 @@ public final class MakerSkillHandler extends AbstractMaplePacketHandler {
                         c.announce(MaplePacketCreator.makerResult(makerSucceeded, recipe.getGainItems().get(0).getLeft(), recipe.getGainItems().get(0).getRight(), recipe.getCost(), recipe.getReqItems(), stimulantid, new LinkedList<>(reagentids.keySet())));
                     }
                 }
-
                 c.announce(MaplePacketCreator.showMakerEffect(makerSucceeded));
                 c.getPlayer().getMap().broadcastMessage(c.getPlayer(), MaplePacketCreator.showForeignMakerEffect(c.getPlayer().getId(), makerSucceeded), false);
-
                 if (toCreate == 4260003 && type == 3 && c.getPlayer().getQuestStatus(6033) == 1) {
                     c.getAbstractPlayerInteraction().setQuestProgress(6033, 1);
                 }
+            }
         }
     }
 
@@ -459,13 +451,8 @@ public final class MakerSkillHandler extends AbstractMaplePacketHandler {
 
                         if (!stat.equals("ReqLevel")) {    // improve req level... really?
                             switch (stat) {
-                                case "MaxHP":
-                                    stat = "MHP";
-                                    break;
-
-                                case "MaxMP":
-                                    stat = "MMP";
-                                    break;
+                                case "MaxHP" -> stat = "MHP";
+                                case "MaxMP" -> stat = "MMP";
                             }
 
                             Integer d = stats.get(stat);

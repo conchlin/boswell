@@ -146,17 +146,10 @@ public final class MonsterCarnivalHandler extends AbstractMaplePacketHandler {
 
                             int success = c.getPlayer().getMap().spawnGuardian(c.getPlayer().getTeam(), num);
                             if (success != 1) {
-                                switch (success) {
-                                    case -1:
-                                        c.announce(MaplePacketCreator.CPQMessage((byte) 3));
-                                        break;
-
-                                    case 0:
-                                        c.announce(MaplePacketCreator.CPQMessage((byte) 4));
-                                        break;
-
-                                    default:
-                                        c.announce(MaplePacketCreator.CPQMessage((byte) 3));
+                                if (success == 0) {
+                                    c.announce(MaplePacketCreator.CPQMessage((byte) 4));
+                                } else {
+                                    c.announce(MaplePacketCreator.CPQMessage((byte) 3));
                                 }
                                 c.announce(MaplePacketCreator.enableActions());
                                 return;

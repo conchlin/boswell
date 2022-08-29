@@ -51,72 +51,55 @@ public class DebuffCommand extends Command {
         MobSkill skill = null;
 
         switch (params[0].toUpperCase()) {
-            case "SLOW":
+            case "SLOW" -> {
                 disease = MapleDisease.SLOW;
                 skill = MobSkillFactory.getMobSkill(126, 7);
-                break;
-
-            case "SEDUCE":
+            }
+            case "SEDUCE" -> {
                 disease = MapleDisease.SEDUCE;
                 int level = 7;
                 if (params.length >= 2) {
                     switch (params[1].toUpperCase()) {
-                        case "UP":
-                            level = 6;
-                            break;
-                        case "RIGHT":
-                            level = 10;
-                            break;
-                        case "DOWN":
-                            level = 11;
-                            break;
-                        case "LEFT":
-                            level = 7;
-                            break;
+                        case "UP" -> level = 6;
+                        case "RIGHT" -> level = 10;
+                        case "DOWN" -> level = 11;
+                        case "LEFT" -> level = 7;
                     }
                 }
                 skill = MobSkillFactory.getMobSkill(128, level);
-                break;
-
-            case "ZOMBIFY":
+            }
+            case "ZOMBIFY" -> {
                 disease = MapleDisease.ZOMBIFY;
                 skill = MobSkillFactory.getMobSkill(133, 1);
-                break;
-
-            case "CONFUSE":
+            }
+            case "CONFUSE" -> {
                 disease = MapleDisease.CONFUSE;
                 skill = MobSkillFactory.getMobSkill(132, 2);
-                break;
-
-            case "STUN":
+            }
+            case "STUN" -> {
                 disease = MapleDisease.STUN;
                 skill = MobSkillFactory.getMobSkill(123, 7);
-                break;
-
-            case "POISON":
+            }
+            case "POISON" -> {
                 disease = MapleDisease.POISON;
                 skill = MobSkillFactory.getMobSkill(125, 5);
-                break;
-
-            case "SEAL":
+            }
+            case "SEAL" -> {
                 disease = MapleDisease.SEAL;
                 skill = MobSkillFactory.getMobSkill(120, 1);
-                break;
-
-            case "DARKNESS":
+            }
+            case "DARKNESS" -> {
                 disease = MapleDisease.DARKNESS;
                 skill = MobSkillFactory.getMobSkill(121, 1);
-                break;
-
-            case "WEAKEN":
+            }
+            case "WEAKEN" -> {
                 disease = MapleDisease.WEAKEN;
                 skill = MobSkillFactory.getMobSkill(122, 1);
-                break;
-
-            case "CURSE":
+            }
+            case "CURSE" -> {
                 disease = MapleDisease.CURSE;
                 skill = MobSkillFactory.getMobSkill(124, 1);
-                break;
+            }
         }
 
         if (disease == null) {

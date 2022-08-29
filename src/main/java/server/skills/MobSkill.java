@@ -164,53 +164,26 @@ public class MobSkill implements Skill {
 				continue;
 			}*/
 			MapleBuffStat disease = null;
-			switch(skillId) {
-				case 120:
-					disease = MapleBuffStat.SEAL;
-					break;
-				case 121:
-					disease = MapleBuffStat.DARKNESS;
-					break;
-				case 122:
-					disease = MapleBuffStat.WEAKEN;
-					break;
-				case 123:
-					disease = MapleBuffStat.STUN;
-					break;
-				case 124:
-					disease = MapleBuffStat.CURSE;
-					break;
-				case 125:
-					disease = MapleBuffStat.POISON;
-					break;
-				case 126:
-					disease = MapleBuffStat.SLOW;
-					break;
-				case 127:
-					player.dispel();
-					break;
-				case 128:
-					disease = MapleBuffStat.SEDUCE;
-					break;
-				case 129:
+			switch (skillId) {
+				case 120 -> disease = MapleBuffStat.SEAL;
+				case 121 -> disease = MapleBuffStat.DARKNESS;
+				case 122 -> disease = MapleBuffStat.WEAKEN;
+				case 123 -> disease = MapleBuffStat.STUN;
+				case 124 -> disease = MapleBuffStat.CURSE;
+				case 125 -> disease = MapleBuffStat.POISON;
+				case 126 -> disease = MapleBuffStat.SLOW;
+				case 127 -> player.dispel();
+				case 128 -> disease = MapleBuffStat.SEDUCE;
+				case 129 -> {
 					disease = MapleBuffStat.BAN_MAP;
 					player.changeMapBanish(monster.getBanish().getMap(), monster.getBanish().getPortal(), monster.getBanish().getMsg());
-					break;
-				case 132:
-					disease = MapleBuffStat.CONFUSE;
-					break;
-				case 133: // zombify
-					disease = MapleBuffStat.ZOMBIFY;
-					break;
-				case 134:
-					disease = MapleBuffStat.STOP_POTION;
-					break;
-				case 135:
-					disease = MapleBuffStat.STOP_MOTION;
-					break;
-				case 136:
-					disease = MapleBuffStat.FEAR;
-					break;
+				}
+				case 132 -> disease = MapleBuffStat.CONFUSE;
+				case 133 -> // zombify
+						disease = MapleBuffStat.ZOMBIFY;
+				case 134 -> disease = MapleBuffStat.STOP_POTION;
+				case 135 -> disease = MapleBuffStat.STOP_MOTION;
+				case 136 -> disease = MapleBuffStat.FEAR;
 			}
 /*			if (chr.getBuffEffect(disease) != null) {
 				disease = null;
@@ -234,27 +207,11 @@ public class MobSkill implements Skill {
 		Map<MonsterStatus, Integer> stats = new ArrayMap<>();
 		int skillID = skillId | (skillLevel << 16);
 		switch (skillId) {
-			case 100:
-			case 110:
-			case 150:
-				stats.put(MonsterStatus.WEAPON_ATTACK_UP, x);
-				break;
-			case 101:
-			case 111:
-			case 151:
-				stats.put(MonsterStatus.MAGIC_ATTACK_UP, x);
-				break;
-			case 102:
-			case 112:
-			case 152:
-				stats.put(MonsterStatus.WEAPON_DEFENSE_UP, x);
-				break;
-			case 103:
-			case 113:
-			case 153:
-				stats.put(MonsterStatus.MAGIC_DEFENSE_UP, x);
-				break;
-			case 114:
+			case 100, 110, 150 -> stats.put(MonsterStatus.WEAPON_ATTACK_UP, x);
+			case 101, 111, 151 -> stats.put(MonsterStatus.MAGIC_ATTACK_UP, x);
+			case 102, 112, 152 -> stats.put(MonsterStatus.WEAPON_DEFENSE_UP, x);
+			case 103, 113, 153 -> stats.put(MonsterStatus.MAGIC_DEFENSE_UP, x);
+			case 114 -> {
 				List<MapleMapObject> objects = getObjectsInRange(monster, MapleMapObjectType.MONSTER);
 				int hps = (getX()) + (int) (Math.random() % getY());
 				for (MapleMapObject mons : objects) {
@@ -262,42 +219,31 @@ public class MobSkill implements Skill {
 					mon.heal(hps, 0);
 					mon.getMap().broadcastMessage(player, MaplePacketCreator.affectedMonster(mon.getObjectId(), skillID, 0), true);
 				}
-				break;
-			case 140:
-				stats.put(MonsterStatus.WEAPON_IMMUNITY, x);
-				break;
-			case 141:
-				stats.put(MonsterStatus.MAGIC_IMMUNITY, x);
-				break;
-			case 142:
-				stats.put(MonsterStatus.HARD_SKIN, x);
-				break;
-			case 143: // Weapon Reflect
+			}
+			case 140 -> stats.put(MonsterStatus.WEAPON_IMMUNITY, x);
+			case 141 -> stats.put(MonsterStatus.MAGIC_IMMUNITY, x);
+			case 142 -> stats.put(MonsterStatus.HARD_SKIN, x);
+			case 143 -> { // Weapon Reflect
 				stats.put(MonsterStatus.WEAPON_REFLECT, x);
 				stats.put(MonsterStatus.WEAPON_IMMUNITY, x);
-				break;
-			case 144: // Magic Reflect
+			}
+			case 144 -> { // Magic Reflect
 				stats.put(MonsterStatus.MAGIC_REFLECT, x);
 				stats.put(MonsterStatus.MAGIC_IMMUNITY, x);
-				break;
-			case 145: // Weapon / Magic reflect
+			}
+			case 145 -> { // Weapon / Magic reflect
 				stats.put(MonsterStatus.WEAPON_REFLECT, x);
 				stats.put(MonsterStatus.WEAPON_IMMUNITY, x);
 				stats.put(MonsterStatus.MAGIC_REFLECT, x);
 				stats.put(MonsterStatus.MAGIC_IMMUNITY, x);
-				break;
-			case 154: // accuracy up
-				stats.put(MonsterStatus.ACC, x);
-				break;
-			case 155: // avoid up
-				stats.put(MonsterStatus.AVOID, x);
-				break;
-			case 156: // speed up
-				stats.put(MonsterStatus.SPEED, x);
-				break;
-			case 157:
-				stats.put(MonsterStatus.SEAL_SKILL, x);
-				break;
+			}
+			case 154 -> // accuracy up
+					stats.put(MonsterStatus.ACC, x);
+			case 155 -> // avoid up
+					stats.put(MonsterStatus.AVOID, x);
+			case 156 -> // speed up
+					stats.put(MonsterStatus.SPEED, x);
+			case 157 -> stats.put(MonsterStatus.SEAL_SKILL, x);
 		}
 		if (stats.size() > 0) {
 			monster.applyMonsterBuff(stats, getX(), getSkillId(), getDuration(), this);

@@ -47,11 +47,9 @@ public final class PartyOperationHandler extends AbstractMaplePacketHandler {
         World world = c.getWorldServer();
         MapleParty party = player.getParty();
         switch (operation) {
-            case 1: { // create
-               	MapleParty.createParty(player, false);
-                break;
-            }
-            case 2: { // leave/disband
+            case 1 -> // create
+                    MapleParty.createParty(player, false);
+            case 2 -> { // leave/disband
                 if (party != null) {
                     List<MapleCharacter> partymembers = player.getPartyMembers();
 
@@ -59,11 +57,10 @@ public final class PartyOperationHandler extends AbstractMaplePacketHandler {
                     player.updatePartySearchAvailability(true);
                     player.partyOperationUpdate(party, partymembers);
                 }
-                break;
             }
-            case 3: { // join
+            case 3 -> { // join
                 int partyid = slea.readInt();
-                
+
                 Pair<InviteResult, MapleCharacter> inviteRes = MapleInviteCoordinator.answerInvite(InviteType.PARTY, player.getId(), partyid, true);
                 InviteResult res = inviteRes.getLeft();
                 if (res == InviteResult.ACCEPTED) {
@@ -73,22 +70,21 @@ public final class PartyOperationHandler extends AbstractMaplePacketHandler {
                 } else {
                     c.announce(MaplePacketCreator.serverNotice(5, "You couldn't join the party due to an expired invitation request."));
                 }
-                break;
             }
-            case 4: { // invite
+            case 4 -> { // invite
                 String name = slea.readMapleAsciiString();
                 MapleCharacter invited = world.getPlayerStorage().getCharacterByName(name);
                 if (invited != null) {
                     if (player.isCheater() && !invited.isCheater() ||
-                        !player.isCheater() && invited.isCheater()) {
+                            !player.isCheater() && invited.isCheater()) {
                         c.announce(MaplePacketCreator.serverNotice(5, "The player you have invited is not allowed to join your party. Please contact a moderator for assistance."));
                         return;
                     }
-                    if(invited.getLevel() < 10 && !(player.getLevel() >= 10)) { //min requirement is level 10
+                    if (invited.getLevel() < 10 && !(player.getLevel() >= 10)) { //min requirement is level 10
                         c.announce(MaplePacketCreator.serverNotice(5, "The player you have invited does not meet the requirements."));
                         return;
                     }
-                    if(invited.getLevel() >= 10 && player.getLevel() < 10) {    //trying to invite high level
+                    if (invited.getLevel() >= 10 && player.getLevel() < 10) {    //trying to invite high level
                         c.announce(MaplePacketCreator.serverNotice(5, "The player you have invited does not meet the requirements."));
                         return;
                     }
@@ -97,7 +93,7 @@ public final class PartyOperationHandler extends AbstractMaplePacketHandler {
                             if (!MapleParty.createParty(player, false)) {
                                 return;
                             }
-                            
+
                             party = player.getParty();
                         }
                         if (party.getMembers().size() < 6) {
@@ -115,19 +111,16 @@ public final class PartyOperationHandler extends AbstractMaplePacketHandler {
                 } else {
                     c.announce(MaplePacketCreator.partyStatusMessage(19));
                 }
-                break;
             }
-            case 5: { // expel
+            case 5 -> { // expel
                 int cid = slea.readInt();
                 MapleParty.expelFromParty(party, c, cid);
-                break;
             }
-            case 6: { // change leader
+            case 6 -> { // change leader
                 int newLeader = slea.readInt();
                 MaplePartyCharacter newLeadr = party.getMemberById(newLeader);
                 world.updateParty(party.getId(), PartyOperation.CHANGE_LEADER, newLeadr);
-                break;
             }
-        }    
+        }
     }
 }

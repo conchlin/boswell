@@ -71,42 +71,36 @@ public class WZIMGFile {
     private void parse(WZIMGEntry entry, SeekableLittleEndianAccessor slea) {
         byte marker = slea.readByte();
         switch (marker) {
-            case 0: {
+            case 0 -> {
                 String name = WZTool.readDecodedString(slea);
                 entry.setName(name);
-                break;
             }
-            case 1: {
+            case 1 -> {
                 String name = WZTool.readDecodedStringAtOffsetAndReset(slea, file.getOffset() + slea.readInt());
                 entry.setName(name);
-                break;
             }
-            default:
-                System.out.println("Unknown Image identifier: " + marker + " at offset " + (slea.getPosition() - file.getOffset()));
+            default -> System.out.println("Unknown Image identifier: " + marker + " at offset " + (slea.getPosition() - file.getOffset()));
         }
         marker = slea.readByte();
         switch (marker) {
-            case 0:
-                entry.setType(MapleDataType.IMG_0x00);
-                break;
-            case 2:
-            case 11: //??? no idea, since 0.49
+            case 0 -> entry.setType(MapleDataType.IMG_0x00);
+            case 2, 11 -> { //??? no idea, since 0.49
                 entry.setType(MapleDataType.SHORT);
                 entry.setData(Short.valueOf(slea.readShort()));
-                break;
-            case 3:
+            }
+            case 3 -> {
                 entry.setType(MapleDataType.INT);
                 entry.setData(Integer.valueOf(WZTool.readValue(slea)));
-                break;
-            case 4:
+            }
+            case 4 -> {
                 entry.setType(MapleDataType.FLOAT);
                 entry.setData(Float.valueOf(WZTool.readFloatValue(slea)));
-                break;
-            case 5:
+            }
+            case 5 -> {
                 entry.setType(MapleDataType.DOUBLE);
                 entry.setData(Double.valueOf(slea.readDouble()));
-                break;
-            case 8:
+            }
+            case 8 -> {
                 entry.setType(MapleDataType.STRING);
                 byte iMarker = slea.readByte();
                 if (iMarker == 0) {
@@ -116,113 +110,108 @@ public class WZIMGFile {
                 } else {
                     System.out.println("Unknown String type " + iMarker);
                 }
-                break;
-            case 9:
+            }
+            case 9 -> {
                 entry.setType(MapleDataType.EXTENDED);
                 long endOfExtendedBlock = slea.readInt();
                 endOfExtendedBlock += slea.getPosition();
                 parseExtended(entry, slea, endOfExtendedBlock);
-                break;
-            default:
-                System.out.println("Unknown Image type " + marker);
+            }
+            default -> System.out.println("Unknown Image type " + marker);
         }
     }
 
     private void parseExtended(WZIMGEntry entry, SeekableLittleEndianAccessor slea, long endOfExtendedBlock) {
         byte marker = slea.readByte();
-        String type;
-        switch (marker) {
-            case 0x73:
-                type = WZTool.readDecodedString(slea);
-                break;
-            case 0x1B:
-                type = WZTool.readDecodedStringAtOffsetAndReset(slea, file.getOffset() + slea.readInt());
-                break;
-            default:
-                throw new RuntimeException("Unknown extended image identifier: " + marker + " at offset " +
-                        (slea.getPosition() - file.getOffset()));
-        }
-        if (type.equals("Property")) {
-            entry.setType(MapleDataType.PROPERTY);
-            slea.readByte();
-            slea.readByte();
-            int children = WZTool.readValue(slea);
-            for (int i = 0; i < children; i++) {
-                WZIMGEntry cEntry = new WZIMGEntry(entry);
-                parse(cEntry, slea);
-                cEntry.finish();
-                entry.addChild(cEntry);
-            }
-        } else if (type.equals("Canvas")) {
-            entry.setType(MapleDataType.CANVAS);
-            slea.readByte();
-            marker = slea.readByte();
-            if (marker == 0) {
-                // do nothing
-            } else if (marker == 1) {
+        String type = switch (marker) {
+            case 0x73 -> WZTool.readDecodedString(slea);
+            case 0x1B -> WZTool.readDecodedStringAtOffsetAndReset(slea, file.getOffset() + slea.readInt());
+            default -> throw new RuntimeException("Unknown extended image identifier: " + marker + " at offset " +
+                    (slea.getPosition() - file.getOffset()));
+        };
+        switch (type) {
+            case "Property" -> {
+                entry.setType(MapleDataType.PROPERTY);
                 slea.readByte();
                 slea.readByte();
                 int children = WZTool.readValue(slea);
                 for (int i = 0; i < children; i++) {
-                    WZIMGEntry child = new WZIMGEntry(entry);
-                    parse(child, slea);
-                    child.finish();
-                    entry.addChild(child);
+                    WZIMGEntry cEntry = new WZIMGEntry(entry);
+                    parse(cEntry, slea);
+                    cEntry.finish();
+                    entry.addChild(cEntry);
                 }
-            } else {
-                System.out.println("Canvas marker != 1 (" + marker + ")");
             }
-            int width = WZTool.readValue(slea);
-            int height = WZTool.readValue(slea);
-            int format = WZTool.readValue(slea);
-            int format2 = slea.readByte();
-            slea.readInt();
-            int dataLength = slea.readInt() - 1;
-            slea.readByte();
-            if (provideImages) {
-                byte[] pngdata = slea.read(dataLength);
-                entry.setData(new PNGMapleCanvas(width, height, dataLength, format + format2, pngdata));
-            } else {
-                entry.setData(new PNGMapleCanvas(width, height, dataLength, format + format2, null));
-                slea.skip(dataLength);
+            case "Canvas" -> {
+                entry.setType(MapleDataType.CANVAS);
+                slea.readByte();
+                marker = slea.readByte();
+                if (marker == 0) {
+                    // do nothing
+                } else if (marker == 1) {
+                    slea.readByte();
+                    slea.readByte();
+                    int children = WZTool.readValue(slea);
+                    for (int i = 0; i < children; i++) {
+                        WZIMGEntry child = new WZIMGEntry(entry);
+                        parse(child, slea);
+                        child.finish();
+                        entry.addChild(child);
+                    }
+                } else {
+                    System.out.println("Canvas marker != 1 (" + marker + ")");
+                }
+                int width = WZTool.readValue(slea);
+                int height = WZTool.readValue(slea);
+                int format = WZTool.readValue(slea);
+                int format2 = slea.readByte();
+                slea.readInt();
+                int dataLength = slea.readInt() - 1;
+                slea.readByte();
+                if (provideImages) {
+                    byte[] pngdata = slea.read(dataLength);
+                    entry.setData(new PNGMapleCanvas(width, height, dataLength, format + format2, pngdata));
+                } else {
+                    entry.setData(new PNGMapleCanvas(width, height, dataLength, format + format2, null));
+                    slea.skip(dataLength);
+                }
             }
-        } else if (type.equals("Shape2D#Vector2D")) {
-            entry.setType(MapleDataType.VECTOR);
-            int x = WZTool.readValue(slea);
-            int y = WZTool.readValue(slea);
-            entry.setData(new Point(x, y));
-        } else if (type.equals("Shape2D#Convex2D")) {
-            int children = WZTool.readValue(slea);
-            for (int i = 0; i < children; i++) {
-                WZIMGEntry cEntry = new WZIMGEntry(entry);
-                parseExtended(cEntry, slea, 0);
-                cEntry.finish();
-                entry.addChild(cEntry);
+            case "Shape2D#Vector2D" -> {
+                entry.setType(MapleDataType.VECTOR);
+                int x = WZTool.readValue(slea);
+                int y = WZTool.readValue(slea);
+                entry.setData(new Point(x, y));
             }
-        } else if (type.equals("Sound_DX8")) {
-            entry.setType(MapleDataType.SOUND);
-            slea.readByte();
-            int dataLength = WZTool.readValue(slea);
-            WZTool.readValue(slea); // no clue what this is
-            int offset = (int) slea.getPosition();
-            entry.setData(new ImgMapleSound(dataLength, offset - file.getOffset()));
-            slea.seek(endOfExtendedBlock);
-        } else if (type.equals("UOL")) {
-            entry.setType(MapleDataType.UOL);
-            slea.readByte();
-            byte uolmarker = slea.readByte();
-            switch (uolmarker) {
-                case 0:
-                    entry.setData(WZTool.readDecodedString(slea));
-                    break;
-                case 1:
-                    entry.setData(WZTool.readDecodedStringAtOffsetAndReset(slea, file.getOffset() + slea.readInt()));
-                    break;
-                default:
-                    System.out.println("Unknown UOL marker: " + uolmarker + " " + entry.getName());
+            case "Shape2D#Convex2D" -> {
+                int children = WZTool.readValue(slea);
+                for (int i = 0; i < children; i++) {
+                    WZIMGEntry cEntry = new WZIMGEntry(entry);
+                    parseExtended(cEntry, slea, 0);
+                    cEntry.finish();
+                    entry.addChild(cEntry);
+                }
             }
-        } else {
-            throw new RuntimeException("Unhandeled extended type: " + type);
+            case "Sound_DX8" -> {
+                entry.setType(MapleDataType.SOUND);
+                slea.readByte();
+                int dataLength = WZTool.readValue(slea);
+                WZTool.readValue(slea); // no clue what this is
+
+                int offset = (int) slea.getPosition();
+                entry.setData(new ImgMapleSound(dataLength, offset - file.getOffset()));
+                slea.seek(endOfExtendedBlock);
+            }
+            case "UOL" -> {
+                entry.setType(MapleDataType.UOL);
+                slea.readByte();
+                byte uolmarker = slea.readByte();
+                switch (uolmarker) {
+                    case 0 -> entry.setData(WZTool.readDecodedString(slea));
+                    case 1 -> entry.setData(WZTool.readDecodedStringAtOffsetAndReset(slea, file.getOffset() + slea.readInt()));
+                    default -> System.out.println("Unknown UOL marker: " + uolmarker + " " + entry.getName());
+                }
+            }
+            default -> throw new RuntimeException("Unhandeled extended type: " + type);
         }
     }
 }

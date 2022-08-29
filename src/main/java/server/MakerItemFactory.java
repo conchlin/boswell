@@ -78,31 +78,17 @@ public class MakerItemFactory {
             EquipType et = EquipType.getEquipTypeById(itemid);
             int eqpLevel = ii.getEquipLevelReq(itemid);
 
-            switch(et) {
-                case CAP:
-                    return 1145.736246 * Math.exp(0.03336832546 * eqpLevel);
-
-                case LONGCOAT:
-                    return 2117.469118 * Math.exp(0.03355349137 * eqpLevel);
-
-                case SHOES:
-                    return 1218.624674 * Math.exp(0.0342266043 * eqpLevel);
-
-                case GLOVES:
-                    return 2129.531152 * Math.exp(0.03421778102 * eqpLevel);
-
-                case COAT:
-                    return 1770.630579 * Math.exp(0.03359768677 * eqpLevel);
-
-                case PANTS:
-                    return 1442.98837 * Math.exp(0.03444783295 * eqpLevel);
-
-                case SHIELD:
-                    return 6312.40136 * Math.exp(0.0237929527 * eqpLevel);
-
-                default:    // weapons
-                    return 4313.581428 * Math.exp(0.03147837094 * eqpLevel);
-            }
+            return switch (et) {
+                case CAP -> 1145.736246 * Math.exp(0.03336832546 * eqpLevel);
+                case LONGCOAT -> 2117.469118 * Math.exp(0.03355349137 * eqpLevel);
+                case SHOES -> 1218.624674 * Math.exp(0.0342266043 * eqpLevel);
+                case GLOVES -> 2129.531152 * Math.exp(0.03421778102 * eqpLevel);
+                case COAT -> 1770.630579 * Math.exp(0.03359768677 * eqpLevel);
+                case PANTS -> 1442.98837 * Math.exp(0.03444783295 * eqpLevel);
+                case SHIELD -> 6312.40136 * Math.exp(0.0237929527 * eqpLevel);
+                default ->    // weapons
+                        4313.581428 * Math.exp(0.03147837094 * eqpLevel);
+            };
         } else {
             return 14000;
         }
@@ -113,31 +99,17 @@ public class MakerItemFactory {
             EquipType et = EquipType.getEquipTypeById(itemid);
             int eqpLevel = ii.getEquipLevelReq(itemid);
 
-            switch(et) {
-                case CAP:
-                    return 5592.01613 * Math.exp(0.02914576018 * eqpLevel) * reagentLevel;
-
-                case LONGCOAT:
-                    return 3405.23441 * Math.exp(0.03413001038 * eqpLevel) * reagentLevel;
-
-                case SHOES:
-                    return 2115.697484 * Math.exp(0.0354881705 * eqpLevel) * reagentLevel;
-
-                case GLOVES:
-                    return 4684.040894 * Math.exp(0.03166500585 * eqpLevel) * reagentLevel;
-
-                case COAT:
-                    return 2955.89017 * Math.exp(0.0339948456 * eqpLevel) * reagentLevel;
-
-                case PANTS:
-                    return 1774.722181 * Math.exp(0.03854321409 * eqpLevel) * reagentLevel;
-
-                case SHIELD:
-                    return 12014.11296 * Math.exp(0.02185471162 * eqpLevel) * reagentLevel;
-
-                default:    // weapons
-                    return 4538.650247 * Math.exp(0.0371980303 * eqpLevel) * reagentLevel;
-            }
+            return switch (et) {
+                case CAP -> 5592.01613 * Math.exp(0.02914576018 * eqpLevel) * reagentLevel;
+                case LONGCOAT -> 3405.23441 * Math.exp(0.03413001038 * eqpLevel) * reagentLevel;
+                case SHOES -> 2115.697484 * Math.exp(0.0354881705 * eqpLevel) * reagentLevel;
+                case GLOVES -> 4684.040894 * Math.exp(0.03166500585 * eqpLevel) * reagentLevel;
+                case COAT -> 2955.89017 * Math.exp(0.0339948456 * eqpLevel) * reagentLevel;
+                case PANTS -> 1774.722181 * Math.exp(0.03854321409 * eqpLevel) * reagentLevel;
+                case SHIELD -> 12014.11296 * Math.exp(0.02185471162 * eqpLevel) * reagentLevel;
+                default ->    // weapons
+                        4538.650247 * Math.exp(0.0371980303 * eqpLevel) * reagentLevel;
+            };
         } else {
             return 8000 * reagentLevel;
         }

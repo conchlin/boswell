@@ -616,27 +616,15 @@ public class AbstractPlayerInteraction {
     }
 
     public void displayAranIntro() {
-        String intro = "";
-        switch (c.getPlayer().getMapId()) {
-            case 914090010:
-                intro = "Effect/Direction1.img/aranTutorial/Scene0";
-                break;
-            case 914090011:
-                intro = "Effect/Direction1.img/aranTutorial/Scene1" + (c.getPlayer().getGender() == 0 ? "0" : "1");
-                break;
-            case 914090012:
-                intro = "Effect/Direction1.img/aranTutorial/Scene2" + (c.getPlayer().getGender() == 0 ? "0" : "1");
-                break;
-            case 914090013:
-                intro = "Effect/Direction1.img/aranTutorial/Scene3";
-                break;
-            case 914090100:
-                intro = "Effect/Direction1.img/aranTutorial/HandedPoleArm" + (c.getPlayer().getGender() == 0 ? "0" : "1");
-                break;
-            case 914090200:
-                intro = "Effect/Direction1.img/aranTutorial/Maha";
-                break;
-        }
+        String intro = switch (c.getPlayer().getMapId()) {
+            case 914090010 -> "Effect/Direction1.img/aranTutorial/Scene0";
+            case 914090011 -> "Effect/Direction1.img/aranTutorial/Scene1" + (c.getPlayer().getGender() == 0 ? "0" : "1");
+            case 914090012 -> "Effect/Direction1.img/aranTutorial/Scene2" + (c.getPlayer().getGender() == 0 ? "0" : "1");
+            case 914090013 -> "Effect/Direction1.img/aranTutorial/Scene3";
+            case 914090100 -> "Effect/Direction1.img/aranTutorial/HandedPoleArm" + (c.getPlayer().getGender() == 0 ? "0" : "1");
+            case 914090200 -> "Effect/Direction1.img/aranTutorial/Maha";
+            default -> "";
+        };
         showIntro(intro);
     }
 
@@ -1073,42 +1061,24 @@ public class AbstractPlayerInteraction {
 
         MapleCharacter chr = this.getPlayer();
 
-        switch(jobType) {
-            case 1:
-                return chr.getStr() >= 35;
-
-            case 2:
-                return chr.getInt() >= 20;
-
-            case 3:
-            case 4:
-                return chr.getDex() >= 25;
-
-            case 5:
-                return chr.getDex() >= 20;
-
-            default:
-                return true;
-        }
+        return switch (jobType) {
+            case 1 -> chr.getStr() >= 35;
+            case 2 -> chr.getInt() >= 20;
+            case 3, 4 -> chr.getDex() >= 25;
+            case 5 -> chr.getDex() >= 20;
+            default -> true;
+        };
     }
 
     public String getFirstJobStatRequirement(int jobType) {
-        switch(jobType) {
-            case 1:
-                return "STR " + 35;
+        return switch (jobType) {
+            case 1 -> "STR " + 35;
+            case 2 -> "INT " + 20;
+            case 3, 4 -> "DEX " + 25;
+            case 5 -> "DEX " + 20;
+            default -> null;
+        };
 
-            case 2:
-                return "INT " + 20;
-
-            case 3:
-            case 4:
-                return "DEX " + 25;
-
-            case 5:
-                return "DEX " + 20;
-        }
-
-        return null;
     }
 
     public void npcTalk(int npcid, String message) {

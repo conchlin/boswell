@@ -1257,20 +1257,15 @@ public class MapleMonster extends AbstractLoadedMapleLife {
     }
 
     private float getDifficultyRate(final int difficulty) {
-        switch (difficulty) {
-            case 6:
-                return (7.7f);
-            case 5:
-                return (5.6f);
-            case 4:
-                return (3.2f);
-            case 3:
-                return (2.1f);
-            case 2:
-                return (1.4f);
-        }
+        return switch (difficulty) {
+            case 6 -> (7.7f);
+            case 5 -> (5.6f);
+            case 4 -> (3.2f);
+            case 3 -> (2.1f);
+            case 2 -> (1.4f);
+            default -> (1.0f);
+        };
 
-        return (1.0f);
     }
 
     private void changeLevelByDifficulty(final int difficulty, boolean pqMob) {
