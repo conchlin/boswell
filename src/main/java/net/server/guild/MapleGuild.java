@@ -765,10 +765,10 @@ public class MapleGuild {
     }
 
     public static int getIncreaseGuildCost(int size) {
-        int cost = ServerConstants.EXPAND_GUILD_BASE_COST + Math.max(0, (size - 15) / 5) * ServerConstants.EXPAND_GUILD_TIER_COST;
+        int cost = 500000 + Math.max(0, (size - 15) / 5) * 1000000;
 
         if (size > 30) {
-            return Math.min(ServerConstants.EXPAND_GUILD_MAX_COST, Math.max(cost, 5000000));
+            return 5000000;
         } else {
             return cost;
         }

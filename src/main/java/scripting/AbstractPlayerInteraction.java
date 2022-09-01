@@ -1055,10 +1055,6 @@ public class AbstractPlayerInteraction {
     }
 
     public boolean canGetFirstJob(int jobType) {
-        if (ServerConstants.USE_AUTOASSIGN_STARTERS_AP) {
-            return true;
-        }
-
         MapleCharacter chr = this.getPlayer();
 
         return switch (jobType) {

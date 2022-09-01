@@ -207,13 +207,6 @@ public class AssignAPProcessor {
                     }
                 }
                 case 2048 -> { // HP
-                    if (ServerConstants.USE_ENFORCE_HPMP_SWAP) {
-                        if (APTo != 8192) {
-                            player.message("You can only swap HP ability points to MP.");
-                            c.announce(MaplePacketCreator.enableActions());
-                            return false;
-                        }
-                    }
                     if (player.getHpMpApUsed() < 1) {
                         player.message("You don't have enough HPMP stat points to spend on AP Reset.");
                         c.announce(MaplePacketCreator.enableActions());
@@ -232,13 +225,6 @@ public class AssignAPProcessor {
                     player.updateHp(Math.max(1, curHp + hplose));
                 }
                 case 8192 -> { // MP
-                    if (ServerConstants.USE_ENFORCE_HPMP_SWAP) {
-                        if (APTo != 2048) {
-                            player.message("You can only swap MP ability points to HP.");
-                            c.announce(MaplePacketCreator.enableActions());
-                            return false;
-                        }
-                    }
                     if (player.getHpMpApUsed() < 1) {
                         player.message("You don't have enough HPMP stat points to spend on AP Reset.");
                         c.announce(MaplePacketCreator.enableActions());

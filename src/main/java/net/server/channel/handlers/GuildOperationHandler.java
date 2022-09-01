@@ -65,8 +65,8 @@ public final class GuildOperationHandler extends AbstractMaplePacketHandler {
                     mc.dropMessage(1, "You cannot create a new Guild while in one.");
                     return;
                 }
-                if (mc.getMeso() < ServerConstants.CREATE_GUILD_COST) {
-                    mc.dropMessage(1, "You do not have " + GameConstants.numberWithCommas(ServerConstants.CREATE_GUILD_COST) + " mesos to create a Guild.");
+                if (mc.getMeso() < 1500000) {
+                    mc.dropMessage(1, "You do not have " + GameConstants.numberWithCommas(1500000) + " mesos to create a Guild.");
                     return;
                 }
                 String guildName = slea.readMapleAsciiString();
@@ -76,8 +76,9 @@ public final class GuildOperationHandler extends AbstractMaplePacketHandler {
                 }
                 
                 Set<MapleCharacter> eligibleMembers = new HashSet<>(MapleGuild.getEligiblePlayersForGuild(mc));
-                if (eligibleMembers.size() < ServerConstants.CREATE_GUILD_MIN_PARTNERS) {
-                    if (mc.getMap().getAllPlayers().size() < ServerConstants.CREATE_GUILD_MIN_PARTNERS) {
+                // six members are needed to create a guild (gms-like amount)
+                if (eligibleMembers.size() < 6) {
+                    if (mc.getMap().getAllPlayers().size() < 6) {
                         mc.dropMessage(1, "The Guild you are trying to create don't meet the minimum criteria of number of founders.");
                     } else {
                         // players may be unaware of not belonging on a party in order to become eligible, thanks Hair (Legalize) for pointing this out
@@ -210,8 +211,8 @@ public final class GuildOperationHandler extends AbstractMaplePacketHandler {
                     System.out.println("[Hack] " + mc.getName() + " tried to change guild emblem without being the guild leader.");
                     return;
                 }
-                if (mc.getMeso() < ServerConstants.CHANGE_EMBLEM_COST) {
-                    c.announce(MaplePacketCreator.serverNotice(1, "You do not have " + GameConstants.numberWithCommas(ServerConstants.CHANGE_EMBLEM_COST) + " mesos to change the Guild emblem."));
+                if (mc.getMeso() < 5000000) {
+                    c.announce(MaplePacketCreator.serverNotice(1, "You do not have " + GameConstants.numberWithCommas(5000000) + " mesos to change the Guild emblem."));
                     return;
                 }
                 short bg = slea.readShort();
@@ -225,7 +226,7 @@ public final class GuildOperationHandler extends AbstractMaplePacketHandler {
                     Server.getInstance().allianceMessage(alliance.getId(), MaplePacketCreator.getGuildAlliances(alliance, c.getWorld()), -1, -1);
                 }
                 
-                mc.gainMeso(-ServerConstants.CHANGE_EMBLEM_COST, true, false, true);
+                mc.gainMeso(-5000000, true, false, true);
                 mc.getGuild().broadcastNameChanged();
                 mc.getGuild().broadcastEmblemChanged();
                 break;

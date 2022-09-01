@@ -376,12 +376,6 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
                 MaplePlayerShop shop = chr.getPlayerShop();
                 MapleHiredMerchant merchant = chr.getHiredMerchant();
                 if (shop != null && shop.isOwner(chr)) {
-                    if(ServerConstants.USE_ERASE_PERMIT_ON_OPENSHOP) {
-                        try {
-                            MapleInventoryManipulator.removeById(c, MapleInventoryType.CASH, shop.getItemId(), 1, true, false);
-                        } catch(RuntimeException re) {} // fella does not have a player shop permit...
-                    }
-
                     chr.getMap().broadcastMessage(MaplePacketCreator.updatePlayerShopBox(shop));
                     shop.setOpen(true);
                 } else if (merchant != null && merchant.isOwner(chr)) {
@@ -505,7 +499,7 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
                     return;
                 }
                 
-                if(ServerConstants.USE_ENFORCE_UNMERCHABLE_CASH && ii.isCash(item.getItemId())) {
+                if(ii.isCash(item.getItemId())) {
                     c.announce(MaplePacketCreator.serverNotice(1, "Cash items are not allowed to be traded."));
                     return;
                 }
@@ -603,12 +597,12 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
                     return;
                 }
 
-                if(ServerConstants.USE_ENFORCE_UNMERCHABLE_CASH && MapleItemInformationProvider.getInstance().isCash(ivItem.getItemId())) {
+                if(MapleItemInformationProvider.getInstance().isCash(ivItem.getItemId())) {
                     c.announce(MaplePacketCreator.serverNotice(1, "Cash items are not allowed to be sold on the Player Store."));
                     return;
                 }
                 
-                if (ServerConstants.USE_ENFORCE_UNMERCHABLE_PET && ItemConstants.isPet(ivItem.getItemId())) {
+                if (ItemConstants.isPet(ivItem.getItemId())) {
                     c.announce(MaplePacketCreator.serverNotice(1, "Pets are not allowed to be sold on the Player Store."));
                     return;
                 }

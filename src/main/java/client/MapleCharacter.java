@@ -992,10 +992,6 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
             if (newJob.getId() % 10 == 2) {
                 spGain += 2;
             }
-
-            if (ServerConstants.USE_ENFORCE_JOB_SP_RANGE) {
-                spGain = getChangedJobSp(newJob);
-            }
         }
 
         if (spGain > 0) {
@@ -3383,7 +3379,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     }
 
     public boolean hasNoviceExpRate() {
-        return ServerConstants.USE_ENFORCE_NOVICE_EXPRATE && isBeginnerJob() && level < 11;
+        return isBeginnerJob() && level < 11;
     }
 
     public double getExpRate() {
@@ -3711,10 +3707,6 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     }
 
     public int getMaxLevel() {
-        if (!ServerConstants.USE_ENFORCE_JOB_LEVEL_RANGE || isGmJob()) {
-            return getMaxClassLevel();
-        }
-
         return GameConstants.getJobMaxLevel(job);
     }
 
@@ -4766,7 +4758,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         }
 
         int spGain = 3;
-        if (ServerConstants.USE_ENFORCE_JOB_SP_RANGE && !GameConstants.hasSPTable(job)) {
+        if (!GameConstants.hasSPTable(job)) {
             spGain = getSpGain(spGain, job);
         }
 
@@ -6247,10 +6239,6 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     }
 
     public synchronized void resetStats() {
-        if (!ServerConstants.USE_AUTOASSIGN_STARTERS_AP) {
-            return;
-        }
-
         effLock.lock();
         statWlock.lock();
         try {
@@ -8704,10 +8692,6 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     }
 
     public void setReborns(int value) {
-        if (!ServerConstants.USE_REBIRTH_SYSTEM) {
-            yellowMessage("Rebirth system is not enabled!");
-            throw new NotEnabledException();
-        }
         try (Connection con = DatabaseConnection.getConnection()) {
             Statements.Update("characters").set("reborns", value).where("id", id).execute(con);
         } catch (SQLException e) {
@@ -8720,11 +8704,8 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     }
 
     public int getReborns() {
-        if (!ServerConstants.USE_REBIRTH_SYSTEM) {
-            yellowMessage("Rebirth system is not enabled!");
-            throw new NotEnabledException();
-        }
-        try (Connection con = DatabaseConnection.getConnection(); PreparedStatement ps = con.prepareStatement("SELECT reborns FROM characters WHERE id=?;")) {
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement("SELECT reborns FROM characters WHERE id=?;")) {
             ps.setInt(1, id);
             try (ResultSet resultSet = ps.executeQuery()) {
                 resultSet.next();
@@ -8737,10 +8718,6 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     }
 
     public void executeReborn() {
-        if (!ServerConstants.USE_REBIRTH_SYSTEM) {
-            yellowMessage("Rebirth system is not enabled!");
-            throw new NotEnabledException();
-        }
         if (getLevel() != 200) {
             return;
         }

@@ -361,7 +361,6 @@ public class CommandsExecutor {
         addCommand("shutdown", 4, ShutdownCommand.class);
         addCommand("clearquestcache", 4, ClearQuestCacheCommand.class);
         addCommand("clearquest", 4, ClearQuestCommand.class);
-        addCommand("supplyratecoupon", 4, SupplyRateCouponCommand.class);
         addCommand("spawnallpnpcs", 4, SpawnAllPNpcsCommand.class);
         addCommand("eraseallpnpcs", 4, EraseAllPNpcsCommand.class);
         addCommand("addchannel", 4, ServerAddChannelCommand.class);

@@ -35,7 +35,7 @@ public class GameConstants {
     private static final int[] jobUpgradeSpUp = {0, 1, 2, 3, 6};
     private final static Map<Integer, String> jobNames = new HashMap<>();
     private final static NumberFormat nfFormatter = new DecimalFormat("#,###,###,###");
-    private final static NumberFormat nfParser = NumberFormat.getInstance(ServerConstants.USE_UNITPRICE_WITH_COMMA ? Locale.FRANCE : Locale.UK);
+    private final static NumberFormat nfParser = NumberFormat.getInstance(Locale.UK);
     
     public static final MapleDisease[] CPQ_DISEASES = {MapleDisease.SLOW, MapleDisease.SEDUCE, MapleDisease.STUN, MapleDisease.POISON,
                                                        MapleDisease.SEAL, MapleDisease.DARKNESS, MapleDisease.WEAKEN, MapleDisease.CURSE};
@@ -606,11 +606,7 @@ public class GameConstants {
     }
     
     public synchronized static String numberWithCommas(int i) {
-        if(!ServerConstants.USE_DISPLAY_NUMBERS_WITH_COMMA) {
-            return nfFormatter.format(i);   // will display number on whatever locale is currently assigned on NumberFormat
-        } else {
-            return NumberFormat.getNumberInstance(Locale.UK).format(i);
-        }
+        return NumberFormat.getNumberInstance(Locale.UK).format(i);
     }
     
     public synchronized static Number parseNumber(String value) {

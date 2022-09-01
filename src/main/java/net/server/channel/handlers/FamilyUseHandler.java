@@ -35,11 +35,10 @@ import tools.data.output.MaplePacketLittleEndianWriter;
  */
 public final class FamilyUseHandler extends AbstractMaplePacketHandler {
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
-    	if (!ServerConstants.USE_FAMILY_SYSTEM){
-    		return;
-    	}
-        int[] repCost = {3, 5, 7, 8, 10, 12, 15, 20, 25, 40, 50};
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+        // TODO implement family
+
+        /*int[] repCost = {3, 5, 7, 8, 10, 12, 15, 20, 25, 40, 50};
         final int type = slea.readInt();
         MapleCharacter victim;
         if (type == 0 || type == 1) {
@@ -62,11 +61,11 @@ public final class FamilyUseHandler extends AbstractMaplePacketHandler {
             }
         }
         c.getPlayer().getFamily().getMember(c.getPlayer().getId()).gainReputation(repCost[type]);
-    }
+    }*/
 
-    /**
-     * [65 00][02][08 00 00 00][C8 00 00 00][00 00 00 00][00][40 77 1B 00]
-     */
+
+    /*  [65 00][02][08 00 00 00][C8 00 00 00][00 00 00 00][00][40 77 1B 00]
+
     private static byte[] useRep(int mode, int type, int erate, int drate, int time) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(0x60);//noty
@@ -98,5 +97,6 @@ public final class FamilyUseHandler extends AbstractMaplePacketHandler {
         mplew.writeLong(0);
 
         return null;
+    }*/
     }
 }

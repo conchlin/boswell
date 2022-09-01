@@ -103,8 +103,8 @@ public class MatchCheckerGuildCreation implements MatchCheckerListenerRecipe {
                         return;
                     }
                 }
-                if (leader.getMeso() < ServerConstants.CREATE_GUILD_COST) {
-                    leader.dropMessage(1, "You do not have " + GameConstants.numberWithCommas(ServerConstants.CREATE_GUILD_COST) + " mesos to create a Guild.");
+                if (leader.getMeso() < 1500000) {
+                    leader.dropMessage(1, "You do not have " + GameConstants.numberWithCommas(1500000) + " mesos to create a Guild.");
                     broadcastGuildCreationDismiss(matchPlayers);
                     return;
                 }
@@ -115,7 +115,7 @@ public class MatchCheckerGuildCreation implements MatchCheckerListenerRecipe {
                     broadcastGuildCreationDismiss(matchPlayers);
                     return;
                 }
-                leader.gainMeso(-ServerConstants.CREATE_GUILD_COST, true, false, true);
+                leader.gainMeso(-1500000, true, false, true);
                 
                 leader.getMGC().setGuildId(gid);
                 MapleGuild guild = Server.getInstance().getGuild(leader.getGuildId(), leader.getWorld(), leader);  // initialize guild structure

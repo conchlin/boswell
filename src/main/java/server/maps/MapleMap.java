@@ -693,7 +693,7 @@ public class MapleMap {
         final List<MonsterDropEntry> dropEntry = new ArrayList<>();
         final List<MonsterDropEntry> visibleQuestEntry = new ArrayList<>();
         final List<MonsterDropEntry> otherQuestEntry = new ArrayList<>();
-        sortDropEntries(ServerConstants.USE_SPAWN_RELEVANT_LOOT ? chr.retrieveRelevantDrops(mob.getId()) : mi.retrieveEffectiveDrop(mob.getId()), dropEntry, visibleQuestEntry, otherQuestEntry, chr);
+        sortDropEntries(mi.retrieveEffectiveDrop(mob.getId()), dropEntry, visibleQuestEntry, otherQuestEntry, chr);
 
         registerMobItemDrops(droptype, mobpos, chRate, pos, dropEntry, visibleQuestEntry, otherQuestEntry, globalEntry, chr, mob);
     }

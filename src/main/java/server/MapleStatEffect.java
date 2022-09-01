@@ -1205,7 +1205,7 @@ public class MapleStatEffect {
     }
 
     public int getBuffLocalDuration() {
-        return !ServerConstants.USE_BUFF_EVERLASTING ? duration : Integer.MAX_VALUE;
+        return duration;
     }
 
     public void silentApplyBuff(MapleCharacter chr, long localStartTime) {

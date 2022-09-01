@@ -75,7 +75,9 @@ public final class CashOperationHandler extends AbstractMaplePacketHandler {
                         if (ItemConstants.isCashStore(cItem.getItemId()) && chr.getLevel() < 16) {
                             c.enableCSActions();
                             return;
-                        } else if (ItemConstants.isRateCoupon(cItem.getItemId()) && !ServerConstants.USE_SUPPLY_RATE_COUPONS) {
+                        } else if (ItemConstants.isRateCoupon(cItem.getItemId())) {
+                            // rate coupons are disabled from being purchased
+                            // however the nicer way of dealing with this is to manually remove them from the cash shop
                             chr.dropMessage(1, "Rate coupons are currently unavailable to purchase.");
                             c.enableCSActions();
                             return;

@@ -349,8 +349,7 @@ public class MapleStorageInventory {
         }
         
         int invTypeCriteria = 1;
-        int sortCriteria = (ServerConstants.USE_ITEM_SORT_BY_NAME == true) ? 2 : 0;
-        PairedQuicksort pq = new PairedQuicksort(itemarray, sortCriteria, invTypeCriteria);
+        PairedQuicksort pq = new PairedQuicksort(itemarray, 0, invTypeCriteria);
         
         inventory.clear();
         return itemarray;

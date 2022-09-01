@@ -64,33 +64,19 @@ public class ServerConstants {
     public static       boolean USE_DEBUG_SHOW_RCVD_MVLIFE = false; //Prints on the cmd all received move life content.
     public static final boolean USE_DEBUG_SHOW_PACKET = false;
     
-    
-    public static       boolean USE_SUPPLY_RATE_COUPONS = false;     //Allows rate coupons to be sold through the Cash Shop.
+
     public static final boolean USE_IP_VALIDATION = true;           //Enables IP checking when logging in.  
     public static final boolean USE_MAXRANGE = true;                //Will send and receive packets from all events on a map, rather than those of only view range.
     public static final boolean USE_MAXRANGE_ECHO_OF_HERO = true;
-    public static final boolean USE_FAMILY_SYSTEM = false;
     public static final boolean USE_DUEY = true;
-    public static final boolean USE_ITEM_SORT_BY_NAME = false;      //Item sorting based on name rather than id.
-    public static final boolean USE_AUTOASSIGN_STARTERS_AP = true; //Beginners level 10 or below have their AP autoassigned (they can't choose to levelup a stat). Set true ONLY if the localhost doesn't support AP assigning for beginners level 10 or below.
     public static final boolean USE_AUTOSAVE = true;                //Enables server autosaving feature (saves characters to DB each 1 hour).
     public static final boolean USE_ENFORCE_ADMIN_ACCOUNT = false;  //Forces accounts having GM characters to be treated as a "GM account" by the client (localhost). Some of the GM account perks is the ability to FLY, but unable to TRADE.
-    public static final boolean USE_ENFORCE_NOVICE_EXPRATE = true; //Hardsets experience rate 1x for beginners level 10 or under. Ideal for roaming on novice areas without caring too much about losing some stats.
-    public static final boolean USE_ENFORCE_HPMP_SWAP = false;      //Forces players to reuse stats (via AP Resetting) located on HP/MP pool only inside the HP/MP stats.
-    public static final boolean USE_ENFORCE_JOB_LEVEL_RANGE = false;//Caps the player level on the minimum required to advance their current jobs.
-    public static final boolean USE_ENFORCE_JOB_SP_RANGE = false;   //Caps the player SP level on the total obtainable by their current jobs. After changing jobs, missing SP will be retrieved.
     public static final boolean USE_ENFORCE_ITEM_SUGGESTION = false;//Forces the Owl of Minerva and the Cash Shop to always display the defined item array instead of those featured by the players.
-    public static final boolean USE_ENFORCE_UNMERCHABLE_CASH = false;//Forces players to not sell CASH items via merchants.
-    public static final boolean USE_ENFORCE_UNMERCHABLE_PET = true; //Forces players to not sell pets via merchants. (since non-named pets gets dirty name and other possible DB-related issues)
     public static final boolean USE_ENFORCE_MERCHANT_SAVE = true;   //Forces automatic DB save on merchant owners, at every item movement on shop.
     public static final boolean USE_SPAWN_LOOT_ON_ANIMATION = false;//Makes loot appear some time after the mob has been killed (following the mob death animation, instead of instantly).
-    public static final boolean USE_SPAWN_RELEVANT_LOOT = false;     //Forces to only spawn loots that are collectable by the player or any of their party members.
-    public static final boolean USE_ERASE_PERMIT_ON_OPENSHOP = true;//Forces "shop permit" item to be consumed when player deploy his/her player shop.
     public static final boolean USE_ERASE_UNTRADEABLE_DROP = true;  //Forces flagged untradeable items to disappear when dropped.
-    public static final boolean USE_BUFF_EVERLASTING = false;       //Every applied buff on players holds expiration time so high it'd be considered permanent. Suggestion thanks to Vcoc.
     public static final boolean USE_BANISHABLE_TOWN_SCROLL = true;  //Enables town scrolls to act as if it's a "player banish", rendering the antibanish scroll effect available.
     public static final boolean USE_ENABLE_CHAT_LOG = false;        //Write in-game chat to log
-    public static final boolean USE_REBIRTH_SYSTEM = false;         //Flag to enable/disable rebirth system
     public static final boolean USE_MAP_OWNERSHIP_SYSTEM = false;    //Flag to enable/disable map ownership system
     public static final boolean USE_NPCS_SCRIPTABLE = true;         //Flag to enable/disable serverside predefined script NPCs.
     
@@ -106,8 +92,6 @@ public class ServerConstants {
     public static final boolean USE_MAKER_FEE_HEURISTICS = true;    //Apply compiled values for stimulants and reagents into the Maker fee calculations (max error revolves around 50k mesos). Set false to use basic constant values instead (results are never higher than requested by the client-side).
     
     //Miscellaneous Configuration
-    public static boolean USE_DISPLAY_NUMBERS_WITH_COMMA = true;        //Enforce comma on displayed strings (use this when USE_UNITPRICE_WITH_COMMA is active and you still want to display comma-separated values).
-    public static boolean USE_UNITPRICE_WITH_COMMA = true;              //Set this accordingly with the layout of the unitPrices on Item.wz XML's, whether it's using commas or dots to represent fractions.
     public static final int MAX_AP = 32767;                             //Max AP allotted on the auto-assigner.
     public static final int MAX_EVENT_LEVELS = 8;                       //Event has different levels of rewarding system.
     public static final long BLOCK_NPC_RACE_CONDT = (long)(0.5 * 1000); //Time the player client must wait before reopening a conversation with an NPC.
@@ -132,14 +116,6 @@ public class ServerConstants {
     public static final int MOB_STATUS_MONITOR_LIFE = 84;       //Idle proc count the mob disease monitor is allowed to be there before closing it due to inactivity.
     
     //Some Gameplay Enhancing Configurations
-    //Guild Configuration
-    public static final int CREATE_GUILD_MIN_PARTNERS = 0;       //Minimum number of members on Guild Headquarters to establish a new guild.
-    public static final int CREATE_GUILD_COST = 1500000;
-    public static final int CHANGE_EMBLEM_COST = 5000000;
-    public static final int EXPAND_GUILD_BASE_COST = 500000;
-    public static final int EXPAND_GUILD_TIER_COST = 1000000;
-    public static final int EXPAND_GUILD_MAX_COST = 5000000;
-    
     //Map-Chair Configuration
     public static final byte CHAIR_EXTRA_HEAL_MULTIPLIER = 10;  //Due to only being able to be send up-to-255 heal values, values being actually updated is the one displayed times this.
     public static final int CHAIR_EXTRA_HEAL_MAX_DELAY = 21;    //Players are expected to recover fully after using this skill for N seconds.
