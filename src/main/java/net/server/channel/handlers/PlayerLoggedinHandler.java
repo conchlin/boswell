@@ -210,15 +210,17 @@ public final class PlayerLoggedinHandler extends AbstractMaplePacketHandler {
                 wserv.addPlayer(player);
                 player.setEnteredChannelWorld();
 
-                JsonObject json = new JsonObject();
-                json.addProperty("up", "" + player.getAccountID());
-                JsonObject players = new JsonObject();
-                for (MapleCharacter _c : wserv.getPlayerStorage().getAllCharacters()) {
-                    players.addProperty("" + _c.getAccountID(), _c.getName());
-                }
-                json.add("players", players);
+                if (ServerConstants.HTTP_SERVER) {
+                    JsonObject json = new JsonObject();
+                    json.addProperty("up", "" + player.getAccountID());
+                    JsonObject players = new JsonObject();
+                    for (MapleCharacter _c : wserv.getPlayerStorage().getAllCharacters()) {
+                        players.addProperty("" + _c.getAccountID(), _c.getName());
+                    }
+                    json.add("players", players);
 
-                Server.httpWorker.add("http://localhost:17003/api/character_connection", json);
+                    Server.httpWorker.add("http://localhost:17003/api/character_connection", json);
+                }
 
                 List<PlayerBuffValueHolder> buffs = server.getPlayerBuffStorage().getBuffsFromStorage(cid);
                 if (buffs != null) {

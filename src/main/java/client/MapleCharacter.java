@@ -4916,7 +4916,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         guildUpdate();
         this.saveCharToDB(true);
 
-        Server.httpWorker.add("http://localhost:17003/api/character_levelup/" + id);
+        if (ServerConstants.HTTP_SERVER) Server.httpWorker.add("http://localhost:17003/api/character_levelup/" + id);
     }
 
     public boolean leaveParty() {
@@ -6726,7 +6726,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 
     public void saveSkillMacros(Connection con) throws SQLException {
         Statements.Delete.from("skill_macros").where("characterid", id).execute(con);
-        Statements.BatchInsert statement = new Statements.BatchInsert("skillmacros");
+        Statements.BatchInsert statement = new Statements.BatchInsert("skill_macros");
 
         for (int i = 0; i < 5; i++) {
             SkillMacro macro = skillMacros[i];

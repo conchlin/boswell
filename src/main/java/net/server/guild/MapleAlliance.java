@@ -154,7 +154,7 @@ public class MapleAlliance {
                 }
 
                 for (int guild : guilds) {
-                    try (PreparedStatement psg = con.prepareStatement("INSERT INTO allianceguilds (allianceid, guildid) VALUES (?, ?)")) {
+                    try (PreparedStatement psg = con.prepareStatement("INSERT INTO alliance_guilds (allianceid, guildid) VALUES (?, ?)")) {
                         psg.setInt(1, id);
                         psg.setInt(2, guild);
                         psg.executeUpdate();
@@ -197,7 +197,7 @@ public class MapleAlliance {
                 }
             }
 
-            try (PreparedStatement ps = con.prepareStatement("SELECT guildid FROM allianceguilds WHERE allianceid = ?")) {
+            try (PreparedStatement ps = con.prepareStatement("SELECT guildid FROM alliance_guilds WHERE allianceid = ?")) {
                 ps.setInt(1, id);
                 try (ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
@@ -225,12 +225,12 @@ public class MapleAlliance {
                 ps.executeUpdate();
             }
             
-            try (PreparedStatement ps = con.prepareStatement("DELETE FROM allianceguilds WHERE allianceid = ?")){
+            try (PreparedStatement ps = con.prepareStatement("DELETE FROM alliance_guilds WHERE allianceid = ?")){
                     ps.setInt(1, this.allianceId);
                     ps.executeUpdate();
                 }
                 for (int guild : guilds) {
-                    try (PreparedStatement ps = con.prepareStatement("INSERT INTO allianceguilds (allianceid, guildid) VALUES (?, ?)")) {
+                    try (PreparedStatement ps = con.prepareStatement("INSERT INTO alliance_guilds (allianceid, guildid) VALUES (?, ?)")) {
                         ps.setInt(1, this.allianceId);
                         ps.setInt(2, guild);
                         ps.executeUpdate();
@@ -244,7 +244,7 @@ public class MapleAlliance {
     public static void disbandAlliance(int allianceId) {
         try (Connection con = DatabaseConnection.getConnection()) {
             Statements.Delete.from("alliance").where("id", allianceId).execute(con);
-            Statements.Delete.from("allianceguilds").where("allianceid", allianceId).execute(con);
+            Statements.Delete.from("alliance_guilds").where("allianceid", allianceId).execute(con);
 
             Server.getInstance().allianceMessage(allianceId, MaplePacketCreator.disbandAlliance(allianceId), -1, -1);
             Server.getInstance().disbandAlliance(allianceId);
@@ -255,7 +255,7 @@ public class MapleAlliance {
     
     private static void removeGuildFromAllianceOnDb(int guildId) {
         try (Connection con = DatabaseConnection.getConnection()) {
-            Statements.Delete.from("allianceguilds").where("guildid", guildId).execute(con);
+            Statements.Delete.from("alliance_guilds").where("guildid", guildId).execute(con);
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         }
