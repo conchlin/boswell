@@ -21,8 +21,8 @@ package constants;
 
 import java.util.Map;
 import java.util.HashMap;
-import net.opcodes.RecvOpcode;
-import net.opcodes.SendOpcode;
+import opcode.RecvOpcode;
+import opcode.SendOpcode;
 
 /**
  *

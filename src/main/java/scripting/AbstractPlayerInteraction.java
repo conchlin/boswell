@@ -903,7 +903,7 @@ public class AbstractPlayerInteraction {
     }
 
     public void goDojoUp() {
-        c.announce(MaplePacketCreator.dojoWarpUp());
+        c.announce(MaplePacketCreator.onTeleport());
     }
 
     public void resetDojoEnergy() {

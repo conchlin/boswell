@@ -23,7 +23,7 @@ package tools;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.opcodes.RecvOpcode;
+import opcode.RecvOpcode;
 import client.MapleCharacter;
 import client.MapleClient;
 

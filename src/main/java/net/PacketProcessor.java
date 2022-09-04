@@ -24,7 +24,7 @@ package net;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import net.opcodes.RecvOpcode;
+import opcode.RecvOpcode;
 import net.server.channel.handlers.*;
 import net.server.handlers.CustomPacketHandler;
 import net.server.handlers.KeepAliveHandler;
@@ -50,11 +50,7 @@ public final class PacketProcessor {
         if (packetId > handlers.length) {
             return null;
         }
-        MaplePacketHandler handler = handlers[packetId];
-        if (handler != null) {
-            return handler;
-        }
-        return null;
+        return handlers[packetId];
     }
 
     public void registerHandler(RecvOpcode code, MaplePacketHandler handler) {

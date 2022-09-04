@@ -35,7 +35,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import client.*;
-import net.opcodes.SendOpcode;
+import opcode.SendOpcode;
 import net.server.PlayerCoolDownValueHolder;
 import net.server.Server;
 import net.server.channel.Channel;
@@ -7494,9 +7494,9 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    public static byte[] dojoWarpUp() {
+    public static byte[] onTeleport() {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.DOJO_WARP_UP.getValue());
+        mplew.writeShort(SendOpcode.TELEPORT.getValue());
         mplew.write(0);
         mplew.write(6);
         return mplew.getPacket();
@@ -8175,7 +8175,7 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    public static byte[] sheepRanchInfo(byte wolf, byte sheep) {
+ /*   public static byte[] sheepRanchInfo(byte wolf, byte sheep) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendOpcode.SHEEP_RANCH_INFO.getValue());
         mplew.write(wolf);
@@ -8190,7 +8190,7 @@ public class MaplePacketCreator {
         mplew.writeInt(id); //Character id
         mplew.write(clothes); //0 = sheep, 1 = wolf, 2 = Spectator (wolf without wool)
         return mplew.getPacket();
-    }
+    }*/
 
     public static byte[] incubatorResult() {//lol
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter(8);
