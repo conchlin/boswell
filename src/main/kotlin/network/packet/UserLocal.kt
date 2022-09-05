@@ -1,6 +1,6 @@
 package network.packet
 
-import opcode.SendOpcode
+import network.opcode.SendOpcode
 import tools.Pair
 import tools.data.output.MaplePacketLittleEndianWriter
 

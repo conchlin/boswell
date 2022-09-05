@@ -36,7 +36,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
-import opcode.SendOpcode;
+import network.opcode.SendOpcode;
 import tools.MaplePacketCreator;
 import tools.Pair;
 import tools.data.output.MaplePacketLittleEndianWriter;

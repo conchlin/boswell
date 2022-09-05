@@ -24,7 +24,7 @@ package net.server.channel.handlers;
 import client.MapleCharacter;
 import client.MapleClient;
 import net.AbstractMaplePacketHandler;
-import opcode.SendOpcode;
+import network.opcode.SendOpcode;
 import net.server.Server;
 import net.server.guild.MapleGuild;
 import net.server.guild.MapleGuildCharacter;

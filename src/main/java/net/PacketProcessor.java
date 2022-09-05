@@ -24,7 +24,7 @@ package net;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import opcode.RecvOpcode;
+import network.opcode.RecvOpcode;
 import net.server.channel.handlers.*;
 import net.server.handlers.CustomPacketHandler;
 import net.server.handlers.KeepAliveHandler;

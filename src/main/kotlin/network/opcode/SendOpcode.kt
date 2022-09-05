@@ -1,4 +1,4 @@
-package opcode
+package network.opcode
 
 enum class SendOpcode(val value: Int) {
     // the names taken from the client are commented if they are different from the enum name

@@ -35,7 +35,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import client.*;
-import opcode.SendOpcode;
+import network.opcode.SendOpcode;
 import net.server.PlayerCoolDownValueHolder;
 import net.server.Server;
 import net.server.channel.Channel;

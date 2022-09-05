@@ -1,4 +1,4 @@
-package opcode
+package network.opcode
 
 enum class RecvOpcode(val value: Int) {
     CUSTOM_PACKET(0x3713),  //13 37 lol
