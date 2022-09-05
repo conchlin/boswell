@@ -35,6 +35,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import client.*;
+import enums.UserEffectType;
 import network.opcode.SendOpcode;
 import net.server.PlayerCoolDownValueHolder;
 import net.server.Server;
@@ -6709,19 +6710,19 @@ public class MaplePacketCreator {
     }
 
     public static byte[] playPortalSound() {
-        return showSpecialEffect(7);
+        return showSpecialEffect(UserEffectType.PORTAL_SE.getEffect());
     }
 
     public static byte[] showMonsterBookPickup() {
-        return showSpecialEffect(14);
+        return showSpecialEffect(UserEffectType.MONSTERBOOK.getEffect());
     }
 
     public static byte[] showEquipmentLevelUp() {
-        return showSpecialEffect(15);
+        return showSpecialEffect(UserEffectType.EQUIP_LEVEL_UP.getEffect());
     }
 
     public static byte[] showItemLevelup() { // itemLevelUpEffect
-        return showSpecialEffect(15);
+        return showSpecialEffect(UserEffectType.EQUIP_LEVEL_UP.getEffect());
     }
 
     public static byte[] showBuybackEffect() {
@@ -6743,25 +6744,7 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    /**
-     * 0 = Levelup
-     * 6 = Exp did not drop (Safety Charms)
-     * 7 = Enter portal sound
-     * 8 = Job change
-     * 9 = Quest complete
-     * 10 = Recovery
-     * 11 = Buff effect
-     * 14 = Monster book pickup
-     * 15 = Equipment levelup
-     * 16 = Maker Skill Success
-     * 17 = Buff effect w/ sfx
-     * 19 = Exp card [500, 200, 50]
-     * 21 = Wheel of destiny
-     * 26 = Spirit Stone
-     *
-     * @param effect
-     * @return
-     */
+    // reference UserEffectType.kt for list of effects
     // TODO move this to UserLocal.kt and rehandle all the individual USER_LOCAL_EFFECT situations
     public static byte[] showSpecialEffect(int effect) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();

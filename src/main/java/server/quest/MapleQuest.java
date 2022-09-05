@@ -33,6 +33,8 @@ import client.MapleQuestStatus.Status;
 import constants.ServerConstants;
 import java.util.EnumMap;
 import java.util.Set;
+
+import enums.UserEffectType;
 import provider.MapleData;
 import provider.MapleDataProvider;
 import provider.MapleDataProviderFactory;
@@ -344,8 +346,8 @@ public class MapleQuest {
         newStatus.setCompletionTime(System.currentTimeMillis());
         c.updateQuest(newStatus);
         
-        c.announce(MaplePacketCreator.showSpecialEffect(9)); // Quest completion
-        c.getMap().broadcastMessage(c, MaplePacketCreator.showForeignEffect(c.getId(), 9), false); //use 9 instead of 12 for both
+        c.announce(MaplePacketCreator.showSpecialEffect(UserEffectType.QUEST_COMPLETE.getEffect())); // Quest completion
+        c.getMap().broadcastMessage(c, MaplePacketCreator.showForeignEffect(c.getId(), UserEffectType.QUEST_COMPLETE.getEffect()), false); //use 9 instead of 12 for both
         return true;
     }
 
