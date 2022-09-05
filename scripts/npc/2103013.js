@@ -19,6 +19,8 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+importPackage(Packages.enums);
+
 var status = 0;
 var selected = -1;
 var party = 0;
@@ -58,7 +60,7 @@ function action(mode, type, selection) {
 			} else if (selection == 1) {
 				cm.sendSimple("You fools who know no fear of Nett's wrath, it is now time to choose your destiny! \r\n\r\n#b#L0# Enter alone.#l\r\n#L1# Enter with a party of 2 or more.#l");
 			} else if (selection == 2) {
-				cm.openUI(0x16);
+				cm.openUI(UIType.PARTY_SEARCH);
 				cm.showInfoText("Use the Party Search (Hotkey O) window to search for a party to join anytime and anywhere!");
 				cm.dispose();
 			} else if (selection == 3) {

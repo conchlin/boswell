@@ -953,6 +953,7 @@ public class AbstractPlayerInteraction {
         c.announce(MaplePacketCreator.showInfoText(msg));
     }
 
+    // use UIType enum
     public void openUI(byte ui) {
         c.announce(UserLocal.Packet.onOpenUI(ui));
     }
