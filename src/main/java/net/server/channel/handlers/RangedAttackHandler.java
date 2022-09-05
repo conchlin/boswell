@@ -22,6 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package net.server.channel.handlers;
 
 import client.inventory.manipulator.MapleInventoryManipulator;
+import network.packet.UserLocal;
 import server.MapleItemInformationProvider;
 import server.MapleStatEffect;
 import server.TimerManager;
@@ -105,7 +106,7 @@ public final class RangedAttackHandler extends AbstractDealDamageHandler {
                 effect = attack.getAttackEffect(chr, null);
                 bulletCount = effect.getBulletCount();
                 if (effect.getCooldown() > 0) {
-                    c.announce(MaplePacketCreator.skillCooldown(attack.skill, effect.getCooldown()));
+                    c.announce(UserLocal.Packet.skillCooldown(attack.skill, effect.getCooldown()));
                 }
                 
                 if(attack.skill == 4111004) {   // shadow meso
@@ -209,7 +210,7 @@ public final class RangedAttackHandler extends AbstractDealDamageHandler {
                         if (chr.skillIsCooling(attack.skill)) {
                             return;
                         } else {
-                            c.announce(MaplePacketCreator.skillCooldown(attack.skill, effect_.getCooldown()));
+                            c.announce(UserLocal.Packet.skillCooldown(attack.skill, effect_.getCooldown()));
                             chr.addCooldown(attack.skill, System.currentTimeMillis(), effect_.getCooldown() * 1000,
                                     TimerManager.getInstance().schedule(new CancelCooldownAction(chr, attack.skill), effect_.getCooldown() * 1000));
                         }

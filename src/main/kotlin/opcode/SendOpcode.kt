@@ -226,32 +226,34 @@ enum class SendOpcode(val value: Int) {
     THROW_GRENADE(204),  //CUserLocal::OnPacket
 
     //CUserLocal::OnPacket
-    CANCEL_CHAIR(205),  //OnSitResult
-    SHOW_ITEM_GAIN_INCHAT(206),  //onEffect
+    SIT_RESULT(205),  //OnSitResult
+    USER_LOCAL_EFFECT(206),  //onEffect
     TELEPORT(207),  //OnTeleport
-    LUCKSACK_PASS(209),  //OnMesoGive_Succeeded
-    LUCKSACK_FAIL(210),  //OnMesoGive_Failed
-    UPDATE_QUEST_INFO(211),  // OnQuestResult
-    NOTIFY_HP_DEC_BY_FIELD(212),  // 213 looks empty
-    PLAYER_HINT(214),  //onBalloonMsg
+    MESO_GIVE_SUCCEED(209),  //OnMesoGive_Succeeded
+    MESO_GIVE_FAIL(210),  //OnMesoGive_Failed
+    QUEST_RESULT(211),  // OnQuestResult
+    NOTIFY_HP_DEC_BY_FIELD(212),
+    // 213 looks empty
+    BALLOON_MSG(214),  //onBalloonMsg
     PLAY_EVENT_SOUND(215),  //CUserLocal::OnPlayEventSound
     Play_MINIGAME_SOUND(216),  //CUserLocal::OnPlayMinigameSound
     MAKER_RESULT(217),  //OnMakerResult
-    KOREAN_EVENT(219),  // unnamed not sure what this is
+    KOREAN_EVENT(219),  // ???
     OPEN_UI(220),  //OnOpenUI
-    LOCK_UI(221),  //SetDirectionMode
-    DISABLE_UI(222),  // unnamed in idb
-    SPAWN_GUIDE(223),  //OnHireTutor
-    TALK_GUIDE(224),  //OnTutorMsg
-    SHOW_COMBO(225),  //OnIncComboResponse
+    SET_DIRECTION_MODE(221),  //SetDirectionMode
+    DISABLE_UI(222), // onDisableUI
+    HIRE_TUTOR(223),  //OnHireTutor
+    TUTOR_MSG(224),  //OnTutorMsg
+    COMBO_RESPONSE(225),  //OnIncComboResponse
     RANDOM_EMOTION(226),  //OnRandomEmotion(226)
     RESIGN_QUEST_RETURN(227),  //OnResignQuestReturn(227)
     PASS_MATE_NAME(228),  //OnPassMateName
     RADIO_SCHEDULE(229),  //OnRadioSchedule
-    OPEN_SKILL_GUIDE(230), NOTICE_MSG(231),  //OnNoticeMsg
+    OPEN_SKILL_GUIDE(230),
+    NOTICE_MSG(231),  //OnNoticeMsg
     CHAT_MSG(232),  //onChatMsg
     SAY_MSG(233),  // 233 OnSayImage
-    COOLDOWN(234),  //OnSkillCooltimeSet
+    SKILL_COOLDOWN(234),  //OnSkillCooltimeSet
 
     //CMobPool::OnPacket
     SPAWN_MONSTER(236),  //OnMobEnterField

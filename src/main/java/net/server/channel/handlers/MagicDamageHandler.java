@@ -21,6 +21,7 @@
  */
 package net.server.channel.handlers;
 
+import network.packet.UserLocal;
 import server.MapleStatEffect;
 import server.TimerManager;
 import server.skills.PlayerSkill;
@@ -68,7 +69,7 @@ public final class MagicDamageHandler extends AbstractDealDamageHandler {
 			if (chr.skillIsCooling(attack.skill)) {
 				return;
 			} else {
-				c.announce(MaplePacketCreator.skillCooldown(attack.skill, effect_.getCooldown()));
+				c.announce(UserLocal.Packet.skillCooldown(attack.skill, effect_.getCooldown()));
 				chr.addCooldown(attack.skill, System.currentTimeMillis(), effect_.getCooldown() * 1000,
 						TimerManager.getInstance().schedule(new CancelCooldownAction(chr, attack.skill), effect_.getCooldown() * 1000));
 			}

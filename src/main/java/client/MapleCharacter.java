@@ -29,6 +29,7 @@ import client.listeners.MobKilledListener;
 import constants.*;
 import net.database.DatabaseConnection;
 import net.database.Statements;
+import network.packet.UserLocal;
 import server.cashshop.CashShop;
 import client.autoban.AutobanFactory;
 import client.autoban.AutobanManager;
@@ -706,7 +707,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         }
         combocounter = (short) Math.min(30000, count);
         if (count > 0) {
-            announce(MaplePacketCreator.showCombo(combocounter));
+            announce(UserLocal.Packet.showComboResponse(combocounter));
         }
     }
 
@@ -1841,7 +1842,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     }
 
     public void announceBattleshipHp() {
-        announce(MaplePacketCreator.skillCooldown(5221999, battleshipHp));
+        announce(UserLocal.Packet.skillCooldown(5221999, battleshipHp));
     }
 
     public void decreaseBattleshipHp(int decrease) {
@@ -1851,7 +1852,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         if (battleshipHp <= 0) {
             PlayerSkill battleship = SkillFactory.getSkill(Corsair.BATTLE_SHIP);
             int cooldown = battleship.getEffect(getSkillLevel(battleship)).getCooldown();
-            announce(MaplePacketCreator.skillCooldown(Corsair.BATTLE_SHIP, cooldown));
+            announce(UserLocal.Packet.skillCooldown(Corsair.BATTLE_SHIP, cooldown));
             addCooldown(
                     Corsair.BATTLE_SHIP,
                     System.currentTimeMillis(),
@@ -2445,7 +2446,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                     MapleCoolDownValueHolder mcdvh = bel.getValue();
                     if (curTime >= mcdvh.startTime + mcdvh.length) {
                         removeCooldown(mcdvh.skillId);
-                        client.announce(MaplePacketCreator.skillCooldown(mcdvh.skillId, 0));
+                        client.announce(UserLocal.Packet.skillCooldown(mcdvh.skillId, 0));
                     }
                 }
             }, 1500);
@@ -2940,7 +2941,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
             MapleCharacter realTarget = target.get();
             if (realTarget != null) {
                 realTarget.removeCooldown(skillId);
-                realTarget.client.announce(MaplePacketCreator.skillCooldown(skillId, 0));
+                realTarget.client.announce(UserLocal.Packet.skillCooldown(skillId, 0));
             }
         }
     }
@@ -5883,7 +5884,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
             getMap().broadcastMessage(this, MaplePacketCreator.showChair(this.getId(), 0), false);
         }
 
-        announce(MaplePacketCreator.cancelChair(-1));
+        announce(UserLocal.Packet.onSitResult(-1));
         cancelFishingTask();
     }
 
@@ -5906,7 +5907,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                             /*if (registerChairBuff()) {
                                 getMap().broadcastMessage(this, MaplePacketCreator.giveForeignChairSkillEffect(this.getId()), false);
                             }*/
-                            announce(MaplePacketCreator.cancelChair(itemId));
+                            announce(UserLocal.Packet.onSitResult(itemId));
                         }
                     } else {    // stand up
                         unsitChairInternal();
@@ -6188,7 +6189,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
             cd.timer.cancel(false);
 
             if (packet) {
-                client.announce(MaplePacketCreator.skillCooldown(mcvh.skillId, 0));
+                client.announce(UserLocal.Packet.skillCooldown(mcvh.skillId, 0));
             }
         }
     }

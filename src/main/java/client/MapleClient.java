@@ -46,6 +46,7 @@ import java.util.concurrent.locks.Lock;
 import com.google.gson.JsonObject;
 import net.database.DatabaseConnection;
 import net.database.Statements;
+import network.packet.UserLocal;
 import tools.*;
 
 import javax.script.ScriptEngine;
@@ -1221,7 +1222,7 @@ public class MapleClient {
     }
 
     public void announceHint(String msg, int length) {
-        announce(MaplePacketCreator.sendHint(msg, length, 10));
+        announce(UserLocal.Packet.onBalloonMessage(msg, length, 10));
         announce(MaplePacketCreator.enableActions());
     }
 

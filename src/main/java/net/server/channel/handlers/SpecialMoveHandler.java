@@ -25,6 +25,7 @@ import java.awt.Point;
 import java.util.concurrent.ScheduledFuture;
 
 import net.AbstractMaplePacketHandler;
+import network.packet.UserLocal;
 import server.MapleStatEffect;
 import server.TimerManager;
 import server.life.MapleMonster;
@@ -75,7 +76,7 @@ public final class SpecialMoveHandler extends AbstractMaplePacketHandler {
             } else if (skillid != Corsair.BATTLE_SHIP) {
                 int cooldownTime = effect.getCooldown();
                 
-                c.announce(MaplePacketCreator.skillCooldown(skillid, cooldownTime));
+                c.announce(UserLocal.Packet.skillCooldown(skillid, cooldownTime));
                 ScheduledFuture<?> timer = TimerManager.getInstance().schedule(
                         new CancelCooldownAction(c.getPlayer(), skillid), effect.getCooldown() * 1000);
                 chr.addCooldown(skillid, System.currentTimeMillis(), effect.getCooldown() * 1000, timer);

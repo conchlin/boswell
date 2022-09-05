@@ -31,6 +31,7 @@ import client.MapleClient;
 import client.inventory.MapleInventoryType;
 import client.inventory.manipulator.MapleInventoryManipulator;
 import constants.MapConstants;
+import network.packet.UserLocal;
 import server.MaplePortal;
 import server.MapleTrade;
 import server.maps.MapleMap;
@@ -122,8 +123,8 @@ public final class ChangeMapHandler extends AbstractMaplePacketHandler {
                                 }
                             } else if (divi == 20100) {
                                 if (targetid == 104000000) {
-                                    c.announce(MaplePacketCreator.lockUI(false));
-                                    c.announce(MaplePacketCreator.disableUI(false));
+                                    c.announce(UserLocal.Packet.setDirectionMode(false));
+                                    c.announce(UserLocal.Packet.onDisableUI(false));
                                     warp = true;
                                 }
                             } else if (divi == 9130401) { // Only allow warp if player is already in Intro map, or else = hack

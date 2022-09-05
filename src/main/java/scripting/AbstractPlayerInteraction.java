@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import network.packet.UserLocal;
 import server.skills.*;
 import net.server.Server;
 import net.server.channel.Channel;
@@ -798,7 +799,7 @@ public class AbstractPlayerInteraction {
     }
 
     public void showInstruction(String msg, int width, int height) {
-        c.announce(MaplePacketCreator.sendHint(msg, width, height));
+        c.announce(UserLocal.Packet.onBalloonMessage(msg, width, height));
         c.announce(MaplePacketCreator.enableActions());
     }
 
@@ -890,12 +891,11 @@ public class AbstractPlayerInteraction {
         return MobSkillFactory.getMobSkill(skill, level);
     }
 
-    public void spawnGuide() {
-        c.announce(MaplePacketCreator.spawnGuide(true));
-    }
-
-    public void removeGuide() {
-        c.announce(MaplePacketCreator.spawnGuide(false));
+    /**
+     * @param spawn true to spawn and false to remove
+     */
+    public void hireTutor(boolean spawn) {
+        c.announce(UserLocal.Packet.hireTutor(spawn));
     }
 
     public void displayGuide(int num) {
@@ -903,7 +903,7 @@ public class AbstractPlayerInteraction {
     }
 
     public void goDojoUp() {
-        c.announce(MaplePacketCreator.onTeleport());
+        c.announce(UserLocal.Packet.onTeleport());
     }
 
     public void resetDojoEnergy() {
@@ -928,12 +928,12 @@ public class AbstractPlayerInteraction {
         c.announce(MaplePacketCreator.getEnergy("energy", getPlayer().getDojoEnergy()));
     }
 
-    public void talkGuide(String message) {
-        c.announce(MaplePacketCreator.talkGuide(message));
+    public void tutorMessage(String message) {
+        c.announce(UserLocal.Packet.tutorMessage(message));
     }
 
     public void guideHint(int hint) {
-        c.announce(MaplePacketCreator.guideHint(hint));
+        c.announce(UserLocal.Packet.tutorHint(hint));
     }
 
     public void updateAreaInfo(Short area, String info) {
@@ -954,17 +954,17 @@ public class AbstractPlayerInteraction {
     }
 
     public void openUI(byte ui) {
-        c.announce(MaplePacketCreator.openUI(ui));
+        c.announce(UserLocal.Packet.onOpenUI(ui));
     }
 
     public void lockUI() {
-        c.announce(MaplePacketCreator.disableUI(true));
-        c.announce(MaplePacketCreator.lockUI(true));
+        c.announce(UserLocal.Packet.onDisableUI(true));
+        c.announce(UserLocal.Packet.setDirectionMode(true));
     }
 
     public void unlockUI() {
-        c.announce(MaplePacketCreator.disableUI(false));
-        c.announce(MaplePacketCreator.lockUI(false));
+        c.announce(UserLocal.Packet.onDisableUI(true));
+        c.announce(UserLocal.Packet.setDirectionMode(true));
     }
 
     public void playSound(String sound) {

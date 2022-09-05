@@ -22,7 +22,7 @@
 	Author: kevintjuh93
 */
 function enter(pi) {
-	pi.removeGuide();
+	pi.hireTutor(false); // remove the tutor
 	pi.blockPortal();
 	return true;
 }

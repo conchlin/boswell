@@ -33,6 +33,7 @@ import constants.GameConstants;
 import java.util.*;
 
 import net.AbstractMaplePacketHandler;
+import network.packet.UserLocal;
 import server.MakerItemFactory;
 import server.MakerItemFactory.MakerItemCreateEntry;
 import server.MapleItemInformationProvider;
@@ -65,7 +66,7 @@ public final class MakerSkillHandler extends AbstractMaplePacketHandler {
             toCreate = ii.getMakerCrystalFromLeftover(toCreate);
             if (toCreate == -1) {
                 c.announce(MaplePacketCreator.serverNotice(1, ii.getName(fromLeftover) + " is unavailable for Monster Crystal conversion."));
-                c.announce(MaplePacketCreator.makerEnableActions());
+                c.announce(UserLocal.Packet.makerEnableActions());
                 return;
             }
 
@@ -83,12 +84,12 @@ public final class MakerSkillHandler extends AbstractMaplePacketHandler {
                     recipe = MakerItemFactory.generateDisassemblyCrystalEntry(toDisassemble, p.getLeft(), p.getRight());
                 } else {
                     c.announce(MaplePacketCreator.serverNotice(1, ii.getName(toCreate) + " is unavailable for Monster Crystal disassembly."));
-                    c.announce(MaplePacketCreator.makerEnableActions());
+                    c.announce(UserLocal.Packet.makerEnableActions());
                     return;
                 }
             } else {
                 c.announce(MaplePacketCreator.serverNotice(1, "An unknown error occurred when trying to apply that item for disassembly."));
-                c.announce(MaplePacketCreator.makerEnableActions());
+                c.announce(UserLocal.Packet.makerEnableActions());
                 return;
             }
         } else {
@@ -136,7 +137,7 @@ public final class MakerSkillHandler extends AbstractMaplePacketHandler {
                 if (!reagentids.isEmpty()) {
                     if (!removeOddMakerReagents(toCreate, reagentids)) {
                         c.announce(MaplePacketCreator.serverNotice(1, "You can only use WATK and MATK Strengthening Gems on weapon items."));
-                        c.announce(MaplePacketCreator.makerEnableActions());
+                        c.announce(UserLocal.Packet.makerEnableActions());
                         return;
                     }
                 }
@@ -151,27 +152,27 @@ public final class MakerSkillHandler extends AbstractMaplePacketHandler {
             case -1 -> {// non-available for Maker itemid has been tried to forge
                 FilePrinter.printError(FilePrinter.EXPLOITS, "Player " + c.getPlayer().getName() + " tried to craft itemid " + toCreate + " using the Maker skill.");
                 c.announce(MaplePacketCreator.serverNotice(1, "The requested item could not be crafted on this operation."));
-                c.announce(MaplePacketCreator.makerEnableActions());
+                c.announce(UserLocal.Packet.makerEnableActions());
             }
             case 1 -> { // no items
                 c.announce(MaplePacketCreator.serverNotice(1, "You don't have all required items in your inventory to make " + ii.getName(toCreate) + "."));
-                c.announce(MaplePacketCreator.makerEnableActions());
+                c.announce(UserLocal.Packet.makerEnableActions());
             }
             case 2 -> { // no meso
                 c.announce(MaplePacketCreator.serverNotice(1, "You don't have enough mesos (" + GameConstants.numberWithCommas(recipe.getCost()) + ") to complete this operation."));
-                c.announce(MaplePacketCreator.makerEnableActions());
+                c.announce(UserLocal.Packet.makerEnableActions());
             }
             case 3 -> { // no req level
                 c.announce(MaplePacketCreator.serverNotice(1, "You don't have enough level to complete this operation."));
-                c.announce(MaplePacketCreator.makerEnableActions());
+                c.announce(UserLocal.Packet.makerEnableActions());
             }
             case 4 -> { // no req skill level
                 c.announce(MaplePacketCreator.serverNotice(1, "You don't have enough Maker level to complete this operation."));
-                c.announce(MaplePacketCreator.makerEnableActions());
+                c.announce(UserLocal.Packet.makerEnableActions());
             }
             case 5 -> { // inventory full
                 c.announce(MaplePacketCreator.serverNotice(1, "Your inventory is full."));
-                c.announce(MaplePacketCreator.makerEnableActions());
+                c.announce(UserLocal.Packet.makerEnableActions());
             }
             default -> {
                 if (toDisassemble != -1) {
@@ -194,7 +195,7 @@ public final class MakerSkillHandler extends AbstractMaplePacketHandler {
                             int newGem = calculateGemReward(p.getLeft());
                             short gemAmt = getGemQuantity(newGem, p.getLeft());
                             c.getAbstractPlayerInteraction().gainItem(newGem, gemAmt, false);
-                            c.announce(MaplePacketCreator.makerResult(makerSucceeded, newGem, gemAmt, recipe.getCost(), recipe.getReqItems(), stimulantid, new LinkedList<>(reagentids.keySet())));
+                            c.announce(UserLocal.Packet.makerResult(makerSucceeded, newGem, gemAmt, recipe.getCost(), recipe.getReqItems(), stimulantid, new LinkedList<>(reagentids.keySet())));
                             strengthen = true;
                         } else {
                             c.getAbstractPlayerInteraction().gainItem(p.getLeft(), p.getRight().shortValue(), false);
@@ -216,12 +217,12 @@ public final class MakerSkillHandler extends AbstractMaplePacketHandler {
 
                 // thanks inhyuk for noticing missing MAKER_RESULT packets
                 if (type == 3) {
-                    c.announce(MaplePacketCreator.makerResultCrystal(recipe.getGainItems().get(0).getLeft(), recipe.getReqItems().get(0).getLeft()));
+                    c.announce(UserLocal.Packet.makerResultCrystal(recipe.getGainItems().get(0).getLeft(), recipe.getReqItems().get(0).getLeft()));
                 } else if (type == 4) {
-                    c.announce(MaplePacketCreator.makerResultDesynth(recipe.getReqItems().get(0).getLeft(), recipe.getCost(), recipe.getGainItems()));
+                    c.announce(UserLocal.Packet.makerResultDesynth(recipe.getReqItems().get(0).getLeft(), recipe.getCost(), recipe.getGainItems()));
                 } else {
                     if (!strengthen) {
-                        c.announce(MaplePacketCreator.makerResult(makerSucceeded, recipe.getGainItems().get(0).getLeft(), recipe.getGainItems().get(0).getRight(), recipe.getCost(), recipe.getReqItems(), stimulantid, new LinkedList<>(reagentids.keySet())));
+                        c.announce(UserLocal.Packet.makerResult(makerSucceeded, recipe.getGainItems().get(0).getLeft(), recipe.getGainItems().get(0).getRight(), recipe.getCost(), recipe.getReqItems(), stimulantid, new LinkedList<>(reagentids.keySet())));
                     }
                 }
                 c.announce(MaplePacketCreator.showMakerEffect(makerSucceeded));
