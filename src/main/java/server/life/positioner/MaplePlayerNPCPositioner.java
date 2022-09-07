@@ -30,6 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 import net.server.Server;
 import net.server.channel.Channel;
+import network.packet.NpcPool;
 import server.life.MaplePlayerNPC;
 import server.maps.MapleMap;
 import server.maps.MapleMapObject;
@@ -156,7 +157,7 @@ public class MaplePlayerNPCPositioner {
                 
                 for(MaplePlayerNPC pn : playerNpcs) {
                     m.removeMapObject(pn);
-                    m.broadcastMessage(MaplePacketCreator.removeNPCController(pn.getObjectId()));
+                    m.broadcastMessage(NpcPool.Packet.removeNPCController(pn.getObjectId()));
                     m.broadcastMessage(MaplePacketCreator.removePlayerNPC(pn.getObjectId()));
                 }
             }
@@ -168,7 +169,7 @@ public class MaplePlayerNPCPositioner {
                 
                 for(MaplePlayerNPC pn : playerNpcs) {
                     m.addPlayerNPCMapObject(pn);
-                    m.broadcastMessage(MaplePacketCreator.spawnPlayerNPC(pn));
+                    m.broadcastMessage(NpcPool.Packet.spawnPlayerNPC(pn));
                     m.broadcastMessage(MaplePacketCreator.getPlayerNPC(pn));
                 }
             }

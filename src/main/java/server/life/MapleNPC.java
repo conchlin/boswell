@@ -22,6 +22,7 @@
 package server.life;
 
 import client.MapleClient;
+import network.packet.NpcPool;
 import server.MapleShopFactory;
 import server.maps.MapleMapObjectType;
 import tools.MaplePacketCreator;
@@ -54,14 +55,14 @@ public class MapleNPC extends AbstractLoadedMapleLife {
                 return;
             }
         }
-        client.announce(MaplePacketCreator.spawnNPC(this));
-        client.announce(MaplePacketCreator.spawnNPCRequestController(this, true));
+        client.announce(NpcPool.Packet.spawnNPC(this));
+        client.announce(NpcPool.Packet.spawnNPCRequestController(this, true));
     }
 
     @Override
     public void sendDestroyData(MapleClient client) {
-        client.announce(MaplePacketCreator.removeNPCController(getObjectId()));
-        client.announce(MaplePacketCreator.removeNPC(getObjectId()));
+        client.announce(NpcPool.Packet.removeNPC(getObjectId()));
+        client.announce(NpcPool.Packet.removeNPCController(getObjectId()));
     }
 
     @Override

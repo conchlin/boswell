@@ -21,6 +21,7 @@
 */
 package server.life;
 
+import network.packet.NpcPool;
 import server.life.positioner.MaplePlayerNPCPositioner;
 import server.life.positioner.MaplePlayerNPCPodium;
 import java.awt.Point;
@@ -208,13 +209,13 @@ public class MaplePlayerNPC extends AbstractMapleMapObject {
 
     @Override
     public void sendSpawnData(MapleClient client) {
-        client.announce(MaplePacketCreator.spawnPlayerNPC(this));
+        client.announce(NpcPool.Packet.spawnPlayerNPC(this));
         client.announce(MaplePacketCreator.getPlayerNPC(this));
     }
     
     @Override
     public void sendDestroyData(MapleClient client) {
-        client.announce(MaplePacketCreator.removeNPCController(this.getObjectId()));
+        client.announce(NpcPool.Packet.removeNPCController(this.getObjectId()));
         client.announce(MaplePacketCreator.removePlayerNPC(this.getObjectId()));
     }
 
@@ -555,7 +556,7 @@ public class MaplePlayerNPC extends AbstractMapleMapObject {
                 MapleMap m = channel.getMapFactory().getMap(mapid);
                 
                 m.addPlayerNPCMapObject(pn);
-                m.broadcastMessage(MaplePacketCreator.spawnPlayerNPC(pn));
+                m.broadcastMessage(NpcPool.Packet.spawnPlayerNPC(pn));
                 m.broadcastMessage(MaplePacketCreator.getPlayerNPC(pn));
             }
             
@@ -592,7 +593,7 @@ public class MaplePlayerNPC extends AbstractMapleMapObject {
                     MapleMap m = channel.getMapFactory().getMap(mapid);
                     m.removeMapObject(pn);
 
-                    m.broadcastMessage(MaplePacketCreator.removeNPCController(pn.getObjectId()));
+                    m.broadcastMessage(NpcPool.Packet.removeNPCController(pn.getObjectId()));
                     m.broadcastMessage(MaplePacketCreator.removePlayerNPC(pn.getObjectId()));
                 }
             }
@@ -631,7 +632,7 @@ public class MaplePlayerNPC extends AbstractMapleMapObject {
                     for(MapleMapObject pnpcObj : m.getMapObjectsInRange(new Point(0, 0), Double.POSITIVE_INFINITY, Arrays.asList(MapleMapObjectType.PLAYER_NPC))) {
                         MaplePlayerNPC pn = (MaplePlayerNPC) pnpcObj;
                         m.removeMapObject(pnpcObj);
-                        m.broadcastMessage(MaplePacketCreator.removeNPCController(pn.getObjectId()));
+                        m.broadcastMessage(NpcPool.Packet.removeNPCController(pn.getObjectId()));
                         m.broadcastMessage(MaplePacketCreator.removePlayerNPC(pn.getObjectId()));
                     }
                 }

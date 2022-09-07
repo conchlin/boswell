@@ -30,6 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import enums.UserEffectType;
+import network.packet.NpcPool;
 import network.packet.UserLocal;
 import server.skills.*;
 import net.server.Server;
@@ -875,7 +876,7 @@ public class AbstractPlayerInteraction {
             npc.setRx1(pos.x - 50);
             npc.setFh(map.getFootholds().findBelow(pos).getId());
             map.addMapObject(npc);
-            map.broadcastMessage(MaplePacketCreator.spawnNPC(npc));
+            map.broadcastMessage(NpcPool.Packet.spawnNPC(npc));
         }
     }
 

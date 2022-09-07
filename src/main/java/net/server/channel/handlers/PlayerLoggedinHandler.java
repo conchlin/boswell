@@ -38,6 +38,7 @@ import net.server.guild.MapleGuild;
 import net.server.world.MaplePartyCharacter;
 import net.server.world.PartyOperation;
 import net.server.world.World;
+import network.packet.NpcPool;
 import server.quest.requirements.PetRequirement;
 import server.skills.SkillFactory;
 import net.database.DatabaseConnection;
@@ -407,7 +408,7 @@ public final class PlayerLoggedinHandler extends AbstractMaplePacketHandler {
                 }
                 
                 if (ServerConstants.USE_NPCS_SCRIPTABLE) {
-                    c.announce(MaplePacketCreator.setNPCScriptable(ScriptableNPCConstants.SCRIPTABLE_NPCS));
+                    c.announce(NpcPool.Packet.setNPCScriptable(ScriptableNPCConstants.SCRIPTABLE_NPCS));
                 }
             } finally {
                 c.releaseClient();

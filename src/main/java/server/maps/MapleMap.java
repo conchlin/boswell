@@ -71,6 +71,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.server.Server;
 import net.server.channel.Channel;
 import net.server.world.World;
+import network.packet.NpcPool;
 import scripting.map.MapScriptManager;
 import server.MapleItemInformationProvider;
 import server.MaplePortal;
@@ -1637,17 +1638,17 @@ public class MapleMap {
     }
 
     public void destroyNPC(int npcid) {     // assumption: there's at most one of the same NPC in a map.
-        List<MapleMapObject> npcs = getMapObjectsInRange(new Point(0, 0), Double.POSITIVE_INFINITY, Arrays.asList(MapleMapObjectType.NPC));
+        List<MapleMapObject> npcs = getMapObjectsInRange(new Point(0, 0), Double.POSITIVE_INFINITY, List.of(MapleMapObjectType.NPC));
 
         chrRLock.lock();
         objectWLock.lock();
         try {
             for (MapleMapObject obj : npcs) {
                 if (((MapleNPC) obj).getId() == npcid) {
-                    broadcastMessage(MaplePacketCreator.removeNPCController(obj.getObjectId()));
-                    broadcastMessage(MaplePacketCreator.removeNPC(obj.getObjectId()));
+                    broadcastMessage(NpcPool.Packet.removeNPCController(obj.getObjectId()));
+                    broadcastMessage(NpcPool.Packet.removeNPC(obj.getObjectId()));
 
-                    this.mapobjects.remove(Integer.valueOf(obj.getObjectId()));
+                    this.mapobjects.remove(obj.getObjectId());
                 }
             }
         } finally {
@@ -3839,7 +3840,7 @@ public class MapleMap {
                         npc.setHide(!npc.isHidden());
                         if (!npc.isHidden()) //Should only be hidden upon changing maps
                         {
-                            broadcastMessage(MaplePacketCreator.spawnNPC(npc));
+                            broadcastMessage(NpcPool.Packet.spawnNPC(npc));
                         }
                     }
                 }

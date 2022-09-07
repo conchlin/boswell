@@ -26,6 +26,7 @@ import client.MapleBuffStat;
 import client.MapleCharacter;
 import client.MapleClient;
 import client.MapleJob;
+import network.packet.NpcPool;
 import server.maps.MapleMapObject;
 import server.skills.MobSkill;
 import server.skills.PlayerSkill;
@@ -534,7 +535,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                         npc.setRx1(172 - 50);
                         npc.setFh(27);
                         reviveMap.addMapObject(npc);
-                        reviveMap.broadcastMessage(MaplePacketCreator.spawnNPC(npc));
+                        reviveMap.broadcastMessage(NpcPool.Packet.spawnNPC(npc));
                     } else {
                         reviveMap.toggleHiddenNPC(9001108);
                     }

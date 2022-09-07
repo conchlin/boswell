@@ -22,6 +22,7 @@
 package scripting.event;
 
 import client.MapleCharacter;
+import network.packet.NpcPool;
 import server.skills.PlayerSkill;
 import constants.ItemConstants;
 import constants.ServerConstants;
@@ -876,7 +877,7 @@ public class EventInstanceManager {
             npc.setRx1(pos.x - 50);
             npc.setFh(map.getFootholds().findBelow(pos).getId());
             map.addMapObject(npc);
-            map.broadcastMessage(MaplePacketCreator.spawnNPC(npc));
+            map.broadcastMessage(NpcPool.Packet.spawnNPC(npc));
         }
     }
 

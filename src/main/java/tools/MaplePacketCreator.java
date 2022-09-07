@@ -1373,46 +1373,6 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    public static byte[] spawnNPC(MapleNPC life) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter(24);
-        mplew.writeShort(SendOpcode.SPAWN_NPC.getValue());
-        mplew.writeInt(life.getObjectId());
-        mplew.writeInt(life.getId());
-        mplew.writeShort(life.getPosition().x);
-        mplew.writeShort(life.getCy());
-        if (life.getF() == 1) {
-            mplew.write(0);
-        } else {
-            mplew.write(1);
-        }
-        mplew.writeShort(life.getFh());
-        mplew.writeShort(life.getRx0());
-        mplew.writeShort(life.getRx1());
-        mplew.write(1);
-        return mplew.getPacket();
-    }
-
-    public static byte[] spawnNPCRequestController(MapleNPC life, boolean MiniMap) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter(23);
-        mplew.writeShort(SendOpcode.SPAWN_NPC_REQUEST_CONTROLLER.getValue());
-        mplew.write(1);
-        mplew.writeInt(life.getObjectId());
-        mplew.writeInt(life.getId());
-        mplew.writeShort(life.getPosition().x);
-        mplew.writeShort(life.getCy());
-        if (life.getF() == 1) {
-            mplew.write(0);
-        } else {
-            mplew.write(1);
-        }
-        mplew.writeShort(life.getFh());
-        mplew.writeShort(life.getRx0());
-        mplew.writeShort(life.getRx1());
-        mplew.writeBool(MiniMap);
-        return mplew.getPacket();
-    }
-
-
     /**
      * Gets a spawn monster packet.
      *
@@ -5981,22 +5941,6 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    public static byte[] spawnPlayerNPC(MaplePlayerNPC npc) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.SPAWN_NPC_REQUEST_CONTROLLER.getValue());
-        mplew.write(1);
-        mplew.writeInt(npc.getObjectId());
-        mplew.writeInt(npc.getScriptId());
-        mplew.writeShort(npc.getPosition().x);
-        mplew.writeShort(npc.getCY());
-        mplew.write(npc.getDirection());
-        mplew.writeShort(npc.getFH());
-        mplew.writeShort(npc.getRX0());
-        mplew.writeShort(npc.getRX1());
-        mplew.write(1);
-        return mplew.getPacket();
-    }
-
     public static byte[] getPlayerNPC(MaplePlayerNPC npc) {     // thanks to Arnah
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendOpcode.IMITATED_NPC_DATA.getValue());
@@ -6619,24 +6563,6 @@ public class MaplePacketCreator {
             mplew.write(item.getPosition());
             addItemInfo(mplew, item, true);
         }
-        return mplew.getPacket();
-    }
-
-    public static byte[] removeNPC(int oid) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.REMOVE_NPC.getValue());
-        mplew.writeInt(oid);
-
-        return mplew.getPacket();
-    }
-
-    public static byte[] removeNPCController(int objectid) {
-        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-
-        mplew.writeShort(SendOpcode.SPAWN_NPC_REQUEST_CONTROLLER.getValue());
-        mplew.write(0);
-        mplew.writeInt(objectid);
-
         return mplew.getPacket();
     }
 
@@ -8063,19 +7989,6 @@ public class MaplePacketCreator {
         mplew.writeInt(0); // not sure what this int32 does yet
         mplew.write(layer);
         mplew.writeInt(transition);
-        return mplew.getPacket();
-    }
-
-    public static byte[] setNPCScriptable(Set<Pair<Integer, String>> scriptNpcDescriptions) {  // thanks to GabrielSin
-        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.SET_NPC_SCRIPTABLE.getValue());
-        mplew.write(scriptNpcDescriptions.size());
-        for (Pair<Integer, String> p : scriptNpcDescriptions) {
-            mplew.writeInt(p.getLeft());
-            mplew.writeMapleAsciiString(p.getRight());
-            mplew.writeInt(0); // start time
-            mplew.writeInt(Integer.MAX_VALUE); // end time
-        }
         return mplew.getPacket();
     }
 

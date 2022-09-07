@@ -28,6 +28,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import net.server.channel.Channel;
+import network.packet.NpcPool;
 import server.life.MapleLifeFactory;
 import server.life.MapleNPC;
 import client.command.Command;
@@ -94,7 +95,7 @@ public class PnpcCommand extends Command {
 
                         MapleMap map = ch.getMapFactory().getMap(mapId);
                         map.addMapObject(npc);
-                        map.broadcastMessage(MaplePacketCreator.spawnNPC(npc));
+                        map.broadcastMessage(NpcPool.Packet.spawnNPC(npc));
                     }
 
                     player.yellowMessage("Pnpc created.");
