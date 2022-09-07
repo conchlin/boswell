@@ -880,6 +880,10 @@ public class AbstractPlayerInteraction {
         }
     }
 
+    public void onSetSpecialAction(int oid, String action) {
+        NpcPool.Packet.onSetSpecialAction(oid, action);
+    }
+
     public void spawnMonster(int id, int x, int y) {
         MapleMonster monster = MapleLifeFactory.getMonster(id);
         monster.setPosition(new Point(x, y));

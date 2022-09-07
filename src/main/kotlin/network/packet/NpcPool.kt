@@ -96,8 +96,22 @@ class NpcPool {
         /**
          * the following need to be implemented
          * NPC_UPDATE_LIMITED_INFO(261),  //OnUpdateLimitedInfo(261)
-         * NPC_SET_SPECIAL_ACTION(262),  //OnSetSpecialAction(262)
          */
+
+        /**
+         * use this to call a linked npc special action from npc.wz/info/link (?)
+         *
+         * @param objectId object id of npc with linked special action
+         * @param action name of action
+         */
+        fun onSetSpecialAction(objectId: Int, action : String): ByteArray? {
+            val mplew = MaplePacketLittleEndianWriter()
+            mplew.writeShort(SendOpcode.NPC_SET_SPECIAL_ACTION.value)
+            mplew.writeInt(objectId)
+            mplew.writeAsciiString(action)
+
+            return mplew.packet
+        }
 
         fun setNPCScriptable(scriptNpcDescriptions: Set<Pair<Int?, String?>>): ByteArray? { // thanks to GabrielSin
             val mplew = MaplePacketLittleEndianWriter()
