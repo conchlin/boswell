@@ -1,8 +1,13 @@
 package network.packet
 
+import enums.UserEffectType
 import network.opcode.SendOpcode
 import tools.Pair
 import tools.data.output.MaplePacketLittleEndianWriter
+
+/**
+ * @Author Connor (Conchlin)
+ */
 
 class UserLocal {
 
@@ -25,7 +30,56 @@ class UserLocal {
             return mplew.packet
         }
 
-        // TODO handle onEffect
+
+        /**
+         * onEffect
+         *
+         * @param effect reference the UserEffectType enum
+         * @param pathway used for hard references to SHOW_INTRO and SHOW_INFO requests
+         * @param args for any additional packet write handling
+         */
+        fun onEffect(effect: Byte, pathway: String, vararg args: Int): ByteArray? {
+            val mplew = MaplePacketLittleEndianWriter()
+            mplew.writeShort(SendOpcode.USER_LOCAL_EFFECT.value)
+            mplew.write(effect)
+            when (effect) {
+                UserEffectType.LEVEL_UP.effect -> {}
+                UserEffectType.PORTAL_SE.effect -> {}
+                UserEffectType.MONSTERBOOK_PICKUP.effect -> {}
+                UserEffectType.QUEST_COMPLETE.effect -> {}
+                UserEffectType.EQUIP_LEVEL_UP.effect -> {}
+                UserEffectType.JOB_CHANGE.effect -> {}
+                UserEffectType.EXP_CARD.effect -> {}
+                UserEffectType.QUEST_COMPLETE.effect -> {}
+                UserEffectType.SPIRIT_STONE.effect -> {}
+                UserEffectType.PET_LEVEL_UP.effect -> {
+                    mplew.write(0)
+                    mplew.write(args[0]) // Pet Index
+
+                }
+                UserEffectType.BUYBACK.effect -> {
+                    mplew.writeInt(0)
+                }
+                UserEffectType.RECOVERY.effect -> {
+                    mplew.write(args[0]) // heal amount
+                }
+                UserEffectType.MAKER.effect -> {
+                    mplew.writeInt(if (args[0] == 0) 0 else 1) // 0 succeed 1 fail
+                }
+                UserEffectType.WHEEL_DESTINY.effect -> {
+                    mplew.write(args[0]) // amount left
+                }
+                UserEffectType.SHOW_INTRO.effect -> {
+                    mplew.writeMapleAsciiString(pathway) // filepath
+                }
+                UserEffectType.SHOW_INFO.effect -> {
+                    mplew.writeMapleAsciiString(pathway) // filepath
+                    mplew.writeInt(1)
+                }
+            }
+
+            return mplew.packet
+        }
 
         fun onTeleport(): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
@@ -60,6 +114,53 @@ class UserLocal {
             mplew.writeShort(msgWidth)
             mplew.writeShort(msgHeight)
             mplew.write(1)
+
+            return mplew.packet
+        }
+
+        /**
+        * MESO_GIVE_SUCCEED
+        * MESO_GIVE_FAIL
+        **/
+
+
+        fun updateQuestInfo(quest: Short, npc: Int): ByteArray? {
+            val mplew = MaplePacketLittleEndianWriter()
+            mplew.writeShort(SendOpcode.QUEST_RESULT.value)
+            mplew.write(8) //0x0A in v95
+            mplew.writeShort(quest.toInt())
+            mplew.writeInt(npc)
+            mplew.writeInt(0)
+
+            return mplew.packet
+        }
+
+        fun addQuestTimeLimit(quest: Short, time: Int): ByteArray? {
+            val mplew = MaplePacketLittleEndianWriter()
+            mplew.writeShort(SendOpcode.QUEST_RESULT.value)
+            mplew.write(6)
+            mplew.writeShort(1) //Size but meh, when will there be 2 at the same time? And it won't even replace the old one :)
+            mplew.writeShort(quest.toInt())
+            mplew.writeInt(time)
+
+            return mplew.packet
+        }
+
+        fun removeQuestTimeLimit(quest: Short): ByteArray? {
+            val mplew = MaplePacketLittleEndianWriter()
+            mplew.writeShort(SendOpcode.QUEST_RESULT.value)
+            mplew.write(7)
+            mplew.writeShort(1) //Position
+            mplew.writeShort(quest.toInt())
+
+            return mplew.packet
+        }
+
+        // not sure if there is an actual visible effect associated with these so it remains unimplemented
+        fun onNotifyHpDec(): ByteArray? {
+            val mplew = MaplePacketLittleEndianWriter()
+            mplew.writeShort(SendOpcode.NOTIFY_HP_DEC_BY_FIELD.value)
+            mplew.writeInt(0) // decode4
 
             return mplew.packet
         }
@@ -222,7 +323,6 @@ class UserLocal {
          *
          * MESO_GIVE_SUCCEED
          * MESO_GIVE_FAIL
-         * NOTIFY_HP_DEC_BY_FIELD
          * CUserLocal::OnPlayEventSound
          * CUserLocal::OnPlayMinigameSound
          * OnRandomEmotion(226)

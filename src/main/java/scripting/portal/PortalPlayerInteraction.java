@@ -72,6 +72,6 @@ public class PortalPlayerInteraction extends AbstractPlayerInteraction {
     }
 
     public void playPortalSound() {
-        c.announce(MaplePacketCreator.playPortalSound());
+        //c.announce(UserLocal.Packet.playPortalSound());
     }
 }

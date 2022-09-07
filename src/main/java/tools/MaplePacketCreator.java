@@ -5165,15 +5165,6 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    public static byte[] showOwnPetLevelUp(byte index) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.USER_LOCAL_EFFECT.getValue());
-        mplew.write(4);
-        mplew.write(0);
-        mplew.write(index); // Pet Index
-        return mplew.getPacket();
-    }
-
     public static byte[] showPetLevelUp(MapleCharacter chr, byte index) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendOpcode.SHOW_FOREIGN_EFFECT.getValue());
@@ -6583,13 +6574,6 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    public static byte[] showGainCard() {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter(3);
-        mplew.writeShort(SendOpcode.USER_LOCAL_EFFECT.getValue());
-        mplew.write(0x0D);
-        return mplew.getPacket();
-    }
-
     public static byte[] showForeignCardEffect(int id) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter(7);
         mplew.writeShort(SendOpcode.SHOW_FOREIGN_EFFECT.getValue());
@@ -6609,23 +6593,6 @@ public class MaplePacketCreator {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendOpcode.FORCED_STAT_SET.getValue());
         mplew.write(new byte[]{(byte) 0x1F, (byte) 0x0F, 0, 0, (byte) 0xE7, 3, (byte) 0xE7, 3, (byte) 0xE7, 3, (byte) 0xE7, 3, (byte) 0xFF, 0, (byte) 0xE7, 3, (byte) 0xE7, 3, (byte) 0x78, (byte) 0x8C});
-        return mplew.getPacket();
-    }
-
-    public static byte[] showIntro(String path) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.USER_LOCAL_EFFECT.getValue());
-        mplew.write(0x12);
-        mplew.writeMapleAsciiString(path);
-        return mplew.getPacket();
-    }
-
-    public static byte[] showInfo(String path) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.USER_LOCAL_EFFECT.getValue());
-        mplew.write(0x17);
-        mplew.writeMapleAsciiString(path);
-        mplew.writeInt(1);
         return mplew.getPacket();
     }
 
@@ -6709,7 +6676,7 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    public static byte[] playPortalSound() {
+    /*public static byte[] playPortalSound() {
         return showSpecialEffect(UserEffectType.PORTAL_SE.getEffect());
     }
 
@@ -6723,16 +6690,7 @@ public class MaplePacketCreator {
 
     public static byte[] showItemLevelup() { // itemLevelUpEffect
         return showSpecialEffect(UserEffectType.EQUIP_LEVEL_UP.getEffect());
-    }
-
-    public static byte[] showBuybackEffect() {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.USER_LOCAL_EFFECT.getValue());
-        mplew.write(11);
-        mplew.writeInt(0);
-
-        return mplew.getPacket();
-    }
+    }*/
 
     public static byte[] showForeignBuybackEffect(int cid) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
@@ -6741,23 +6699,6 @@ public class MaplePacketCreator {
         mplew.write(11);
         mplew.writeInt(0);
 
-        return mplew.getPacket();
-    }
-
-    // reference UserEffectType.kt for list of effects
-    // TODO move this to UserLocal.kt and rehandle all the individual USER_LOCAL_EFFECT situations
-    public static byte[] showSpecialEffect(int effect) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.USER_LOCAL_EFFECT.getValue());
-        mplew.write(effect);
-        return mplew.getPacket();
-    }
-
-    public static byte[] showMakerEffect(boolean makerSucceeded) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.USER_LOCAL_EFFECT.getValue());
-        mplew.write(16);
-        mplew.writeInt(makerSucceeded ? 0 : 1);
         return mplew.getPacket();
     }
 
@@ -6782,28 +6723,12 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    public static byte[] showOwnRecovery(byte heal) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.USER_LOCAL_EFFECT.getValue());
-        mplew.write(0x0A);
-        mplew.write(heal);
-        return mplew.getPacket();
-    }
-
     public static byte[] showRecovery(int cid, byte amount) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendOpcode.SHOW_FOREIGN_EFFECT.getValue());
         mplew.writeInt(cid);
         mplew.write(0x0A);
         mplew.write(amount);
-        return mplew.getPacket();
-    }
-
-    public static byte[] showWheelsLeft(int left) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.USER_LOCAL_EFFECT.getValue());
-        mplew.write(0x15);
-        mplew.write(left);
         return mplew.getPacket();
     }
 

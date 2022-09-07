@@ -23,6 +23,8 @@ package client.inventory;
 
 import client.MapleCharacter;
 import constants.ExpTable;
+import enums.UserEffectType;
+import network.packet.UserLocal;
 import server.MapleItemInformationProvider;
 import net.database.Statements;
 import server.movement.AbsoluteLifeMovement;
@@ -189,7 +191,7 @@ public class MaplePet extends Item {
                 closeness = newCloseness;
                 while (newCloseness >= ExpTable.INSTANCE.getClosenessNeededForLevel(level)) {
                     level += 1;
-                    owner.getClient().announce(MaplePacketCreator.showOwnPetLevelUp(slot));
+                    owner.getClient().announce(UserLocal.Packet.onEffect(UserEffectType.PET_LEVEL_UP.getEffect(), "", slot));
                     owner.getMap().broadcastMessage(MaplePacketCreator.showPetLevelUp(owner, slot));
                 }
             }

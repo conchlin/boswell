@@ -35,6 +35,7 @@ import java.util.EnumMap;
 import java.util.Set;
 
 import enums.UserEffectType;
+import network.packet.UserLocal;
 import provider.MapleData;
 import provider.MapleDataProvider;
 import provider.MapleDataProviderFactory;
@@ -309,7 +310,7 @@ public class MapleQuest {
             return;
         }
         if (timeLimit > 0) {
-            c.announce(MaplePacketCreator.removeQuestTimeLimit(id));
+            c.announce(UserLocal.Packet.removeQuestTimeLimit(id));
         }
         MapleQuestStatus newStatus = new MapleQuestStatus(this, MapleQuestStatus.Status.NOT_STARTED);
         newStatus.setForfeited(c.getQuest(this).getForfeited() + 1);
@@ -337,7 +338,7 @@ public class MapleQuest {
 
     public boolean forceComplete(MapleCharacter c, int npc) {
         if (timeLimit > 0) {
-            c.announce(MaplePacketCreator.removeQuestTimeLimit(id));
+            c.announce(UserLocal.Packet.removeQuestTimeLimit(id));
         }
         
         MapleQuestStatus newStatus = new MapleQuestStatus(this, MapleQuestStatus.Status.COMPLETED, npc);
@@ -345,8 +346,8 @@ public class MapleQuest {
         newStatus.setCompleted(c.getQuest(this).getCompleted());
         newStatus.setCompletionTime(System.currentTimeMillis());
         c.updateQuest(newStatus);
-        
-        c.announce(MaplePacketCreator.showSpecialEffect(UserEffectType.QUEST_COMPLETE.getEffect())); // Quest completion
+
+        c.announce(UserLocal.Packet.onEffect(UserEffectType.QUEST_COMPLETE.getEffect(), ""));
         c.getMap().broadcastMessage(c, MaplePacketCreator.showForeignEffect(c.getId(), UserEffectType.QUEST_COMPLETE.getEffect()), false); //use 9 instead of 12 for both
         return true;
     }

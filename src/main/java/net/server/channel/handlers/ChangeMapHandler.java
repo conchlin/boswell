@@ -25,6 +25,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Calendar;
 
+import enums.UserEffectType;
 import net.AbstractMaplePacketHandler;
 import client.MapleCharacter;
 import client.MapleClient;
@@ -97,7 +98,7 @@ public final class ChangeMapHandler extends AbstractMaplePacketHandler {
                             // thanks lucasziron for showing revivePlayer() also being triggered by Wheel
 
                             MapleInventoryManipulator.removeById(c, MapleInventoryType.CASH, 5510000, 1, true, false);
-                            chr.announce(MaplePacketCreator.showWheelsLeft(chr.getItemQuantity(5510000, false)));
+                            chr.announce(UserLocal.Packet.onEffect(UserEffectType.WHEEL_DESTINY.getEffect(), "", chr.getItemQuantity(5510000, false)));
 
                             chr.updateHp(50);
                             chr.changeMap(map, map.findClosestPlayerSpawnpoint(chr.getPosition()));

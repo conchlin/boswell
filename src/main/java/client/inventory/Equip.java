@@ -28,6 +28,9 @@ import constants.ExpTable;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+
+import enums.UserEffectType;
+import network.packet.UserLocal;
 import server.MapleItemInformationProvider;
 import tools.*;
 
@@ -313,9 +316,8 @@ public class Equip extends Item {
         	}
         }
         exp = 0;
-        c.announce(MaplePacketCreator.showItemLevelup());
-        c.getPlayer().getMap().broadcastMessage(c.getPlayer(),
-        		MaplePacketCreator.showItemLevelup()); // TODO make sure this actually broadcasts to all players in map 
+        c.announce(UserLocal.Packet.onEffect(UserEffectType.EQUIP_LEVEL_UP.getEffect(), ""));
+        //c.getPlayer().getMap().broadcastMessage(c.getPlayer(), MaplePacketCreator.showItemLevelup()); // TODO make sure this actually broadcasts to all players in map
         c.getPlayer().forceUpdateItem(this);
     }
 

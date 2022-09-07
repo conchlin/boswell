@@ -21,9 +21,11 @@
 */
 package client;
 
+import enums.UserEffectType;
 import net.server.audit.locks.MonitoredLockType;
 import net.server.audit.locks.factory.MonitoredReentrantLockFactory;
 import net.database.Statements;
+import network.packet.UserLocal;
 import tools.MaplePacketCreator;
 
 import java.sql.Connection;
@@ -92,7 +94,7 @@ public final class MonsterBook {
             calculateLevel();   // current leveling system only accounts unique cards...
 
             c.announce(MaplePacketCreator.addCard(false, cardid, qty + 1));
-            c.announce(MaplePacketCreator.showGainCard());
+            c.announce(UserLocal.Packet.onEffect(UserEffectType.MONSTERBOOK_PICKUP.getEffect(), ""));
         } else {
             c.announce(MaplePacketCreator.addCard(true, cardid, 5));
         }

@@ -23,6 +23,8 @@ package scripting.map;
 
 import client.MapleClient;
 import client.MapleQuestStatus;
+import enums.UserEffectType;
+import network.packet.UserLocal;
 import scripting.AbstractPlayerInteraction;
 import server.quest.MapleQuest;
 import tools.MaplePacketCreator;
@@ -39,14 +41,14 @@ public class MapScriptMethods extends AbstractPlayerInteraction {
         switch (c.getPlayer().getMapId()) {
             case 914090010 -> {
                 lockUI();
-                c.announce(MaplePacketCreator.showIntro("Effect/Direction1.img/aranTutorial/Scene0"));
+                c.announce(UserLocal.Packet.onEffect(UserEffectType.SHOW_INTRO.getEffect(), "Effect/Direction1.img/aranTutorial/Scene0"));
             }
-            case 914090011 -> c.announce(MaplePacketCreator.showIntro("Effect/Direction1.img/aranTutorial/Scene1" + c.getPlayer().getGender()));
-            case 914090012 -> c.announce(MaplePacketCreator.showIntro("Effect/Direction1.img/aranTutorial/Scene2" + c.getPlayer().getGender()));
-            case 914090013 -> c.announce(MaplePacketCreator.showIntro("Effect/Direction1.img/aranTutorial/Scene3"));
+            case 914090011 -> c.announce(UserLocal.Packet.onEffect(UserEffectType.SHOW_INTRO.getEffect(), "Effect/Direction1.img/aranTutorial/Scene1" + c.getPlayer().getGender()));
+            case 914090012 -> c.announce(UserLocal.Packet.onEffect(UserEffectType.SHOW_INTRO.getEffect(), "Effect/Direction1.img/aranTutorial/Scene2" + c.getPlayer().getGender()));
+            case 914090013 -> c.announce(UserLocal.Packet.onEffect(UserEffectType.SHOW_INTRO.getEffect(), "Effect/Direction1.img/aranTutorial/Scene3"));
             case 914090100 -> {
                 lockUI();
-                c.announce(MaplePacketCreator.showIntro("Effect/Direction1.img/aranTutorial/HandedPoleArm" + c.getPlayer().getGender()));
+                c.announce(UserLocal.Packet.onEffect(UserEffectType.SHOW_INTRO.getEffect(), "Effect/Direction1.img/aranTutorial/HandedPoleArm" + c.getPlayer().getGender()));
             }
         }
     }
@@ -54,30 +56,30 @@ public class MapScriptMethods extends AbstractPlayerInteraction {
     public void startExplorerExperience() {
         if (c.getPlayer().getMapId() == 1020100) //Swordman
         {
-            c.announce(MaplePacketCreator.showIntro("Effect/Direction3.img/swordman/Scene" + c.getPlayer().getGender()));
+            c.announce(UserLocal.Packet.onEffect(UserEffectType.SHOW_INTRO.getEffect(), "Effect/Direction3.img/swordman/Scene" + c.getPlayer().getGender()));
         } else if (c.getPlayer().getMapId() == 1020200) //Magician
         {
-            c.announce(MaplePacketCreator.showIntro("Effect/Direction3.img/magician/Scene" + c.getPlayer().getGender()));
+            c.announce(UserLocal.Packet.onEffect(UserEffectType.SHOW_INTRO.getEffect(), "Effect/Direction3.img/magician/Scene" + c.getPlayer().getGender()));
         } else if (c.getPlayer().getMapId() == 1020300) //Archer
         {
-            c.announce(MaplePacketCreator.showIntro("Effect/Direction3.img/archer/Scene" + c.getPlayer().getGender()));
+            c.announce(UserLocal.Packet.onEffect(UserEffectType.SHOW_INTRO.getEffect(), "Effect/Direction3.img/archer/Scene" + c.getPlayer().getGender()));
         } else if (c.getPlayer().getMapId() == 1020400) //Rogue
         {
-            c.announce(MaplePacketCreator.showIntro("Effect/Direction3.img/rogue/Scene" + c.getPlayer().getGender()));
+            c.announce(UserLocal.Packet.onEffect(UserEffectType.SHOW_INTRO.getEffect(), "Effect/Direction3.img/rogue/Scene" + c.getPlayer().getGender()));
         } else if (c.getPlayer().getMapId() == 1020500) //Pirate
         {
-            c.announce(MaplePacketCreator.showIntro("Effect/Direction3.img/pirate/Scene" + c.getPlayer().getGender()));
+            c.announce(UserLocal.Packet.onEffect(UserEffectType.SHOW_INTRO.getEffect(), "Effect/Direction3.img/pirate/Scene" + c.getPlayer().getGender()));
         }
     }
 
     public void goAdventure() {
         lockUI();
-        c.announce(MaplePacketCreator.showIntro("Effect/Direction3.img/goAdventure/Scene" + c.getPlayer().getGender()));
+        c.announce(UserLocal.Packet.onEffect(UserEffectType.SHOW_INTRO.getEffect(), "Effect/Direction3.img/goAdventure/Scene" + c.getPlayer().getGender()));
     }
 
     public void goLith() {
         lockUI();
-        c.announce(MaplePacketCreator.showIntro("Effect/Direction3.img/goLith/Scene" + c.getPlayer().getGender()));
+        c.announce(UserLocal.Packet.onEffect(UserEffectType.SHOW_INTRO.getEffect(), "Effect/Direction3.img/goLith/Scene" + c.getPlayer().getGender()));
     }
 
     public void explorerQuest(short questid, String questName) {

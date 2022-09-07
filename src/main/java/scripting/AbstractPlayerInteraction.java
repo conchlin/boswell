@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import enums.UserEffectType;
 import network.packet.UserLocal;
 import server.skills.*;
 import net.server.Server;
@@ -629,12 +630,13 @@ public class AbstractPlayerInteraction {
         showIntro(intro);
     }
 
+    // for  compat with pre-existing scripts
     public void showIntro(String path) {
-        c.announce(MaplePacketCreator.showIntro(path));
+        c.announce(UserLocal.Packet.onEffect(UserEffectType.SHOW_INTRO.getEffect(), path));
     }
 
     public void showInfo(String path) {
-        c.announce(MaplePacketCreator.showInfo(path));
+        c.announce(UserLocal.Packet.onEffect(UserEffectType.SHOW_INFO.getEffect(), path));
         c.announce(MaplePacketCreator.enableActions());
     }
 
@@ -842,7 +844,7 @@ public class AbstractPlayerInteraction {
                 return;
             }
         } else if (GameConstants.isAranSkills(skillid)) {
-            c.announce(MaplePacketCreator.showInfo("Effect/BasicEff.img/AranGetSkill"));
+            showInfo("Effect/BasicEff.img/AranGetSkill");
         }
 
         getPlayer().changeSkillLevel(skill, level, masterLevel, expiration);
@@ -899,7 +901,7 @@ public class AbstractPlayerInteraction {
     }
 
     public void displayGuide(int num) {
-        c.announce(MaplePacketCreator.showInfo("UI/tutorial.img/" + num));
+        c.announce(UserLocal.Packet.onEffect(UserEffectType.SHOW_INFO.getEffect(), "UI/tutorial.img/" + num));
     }
 
     public void goDojoUp() {
@@ -964,8 +966,8 @@ public class AbstractPlayerInteraction {
     }
 
     public void unlockUI() {
-        c.announce(UserLocal.Packet.onDisableUI(true));
-        c.announce(UserLocal.Packet.setDirectionMode(true));
+        c.announce(UserLocal.Packet.onDisableUI(false));
+        c.announce(UserLocal.Packet.setDirectionMode(false));
     }
 
     public void playSound(String sound) {
