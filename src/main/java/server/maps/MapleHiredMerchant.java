@@ -41,6 +41,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import net.server.audit.locks.factory.MonitoredReentrantLockFactory;
 import net.server.Server;
+import network.packet.EmployeePool;
 import server.MapleItemInformationProvider;
 import net.database.DatabaseConnection;
 import tools.MaplePacketCreator;
@@ -126,7 +127,7 @@ public class MapleHiredMerchant extends AbstractMapleMapObject {
             if (i > -1) {
                 visitors[i] = visitor;
                 broadcastToVisitors(MaplePacketCreator.hiredMerchantVisitorAdd(visitor, i + 1));
-                this.getMap().broadcastMessage(MaplePacketCreator.updateHiredMerchantBox(this));
+                this.getMap().broadcastMessage(EmployeePool.Packet.updateHiredMerchantBox(this));
 
                 return true;
             }
@@ -147,7 +148,7 @@ public class MapleHiredMerchant extends AbstractMapleMapObject {
             if (visitors[slot] != null && visitors[slot].getId() == visitor.getId()) {
                 visitors[slot] = null;
                 broadcastToVisitors(MaplePacketCreator.hiredMerchantVisitorLeave(slot + 1));
-                this.getMap().broadcastMessage(MaplePacketCreator.updateHiredMerchantBox(this));
+                this.getMap().broadcastMessage(EmployeePool.Packet.updateHiredMerchantBox(this));
             }
         } finally {
             visitorLock.unlock();
@@ -188,7 +189,7 @@ public class MapleHiredMerchant extends AbstractMapleMapObject {
                 }
             }
 
-            this.getMap().broadcastMessage(MaplePacketCreator.updateHiredMerchantBox(this));
+            this.getMap().broadcastMessage(EmployeePool.Packet.updateHiredMerchantBox(this));
         } finally {
             visitorLock.unlock();
         }
@@ -342,7 +343,7 @@ public class MapleHiredMerchant extends AbstractMapleMapObject {
 
     public void forceClose() {
         //Server.getInstance().getChannel(world, channel).removeHiredMerchant(ownerId);
-        map.broadcastMessage(MaplePacketCreator.removeHiredMerchantBox(getOwnerId()));
+        map.broadcastMessage(EmployeePool.Packet.removeHiredMerchantBox(getOwnerId()));
         map.removeMapObject(this);
 
         MapleCharacter owner = Server.getInstance().getWorld(world).getPlayerStorage().getCharacterById(ownerId);
@@ -396,7 +397,7 @@ public class MapleHiredMerchant extends AbstractMapleMapObject {
 
     private void closeShop(MapleClient c, boolean timeout) {
         map.removeMapObject(this);
-        map.broadcastMessage(MaplePacketCreator.removeHiredMerchantBox(ownerId));
+        map.broadcastMessage(EmployeePool.Packet.removeHiredMerchantBox(ownerId));
         c.getChannelServer().removeHiredMerchant(ownerId);
 
         this.removeAllVisitors();
@@ -731,7 +732,7 @@ public class MapleHiredMerchant extends AbstractMapleMapObject {
 
     @Override
     public void sendSpawnData(MapleClient client) {
-        client.announce(MaplePacketCreator.spawnHiredMerchantBox(this));
+        client.announce(EmployeePool.Packet.spawnHiredMerchantBox(this));
     }
 
     public class SoldItem {

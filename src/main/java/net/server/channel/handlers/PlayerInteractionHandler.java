@@ -33,6 +33,7 @@ import constants.ItemConstants;
 import constants.ServerConstants;
 
 import net.AbstractMaplePacketHandler;
+import network.packet.EmployeePool;
 import server.MapleItemInformationProvider;
 import server.MapleTrade;
 import constants.GameConstants;
@@ -131,7 +132,7 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
     }
     
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         if (!c.tryacquireClient()) {    // thanks GabrielSin for pointing dupes within player interactions
             c.announce(MaplePacketCreator.enableActions());
             return;
@@ -383,7 +384,7 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
                     merchant.setOpen(true);
                     chr.getMap().addMapObject(merchant);
                     chr.setHiredMerchant(null);
-                    chr.getMap().broadcastMessage(MaplePacketCreator.spawnHiredMerchantBox(merchant));
+                    chr.getMap().broadcastMessage(EmployeePool.Packet.spawnHiredMerchantBox(merchant));
                 }
             } else if (mode == Action.READY.getCode()) {
                 MapleMiniGame game = chr.getMiniGame();
@@ -776,7 +777,7 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
                         } else {
                             merchant.clearMessages();
                             merchant.setOpen(true);
-                            merchant.getMap().broadcastMessage(MaplePacketCreator.updateHiredMerchantBox(merchant));
+                            merchant.getMap().broadcastMessage(EmployeePool.Packet.updateHiredMerchantBox(merchant));
                         }
                     }
                 }
