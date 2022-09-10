@@ -6488,73 +6488,80 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         this.events.put("rescueGaga", new RescueGaga(0));
 
         try (Connection con = DatabaseConnection.getConnection()) {
-            con.setAutoCommit(false);
-            Statements.Insert statement = new Statements.Insert("characters");
-            statement.add("skincolor", skinColor.getId());
-            statement.add("gender", gender);
-            statement.add("job", getJob().getId());
-            statement.add("hair", hair);
-            statement.add("face", face);
-            statement.add("map", mapid);
-            statement.add("spawnpoint", 0);
-            statement.add("accountid", accountid);
-            statement.add("name", name);
-            statement.add("world", world);
+            try {
+                con.setAutoCommit(false);
+                Statements.Insert statement = new Statements.Insert("characters");
+                statement.add("skincolor", skinColor.getId());
+                statement.add("gender", gender);
+                statement.add("job", getJob().getId());
+                statement.add("hair", hair);
+                statement.add("face", face);
+                statement.add("map", mapid);
+                statement.add("spawnpoint", 0);
+                statement.add("accountid", accountid);
+                statement.add("name", name);
+                statement.add("world", world);
 
-            this.id = statement.execute(con);
+                this.id = statement.execute(con);
 
-            if (this.id == -1) {
-                FilePrinter.printError(FilePrinter.INSERT_CHAR, "Error trying to insert " + name);
-                return false;
-            }
-
-            // Select a keybinding method
-            int[] selectedKey;
-            int[] selectedType;
-            int[] selectedAction;
-
-            selectedKey = GameConstants.getCustomKey(false);
-            selectedType = GameConstants.getCustomType(false);
-            selectedAction = GameConstants.getCustomAction(false);
-
-            try (PreparedStatement ps = con.prepareStatement("INSERT INTO keymap (characterid, key, type, action) VALUES (?, ?, ?, ?)")) {
-                ps.setInt(1, id);
-                for (int i = 0; i < selectedKey.length; i++) {
-                    ps.setInt(2, selectedKey[i]);
-                    ps.setInt(3, selectedType[i]);
-                    ps.setInt(4, selectedAction[i]);
-                    ps.execute();
+                if (this.id == -1) {
+                    FilePrinter.printError(FilePrinter.INSERT_CHAR, "Error trying to insert " + name);
+                    return false;
                 }
-            }
 
-            itemsWithType = new ArrayList<>();
-            for (MapleInventory iv : inventory) {
-                for (Item item : iv.list()) {
-                    itemsWithType.add(new Pair<>(item, iv.getType()));
-                }
-            }
+                // Select a keybinding method
+                int[] selectedKey;
+                int[] selectedType;
+                int[] selectedAction;
 
-            ItemFactory.INVENTORY.saveItems(itemsWithType, id, con);
+                selectedKey = GameConstants.getCustomKey(false);
+                selectedType = GameConstants.getCustomType(false);
+                selectedAction = GameConstants.getCustomAction(false);
 
-            if (!skills.isEmpty()) {
-                try (PreparedStatement ps = con.prepareStatement("INSERT INTO skills (characterid, skillid, skilllevel, masterlevel, expiration) VALUES (?, ?, ?, ?, ?)")) {
+                try (PreparedStatement ps = con.prepareStatement("INSERT INTO keymap (characterid, key, type, action) VALUES (?, ?, ?, ?)")) {
                     ps.setInt(1, id);
-                    for (Entry<PlayerSkill, SkillEntry> skill : skills.entrySet()) {
-                        ps.setInt(2, skill.getKey().getId());
-                        ps.setInt(3, skill.getValue().skillevel);
-                        ps.setInt(4, skill.getValue().masterlevel);
-                        ps.setLong(5, skill.getValue().expiration);
-                        ps.addBatch();
+                    for (int i = 0; i < selectedKey.length; i++) {
+                        ps.setInt(2, selectedKey[i]);
+                        ps.setInt(3, selectedType[i]);
+                        ps.setInt(4, selectedAction[i]);
+                        ps.execute();
                     }
-                    ps.executeBatch();
                 }
+
+                itemsWithType = new ArrayList<>();
+                for (MapleInventory iv : inventory) {
+                    for (Item item : iv.list()) {
+                        itemsWithType.add(new Pair<>(item, iv.getType()));
+                    }
+                }
+
+                ItemFactory.INVENTORY.saveItems(itemsWithType, id, con);
+
+                if (!skills.isEmpty()) {
+                    try (PreparedStatement ps = con.prepareStatement("INSERT INTO skills (characterid, skillid, skilllevel, masterlevel, expiration) VALUES (?, ?, ?, ?, ?)")) {
+                        ps.setInt(1, id);
+                        for (Entry<PlayerSkill, SkillEntry> skill : skills.entrySet()) {
+                            ps.setInt(2, skill.getKey().getId());
+                            ps.setInt(3, skill.getValue().skillevel);
+                            ps.setInt(4, skill.getValue().masterlevel);
+                            ps.setLong(5, skill.getValue().expiration);
+                            ps.addBatch();
+                        }
+                        ps.executeBatch();
+                    }
+                }
+                con.commit();
+                return true;
+            } catch (Exception e) {
+                con.rollback();
+                throw e;
+            } finally {
+                con.setAutoCommit(true);
             }
-            //con.commit();
-            return true;
         } catch (Throwable t) {
             FilePrinter.printError(FilePrinter.INSERT_CHAR, t, "Error creating " + name + " Level: " + level + " Job: " + job.getId());
-            return false;
         }
+        return false;
     }
 
     public void saveCharToDB() {
