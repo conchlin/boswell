@@ -4,6 +4,7 @@ import client.MapleCharacter;
 import client.MapleClient;
 import client.inventory.Item;
 import net.server.Server;
+import network.packet.ReactorPool;
 import server.TimerManager;
 import server.maps.MapleMap;
 import server.maps.MapleReactor;
@@ -76,7 +77,7 @@ public class AramiaTree {
             case 0, 1, 2, 3, 4, 5 -> {
                 if (aramiaTree >= 1000 * (1 + reactor.getState())) {
                     reactor.setState((byte) (reactor.getState() + 1));
-                    map.broadcastMessage(MaplePacketCreator.triggerReactor(reactor, reactor.getState()));
+                    map.broadcastMessage(ReactorPool.Packet.triggerReactor(reactor, reactor.getState()));
                 }
             }
             default -> {}

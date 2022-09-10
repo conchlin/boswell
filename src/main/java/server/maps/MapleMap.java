@@ -72,6 +72,7 @@ import net.server.Server;
 import net.server.channel.Channel;
 import net.server.world.World;
 import network.packet.NpcPool;
+import network.packet.ReactorPool;
 import scripting.map.MapScriptManager;
 import server.MapleItemInformationProvider;
 import server.MaplePortal;
@@ -367,7 +368,7 @@ public class MapleMap {
                     mr.lockReactor();
                     try {
                         mr.resetReactorActions(1);
-                        broadcastMessage(MaplePacketCreator.triggerReactor((MapleReactor) o, 1));
+                        broadcastMessage(ReactorPool.Packet.triggerReactor((MapleReactor) o, 1));
                     } finally {
                         mr.unlockReactor();
                     }
@@ -1478,7 +1479,7 @@ public class MapleMap {
 
     public void destroyReactor(int oid) {
         final MapleReactor reactor = getReactorByOid(oid);
-        broadcastMessage(MaplePacketCreator.destroyReactor(reactor));
+        broadcastMessage(ReactorPool.Packet.destroyReactor(reactor));
         reactor.cancelReactorTimeout();
         reactor.setAlive(false);
         removeMapObject(reactor);
@@ -1511,7 +1512,7 @@ public class MapleMap {
             r.lockReactor();
             try {
                 r.resetReactorActions(0);
-                broadcastMessage(MaplePacketCreator.triggerReactor(r, 0));
+                broadcastMessage(ReactorPool.Packet.triggerReactor(r, 0));
             } finally {
                 r.unlockReactor();
             }
@@ -3375,7 +3376,7 @@ public class MapleMap {
                                         reactor.lockReactor();
                                         try {
                                             reactor.resetReactorActions(0);
-                                            broadcastMessage(MaplePacketCreator.triggerReactor(reactor, 0));
+                                            broadcastMessage(ReactorPool.Packet.triggerReactor(reactor, 0));
                                         } finally {
                                             reactor.unlockReactor();
                                         }
