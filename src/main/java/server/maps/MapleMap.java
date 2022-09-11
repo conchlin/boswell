@@ -1567,9 +1567,7 @@ public class MapleMap {
         objectRLock.lock();
         try {
             for (Object ob : list) {
-                if (ob instanceof MapleMapObject) {
-                    MapleMapObject mmo = (MapleMapObject) ob;
-
+                if (ob instanceof MapleMapObject mmo) {
                     if (mapobjects.containsValue(mmo) && mmo.getType() == MapleMapObjectType.REACTOR) {
                         listObjects.add(mmo);
                     }

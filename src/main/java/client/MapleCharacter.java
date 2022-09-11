@@ -1675,8 +1675,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
             return;
         }
 
-        if (ob instanceof MapleMapItem) {
-            MapleMapItem mapitem = (MapleMapItem) ob;
+        if (ob instanceof MapleMapItem mapitem) {
             boolean pickup_c = mapitem.canBePickedBy(this);
             if (!pickup_c) {
                 client.announce(MaplePacketCreator.showItemUnavailable());

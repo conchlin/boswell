@@ -228,8 +228,7 @@ public final class CashOperationHandler extends AbstractMaplePacketHandler {
                         cs.removeFromInventory(item);
                         c.announce(MaplePacketCreator.takeFromCashInventory(item));
 
-                        if(item instanceof Equip) {
-                            Equip equip = (Equip) item;
+                        if(item instanceof Equip equip) {
                             if(equip.getRingId() >= 0) {
                                 MapleRing ring = MapleRing.loadFromDb(equip.getRingId());
                                 chr.addPlayerRing(ring);
@@ -282,8 +281,7 @@ public final class CashOperationHandler extends AbstractMaplePacketHandler {
                                 return;
                             }*/ //Gotta let them faggots marry too, hence why this is commented out <3 
 
-                            if(itemRing.toItem() instanceof Equip) {
-                                Equip eqp = (Equip) itemRing.toItem();
+                            if(itemRing.toItem() instanceof Equip eqp) {
                                 Pair<Integer, Integer> rings = MapleRing.createRing(itemRing.getItemId(), chr, partner);
                                 eqp.setRingId(rings.getLeft());
                                 cs.addToInventory(eqp);
@@ -348,8 +346,7 @@ public final class CashOperationHandler extends AbstractMaplePacketHandler {
                             chr.dropMessage(5, "The partner you specified cannot be found. Please make sure your partner is online and in the same channel.");
                         } else {
                             // Need to check to make sure its actually an equip and the right SN...
-                            if(itemRing.toItem() instanceof Equip) {
-                                Equip eqp = (Equip) itemRing.toItem();
+                            if(itemRing.toItem() instanceof Equip eqp) {
                                 Pair<Integer, Integer> rings = MapleRing.createRing(itemRing.getItemId(), chr, partner);
                                 eqp.setRingId(rings.getLeft());
                                 cs.addToInventory(eqp);

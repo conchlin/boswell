@@ -47,19 +47,15 @@ public class WhereaMiCommand extends Command {
         HashSet<MapleMonster> mobs = new HashSet<>();
         
         for (MapleMapObject mmo : player.getMap().getMapObjects()) {
-            if (mmo instanceof MapleNPC) {
-                MapleNPC npc = (MapleNPC) mmo;
+            if (mmo instanceof MapleNPC npc) {
                 npcs.add(npc);
-            } else if (mmo instanceof MapleCharacter) {
-                MapleCharacter mc = (MapleCharacter) mmo;
+            } else if (mmo instanceof MapleCharacter mc) {
                 chars.add(mc);
-            } else if (mmo instanceof MapleMonster) {
-                MapleMonster mob = (MapleMonster) mmo;
+            } else if (mmo instanceof MapleMonster mob) {
                 if (mob.isAlive()) {
                     mobs.add(mob);
                 }
-            } else if (mmo instanceof MaplePlayerNPC) {
-                MaplePlayerNPC npc = (MaplePlayerNPC) mmo;
+            } else if (mmo instanceof MaplePlayerNPC npc) {
                 playernpcs.add(npc);
             }
         }

@@ -297,14 +297,12 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
                 } else {
                     int oid = slea.readInt();
                     MapleMapObject ob = chr.getMap().getMapObject(oid);
-                    if (ob instanceof MaplePlayerShop) {
-                        MaplePlayerShop shop = (MaplePlayerShop) ob;
+                    if (ob instanceof MaplePlayerShop shop) {
                         shop.visitShop(chr);
-                    } else if (ob instanceof MapleMiniGame) {
+                    } else if (ob instanceof MapleMiniGame game) {
                         slea.skip(1);
                         String pw = slea.available() > 1 ? slea.readMapleAsciiString() : "";
 
-                        MapleMiniGame game = (MapleMiniGame) ob;
                         if(game.checkPassword(pw)) {
                             if (game.hasFreeSlot() && !game.isVisitor(chr)) {
                                 game.addVisitor(chr);
@@ -319,13 +317,12 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
                         } else {
                             chr.getClient().announce(MaplePacketCreator.getMiniRoomError(22));
                         }
-                    } else if (ob instanceof MapleHiredMerchant && chr.getHiredMerchant() == null) {
+                    } else if (ob instanceof MapleHiredMerchant merchant && chr.getHiredMerchant() == null) {
                         if (chr.getTrade() != null) {
                             //Apparently there is a dupe exploit that causes racing conditions when saving/retrieving from the db with stuff like trade open.
                             c.announce(MaplePacketCreator.enableActions());
                             return;
                         }
-                        MapleHiredMerchant merchant = (MapleHiredMerchant) ob;
                         merchant.visitShop(chr);
                     }
                 }

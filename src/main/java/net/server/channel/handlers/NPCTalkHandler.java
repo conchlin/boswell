@@ -48,9 +48,7 @@ public final class NPCTalkHandler extends AbstractMaplePacketHandler {
         
         int oid = slea.readInt();
         MapleMapObject obj = c.getPlayer().getMap().getMapObject(oid);
-        if (obj instanceof MapleNPC) {
-            MapleNPC npc = (MapleNPC) obj;
-            
+        if (obj instanceof MapleNPC npc) {
             if (npc.getId() == 9010009) {   //is duey
                 DueyProcessor.dueySendTalk(c, false);
             } else {
@@ -76,8 +74,7 @@ public final class NPCTalkHandler extends AbstractMaplePacketHandler {
                     }
                 }
             }
-        } else if (obj instanceof MaplePlayerNPC) {
-            MaplePlayerNPC pnpc = (MaplePlayerNPC) obj;
+        } else if (obj instanceof MaplePlayerNPC pnpc) {
             NPCScriptManager nsm = NPCScriptManager.getInstance();
             
             if (pnpc.getScriptId() < 9977777 && !nsm.isNpcScriptAvailable(c, "" + pnpc.getScriptId())) {

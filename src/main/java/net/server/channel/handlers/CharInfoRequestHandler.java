@@ -31,14 +31,12 @@ import tools.data.input.SeekableLittleEndianAccessor;
 public final class CharInfoRequestHandler extends AbstractMaplePacketHandler {
     
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         slea.skip(4);
         int cid = slea.readInt();
         MapleMapObject target = c.getPlayer().getMap().getMapObject(cid);
         if (target != null) {
-            if (target instanceof MapleCharacter) {
-                MapleCharacter player = (MapleCharacter) target;
-                
+            if (target instanceof MapleCharacter player) {
                 if(c.getPlayer().getId() != player.getId()) {
                     player.exportExcludedItems(c);
                 }
