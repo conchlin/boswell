@@ -24,6 +24,7 @@ import java.awt.Point;
 import client.MapleClient;
 import client.inventory.MapleInventoryType;
 import client.inventory.MaplePet;
+import network.packet.PetPacket;
 import provider.MapleDataTool;
 import client.inventory.manipulator.MapleInventoryManipulator;
 import java.io.File;
@@ -84,7 +85,7 @@ public class SpawnPetProcessor {
                     pet.setSummoned(true);
                     pet.saveToDb();
                     chr.addPet(pet);
-                    chr.getMap().broadcastMessage(c.getPlayer(), MaplePacketCreator.showPet(c.getPlayer(), pet, false, false), true);
+                    chr.getMap().broadcastMessage(c.getPlayer(), PetPacket.Packet.showPet(c.getPlayer(), pet, false, false), true);
                     c.announce(MaplePacketCreator.petStatUpdate(c.getPlayer()));
                     c.announce(MaplePacketCreator.enableActions());
 

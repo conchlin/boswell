@@ -25,15 +25,15 @@ import client.MapleClient;
 import client.autoban.AutobanFactory;
 import constants.ServerConstants;
 import net.AbstractMaplePacketHandler;
+import network.packet.PetPacket;
 import tools.FilePrinter;
 import tools.LogHelper;
-import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 public final class PetChatHandler extends AbstractMaplePacketHandler {
     
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         int petId = slea.readInt();
         slea.readInt();
         slea.readByte();
@@ -49,7 +49,7 @@ public final class PetChatHandler extends AbstractMaplePacketHandler {
         	c.disconnect(true, false);
         	return;
         }
-        c.getPlayer().getMap().broadcastMessage(c.getPlayer(), MaplePacketCreator.petChat(c.getPlayer().getId(), pet, act, text), true);
+        c.getPlayer().getMap().broadcastMessage(c.getPlayer(), PetPacket.Packet.petChat(c.getPlayer().getId(), pet, act, text), true);
         if (ServerConstants.USE_ENABLE_CHAT_LOG) {
             LogHelper.logChat(c, "Pet", text);
         }

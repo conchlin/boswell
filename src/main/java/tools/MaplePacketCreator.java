@@ -4999,74 +4999,6 @@ public class MaplePacketCreator {
         mplew.writeInt(pet.getFh());
     }
 
-    public static byte[] showPet(MapleCharacter chr, MaplePet pet, boolean remove, boolean hunger) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.SPAWN_PET.getValue());
-        mplew.writeInt(chr.getId());
-        mplew.write(chr.getPetIndex(pet));
-        if (remove) {
-            mplew.write(0);
-            mplew.write(hunger ? 1 : 0);
-        } else {
-            addPetInfo(mplew, pet, true);
-        }
-        return mplew.getPacket();
-    }
-
-    /**
-     * This is the packet for pet movement
-     *
-     * @param MapleCharacter chr
-     * @param MaplePet pet
-     * @param Point p
-     * @param List<LifeMovementFragment> moves
-     *
-     * @return MaplePacketLittleEndianWriter mplew
-     * */
-    public static byte[] movePet(MapleCharacter chr, MaplePet pet, Point p, List<LifeMovementFragment> moves) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.MOVE_PET.getValue());
-        mplew.writeInt(chr.getId());
-        mplew.write(chr.getPetIndex(pet));
-        mplew.writePos(p);
-        serializeMovementList(mplew, moves);
-        return mplew.getPacket();
-    }
-
-    public static byte[] petChat(int cid, byte index, int act, String text) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.PET_CHAT.getValue());
-        mplew.writeInt(cid);
-        mplew.write(index);
-        mplew.write(0);
-        mplew.write(act);
-        mplew.writeMapleAsciiString(text);
-        mplew.write(0);
-        return mplew.getPacket();
-    }
-
-    public static byte[] petFoodResponse(int cid, byte index, boolean success, boolean balloonType) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.PET_COMMAND.getValue());
-        mplew.writeInt(cid);
-        mplew.write(index);
-        mplew.write(1);
-        mplew.writeBool(success);
-        mplew.writeBool(balloonType);
-        return mplew.getPacket();
-    }
-
-    public static byte[] commandResponse(int cid, byte index, boolean talk, int animation, boolean balloonType) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.PET_COMMAND.getValue());
-        mplew.writeInt(cid);
-        mplew.write(index);
-        mplew.write(0);
-        mplew.write(animation);
-        mplew.writeBool(!talk);
-        mplew.writeBool(balloonType);
-        return mplew.getPacket();
-    }
 
     public static byte[] showPetLevelUp(MapleCharacter chr, byte index) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
@@ -5075,29 +5007,6 @@ public class MaplePacketCreator {
         mplew.write(4);
         mplew.write(0);
         mplew.write(index);
-        return mplew.getPacket();
-    }
-
-    public static byte[] changePetName(MapleCharacter chr, String newname, int slot) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.PET_NAMECHANGE.getValue());
-        mplew.writeInt(chr.getId());
-        mplew.write(0);
-        mplew.writeMapleAsciiString(newname);
-        mplew.write(0);
-        return mplew.getPacket();
-    }
-
-    public static final byte[] loadExceptionList(final int cid, final int petId, final byte petIdx, final List<Integer> data) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.PET_EXCEPTION_LIST.getValue());
-        mplew.writeInt(cid);
-        mplew.write(petIdx);
-        mplew.writeLong(petId);
-        mplew.write(data.size());
-        for (final Integer ids : data) {
-            mplew.writeInt(ids);
-        }
         return mplew.getPacket();
     }
 

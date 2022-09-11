@@ -72,6 +72,7 @@ import net.server.Server;
 import net.server.channel.Channel;
 import net.server.world.World;
 import network.packet.NpcPool;
+import network.packet.PetPacket;
 import network.packet.ReactorPool;
 import scripting.map.MapScriptManager;
 import server.MapleItemInformationProvider;
@@ -2359,10 +2360,10 @@ public class MapleMap {
         }
 
         MaplePet[] pets = chr.getPets();
-        for (int i = 0; i < pets.length; i++) {
-            if (pets[i] != null) {
-                pets[i].setPos(getGroundBelow(chr.getPosition()));
-                chr.announce(MaplePacketCreator.showPet(chr, pets[i], false, false));
+        for (MaplePet pet : pets) {
+            if (pet != null) {
+                pet.setPos(getGroundBelow(chr.getPosition()));
+                chr.announce(PetPacket.Packet.showPet(chr, pet, false, false));
             } else {
                 break;
             }

@@ -30,6 +30,7 @@ import constants.*;
 import enums.UserEffectType;
 import net.database.DatabaseConnection;
 import net.database.Statements;
+import network.packet.PetPacket;
 import network.packet.UserLocal;
 import server.cashshop.CashShop;
 import client.autoban.AutobanFactory;
@@ -3325,7 +3326,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 
             Set<Integer> exclItems = pe.getValue();
             if (!exclItems.isEmpty()) {
-                client.announce(MaplePacketCreator.loadExceptionList(this.getId(), pe.getKey(), petIndex, new ArrayList<>(exclItems)));
+                client.announce(PetPacket.Packet.loadExceptionList(this.getId(), pe.getKey(), petIndex, new ArrayList<>(exclItems)));
 
                 chrLock.lock();
                 try {
@@ -3349,7 +3350,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 
             Set<Integer> exclItems = pe.getValue();
             if (!exclItems.isEmpty()) {
-                c.announce(MaplePacketCreator.loadExceptionList(this.getId(), pe.getKey(), petIndex, new ArrayList<>(exclItems)));
+                c.announce(PetPacket.Packet.loadExceptionList(this.getId(), pe.getKey(), petIndex, new ArrayList<>(exclItems)));
             }
         }
     }
@@ -7930,7 +7931,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         }
 
         this.getClient().getWorldServer().unregisterPetHunger(this, petIdx);
-        getMap().broadcastMessage(this, MaplePacketCreator.showPet(this, pet, true, hunger), true);
+        getMap().broadcastMessage(this, PetPacket.Packet.showPet(this, pet, true, hunger), true);
 
         removePet(pet, shift_left);
         commitExcludedItems();

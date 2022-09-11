@@ -24,6 +24,7 @@ package client.inventory;
 import client.MapleCharacter;
 import constants.ExpTable;
 import enums.UserEffectType;
+import network.packet.PetPacket;
 import network.packet.UserLocal;
 import server.MapleItemInformationProvider;
 import net.database.Statements;
@@ -209,7 +210,7 @@ public class MaplePet extends Item {
             enjoyed = false;
         }
 
-        owner.getMap().broadcastMessage(MaplePacketCreator.petFoodResponse(owner.getId(), slot, enjoyed, false));
+        owner.getMap().broadcastMessage(PetPacket.Packet.petFoodResponse(owner.getId(), slot, enjoyed, false));
         saveToDb();
 
         Item petz = owner.getInventory(MapleInventoryType.CASH).getItem(getPosition());

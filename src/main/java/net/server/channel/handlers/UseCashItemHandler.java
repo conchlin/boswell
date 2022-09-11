@@ -23,6 +23,7 @@ package net.server.channel.handlers;
 
 import client.MapleCharacter;
 import client.MapleClient;
+import network.packet.PetPacket;
 import server.skills.PlayerSkill;
 import server.skills.Skill;
 import client.creator.veteran.*;
@@ -362,7 +363,7 @@ public final class UseCashItemHandler extends AbstractMaplePacketHandler {
             if (item != null)
                 player.forceUpdateItem(item);
             
-            player.getMap().broadcastMessage(player, MaplePacketCreator.changePetName(player, newName, 1), true);
+            player.getMap().broadcastMessage(player, PetPacket.Packet.changePetName(player, newName), true);
             c.announce(MaplePacketCreator.enableActions());
             remove(c, position, itemId);
         } else if (itemType == 520) {

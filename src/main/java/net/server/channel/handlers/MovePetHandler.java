@@ -26,13 +26,12 @@ import java.util.List;
 import client.MapleCharacter;
 import client.MapleClient;
 import client.inventory.MaplePet;
+import network.packet.PetPacket;
 import server.movement.LifeMovementFragment;
-import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
-import tools.exceptions.EmptyMovementException;
 
 public final class MovePetHandler extends AbstractMovementPacketHandler {
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         int petId = slea.readInt();
         slea.readInt();
         int vx = slea.readShort();
@@ -48,7 +47,7 @@ public final class MovePetHandler extends AbstractMovementPacketHandler {
 
         MaplePet pet = player.getPet(slot);
         pet.updatePosition(res);
-        player.getMap().broadcastMessage(player, MaplePacketCreator.movePet(player, pet, p, res), player.getPet(slot).getPos());
+        player.getMap().broadcastMessage(player, PetPacket.Packet.movePet(player, pet, p, res), player.getPet(slot).getPos());
         //player.getMap().broadcastMessage(player, MaplePacketCreator.movePet(player.getId(), petId, slot, res), false);
     }
 }

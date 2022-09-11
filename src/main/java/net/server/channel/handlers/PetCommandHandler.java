@@ -27,14 +27,14 @@ import client.inventory.PetCommand;
 import client.inventory.PetDataFactory;
 import client.inventory.MaplePet;
 import net.AbstractMaplePacketHandler;
-import tools.MaplePacketCreator;
+import network.packet.PetPacket;
 import tools.Randomizer;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 public final class PetCommandHandler extends AbstractMaplePacketHandler {
 
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         MapleCharacter chr = c.getPlayer();
         int petId = slea.readInt();
         byte petIndex = chr.getPetIndex(petId);
@@ -54,9 +54,9 @@ public final class PetCommandHandler extends AbstractMaplePacketHandler {
         
         if (Randomizer.nextInt(100) < petCommand.getProbability()) {
             pet.gainClosenessFullness(chr, petCommand.getIncrease(), 0, command);
-            chr.getMap().broadcastMessage(MaplePacketCreator.commandResponse(chr.getId(), petIndex, false, command, false));
+            chr.getMap().broadcastMessage(PetPacket.Packet.commandResponse(chr.getId(), petIndex, false, command, false));
         } else {
-            chr.getMap().broadcastMessage(MaplePacketCreator.commandResponse(chr.getId(), petIndex, true, command, false));
+            chr.getMap().broadcastMessage(PetPacket.Packet.commandResponse(chr.getId(), petIndex, true, command, false));
         }
     }
 }

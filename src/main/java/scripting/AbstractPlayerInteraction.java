@@ -31,6 +31,7 @@ import java.util.List;
 
 import enums.UserEffectType;
 import network.packet.NpcPool;
+import network.packet.PetPacket;
 import network.packet.UserLocal;
 import server.skills.*;
 import net.server.Server;
@@ -504,7 +505,7 @@ public class AbstractPlayerInteraction {
 
         getPlayer().addPet(evolved);
 
-        getPlayer().getMap().broadcastMessage(c.getPlayer(), MaplePacketCreator.showPet(c.getPlayer(), evolved, false, false), true);
+        getPlayer().getMap().broadcastMessage(c.getPlayer(), PetPacket.Packet.showPet(c.getPlayer(), evolved, false, false), true);
         c.announce(MaplePacketCreator.petStatUpdate(c.getPlayer()));
         c.announce(MaplePacketCreator.enableActions());
         c.getWorldServer().registerPetHunger(c.getPlayer(), c.getPlayer().getPetIndex(evolved));
