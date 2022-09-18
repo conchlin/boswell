@@ -23,6 +23,7 @@ package server.maps;
 
 import client.MapleCharacter;
 import client.MapleClient;
+import network.packet.AffectedAreaPool;
 import server.skills.PlayerSkill;
 import server.skills.Skill;
 
@@ -44,7 +45,7 @@ import tools.MaplePacketCreator;
  *
  * @author LaiLaiNoob
  */
-public class MapleMist extends AbstractMapleMapObject {
+public class AffectedArea extends AbstractMapleMapObject {
     private Rectangle mistPosition;
     private MapleCharacter owner = null;
     private MapleMonster mob = null;
@@ -53,7 +54,7 @@ public class MapleMist extends AbstractMapleMapObject {
     private boolean isMobMist, isPoisonMist, isRecoveryMist;
     private int skillDelay;
 
-    public MapleMist(Rectangle mistPosition, MapleMonster mob, MobSkill skill) {
+    public AffectedArea(Rectangle mistPosition, MapleMonster mob, MobSkill skill) {
         this.mistPosition = mistPosition;
         this.mob = mob;
         this.skill = skill;
@@ -63,7 +64,7 @@ public class MapleMist extends AbstractMapleMapObject {
         skillDelay = 0;
     }
 
-    public MapleMist(Rectangle mistPosition, MapleCharacter owner, MapleStatEffect source) {
+    public AffectedArea(Rectangle mistPosition, MapleCharacter owner, MapleStatEffect source) {
         this.mistPosition = mistPosition;
         this.owner = owner;
         this.source = source;
@@ -73,10 +74,8 @@ public class MapleMist extends AbstractMapleMapObject {
         this.isPoisonMist = false;
         switch (source.getSourceId()) {
             case Evan.RECOVERY_AURA -> isRecoveryMist = true;
-            case Shadower.SMOKE_SCREEN ->
-                    isPoisonMist = false;
-            case FPMage.POISON_MIST, BlazeWizard.FLAME_GEAR, NightWalker.POISON_BOMB -> // Poison Bomb
-                    isPoisonMist = true;
+            case Shadower.SMOKE_SCREEN -> isPoisonMist = false;
+            case FPMage.POISON_MIST, BlazeWizard.FLAME_GEAR, NightWalker.POISON_BOMB -> isPoisonMist = true;
         }
     }
 
@@ -128,21 +127,21 @@ public class MapleMist extends AbstractMapleMapObject {
     }
 
     public final byte[] makeDestroyData() {
-        return MaplePacketCreator.removeMist(getObjectId());
+        return AffectedAreaPool.Packet.affectedAreaRemoved(getObjectId());
     }
 
     public final byte[] makeSpawnData() {
         if (owner != null) {
-            return MaplePacketCreator.spawnMist(getObjectId(), owner.getId(), getSourceSkill().getId(), owner.getSkillLevel(SkillFactory.getSkill(source.getSourceId())), this);
+            return AffectedAreaPool.Packet.affectedAreaCreated(getObjectId(), owner.getId(), getSourceSkill().getId(), owner.getSkillLevel(SkillFactory.getSkill(source.getSourceId())), this);
         }
-        return MaplePacketCreator.spawnMist(getObjectId(), mob.getId(), skill.getSkillId(), skill.getSkillLevel(), this);
+        return AffectedAreaPool.Packet.affectedAreaCreated(getObjectId(), mob.getId(), skill.getSkillId(), skill.getSkillLevel(), this);
     }
 
     public final byte[] makeFakeSpawnData(int level) {
         if (owner != null) {
-            return MaplePacketCreator.spawnMist(getObjectId(), owner.getId(), getSourceSkill().getId(), level, this);
+            return AffectedAreaPool.Packet.affectedAreaCreated(getObjectId(), owner.getId(), getSourceSkill().getId(), level, this);
         }
-        return MaplePacketCreator.spawnMist(getObjectId(), mob.getId(), skill.getSkillId(), skill.getSkillLevel(), this);
+        return AffectedAreaPool.Packet.affectedAreaCreated(getObjectId(), mob.getId(), skill.getSkillId(), skill.getSkillLevel(), this);
     }
 
     @Override

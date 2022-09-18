@@ -35,7 +35,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import client.*;
-import enums.UserEffectType;
 import network.opcode.SendOpcode;
 import net.server.PlayerCoolDownValueHolder;
 import net.server.Server;
@@ -63,18 +62,14 @@ import server.MapleShopItem;
 import server.MapleTrade;
 import server.events.gm.MapleSnowball;
 import server.life.MapleMonster;
-import server.life.MapleNPC;
 import server.life.MobSpawnType;
 import server.maps.MapleHiredMerchant;
-import server.maps.MapleDragon;
 import server.maps.MapleMap;
 import server.maps.MapleMapItem;
-import server.maps.MapleMist;
 import server.maps.MapleMiniGame;
 import server.maps.MapleMiniGame.MiniGameResult;
 import server.maps.MaplePlayerShop;
 import server.maps.MaplePlayerShopItem;
-import server.maps.MapleReactor;
 import server.maps.MapleSummon;
 import server.life.MaplePlayerNPC;
 import server.movement.LifeMovementFragment;
@@ -4317,30 +4312,6 @@ public class MaplePacketCreator {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendOpcode.STOP_CLOCK.getValue());
         mplew.write(0);
-        return mplew.getPacket();
-    }
-
-    public static byte[] spawnMist(int oid, int ownerCid, int skill, int level, MapleMist mist) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.SPAWN_MIST.getValue());
-        mplew.writeInt(oid);
-        mplew.writeInt(mist.isMobMist() ? 0 : mist.isPoisonMist() ? 1 : mist.isRecoveryMist() ? 4 : 2); // mob mist = 0, player poison = 1, smokescreen = 2, unknown = 3, recovery = 4
-        mplew.writeInt(ownerCid);
-        mplew.writeInt(skill);
-        mplew.write(level);
-        mplew.writeShort(mist.getSkillDelay()); // Skill delay
-        mplew.writeInt(mist.getBox().x);
-        mplew.writeInt(mist.getBox().y);
-        mplew.writeInt(mist.getBox().x + mist.getBox().width);
-        mplew.writeInt(mist.getBox().y + mist.getBox().height);
-        mplew.writeInt(0);
-        return mplew.getPacket();
-    }
-
-    public static byte[] removeMist(int oid) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.REMOVE_MIST.getValue());
-        mplew.writeInt(oid);
         return mplew.getPacket();
     }
 

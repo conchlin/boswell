@@ -37,7 +37,7 @@ import server.life.MapleLifeFactory;
 import server.life.MapleMonster;
 import server.maps.MapleMapObject;
 import server.maps.MapleMapObjectType;
-import server.maps.MapleMist;
+import server.maps.AffectedArea;
 import tools.ArrayMap;
 import tools.MaplePacketCreator;
 import tools.Randomizer;
@@ -132,7 +132,7 @@ public class MobSkill implements Skill {
 	}
 
     private void affectAreaSkill(MapleCharacter player, MapleMonster monster) {
-		monster.getMap().spawnMist(new MapleMist(calculateBoundingBox(monster.getPosition(), true), monster, this), x * 10, false, false, false);
+		monster.getMap().spawnMist(new AffectedArea(calculateBoundingBox(monster.getPosition(), true), monster, this), x * 10, false, false, false);
 		monster.usedSkill(skillId, skillLevel, cooltime, duration);
         monster.setMp(monster.getMp() - getMpCon());
     }

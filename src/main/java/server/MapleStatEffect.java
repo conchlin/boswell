@@ -42,7 +42,7 @@ import server.maps.MapleDoor;
 import server.maps.MapleMap;
 import server.maps.MapleMapObject;
 import server.maps.MapleMapObjectType;
-import server.maps.MapleMist;
+import server.maps.AffectedArea;
 import server.maps.MapleSummon;
 import server.maps.SummonMovementType;
 import server.skills.*;
@@ -107,10 +107,6 @@ import constants.skills.SuperGM;
 import constants.skills.ThunderBreaker;
 import constants.skills.WhiteKnight;
 import constants.skills.WindArcher;
-import net.server.world.MapleParty;
-import net.server.world.MaplePartyCharacter;
-import server.partyquest.MapleCarnivalFactory;
-import server.partyquest.MapleCarnivalFactory.MCSkill;
 
 /**
  * @author Matze
@@ -1070,7 +1066,7 @@ public class MapleStatEffect {
             applyto.silentPartyUpdate();
         } else if (isMist()) {
             Rectangle bounds = calculateBoundingBox(sourceid == NightWalker.POISON_BOMB ? pos : applyfrom.getPosition(), applyfrom.isFacingLeft());
-            MapleMist mist = new MapleMist(bounds, applyfrom, this);
+            AffectedArea mist = new AffectedArea(bounds, applyfrom, this);
             applyfrom.getMap().spawnMist(mist, getDuration(), mist.isPoisonMist(), false, mist.isRecoveryMist());
         } else if (isTimeLeap()) {
             applyto.removeAllCooldownsExcept(Buccaneer.TIME_LEAP, true);
