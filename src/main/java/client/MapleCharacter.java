@@ -30,6 +30,7 @@ import constants.*;
 import enums.UserEffectType;
 import net.database.DatabaseConnection;
 import net.database.Statements;
+import network.packet.DragonPacket;
 import network.packet.PetPacket;
 import network.packet.UserLocal;
 import server.cashshop.CashShop;
@@ -1074,7 +1075,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         silentPartyUpdate();
 
         if (dragon != null) {
-            getMap().broadcastMessage(MaplePacketCreator.removeDragon(dragon.getObjectId()));
+            getMap().broadcastMessage(DragonPacket.Packet.dragonRemoveField(dragon.getObjectId()));
             dragon = null;
         }
 

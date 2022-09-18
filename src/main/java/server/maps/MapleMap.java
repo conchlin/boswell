@@ -71,6 +71,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.server.Server;
 import net.server.channel.Channel;
 import net.server.world.World;
+import network.packet.DragonPacket;
 import network.packet.NpcPool;
 import network.packet.PetPacket;
 import network.packet.ReactorPool;
@@ -2433,9 +2434,9 @@ public class MapleMap {
             dragon.setPosition(chr.getPosition());
             this.addMapObject(dragon);
             if (chr.isHidden()) {
-                this.broadcastGMMessage(chr, MaplePacketCreator.spawnDragon(dragon));
+                this.broadcastGMMessage(chr, DragonPacket.Packet.dragonEnterField(dragon));
             } else {
-                this.broadcastMessage(chr, MaplePacketCreator.spawnDragon(dragon));
+                this.broadcastMessage(chr, DragonPacket.Packet.dragonEnterField(dragon));
             }
         }
 
@@ -2607,9 +2608,9 @@ public class MapleMap {
         if (chr.getDragon() != null) {
             removeMapObject(chr.getDragon());
             if (chr.isHidden()) {
-                this.broadcastGMMessage(chr, MaplePacketCreator.removeDragon(chr.getId()));
+                this.broadcastGMMessage(chr, DragonPacket.Packet.dragonRemoveField(chr.getId()));
             } else {
-                this.broadcastMessage(chr, MaplePacketCreator.removeDragon(chr.getId()));
+                this.broadcastMessage(chr, DragonPacket.Packet.dragonRemoveField(chr.getId()));
             }
         }
     }

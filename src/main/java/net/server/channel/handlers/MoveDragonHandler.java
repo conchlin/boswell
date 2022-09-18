@@ -26,6 +26,7 @@ import client.MapleClient;
 import java.awt.Point;
 import java.util.List;
 
+import network.packet.DragonPacket;
 import server.maps.MapleDragon;
 import server.movement.LifeMovementFragment;
 import tools.MaplePacketCreator;
@@ -45,9 +46,9 @@ public class MoveDragonHandler extends AbstractMovementPacketHandler {
         if (dragon != null) {
             updatePosition(res, dragon, 0);
             if (chr.isHidden()) {
-                chr.getMap().broadcastGMMessage(chr, MaplePacketCreator.moveDragon(dragon, p, res));
+                chr.getMap().broadcastGMMessage(chr, DragonPacket.Packet.moveDragon(dragon, p, res));
             } else {
-                chr.getMap().broadcastMessage(chr, MaplePacketCreator.moveDragon(dragon, p, res), dragon.getPosition());
+                chr.getMap().broadcastMessage(chr, DragonPacket.Packet.moveDragon(dragon, p, res), dragon.getPosition());
             }
         }
     }

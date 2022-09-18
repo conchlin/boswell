@@ -7762,43 +7762,6 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    public static byte[] spawnDragon(MapleDragon dragon) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.SPAWN_DRAGON.getValue());
-        mplew.writeInt(dragon.getOwner().getId());//objectid = owner id
-        mplew.writeShort(dragon.getPosition().x);
-        mplew.writeShort(0);
-        mplew.writeShort(dragon.getPosition().y);
-        mplew.writeShort(0);
-        mplew.write(dragon.getStance());
-        mplew.write(0);
-        mplew.writeShort(dragon.getOwner().getJob().getId());
-        return mplew.getPacket();
-    }
-
-    public static byte[] moveDragon(MapleDragon dragon, Point p, List<LifeMovementFragment> res) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.MOVE_DRAGON.getValue());
-        mplew.writeInt(dragon.getOwner().getId());
-        mplew.writePos(p);
-        serializeMovementList(mplew, res);
-        return mplew.getPacket();
-    }
-
-    /**
-     * Sends a request to remove Mir<br>
-     *
-     * @param charid - Needs the specific Character ID
-     * @return The packet
-     *
-     */
-    public static byte[] removeDragon(int chrid) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.REMOVE_DRAGON.getValue());
-        mplew.writeInt(chrid);
-        return mplew.getPacket();
-    }
-
     /**
      * Changes the current background effect to either being rendered or not.
      * Data is still missing, so this is pretty binary at the moment in how it
