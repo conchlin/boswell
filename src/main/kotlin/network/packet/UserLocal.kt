@@ -43,19 +43,27 @@ class UserLocal {
             mplew.writeShort(SendOpcode.USER_LOCAL_EFFECT.value)
             mplew.write(effect)
             when (effect) {
-                UserEffectType.LEVEL_UP.effect -> {}
-                UserEffectType.PORTAL_SE.effect -> {}
-                UserEffectType.MONSTERBOOK_PICKUP.effect -> {}
-                UserEffectType.QUEST_COMPLETE.effect -> {}
-                UserEffectType.EQUIP_LEVEL_UP.effect -> {}
-                UserEffectType.JOB_CHANGE.effect -> {}
-                UserEffectType.EXP_CARD.effect -> {}
-                UserEffectType.QUEST_COMPLETE.effect -> {}
-                UserEffectType.SPIRIT_STONE.effect -> {}
+                UserEffectType.LEVEL_UP.effect -> {
+                }
+                UserEffectType.PORTAL_SE.effect -> {
+                }
+                UserEffectType.MONSTERBOOK_PICKUP.effect -> {
+                }
+                UserEffectType.QUEST_COMPLETE.effect -> {
+                }
+                UserEffectType.EQUIP_LEVEL_UP.effect -> {
+                }
+                UserEffectType.JOB_CHANGE.effect -> {
+                }
+                UserEffectType.EXP_CARD.effect -> {
+                }
+                UserEffectType.QUEST_COMPLETE.effect -> {
+                }
+                UserEffectType.SPIRIT_STONE.effect -> {
+                }
                 UserEffectType.PET_LEVEL_UP.effect -> {
                     mplew.write(0)
                     mplew.write(args[0]) // Pet Index
-
                 }
                 UserEffectType.BUYBACK.effect -> {
                     mplew.writeInt(0)
@@ -103,10 +111,14 @@ class UserLocal {
 
             if (width < 1) {
                 msgWidth = hint.length * 10
-                if (width < 40) { msgWidth = 40 }
+                if (width < 40) {
+                    msgWidth = 40
+                }
             }
 
-            if (height < 5) { msgHeight = 5 }
+            if (height < 5) {
+                msgHeight = 5
+            }
 
             val mplew = MaplePacketLittleEndianWriter()
             mplew.writeShort(SendOpcode.BALLOON_MSG.value)
@@ -119,9 +131,9 @@ class UserLocal {
         }
 
         /**
-        * MESO_GIVE_SUCCEED
-        * MESO_GIVE_FAIL
-        **/
+         * MESO_GIVE_SUCCEED
+         * MESO_GIVE_FAIL
+         **/
 
 
         fun updateQuestInfo(quest: Short, npc: Int): ByteArray? {
@@ -166,7 +178,15 @@ class UserLocal {
         }
 
         // MAKER_RESULT packets thanks to Arnah (Vertisy)
-        fun makerResult(success: Boolean, itemMade: Int, itemCount: Int, mesos: Int, itemsLost: List<Pair<Int?, Int?>>, catalystID: Int, INCBuffGems: List<Int?>): ByteArray? {
+        fun makerResult(
+            success: Boolean,
+            itemMade: Int,
+            itemCount: Int,
+            mesos: Int,
+            itemsLost: List<Pair<Int?, Int?>>,
+            catalystID: Int,
+            INCBuffGems: List<Int?>
+        ): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
             mplew.writeShort(SendOpcode.MAKER_RESULT.value)
             mplew.writeInt(if (success) 0 else 1) // 0 = success, 1 = fail

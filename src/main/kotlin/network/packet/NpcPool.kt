@@ -104,7 +104,7 @@ class NpcPool {
          * @param objectId object id of npc with linked special action
          * @param action name of action
          */
-        fun onSetSpecialAction(objectId: Int, action : String): ByteArray? {
+        fun onSetSpecialAction(objectId: Int, action: String): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
             mplew.writeShort(SendOpcode.NPC_SET_SPECIAL_ACTION.value)
             mplew.writeInt(objectId)
