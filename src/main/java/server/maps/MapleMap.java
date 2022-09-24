@@ -71,10 +71,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.server.Server;
 import net.server.channel.Channel;
 import net.server.world.World;
-import network.packet.DragonPacket;
-import network.packet.NpcPool;
-import network.packet.PetPacket;
-import network.packet.ReactorPool;
+import network.packet.*;
 import scripting.map.MapScriptManager;
 import server.MapleItemInformationProvider;
 import server.MaplePortal;
@@ -3235,7 +3232,7 @@ public class MapleMap {
     public void sendNightEffect(MapleCharacter mc) {
         for (Entry<Integer, Integer> types : backgroundTypes.entrySet()) {
             if (types.getValue() >= 3) { // 3 is a special number
-                mc.announce(MaplePacketCreator.changeBackgroundEffect(true, types.getKey(), 0));
+                mc.announce(MapLoadable.Packet.changeBackgroundEffect(true, types.getKey(), 0));
             }
         }
     }

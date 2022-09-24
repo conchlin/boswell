@@ -7733,27 +7733,6 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    /**
-     * Changes the current background effect to either being rendered or not.
-     * Data is still missing, so this is pretty binary at the moment in how it
-     * behaves.
-     *
-     * @param remove whether or not the remove or add the specified layer.
-     * @param layer the targeted layer for removal or addition.
-     * @param transition the time it takes to transition the effect.
-     *
-     * @return a packet to change the background effect of a specified layer.
-     */
-    public static byte[] changeBackgroundEffect(boolean remove, int layer, int transition) {
-        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.SET_BACK_EFFECT.getValue());
-        mplew.writeBool(remove);
-        mplew.writeInt(0); // not sure what this int32 does yet
-        mplew.write(layer);
-        mplew.writeInt(transition);
-        return mplew.getPacket();
-    }
-
     // thanks NPC Quiz packets thanks to Eric
     public static byte[] OnAskQuiz(int nSpeakerTypeID, int nSpeakerTemplateID, int nResCode, String sTitle, String sProblemText, String sHintText, int nMinInput, int nMaxInput, int tRemainInitialQuiz) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
