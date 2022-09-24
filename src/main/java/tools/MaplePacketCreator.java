@@ -1116,32 +1116,6 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    /**
-     * Gets a packet to spawn a door.
-     *
-     * @param oid The door's object ID.
-     * @param pos The position of the door.
-     * @param town
-     *
-     * @return The remove door packet.
-     */
-    public static byte[] spawnDoor(int oid, Point pos, boolean town) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.SPAWN_DOOR.getValue());
-        mplew.writeBool(town);
-        mplew.writeInt(oid);
-        mplew.writePos(pos);
-        return mplew.getPacket();
-    }
-
-    public static byte[] removeDoor(int oid) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter(10);
-        mplew.writeShort(SendOpcode.REMOVE_DOOR.getValue());
-        mplew.write(0);
-        mplew.writeInt(oid);
-        return mplew.getPacket();
-    }
-
     public static byte[] removePortal() {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 

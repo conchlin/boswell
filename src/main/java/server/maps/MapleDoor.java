@@ -23,11 +23,12 @@ package server.maps;
 
 import java.awt.Point;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 
 import client.MapleClient;
 import client.MapleCharacter;
 import net.server.world.MaplePartyCharacter;
+import network.packet.TownPortalPool;
 import server.MaplePortal;
 import server.MapleStatEffect;
 import tools.MaplePacketCreator;
@@ -59,7 +60,7 @@ public class MapleDoor extends AbstractMapleMapObject {
 
     // only required to destroy portal really
     public void destroyDoor() {
-        owner.getClient().announce(MaplePacketCreator.removeDoor(owner.getId()));
+        owner.getClient().announce(TownPortalPool.Packet.onTownPortalRemoved(owner.getId()));
         owner.getClient().announce(MaplePacketCreator.removePortal());
 
         owner.silentPartyUpdate();
@@ -143,15 +144,7 @@ public class MapleDoor extends AbstractMapleMapObject {
             }
         }
 
-        Collections.sort(freePortals, (o1, o2) -> {
-            if (o1.getId() < o2.getId()) {
-                return -1;
-            } else if (o1.getId() == o2.getId()) {
-                return 0;
-            } else {
-                return 1;
-            }
-        });
+        freePortals.sort(Comparator.comparingInt(MaplePortal::getId));
     }
 
     public void warp(MapleCharacter chr, boolean toTown) {
@@ -232,7 +225,7 @@ public class MapleDoor extends AbstractMapleMapObject {
         }
 
         public void initialSpawn(MapleClient c) {
-            c.announce(MaplePacketCreator.spawnDoor(owner.getId(), getPosition(), false));
+            c.announce(TownPortalPool.Packet.onTownPortalCreated(owner.getId(), getPosition(), false));
 
             if (c.getPlayer().getId() == owner.getId()) {
                 c.announce(MaplePacketCreator.spawnPortal(getTown(), getTarget(), getPosition()));
@@ -247,17 +240,17 @@ public class MapleDoor extends AbstractMapleMapObject {
         @Override
         public void sendSpawnData(MapleClient c) {
             if (!town) {
-                c.announce(MaplePacketCreator.spawnDoor(owner.getId(), getPosition(), true));
+                c.announce(TownPortalPool.Packet.onTownPortalCreated(owner.getId(), getPosition(), true));
             } else if (owner.getParty() == null &&
                     c.getPlayer().getId() == owner.getId()) {
-                c.announce(MaplePacketCreator.spawnDoor(owner.getId(), getPosition(), true));
+                c.announce(TownPortalPool.Packet.onTownPortalCreated(owner.getId(), getPosition(), true));
             }
             //return true;
         }
 
         @Override
         public void sendDestroyData(MapleClient c) {
-            c.announce(MaplePacketCreator.removeDoor(owner.getId()));
+            c.announce(TownPortalPool.Packet.onTownPortalRemoved(owner.getId()));
         }
 
     }
