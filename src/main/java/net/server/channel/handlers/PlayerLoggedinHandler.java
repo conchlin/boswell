@@ -38,6 +38,7 @@ import net.server.guild.MapleGuild;
 import net.server.world.MaplePartyCharacter;
 import net.server.world.PartyOperation;
 import net.server.world.World;
+import network.packet.FuncKeyMappedMan;
 import network.packet.NpcPool;
 import server.quest.requirements.PetRequirement;
 import server.skills.SkillFactory;
@@ -242,10 +243,10 @@ public final class PlayerLoggedinHandler extends AbstractMaplePacketHandler {
 
                 // pot bindings being passed through other characters on the account detected thanks to Croosade dev team
                 MapleKeyBinding autohpPot = player.getKeymap().get(91);
-                player.announce(MaplePacketCreator.sendAutoHpPot(autohpPot != null ? autohpPot.getAction() : 0));
+                player.announce(FuncKeyMappedMan.Packet.sendAutoHpPot(autohpPot != null ? autohpPot.getAction() : 0));
 
                 MapleKeyBinding autompPot = player.getKeymap().get(92);
-                player.announce(MaplePacketCreator.sendAutoMpPot(autompPot != null ? autompPot.getAction() : 0));
+                player.announce(FuncKeyMappedMan.Packet.sendAutoMpPot(autompPot != null ? autompPot.getAction() : 0));
 
                 player.getMap().addPlayer(player);
                 player.visitMap(player.getMap());
