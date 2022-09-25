@@ -24,9 +24,9 @@ package net.server.channel.handlers;
 import net.server.guild.MapleGuildResponse;
 import net.server.guild.MapleGuild;
 import constants.GameConstants;
-import constants.ServerConstants;
 import client.MapleClient;
 import net.AbstractMaplePacketHandler;
+import network.packet.UserRemote;
 import tools.data.input.SeekableLittleEndianAccessor;
 import tools.MaplePacketCreator;
 import client.MapleCharacter;
@@ -145,8 +145,8 @@ public final class GuildOperationHandler extends AbstractMaplePacketHandler {
                 if(allianceId > 0) Server.getInstance().getAlliance(allianceId).updateAlliancePackets(mc);
                 
                 mc.saveGuildStatus(); // update database
-                mc.getMap().broadcastMessage(mc, MaplePacketCreator.guildNameChanged(mc.getId(), mc.getGuild().getName())); // thanks Vcoc for pointing out an issue with updating guild tooltip to players in the map
-                mc.getMap().broadcastMessage(mc, MaplePacketCreator.guildMarkChanged(mc.getId(), mc.getGuild()));
+                mc.getMap().broadcastMessage(mc, UserRemote.Packet.guildNameChanged(mc.getId(), mc.getGuild().getName())); // thanks Vcoc for pointing out an issue with updating guild tooltip to players in the map
+                mc.getMap().broadcastMessage(mc, UserRemote.Packet.guildMarkChanged(mc.getId(), mc.getGuild()));
                 break;
             case 0x07:
                 cid = slea.readInt();
@@ -167,7 +167,7 @@ public final class GuildOperationHandler extends AbstractMaplePacketHandler {
                 mc.getMGC().setGuildId(0);
                 mc.getMGC().setGuildRank(5);
                 mc.saveGuildStatus();
-                mc.getMap().broadcastMessage(mc, MaplePacketCreator.guildNameChanged(mc.getId(), ""));
+                mc.getMap().broadcastMessage(mc, UserRemote.Packet.guildNameChanged(mc.getId(), ""));
                 break;
             case 0x08:
                 allianceId = mc.getGuild().getAllianceId();

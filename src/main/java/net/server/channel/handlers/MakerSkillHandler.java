@@ -35,6 +35,7 @@ import java.util.*;
 import enums.UserEffectType;
 import net.AbstractMaplePacketHandler;
 import network.packet.UserLocal;
+import network.packet.UserRemote;
 import server.MakerItemFactory;
 import server.MakerItemFactory.MakerItemCreateEntry;
 import server.MapleItemInformationProvider;
@@ -232,7 +233,7 @@ public final class MakerSkillHandler extends AbstractMaplePacketHandler {
                 } else {
                     c.announce(UserLocal.Packet.onEffect(UserEffectType.MAKER.getEffect(), "", 1));
                 }
-                c.getPlayer().getMap().broadcastMessage(c.getPlayer(), MaplePacketCreator.showForeignMakerEffect(c.getPlayer().getId(), makerSucceeded), false);
+                c.getPlayer().getMap().broadcastMessage(c.getPlayer(), UserRemote.Packet.showForeignMakerEffect(c.getPlayer().getId(), makerSucceeded), false);
                 if (toCreate == 4260003 && type == 3 && c.getPlayer().getQuestStatus(6033) == 1) {
                     c.getAbstractPlayerInteraction().setQuestProgress(6033, 1);
                 }

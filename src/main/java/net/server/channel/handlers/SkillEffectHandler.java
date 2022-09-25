@@ -40,7 +40,7 @@ import constants.skills.Paladin;
 import constants.skills.ThunderBreaker;
 import constants.skills.WindArcher;
 import net.AbstractMaplePacketHandler;
-import tools.MaplePacketCreator;
+import network.packet.UserRemote;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 public final class SkillEffectHandler extends AbstractMaplePacketHandler {
@@ -58,7 +58,7 @@ public final class SkillEffectHandler extends AbstractMaplePacketHandler {
                     Corsair.RAPID_FIRE, WindArcher.HURRICANE, NightWalker.POISON_BOMB,
                     ThunderBreaker.CORKSCREW_BLOW, Paladin.MONSTER_MAGNET,
                     DarkKnight.MONSTER_MAGNET, Hero.MONSTER_MAGNET, Evan.FIRE_BREATH, Evan.ICE_BREATH
-                    -> c.getPlayer().getMap().broadcastMessage(c.getPlayer(), MaplePacketCreator.skillEffect(c.getPlayer(), skillId, level, flags, speed, aids), false);
+                    -> c.getPlayer().getMap().broadcastMessage(c.getPlayer(), UserRemote.Packet.skillEffect(c.getPlayer(), skillId, level, flags, speed, aids), false);
             default -> System.out.println(c.getPlayer() + " entered SkillEffectHandler without being handled using " + skillId + ".");
         }
     }

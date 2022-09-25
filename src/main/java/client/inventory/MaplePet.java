@@ -26,13 +26,13 @@ import constants.ExpTable;
 import enums.UserEffectType;
 import network.packet.PetPacket;
 import network.packet.UserLocal;
+import network.packet.UserRemote;
 import server.MapleItemInformationProvider;
 import net.database.Statements;
 import server.movement.AbsoluteLifeMovement;
 import server.movement.LifeMovement;
 import server.movement.LifeMovementFragment;
 import net.database.DatabaseConnection;
-import tools.MaplePacketCreator;
 import tools.Pair;
 
 import java.awt.*;
@@ -193,7 +193,7 @@ public class MaplePet extends Item {
                 while (newCloseness >= ExpTable.INSTANCE.getClosenessNeededForLevel(level)) {
                     level += 1;
                     owner.getClient().announce(UserLocal.Packet.onEffect(UserEffectType.PET_LEVEL_UP.getEffect(), "", slot));
-                    owner.getMap().broadcastMessage(MaplePacketCreator.showPetLevelUp(owner, slot));
+                    owner.getMap().broadcastMessage(UserRemote.Packet.showPetLevelUp(owner, slot));
                 }
             }
 

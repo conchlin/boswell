@@ -54,6 +54,7 @@ import net.server.world.World;
 import net.server.world.MapleParty;
 import net.server.world.MaplePartyCharacter;
 
+import network.packet.UserRemote;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.buffer.SimpleBufferAllocator;
 import org.apache.mina.core.filterchain.IoFilter;
@@ -1080,12 +1081,9 @@ public final class Channel {
     public void registerFaceExpression(final MapleMap map, final MapleCharacter chr, int emote) {
         int lockid = getChannelSchedulerIndex(map.getId());
         
-        Runnable cancelAction = new Runnable() {
-            @Override
-            public void run() {
-                if(chr.isLoggedinWorld()) {
-                    map.broadcastMessage(chr, MaplePacketCreator.facialExpression(chr, 0), false);
-                }
+        Runnable cancelAction = () -> {
+            if(chr.isLoggedinWorld()) {
+                map.broadcastMessage(chr, UserRemote.Packet.facialExpression(chr, 0), false);
             }
         };
         
@@ -1100,7 +1098,7 @@ public final class Channel {
             faceLock[lockid].unlock();
         }
         
-        map.broadcastMessage(chr, MaplePacketCreator.facialExpression(chr, emote), false);
+        map.broadcastMessage(chr, UserRemote.Packet.facialExpression(chr, emote), false);
     }
     
     public void unregisterFaceExpression(int mapid, MapleCharacter chr) {

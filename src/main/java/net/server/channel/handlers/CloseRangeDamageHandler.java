@@ -28,6 +28,7 @@ import java.util.List;
 import client.*;
 import client.MapleCharacter.CancelCooldownAction;
 import network.packet.UserLocal;
+import network.packet.UserRemote;
 import server.MapleStatEffect;
 import server.TimerManager;
 import server.skills.PlayerSkill;
@@ -35,7 +36,6 @@ import server.skills.SkillFactory;
 import tools.MaplePacketCreator;
 import tools.Pair;
 import tools.data.input.SeekableLittleEndianAccessor;
-import server.skills.Skill;
 import constants.GameConstants;
 import constants.ServerConstants;
 import constants.skills.Crusader;
@@ -44,7 +44,6 @@ import constants.skills.DragonKnight;
 import constants.skills.Hero;
 import constants.skills.NightWalker;
 import constants.skills.Rogue;
-import constants.skills.WindArcher;
 
 public final class CloseRangeDamageHandler extends AbstractDealDamageHandler {
     @Override
@@ -68,7 +67,7 @@ public final class CloseRangeDamageHandler extends AbstractDealDamageHandler {
             c.announce(MaplePacketCreator.getEnergy("energy", chr.getDojoEnergy()));
         }
         
-        chr.getMap().broadcastMessage(chr, MaplePacketCreator.closeRangeAttack(chr, attack.skill, attack.skilllevel,
+        chr.getMap().broadcastMessage(chr, UserRemote.Packet.closeRangeAttack(chr, attack.skill, attack.skilllevel,
                 attack.stance, attack.numAttackedAndDamage, attack.allDamage, attack.speed,
                 attack.direction, attack.display), false, true);
         int numFinisherOrbs = 0;
@@ -114,7 +113,7 @@ public final class CloseRangeDamageHandler extends AbstractDealDamageHandler {
                         chr.setBuffedValue(MapleBuffStat.COMBO, neworbcount);                 
                         duration -= (int) (currentServerTime() - chr.getBuffedStarttime(MapleBuffStat.COMBO));
                         c.announce(MaplePacketCreator.giveBuff(oid, duration, stat));
-                        chr.getMap().broadcastMessage(chr, MaplePacketCreator.giveForeignBuff(chr.getId(), stat), false);
+                        chr.getMap().broadcastMessage(chr, UserRemote.Packet.giveForeignBuff(chr.getId(), stat), false);
                     }
                 }
             } else if (chr.getSkillLevel(chr.isCygnus() ? SkillFactory.getSkill(15100004)

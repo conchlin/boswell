@@ -23,6 +23,7 @@ import client.MapleClient;
 import client.MapleCharacter;
 import enums.UserEffectType;
 import network.packet.UserLocal;
+import network.packet.UserRemote;
 import server.maps.MapleMap;
 import tools.MaplePacketCreator;
 
@@ -61,7 +62,7 @@ public class BuybackProcessor {
             map.broadcastMessage(MaplePacketCreator.earnTitleMessage(chr.getName() + " just bought back into the game!"));
 
             chr.announce(UserLocal.Packet.onEffect(UserEffectType.BUYBACK.getEffect(), ""));
-            map.broadcastMessage(chr, MaplePacketCreator.showForeignBuybackEffect(chr.getId()), false);
+            map.broadcastMessage(chr, UserRemote.Packet.showForeignBuybackEffect(chr.getId()), false);
         }
     }
 }

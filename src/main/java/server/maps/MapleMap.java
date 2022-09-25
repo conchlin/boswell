@@ -1336,7 +1336,7 @@ public class MapleMap {
                     if (character.isAlive()) {
                         MapleStatEffect statEffect = mii.getItemEffect(buff);
                         character.getClient().announce(MaplePacketCreator.showOwnBuffEffect(buff, 1));
-                        broadcastMessage(character, MaplePacketCreator.showBuffeffect(character.getId(), buff, 1), false);
+                        broadcastMessage(character, UserRemote.Packet.showBuffEffect(character.getId(), buff, 1), false);
                         statEffect.applyTo(character);
                     }
                 }
@@ -2398,7 +2398,7 @@ public class MapleMap {
 
             List<Pair<MapleBuffStat, BuffValueHolder>> dsstat = Collections.singletonList(
                     new Pair<>(MapleBuffStat.DARKSIGHT, new BuffValueHolder(0, 0, 0)));
-            broadcastGMMessage(chr, MaplePacketCreator.giveForeignBuff(chr.getId(), dsstat), false);
+            broadcastGMMessage(chr, UserRemote.Packet.giveForeignBuff(chr.getId(), dsstat), false);
         } else {
             broadcastSpawnPlayerMapObjectMessage(chr, chr, true);
         }

@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 
 import net.server.Server;
+import network.packet.UserRemote;
 import provider.MapleData;
 import provider.MapleDataTool;
 import server.life.MapleMonster;
@@ -880,7 +881,7 @@ public class MapleStatEffect {
                             mob.setMp(mob.getMp() - absorbMp);
                             applyto.addMP(absorbMp);
                             applyto.announce(MaplePacketCreator.showOwnBuffEffect(sourceid, 1));
-                            applyto.getMap().broadcastMessage(applyto, MaplePacketCreator.showBuffeffect(applyto.getId(), sourceid, 1), false);
+                            applyto.getMap().broadcastMessage(applyto, UserRemote.Packet.showBuffEffect(applyto.getId(), sourceid, 1), false);
                         }
                     }
                 }
@@ -1102,7 +1103,7 @@ public class MapleStatEffect {
             for (MapleCharacter affected : affectedp) {
                 applyTo(applyfrom, affected, false, null, false);
                 affected.announce(MaplePacketCreator.showOwnBuffEffect(sourceid, 2));
-                affected.getMap().broadcastMessage(affected, MaplePacketCreator.showBuffeffect(affected.getId(), sourceid, 2), false);
+                affected.getMap().broadcastMessage(affected, UserRemote.Packet.showBuffEffect(affected.getId(), sourceid, 2), false);
             }
         }
     }
@@ -1314,7 +1315,7 @@ public class MapleStatEffect {
         }
         if (primary) {
             localDuration = alchemistModifyVal(applyfrom, localDuration, false);
-            applyto.getMap().broadcastMessage(applyto, MaplePacketCreator.showBuffeffect(applyto.getId(), sourceid, 1, (byte) 3), false);
+            applyto.getMap().broadcastMessage(applyto, UserRemote.Packet.showBuffEffect(applyto.getId(), sourceid, 1, (byte) 3), false);
         }
         if (localstatups.size() > 0) {
             byte[] buff = null;
@@ -1324,29 +1325,29 @@ public class MapleStatEffect {
             }
             if (isDisease()) {
                 buff = MaplePacketCreator.giveBuff((sourceLevel << 16 | sourceid), localDuration, localstatups);
-                mbuff = MaplePacketCreator.giveForeignBuff(applyto.getId(), localstatups);
+                mbuff = UserRemote.Packet.giveForeignBuff(applyto.getId(), localstatups);
             } else if (getSummonMovementType() == null) {
                 buff = MaplePacketCreator.giveBuff((skill ? sourceid : -sourceid), localDuration, localstatups);
             }
             if (isDash()) {
                 buff = MaplePacketCreator.givePirateBuff(statups, sourceid, seconds);
-                mbuff = MaplePacketCreator.giveForeignPirateBuff(applyto.getId(), sourceid, seconds, localstatups);
+                mbuff = UserRemote.Packet.giveForeignPirateBuff(applyto.getId(), sourceid, seconds, localstatups);
             } else if (isInfusion()) {
                 buff = MaplePacketCreator.givePirateBuff(localstatups, sourceid, seconds);
-                mbuff = MaplePacketCreator.giveForeignPirateBuff(applyto.getId(), sourceid, seconds, localstatups);
+                mbuff = UserRemote.Packet.giveForeignPirateBuff(applyto.getId(), sourceid, seconds, localstatups);
             } else if (isDs()) {
                 List<Pair<MapleBuffStat, BuffValueHolder>> dsstat = Collections.singletonList(new Pair<>(MapleBuffStat.DARKSIGHT,  new BuffValueHolder(0, 0, 0)));
-                mbuff = MaplePacketCreator.giveForeignBuff(applyto.getId(), dsstat);
+                mbuff = UserRemote.Packet.giveForeignBuff(applyto.getId(), dsstat);
             } else if (isWw()) {
                 List<Pair<MapleBuffStat, BuffValueHolder>> dsstat = Collections.singletonList(new Pair<>(MapleBuffStat.WIND_WALK,  new BuffValueHolder(0, 0, 0)));
-                mbuff = MaplePacketCreator.giveForeignBuff(applyto.getId(), dsstat);
+                mbuff = UserRemote.Packet.giveForeignBuff(applyto.getId(), dsstat);
             } else if (isCombo()) {
                 Integer comboCount = applyto.getBuffedValue(MapleBuffStat.COMBO);
                 if (comboCount == null) comboCount = 0;
 
                 List<Pair<MapleBuffStat, BuffValueHolder>> cbstat = Collections.singletonList(new Pair<>(MapleBuffStat.COMBO,new BuffValueHolder(0, 0, comboCount)));
                 buff = MaplePacketCreator.giveBuff((skill ? sourceid : -sourceid), localDuration, cbstat);
-                mbuff = MaplePacketCreator.giveForeignBuff(applyto.getId(), cbstat);
+                mbuff = UserRemote.Packet.giveForeignBuff(applyto.getId(), cbstat);
             } else if (isMonsterRiding()) {
                 if (sourceid == Corsair.BATTLE_SHIP) {//hp
                     if (applyto.getBattleshipHp() <= 0) {
@@ -1356,22 +1357,22 @@ public class MapleStatEffect {
                     localstatups = statups;
                 }
                 buff = MaplePacketCreator.giveBuff(localsourceid, localDuration, localstatups);
-                mbuff = MaplePacketCreator.showMonsterRiding(applyto.getId(), givemount);
+                mbuff = UserRemote.Packet.showMonsterRiding(applyto.getId(), givemount);
                 localDuration = duration;
             } else if (isShadowPartner()) {
                 List<Pair<MapleBuffStat, BuffValueHolder>> stat = Collections.singletonList(new Pair<>(MapleBuffStat.SHADOWPARTNER, new BuffValueHolder(0, 0, 0)));
-                mbuff = MaplePacketCreator.giveForeignBuff(applyto.getId(), stat);
+                mbuff = UserRemote.Packet.giveForeignBuff(applyto.getId(), stat);
             } else if (isSoulArrow()) {
                 List<Pair<MapleBuffStat, BuffValueHolder>> stat = Collections.singletonList(new Pair<>(MapleBuffStat.SOULARROW, new BuffValueHolder(0, 0, 0)));
-                mbuff = MaplePacketCreator.giveForeignBuff(applyto.getId(), stat);
+                mbuff = UserRemote.Packet.giveForeignBuff(applyto.getId(), stat);
             } else if (isEnrage()) {
                 applyto.handleOrbconsume();
             } else if (isMorph()) {
                 List<Pair<MapleBuffStat, BuffValueHolder>> stat = Collections.singletonList(new Pair<>(MapleBuffStat.MORPH, new BuffValueHolder(sourceid, 0, getMorph(applyto))));
-                mbuff = MaplePacketCreator.giveForeignBuff(applyto.getId(), stat);
+                mbuff = UserRemote.Packet.giveForeignBuff(applyto.getId(), stat);
             } else if (isAriantShield()) {
                 List<Pair<MapleBuffStat, BuffValueHolder>> stat = Collections.singletonList(new Pair<>(MapleBuffStat.DOJANG_SHIELD,  new BuffValueHolder(sourceid, 0, 0)));
-                mbuff = MaplePacketCreator.giveForeignBuff(applyto.getId(), stat);
+                mbuff = UserRemote.Packet.giveForeignBuff(applyto.getId(), stat);
             }
 
             if (buff != null) {

@@ -57,6 +57,7 @@ import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.concurrent.ScheduledFuture;
 
+import network.packet.UserRemote;
 import scripting.event.EventInstanceManager;
 import server.TimerManager;
 import server.maps.MapleHiredMerchant;
@@ -620,10 +621,10 @@ public class World {
             if (mc.isLoggedinWorld()) {
                 MapleGuild guild = Server.getInstance().getGuild(guildid);
                 if (guild != null) {
-                    mc.getMap().broadcastMessage(mc, MaplePacketCreator.guildNameChanged(cid, guild.getName()));
-                    mc.getMap().broadcastMessage(mc, MaplePacketCreator.guildMarkChanged(cid, guild));
+                    mc.getMap().broadcastMessage(mc, UserRemote.Packet.guildNameChanged(cid, guild.getName()));
+                    mc.getMap().broadcastMessage(mc, UserRemote.Packet.guildMarkChanged(cid, guild));
                 } else {
-                    mc.getMap().broadcastMessage(mc, MaplePacketCreator.guildNameChanged(cid, ""));
+                    mc.getMap().broadcastMessage(mc, UserRemote.Packet.guildNameChanged(cid, ""));
                 }
             }
         }

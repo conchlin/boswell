@@ -36,6 +36,7 @@ import java.util.Set;
 
 import enums.UserEffectType;
 import network.packet.UserLocal;
+import network.packet.UserRemote;
 import provider.MapleData;
 import provider.MapleDataProvider;
 import provider.MapleDataProviderFactory;
@@ -348,7 +349,7 @@ public class MapleQuest {
         c.updateQuest(newStatus);
 
         c.announce(UserLocal.Packet.onEffect(UserEffectType.QUEST_COMPLETE.getEffect(), ""));
-        c.getMap().broadcastMessage(c, MaplePacketCreator.showForeignEffect(c.getId(), UserEffectType.QUEST_COMPLETE.getEffect()), false); //use 9 instead of 12 for both
+        c.getMap().broadcastMessage(c, UserRemote.Packet.showForeignEffect(c.getId(), UserEffectType.QUEST_COMPLETE.getEffect()), false); //use 9 instead of 12 for both
         return true;
     }
 

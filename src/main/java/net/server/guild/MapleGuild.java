@@ -35,6 +35,7 @@ import net.server.coordinator.MapleInviteCoordinator.InviteType;
 import net.server.coordinator.MapleMatchCheckerCoordinator;
 import net.database.Statements;
 import net.database.DatabaseConnection;
+import network.packet.UserRemote;
 import tools.MaplePacketCreator;
 import tools.Pair;
 
@@ -263,7 +264,7 @@ public class MapleGuild {
             MapleCharacter chr = ps.getCharacterById(mgc.getId());
             if (chr == null || !chr.isLoggedinWorld()) continue;
 
-            byte[] packet = MaplePacketCreator.guildNameChanged(chr.getId(), this.getName());
+            byte[] packet = UserRemote.Packet.guildNameChanged(chr.getId(), this.getName());
             chr.getMap().broadcastMessage(chr, packet);
         }
     }
@@ -275,7 +276,7 @@ public class MapleGuild {
             MapleCharacter chr = ps.getCharacterById(mgc.getId());
             if (chr == null || !chr.isLoggedinWorld()) continue;
 
-            byte[] packet = MaplePacketCreator.guildMarkChanged(chr.getId(), this);
+            byte[] packet = UserRemote.Packet.guildMarkChanged(chr.getId(), this);
             chr.getMap().broadcastMessage(chr, packet);
         }
     }

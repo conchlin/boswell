@@ -23,18 +23,17 @@ package net.server.channel.handlers;
 
 import client.MapleCharacter;
 import client.MapleClient;
-import client.autoban.AutobanFactory;
 import client.autoban.AutobanManager;
 import net.AbstractMaplePacketHandler;
 import net.server.Server;
+import network.packet.UserRemote;
 import server.maps.MapleMapFactory;
 import tools.FilePrinter;
 import tools.data.input.SeekableLittleEndianAccessor;
-import tools.MaplePacketCreator;
 
 public final class HealOvertimeHandler extends AbstractMaplePacketHandler {
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         MapleCharacter chr = c.getPlayer();
         if(!chr.isLoggedinWorld()) return;
         
@@ -60,7 +59,7 @@ public final class HealOvertimeHandler extends AbstractMaplePacketHandler {
             }
             
             chr.addHP(healHP);///////
-            chr.getMap().broadcastMessage(chr, MaplePacketCreator.showHpHealed(chr.getId(), healHP), false);
+            chr.getMap().broadcastMessage(chr, UserRemote.Packet.showHpHealed(chr.getId(), healHP), false);
             abm.spam(0, timestamp);
         }
         

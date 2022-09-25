@@ -31,6 +31,7 @@ import constants.GameConstants;
 import constants.ServerConstants;
 import constants.skills.*;
 import net.AbstractMaplePacketHandler;
+import network.packet.UserRemote;
 import scripting.AbstractPlayerInteraction;
 import server.MapleStatEffect;
 import server.TimerManager;
@@ -545,7 +546,7 @@ public abstract class AbstractDealDamageHandler extends AbstractMaplePacketHandl
                             if (ms.left == 145) {
                                 MobSkill toUse = MobSkillFactory.getMobSkill(ms.left, ms.right);
                                 player.addHP(-toUse.getX());
-                                map.broadcastMessage(player, MaplePacketCreator.damagePlayer(0, monster.getId(), player.getId(), toUse.getX(), 0, 0, false, 0, true, monster.getObjectId(), 0, 0), true);
+                                map.broadcastMessage(player, UserRemote.Packet.damagePlayer(0, monster.getId(), player.getId(), toUse.getX(), 0, 0, false, 0, true, monster.getObjectId(), 0, 0), true);
                             }
                         }
                     }

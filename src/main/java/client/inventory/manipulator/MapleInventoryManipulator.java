@@ -39,6 +39,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import network.packet.UserRemote;
 import server.MapleItemInformationProvider;
 import server.maps.MapleMap;
 import tools.FilePrinter;
@@ -747,7 +749,7 @@ public class MapleInventoryManipulator {
         if (itemId == chr.getItemEffect()) {
             if (quantityNow <= 0) {
                 chr.setItemEffect(0);
-                map.broadcastMessage(MaplePacketCreator.itemEffect(chr.getId(), 0));
+                map.broadcastMessage(UserRemote.Packet.itemEffect(chr.getId(), 0));
             }
         } else if (itemId == 5370000 || itemId == 5370001) {
             if (source.getQuantity() <= 0) {

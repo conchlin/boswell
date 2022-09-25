@@ -24,6 +24,7 @@ package net.server.channel.handlers;
 import client.MapleBuffStat;
 import client.MapleCharacter;
 import client.MapleClient;
+import network.packet.UserRemote;
 import server.skills.*;
 import client.inventory.Item;
 import client.inventory.MapleInventory;
@@ -179,7 +180,7 @@ public final class TakeDamageHandler extends AbstractMaplePacketHandler {
                             map.damageMonster(chr, attacker, bouncedamage);
                             map.broadcastMessage(chr, MaplePacketCreator.damageMonster(attacker, 0, bouncedamage), true);
                             chr.getClient().announce(MaplePacketCreator.showOwnBuffEffect(id, 5));
-                            map.broadcastMessage(chr, MaplePacketCreator.showBuffeffect(chr.getId(), id, 5), false);
+                            map.broadcastMessage(chr, UserRemote.Packet.showBuffEffect(chr.getId(), id, 5), false);
                         }
                     }
                 }
@@ -295,9 +296,9 @@ public final class TakeDamageHandler extends AbstractMaplePacketHandler {
                     }
                 }
             }
-            map.broadcastMessage(chr, MaplePacketCreator.damagePlayer(damagefrom, monsteridfrom, chr.getId(), damage, fake, direction, is_pgmr, pgmr, is_pg, oid, pos_x, pos_y), false);
+            map.broadcastMessage(chr, UserRemote.Packet.damagePlayer(damagefrom, monsteridfrom, chr.getId(), damage, fake, direction, is_pgmr, pgmr, is_pg, oid, pos_x, pos_y), false);
         } else {
-            map.broadcastGMMessage(chr, MaplePacketCreator.damagePlayer(damagefrom, monsteridfrom, chr.getId(), damage, fake, direction, is_pgmr, pgmr, is_pg, oid, pos_x, pos_y), false);
+            map.broadcastGMMessage(chr, UserRemote.Packet.damagePlayer(damagefrom, monsteridfrom, chr.getId(), damage, fake, direction, is_pgmr, pgmr, is_pg, oid, pos_x, pos_y), false);
         }
         if (GameConstants.isDojo(map.getId())) {
             chr.setDojoEnergy(chr.getDojoEnergy() + ServerConstants.DOJO_ENERGY_DMG);

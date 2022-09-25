@@ -26,6 +26,7 @@ import net.server.audit.locks.MonitoredLockType;
 import net.server.audit.locks.factory.MonitoredReentrantLockFactory;
 import net.database.Statements;
 import network.packet.UserLocal;
+import network.packet.UserRemote;
 import tools.MaplePacketCreator;
 
 import java.sql.Connection;
@@ -65,7 +66,7 @@ public final class MonsterBook {
     }
 
     public void addCard(final MapleClient c, final int cardid) {
-        c.getPlayer().getMap().broadcastMessage(c.getPlayer(), MaplePacketCreator.showForeignCardEffect(c.getPlayer().getId()), false);
+        c.getPlayer().getMap().broadcastMessage(c.getPlayer(), UserRemote.Packet.showForeignCardEffect(c.getPlayer().getId()), false);
 
         Integer qty;
         lock.lock();

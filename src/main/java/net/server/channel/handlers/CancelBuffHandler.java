@@ -32,6 +32,7 @@ import constants.skills.Marksman;
 import constants.skills.WindArcher;
 import net.AbstractMaplePacketHandler;
 import net.MaplePacketHandler;
+import network.packet.UserRemote;
 import server.skills.SkillFactory;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
@@ -45,7 +46,7 @@ public final class CancelBuffHandler extends AbstractMaplePacketHandler implemen
         switch (sourceid) {
             case FPArchMage.BIG_BANG, ILArchMage.BIG_BANG, Bishop.BIG_BANG, Bowmaster.HURRICANE, Marksman.PIERCING_ARROW,
                     Corsair.RAPID_FIRE, WindArcher.HURRICANE, Evan.FIRE_BREATH, Evan.ICE_BREATH
-                    -> c.getPlayer().getMap().broadcastMessage(c.getPlayer(), MaplePacketCreator.skillCancel(c.getPlayer(), sourceid), false);
+                    -> c.getPlayer().getMap().broadcastMessage(c.getPlayer(), UserRemote.Packet.skillCancel(c.getPlayer(), sourceid), false);
             default -> c.getPlayer().cancelEffect(SkillFactory.getSkill(sourceid).getEffect(1), false, -1);
         }
     }
