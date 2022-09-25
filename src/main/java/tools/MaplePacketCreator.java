@@ -2242,16 +2242,6 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    public static byte[] moveSummon(int cid, int oid, Point startPos, List<LifeMovementFragment> moves) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.MOVE_SUMMON.getValue());
-        mplew.writeInt(cid);
-        mplew.writeInt(oid);
-        mplew.writePos(startPos);
-        serializeMovementList(mplew, moves);
-        return mplew.getPacket();
-    }
-
     public static byte[] moveMonster(int useskill, int action, int delay, int skillInfo, int oid, Point pos, List<LifeMovementFragment> moves) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendOpcode.MOVE_MONSTER.getValue());
@@ -2262,24 +2252,6 @@ public class MaplePacketCreator {
         mplew.writeInt(skillInfo);
         mplew.writePos(pos);
         serializeMovementList(mplew, moves);
-        return mplew.getPacket();
-    }
-
-    public static byte[] summonAttack(int cid, int summonOid, byte direction, List<SummonAttackEntry> allDamage) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        //b2 00 29 f7 00 00 9a a3 04 00 c8 04 01 94 a3 04 00 06 ff 2b 00
-        mplew.writeShort(SendOpcode.SUMMON_ATTACK.getValue());
-        mplew.writeInt(cid);
-        mplew.writeInt(summonOid);
-        mplew.write(0);     // char level
-        mplew.write(direction);
-        mplew.write(allDamage.size());
-        for (SummonAttackEntry attackEntry : allDamage) {
-            mplew.writeInt(attackEntry.getMonsterOid()); // oid
-            mplew.write(6); // who knows
-            mplew.writeInt(attackEntry.getDamage()); // damage
-        }
-
         return mplew.getPacket();
     }
 
@@ -3988,18 +3960,6 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    public static byte[] damageSummon(int cid, int oid, int damage, int action, int monsterIdFrom, boolean isLeft) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.DAMAGE_SUMMON.getValue());
-        mplew.writeInt(cid);
-        mplew.writeInt(oid);
-        mplew.write(action);
-        mplew.writeInt(damage);
-        mplew.writeInt(monsterIdFrom);
-        mplew.writeBool(isLeft);
-        return mplew.getPacket();
-    }
-
     public static byte[] healMonster(MapleMonster mob, int heal) {
         return damageMonster(mob, 0, -heal);
     }
@@ -4634,15 +4594,6 @@ public class MaplePacketCreator {
         if (team > -1) {
             mplew.write(team);   // 00 = red, 01 = blue
         }
-        return mplew.getPacket();
-    }
-
-    public static byte[] summonSkill(int cid, int summonSkillId, int newStance) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.SUMMON_SKILL.getValue());
-        mplew.writeInt(cid);
-        mplew.writeInt(summonSkillId);
-        mplew.write(newStance);
         return mplew.getPacket();
     }
 

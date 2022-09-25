@@ -24,6 +24,7 @@ package server.maps;
 import java.awt.Point;
 import client.MapleCharacter;
 import client.MapleClient;
+import network.packet.SummonedPool;
 import server.skills.SkillFactory;
 import tools.MaplePacketCreator;
 
@@ -54,7 +55,7 @@ public class MapleSummon extends AbstractAnimatedMapleMapObject {
 
     @Override
     public void sendDestroyData(MapleClient client) {
-        client.announce(MaplePacketCreator.removeSummon(this, true));
+        client.announce(SummonedPool.Packet.onSummonRemoved(this, true));
     }
 
     public MapleCharacter getOwner() {

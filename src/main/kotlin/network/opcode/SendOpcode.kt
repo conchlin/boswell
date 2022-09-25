@@ -193,19 +193,20 @@ enum class SendOpcode(val value: Int) {
     PET_NAMECHANGE(172),
     PET_EXCEPTION_LIST(173),
     PET_COMMAND(174),  //OnActionCommand
+    //SummonedPool
     SPAWN_SPECIAL_MAPOBJECT(175),
     REMOVE_SPECIAL_MAPOBJECT(176),
     MOVE_SUMMON(177),
     SUMMON_ATTACK(177),
-    DAMAGE_SUMMON(179),
+    SUMMON_DAMAGE(179),
     SUMMON_SKILL(180),
+    //DragonPacket
     SPAWN_DRAGON(181),
     MOVE_DRAGON(182),
     REMOVE_DRAGON(183),
     DRAGON_LEAVE_FIELD(184),
-    MOVE_PLAYER(185),  //OnMove
-
     //CUserPool::OnUserRemotePacket
+    MOVE_PLAYER(185),  //OnMove
     CLOSE_RANGE_ATTACK(186),  //CUserRemote::OnAttack
     RANGED_ATTACK(187),  //CUserRemote::OnAttack
     MAGIC_ATTACK(188),  //CUserRemote::OnAttack

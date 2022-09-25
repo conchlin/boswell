@@ -27,14 +27,13 @@ import java.util.List;
 
 import client.MapleCharacter;
 import client.MapleClient;
+import network.packet.SummonedPool;
 import server.maps.MapleSummon;
 import server.movement.LifeMovementFragment;
-import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
-import tools.exceptions.EmptyMovementException;
 
 public final class MoveSummonHandler extends AbstractMovementPacketHandler {
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         MapleCharacter player = c.getPlayer();
         if (player == null) return;
 
@@ -57,7 +56,7 @@ public final class MoveSummonHandler extends AbstractMovementPacketHandler {
         
         if (summon != null) {
             updatePosition(res, summon, 0);
-            player.getMap().broadcastMessage(player, MaplePacketCreator.moveSummon(player.getId(), oid, p, res), summon.getPosition());
+            player.getMap().broadcastMessage(player, SummonedPool.Packet.moveSummon(player.getId(), oid, p, res), summon.getPosition());
         }
     }
 }

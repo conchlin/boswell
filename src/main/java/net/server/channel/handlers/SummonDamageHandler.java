@@ -28,14 +28,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import constants.skills.Outlaw;
+import network.packet.SummonedPool;
 import server.MapleStatEffect;
 import server.life.MapleMonster;
-import server.life.MapleMonsterInformationProvider;
 import server.maps.MapleSummon;
 import server.skills.PlayerSkill;
 import server.skills.SkillFactory;
-import tools.FilePrinter;
-import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 public final class SummonDamageHandler extends AbstractDealDamageHandler {
@@ -110,7 +108,7 @@ public final class SummonDamageHandler extends AbstractDealDamageHandler {
         }
         slea.readInt();
         player.getMap().broadcastMessage(
-                player, MaplePacketCreator.summonAttack(player.getId(), oid, animation, allDamage), summon.getPosition());
+                player, SummonedPool.Packet.summonAttack(player.getId(), oid, animation, allDamage), summon.getPosition());
 
         for (SummonAttackEntry attackEntry : allDamage) {
             int damage = attackEntry.getDamage();

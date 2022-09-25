@@ -2888,7 +2888,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                                 MapleSummon summon = summons.get(summonId);
                                 if (summon != null) {
                                     getMap().broadcastMessage(
-                                            MaplePacketCreator.removeSummon(summon, true),
+                                            SummonedPool.Packet.onSummonRemoved(summon, true),
                                             summon.getPosition());
                                     getMap().removeMapObject(summon);
                                     removeVisibleMapObject(summon);
@@ -3074,11 +3074,11 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                         if (addHp) {
                             addHP(healEffect.getHp());
                             client.announce(MaplePacketCreator.showOwnBuffEffect(DarkKnight.BEHOLDER, 2));
-                            getMap().broadcastMessage(MapleCharacter.this, MaplePacketCreator.summonSkill(getId(), DarkKnight.BEHOLDER, 5), true);
+                            getMap().broadcastMessage(MapleCharacter.this, SummonedPool.Packet.summonSkill(getId(), DarkKnight.BEHOLDER, 5), true);
                             getMap().broadcastMessage(MapleCharacter.this, MaplePacketCreator.showOwnBuffEffect(DarkKnight.BEHOLDER, 2), false);
                             for (MapleSummon sum : getSummonsValues()) {
                                 if (sum != null) {
-                                    getMap().broadcastMessage(this, MaplePacketCreator.summonSkill(getId(), sum.getObjectId(), 5), true);
+                                    getMap().broadcastMessage(this, SummonedPool.Packet.summonSkill(getId(), sum.getObjectId(), 5), true);
                                 }
                             }
                         }
@@ -3096,7 +3096,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                         client.announce(MaplePacketCreator.showOwnBuffEffect(DarkKnight.BEHOLDER, 2));
                         for (MapleSummon sum : getSummonsValues()) {
                             if (sum != null) {
-                                getMap().broadcastMessage(this, MaplePacketCreator.summonSkill(getId(), sum.getObjectId(), (int) (Math.random() * 3) + 6), true);
+                                getMap().broadcastMessage(this, SummonedPool.Packet.summonSkill(getId(), sum.getObjectId(), (int) (Math.random() * 3) + 6), true);
                             }
                         }
                         getMap().broadcastMessage(MapleCharacter.this, MaplePacketCreator.showOwnBuffEffect(DarkKnight.BEHOLDER, 2), false);
