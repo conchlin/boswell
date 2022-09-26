@@ -399,8 +399,11 @@ public class SkillFactory {
                     break;
             }
         }
-        for (MapleData level : data.getChildByPath("level")) {
-            ret.effects.add(MapleStatEffect.loadSkillEffectFromData(level, id, isBuff));
+        MapleData levelData = data.getChildByPath("level");
+        if (levelData != null) {
+            for (MapleData level : levelData) {
+                ret.effects.add(MapleStatEffect.loadSkillEffectFromData(level, id, isBuff));
+            }
         }
         ret.animationTime = 0;
         if (effect != null) {
