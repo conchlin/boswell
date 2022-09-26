@@ -9,7 +9,7 @@
     <version>boswell</version>
     <properties>
         <maven.compiler.release>17</maven.compiler.release>
-        <kotlin.version>1.7.0</kotlin.version>
+        <kotlin.version>1.5.10</kotlin.version>
     </properties>
     <dependencies>
         <dependency>
@@ -71,7 +71,7 @@
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib</artifactId>
-            <version>1.7.10</version>
+            <version>1.5.10</version>
         </dependency>
     </dependencies>
     <build>
