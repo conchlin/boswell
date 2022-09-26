@@ -193,7 +193,7 @@ public class MaplePet extends Item {
                 while (newCloseness >= ExpTable.INSTANCE.getClosenessNeededForLevel(level)) {
                     level += 1;
                     owner.getClient().announce(UserLocal.Packet.onEffect(UserEffectType.PET_LEVEL_UP.getEffect(), "", slot));
-                    owner.getMap().broadcastMessage(UserRemote.Packet.showPetLevelUp(owner, slot));
+                    owner.getClient().announce(UserRemote.Packet.onRemoteUserEffect(owner.getId(), UserEffectType.PET_LEVEL_UP.getEffect(), slot));
                 }
             }
 

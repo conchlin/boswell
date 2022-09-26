@@ -5,7 +5,9 @@ import client.MapleBuffStat
 import client.MapleCharacter
 import client.MapleMount
 import constants.skills.Buccaneer
+import constants.skills.DarkKnight
 import constants.skills.ThunderBreaker
+import enums.UserEffectType
 import net.server.guild.MapleGuild
 import network.opcode.SendOpcode
 import tools.Pair
@@ -251,17 +253,44 @@ class UserRemote {
             return mplew.packet
         }
 
-        /** todo add UPDATE_CHAR_LOOK **/
-
-        fun showHpHealed(cid: Int, amount: Int): ByteArray? {
+        fun onRemoteUserEffect(charId: Int, effect: Byte, vararg args: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
             mplew.writeShort(SendOpcode.SHOW_FOREIGN_EFFECT.value)
-            mplew.writeInt(cid)
-            mplew.write(0x0A) //Type
-            mplew.write(amount)
+            mplew.writeInt(charId)
+            mplew.write(effect)
+            when (effect) {
+                UserEffectType.RECOVERY.effect,
+                UserEffectType.MAKER.effect -> {
+                    mplew.write(args[0])
+                }
+                UserEffectType.PET_LEVEL_UP.effect -> {
+                    mplew.write(0)
+                    mplew.write(args[0])
+                }
+                UserEffectType.BUYBACK.effect -> {
+                    mplew.writeInt(0)
+                }
+            }
 
             return mplew.packet
         }
+
+        fun onRemoteUserEffect(charId: Int, effect: Byte, path: String): ByteArray? {
+            val mplew = MaplePacketLittleEndianWriter()
+            mplew.writeShort(SendOpcode.SHOW_FOREIGN_EFFECT.value)
+            mplew.writeInt(charId)
+            mplew.write(effect)
+            when (effect) {
+                UserEffectType.SHOW_INFO.effect -> {
+                    mplew.writeMapleAsciiString(path)
+                    mplew.writeInt(1)
+                }
+            }
+
+            return mplew.packet
+        }
+
+        /** todo add UPDATE_CHAR_LOOK **/
 
         fun showBuffEffect(cid: Int, skillid: Int, effectid: Int): ByteArray? {
             return showBuffEffect(cid, skillid, effectid, 3.toByte())
@@ -304,61 +333,10 @@ class UserRemote {
             mplew.writeShort(SendOpcode.SHOW_FOREIGN_EFFECT.value)
             mplew.writeInt(cid)
             mplew.write(1)
-            mplew.writeInt(1320006)
+            mplew.writeInt(DarkKnight.BERSERK)
             mplew.write(0xA9)
             mplew.write(skilllevel)
             mplew.write(if (Berserk) 1 else 0)
-
-            return mplew.packet
-        }
-
-        fun showPetLevelUp(chr: MapleCharacter, index: Byte): ByteArray? {
-            val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.SHOW_FOREIGN_EFFECT.value)
-            mplew.writeInt(chr.id)
-            mplew.write(4)
-            mplew.write(0)
-            mplew.write(index)
-
-            return mplew.packet
-        }
-
-        fun showForeignCardEffect(id: Int): ByteArray? {
-            val mplew = MaplePacketLittleEndianWriter(7)
-            mplew.writeShort(SendOpcode.SHOW_FOREIGN_EFFECT.value)
-            mplew.writeInt(id)
-            mplew.write(0x0D)
-
-            return mplew.packet
-        }
-
-        fun showForeignInfo(cid: Int, path: String?): ByteArray? {
-            val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.SHOW_FOREIGN_EFFECT.value)
-            mplew.writeInt(cid)
-            mplew.write(0x17)
-            mplew.writeMapleAsciiString(path)
-            mplew.writeInt(1)
-
-            return mplew.packet
-        }
-
-        fun showForeignBuybackEffect(cid: Int): ByteArray? {
-            val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.SHOW_FOREIGN_EFFECT.value)
-            mplew.writeInt(cid)
-            mplew.write(11)
-            mplew.writeInt(0)
-
-            return mplew.packet
-        }
-
-        fun showForeignMakerEffect(cid: Int, makerSucceeded: Boolean): ByteArray? {
-            val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.SHOW_FOREIGN_EFFECT.value)
-            mplew.writeInt(cid)
-            mplew.write(16)
-            mplew.writeInt(if (makerSucceeded) 0 else 1)
 
             return mplew.packet
         }
@@ -372,16 +350,6 @@ class UserRemote {
             mplew.writeShort(SendOpcode.SHOW_FOREIGN_EFFECT.value)
             mplew.writeInt(cid)
             mplew.write(effect)
-
-            return mplew.packet
-        }
-
-        fun showRecovery(cid: Int, amount: Byte): ByteArray? {
-            val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.SHOW_FOREIGN_EFFECT.value)
-            mplew.writeInt(cid)
-            mplew.write(0x0A)
-            mplew.write(amount)
 
             return mplew.packet
         }

@@ -228,12 +228,10 @@ public final class MakerSkillHandler extends AbstractMaplePacketHandler {
                     }
                 }
 
-                if (makerSucceeded) {
-                    c.announce(UserLocal.Packet.onEffect(UserEffectType.MAKER.getEffect(), "", 0));
-                } else {
-                    c.announce(UserLocal.Packet.onEffect(UserEffectType.MAKER.getEffect(), "", 1));
-                }
-                c.getPlayer().getMap().broadcastMessage(c.getPlayer(), UserRemote.Packet.showForeignMakerEffect(c.getPlayer().getId(), makerSucceeded), false);
+                int effect = makerSucceeded ? 1 : 0;
+                c.announce(UserLocal.Packet.onEffect(UserEffectType.MAKER.getEffect(), "", effect));
+                c.getPlayer().getMap().broadcastMessage(c.getPlayer(),
+                        UserRemote.Packet.onRemoteUserEffect(c.getPlayer().getId(), UserEffectType.MAKER.getEffect(), effect), false);
                 if (toCreate == 4260003 && type == 3 && c.getPlayer().getQuestStatus(6033) == 1) {
                     c.getAbstractPlayerInteraction().setQuestProgress(6033, 1);
                 }

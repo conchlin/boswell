@@ -66,7 +66,8 @@ public final class MonsterBook {
     }
 
     public void addCard(final MapleClient c, final int cardid) {
-        c.getPlayer().getMap().broadcastMessage(c.getPlayer(), UserRemote.Packet.showForeignCardEffect(c.getPlayer().getId()), false);
+        c.getPlayer().getMap().broadcastMessage(c.getPlayer(),
+                UserRemote.Packet.onRemoteUserEffect(c.getPlayer().getId(), UserEffectType.MONSTERBOOK_PICKUP.getEffect()), false);
 
         Integer qty;
         lock.lock();

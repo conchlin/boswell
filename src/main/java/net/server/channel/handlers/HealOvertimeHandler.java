@@ -24,6 +24,7 @@ package net.server.channel.handlers;
 import client.MapleCharacter;
 import client.MapleClient;
 import client.autoban.AutobanManager;
+import enums.UserEffectType;
 import net.AbstractMaplePacketHandler;
 import net.server.Server;
 import network.packet.UserRemote;
@@ -59,7 +60,7 @@ public final class HealOvertimeHandler extends AbstractMaplePacketHandler {
             }
             
             chr.addHP(healHP);///////
-            chr.getMap().broadcastMessage(chr, UserRemote.Packet.showHpHealed(chr.getId(), healHP), false);
+            chr.getMap().broadcastMessage(chr, UserRemote.Packet.onRemoteUserEffect(chr.getId(), UserEffectType.RECOVERY.getEffect(), healHP));
             abm.spam(0, timestamp);
         }
         

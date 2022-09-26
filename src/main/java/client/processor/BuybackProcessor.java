@@ -62,7 +62,7 @@ public class BuybackProcessor {
             map.broadcastMessage(MaplePacketCreator.earnTitleMessage(chr.getName() + " just bought back into the game!"));
 
             chr.announce(UserLocal.Packet.onEffect(UserEffectType.BUYBACK.getEffect(), ""));
-            map.broadcastMessage(chr, UserRemote.Packet.showForeignBuybackEffect(chr.getId()), false);
+            map.broadcastMessage(chr, UserRemote.Packet.onRemoteUserEffect(chr.getId(), UserEffectType.BUYBACK.getEffect()), false);
         }
     }
 }
