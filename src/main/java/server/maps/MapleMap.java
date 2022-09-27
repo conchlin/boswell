@@ -2066,7 +2066,7 @@ public class MapleMap {
         this.getChannelServer().registerMobMistCancelAction(mapid, mistSchedule, duration);
     }
 
-    public void spawnKite(final MapleKite kite) {
+    public void spawnKite(final MessageBox kite) {
         addMapObject(kite);
         broadcastMessage(kite.makeSpawnData());
 

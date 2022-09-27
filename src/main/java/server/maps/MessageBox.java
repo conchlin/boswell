@@ -3,9 +3,9 @@ package server.maps;
 import java.awt.Point;
 import client.MapleCharacter;
 import client.MapleClient;
-import tools.MaplePacketCreator;
+import network.packet.MessageBoxPool;
 
-public class MapleKite extends AbstractMapleMapObject {
+public class MessageBox extends AbstractMapleMapObject {
 
     private Point pos;
     private MapleCharacter owner;
@@ -13,7 +13,7 @@ public class MapleKite extends AbstractMapleMapObject {
     private int ft;
     private int itemid;
 
-    public MapleKite(MapleCharacter owner, String text, int itemid) {
+    public MessageBox(MapleCharacter owner, String text, int itemid) {
         this.owner = owner;
         this.pos = owner.getPosition();
         this.ft = owner.getFh();
@@ -51,10 +51,10 @@ public class MapleKite extends AbstractMapleMapObject {
     }
 
     public final byte[] makeSpawnData() {
-        return MaplePacketCreator.spawnKite(getObjectId(), itemid, owner.getName(), text, pos, ft);
+        return MessageBoxPool.Packet.onMessageBoxEnterField(getObjectId(), itemid, owner.getName(), text, pos, ft);
     }
 
     public final byte[] makeDestroyData() {
-        return MaplePacketCreator.removeKite(getObjectId(), 0);
+        return MessageBoxPool.Packet.onMessageBoxLeaveField(getObjectId(), 0);
     }
 }

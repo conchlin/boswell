@@ -23,9 +23,9 @@ package net.server.channel.handlers;
 
 import client.MapleCharacter;
 import client.MapleClient;
+import network.packet.MessageBoxPool;
 import network.packet.PetPacket;
 import server.skills.PlayerSkill;
-import server.skills.Skill;
 import client.creator.veteran.*;
 import client.inventory.Equip;
 import client.inventory.Equip.ScrollResult;
@@ -42,7 +42,6 @@ import constants.GameConstants;
 import constants.ItemConstants;
 import constants.ServerConstants;
 
-import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -57,7 +56,7 @@ import server.TimerManager;
 import server.maps.AbstractMapleMapObject;
 import server.maps.FieldLimit;
 import server.maps.MaplePlayerShopItem;
-import server.maps.MapleKite;
+import server.maps.MessageBox;
 import server.maps.MapleMap;
 import server.maps.MapleTVEffect;
 import server.skills.SkillFactory;
@@ -321,13 +320,13 @@ public final class UseCashItemHandler extends AbstractMaplePacketHandler {
             }
             remove(c, position, itemId);
         } else if (itemType == 508) {   // graduation banner, thanks to tmskdl12. Also, thanks ratency for first pointing lack of Kite handling
-            MapleKite kite = new MapleKite(player, slea.readMapleAsciiString(), itemId);
+            MessageBox kite = new MessageBox(player, slea.readMapleAsciiString(), itemId);
             
             if (!GameConstants.isFreeMarketRoom(player.getMapId())) {
                 player.getMap().spawnKite(kite);
                 remove(c, position, itemId);
             } else {
-                c.announce(MaplePacketCreator.sendCannotSpawnKite());
+                c.announce(MessageBoxPool.Packet.onCreateFailed());
             }
         } else if (itemType == 509) {
             String sendTo = slea.readMapleAsciiString();
