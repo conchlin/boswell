@@ -2153,7 +2153,8 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                     byte recHP = (byte) (healHP / ServerConstants.CHAIR_EXTRA_HEAL_MULTIPLIER);
 
                     client.announce(UserLocal.Packet.onEffect(UserEffectType.RECOVERY.getEffect(), "", recHP));
-                    getMap().broadcastMessage(MapleCharacter.this, UserRemote.Packet.showRecovery(id, recHP), false);
+                    getMap().broadcastMessage(MapleCharacter.this,
+                            UserRemote.Packet.onRemoteUserEffect(id, UserEffectType.RECOVERY.getEffect(), recHP), false);
                 } else if (MapleCharacter.this.getMp() >= localmaxmp) {
                     stopChairTask();    // optimizing schedule management when player is already with full pool.
                 }
@@ -3111,7 +3112,8 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                     addHP(heal);
                     operation.setHp(heal);
                     client.announce(UserLocal.Packet.onEffect(UserEffectType.RECOVERY.getEffect(), "", heal));
-                    getMap().broadcastMessage(MapleCharacter.this, UserRemote.Packet.showRecovery(id, heal), false);
+                    getMap().broadcastMessage(MapleCharacter.this,
+                            UserRemote.Packet.onRemoteUserEffect(id, UserEffectType.RECOVERY.getEffect(), heal), false);
 
                 }
             }, 5000, 5000);

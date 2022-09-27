@@ -25,6 +25,7 @@ import java.awt.Point;
 import java.util.concurrent.ScheduledFuture;
 
 import net.AbstractMaplePacketHandler;
+import network.packet.MobPool;
 import network.packet.UserLocal;
 import network.packet.UserRemote;
 import server.MapleStatEffect;
@@ -86,7 +87,7 @@ public final class SpecialMoveHandler extends AbstractMaplePacketHandler {
             for (int i = 0; i < num; i++) {
                 int mobOid = slea.readInt();
                 byte success = slea.readByte();
-                chr.getMap().broadcastMessage(chr, MaplePacketCreator.catchMonster(mobOid, success), false);
+                chr.getMap().broadcastMessage(chr, MobPool.Packet.catchMonster(mobOid, success), false);
                 MapleMonster monster = chr.getMap().getMonsterByOid(mobOid);
                 if (monster != null && success > 0) {
                     if (!monster.isBoss()) {

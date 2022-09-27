@@ -15,7 +15,14 @@ class MessageBoxPool {
             return mplew.packet
         }
 
-        fun onMessageBoxEnterField(oid: Int, itemid: Int, name: String?, msg: String?, pos: Point, ft: Int): ByteArray? {
+        fun onMessageBoxEnterField(
+            oid: Int,
+            itemid: Int,
+            name: String?,
+            msg: String?,
+            pos: Point,
+            ft: Int
+        ): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
             mplew.writeShort(SendOpcode.SPAWN_KITE.value)
             mplew.writeInt(oid)

@@ -31,6 +31,7 @@ import constants.GameConstants;
 import constants.ServerConstants;
 import constants.skills.*;
 import net.AbstractMaplePacketHandler;
+import network.packet.MobPool;
 import network.packet.UserRemote;
 import scripting.AbstractPlayerInteraction;
 import server.MapleStatEffect;
@@ -534,7 +535,7 @@ public abstract class AbstractDealDamageHandler extends AbstractMaplePacketHandl
                         }
                     } else {
                         if (attack.skill == Aran.BODY_PRESSURE) {
-                            map.broadcastMessage(MaplePacketCreator.damageMonster(monster, 0, totDamageToOneMonster));
+                            map.broadcastMessage(MobPool.Packet.damageMonster(monster, 0, totDamageToOneMonster));
                         }
 
                         map.damageMonster(player, monster, totDamageToOneMonster);
@@ -577,12 +578,12 @@ public abstract class AbstractDealDamageHandler extends AbstractMaplePacketHandl
             TimerManager.getInstance().schedule(new Runnable() {
                 @Override
                 public void run() {
-                    map.broadcastMessage(MaplePacketCreator.damageMonster(monster, 0, damage), monster.getPosition());
+                    map.broadcastMessage(MobPool.Packet.damageMonster(monster, 0, damage), monster.getPosition());
                     map.damageMonster(attacker, monster, damage);
                 }
             }, animationTime);
         } else {
-            map.broadcastMessage(MaplePacketCreator.damageMonster(monster, 0, damage), monster.getPosition());
+            map.broadcastMessage(MobPool.Packet.damageMonster(monster, 0, damage), monster.getPosition());
             map.damageMonster(attacker, monster, damage);
         }
     }

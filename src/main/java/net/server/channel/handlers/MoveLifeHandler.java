@@ -25,6 +25,8 @@ import client.MapleCharacter;
 import client.MapleClient;
 import java.awt.Point;
 import java.util.List;
+
+import network.packet.MobPool;
 import server.life.MapleMonster;
 import server.skills.MobSkill;
 import server.skills.MobSkillFactory;
@@ -119,14 +121,14 @@ public final class MoveLifeHandler extends AbstractMovementPacketHandler {
         }
         boolean aggro = monster.isControllerHasAggro();
         if (toUse != null) {
-            c.announce(MaplePacketCreator.moveMonsterResponse(objectid, moveid, monster.getMp(), aggro, toUse.getSkillId(), toUse.getSkillLevel()));
+            c.announce(MobPool.Packet.moveMonsterResponse(objectid, moveid, monster.getMp(), aggro, toUse.getSkillId(), toUse.getSkillLevel()));
         } else {
-            c.announce(MaplePacketCreator.moveMonsterResponse(objectid, moveid, monster.getMp(), aggro));
+            c.announce(MobPool.Packet.moveMonsterResponse(objectid, moveid, monster.getMp(), aggro));
         }
         if (aggro) monster.setControllerKnowsAboutAggro(true);
 
         if (res != null) {
-            chr.getMap().broadcastMessage(chr, MaplePacketCreator.moveMonster(skillByte, action, delay, skillInfo, objectid, p, res), monster.getPosition());
+            chr.getMap().broadcastMessage(chr, MobPool.Packet.moveMonster(skillByte, action, delay, skillInfo, objectid, p, res), monster.getPosition());
             updatePosition(res, monster, -1);
             chr.getMap().moveMonster(monster, monster.getPosition());
         }

@@ -24,6 +24,7 @@ package net.server.channel.handlers;
 import client.MapleBuffStat;
 import client.MapleCharacter;
 import client.MapleClient;
+import network.packet.MobPool;
 import network.packet.UserRemote;
 import server.skills.*;
 import client.inventory.Item;
@@ -178,7 +179,7 @@ public final class TakeDamageHandler extends AbstractMaplePacketHandler {
                                 bouncedamage = attacker.getMaxHp() / 5;
                             }
                             map.damageMonster(chr, attacker, bouncedamage);
-                            map.broadcastMessage(chr, MaplePacketCreator.damageMonster(attacker, 0, bouncedamage), true);
+                            map.broadcastMessage(chr, MobPool.Packet.damageMonster(attacker, 0, bouncedamage), true);
                             chr.getClient().announce(MaplePacketCreator.showOwnBuffEffect(id, 5));
                             map.broadcastMessage(chr, UserRemote.Packet.showBuffEffect(chr.getId(), id, 5), false);
                         }
@@ -211,7 +212,7 @@ public final class TakeDamageHandler extends AbstractMaplePacketHandler {
                         bouncedamage = Math.min(bouncedamage, attacker.getMaxHp() / 10);
                         damage -= bouncedamage;
                         map.damageMonster(chr, attacker, bouncedamage);
-                        map.broadcastMessage(chr, MaplePacketCreator.damageMonster(attacker, 0, bouncedamage), false, true);
+                        map.broadcastMessage(chr, MobPool.Packet.damageMonster(attacker, 0, bouncedamage), false, true);
                         chr.checkMonsterAggro(attacker);
                     }
 

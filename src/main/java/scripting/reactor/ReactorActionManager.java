@@ -36,6 +36,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.script.Invocable;
 import javax.script.ScriptException;
+
+import network.packet.MobPool;
 import scripting.AbstractPlayerInteraction;
 import scripting.event.EventInstanceManager;
 import scripting.event.EventManager;
@@ -271,7 +273,7 @@ public class ReactorActionManager extends AbstractPlayerInteraction {
             
             if(chr != null) {
                 map.damageMonster(chr, mm, damage);
-                map.broadcastMessage(MaplePacketCreator.damageMonster(mm, 0, damage));
+                map.broadcastMessage(MobPool.Packet.damageMonster(mm, 0, damage));
             }
         }
     }

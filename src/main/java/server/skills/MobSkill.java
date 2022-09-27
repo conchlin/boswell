@@ -31,6 +31,7 @@ import java.util.Map;
 import client.MapleBuffStat;
 import client.MapleCharacter;
 import client.status.MonsterStatus;
+import network.packet.MobPool;
 import server.MapleStatEffect;
 import server.life.Element;
 import server.life.MapleLifeFactory;
@@ -217,7 +218,7 @@ public class MobSkill implements Skill {
 				for (MapleMapObject mons : objects) {
 					MapleMonster mon = (MapleMonster) mons;
 					mon.heal(hps, 0);
-					mon.getMap().broadcastMessage(player, MaplePacketCreator.affectedMonster(mon.getObjectId(), skillID, 0), true);
+					mon.getMap().broadcastMessage(player, MobPool.Packet.affectedMonster(mon.getObjectId(), skillID, 0), true);
 				}
 			}
 			case 140 -> stats.put(MonsterStatus.WEAPON_IMMUNITY, x);

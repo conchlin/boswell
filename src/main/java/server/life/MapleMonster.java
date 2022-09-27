@@ -26,6 +26,7 @@ import client.MapleBuffStat;
 import client.MapleCharacter;
 import client.MapleClient;
 import client.MapleJob;
+import network.packet.MobPool;
 import network.packet.NpcPool;
 import server.maps.MapleMapObject;
 import server.skills.MobSkill;
@@ -409,7 +410,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                         if (cattacker.getLastAttackTime() >= okTime) {
                             cattacker.getAttacker().getClient().announce(
                                     // TODO why is this not going through
-                                    MaplePacketCreator.showMonsterHP(getObjectId(), remhppercentage));
+                                    MobPool.Packet.showMonsterHP(getObjectId(), remhppercentage));
                         }
                     }
                 }
@@ -427,7 +428,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         setMp(mp2Heal);
 
         if (hp > 0) {
-            getMap().broadcastMessage(MaplePacketCreator.healMonster(getMonster(), hp));
+            getMap().broadcastMessage(MobPool.Packet.healMonster(getMonster(), hp));
         }
     }
 
@@ -781,7 +782,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         TimerManager timerManager = TimerManager.getInstance();
         final Runnable cancelTask = () -> {
             if (isAlive()) {
-                byte[] packet = MaplePacketCreator.cancelMonsterStatus(getObjectId(), status.getStati());
+                byte[] packet = MobPool.Packet.cancelMonsterStatus(getObjectId(), status.getStati());
                 map.broadcastMessage(packet, getPosition());
                 if (getController() != null && !getController().isMapObjectVisible(MapleMonster.this)) {
                     getController().getClient().announce(packet);
@@ -857,7 +858,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             alreadyBuffed.add(stat);
         }
         int animationTime = status.getPlayerSkill().getAnimationTime();
-        byte[] packet = MaplePacketCreator.applyMonsterStatus(getObjectId(), status);
+        byte[] packet = MobPool.Packet.applyMonsterStatus(getObjectId(), status);
         map.broadcastMessage(packet, getPosition());
         if (getController() != null && !getController().isMapObjectVisible(this)) {
             getController().getClient().announce(packet);
@@ -884,7 +885,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         TimerManager timerManager = TimerManager.getInstance();
         final Runnable cancelTask = () -> {
             if (isAlive()) {
-                byte[] packet = MaplePacketCreator.cancelMonsterStatus(getObjectId(), stats);
+                byte[] packet = MobPool.Packet.cancelMonsterStatus(getObjectId(), stats);
                 map.broadcastMessage(packet, getPosition());
                 if (getController() != null && !getController().isMapObjectVisible(MapleMonster.this)) {
                     getController().getClient().announce(packet);
@@ -895,7 +896,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             }
         };
         final MonsterStatusEffect effect = new MonsterStatusEffect(stats, null, skill, true, duration);
-        byte[] packet = MaplePacketCreator.applyMonsterStatus(getObjectId(), effect);
+        byte[] packet = MobPool.Packet.applyMonsterStatus(getObjectId(), effect);
         map.broadcastMessage(packet, getPosition());
         for (MonsterStatus stat : stats.keySet()) {
             stati.put(stat, effect);
@@ -932,7 +933,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         }
 
         if (oldEffect != null) {
-            byte[] packet = MaplePacketCreator.cancelMonsterStatus(getObjectId(), oldEffect.getStati());
+            byte[] packet = MobPool.Packet.cancelMonsterStatus(getObjectId(), oldEffect.getStati());
             broadcastMonsterStatusMessage(packet);
         }
     }
@@ -950,15 +951,15 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             stats.add(MonsterStatus.SHOWDOWN);
             stats.add(MonsterStatus.HARD_SKIN);
         }
-        for (int i = 0; i < stats.size(); i++) {
-            if (isBuffed(stats.get(i))) {
-                final MonsterStatusEffect oldEffect = stati.get(stats.get(i));
-                byte[] packet = MaplePacketCreator.cancelMonsterStatus(getObjectId(), oldEffect.getStati());
+        for (MonsterStatus stat : stats) {
+            if (isBuffed(stat)) {
+                final MonsterStatusEffect oldEffect = stati.get(stat);
+                byte[] packet = MobPool.Packet.cancelMonsterStatus(getObjectId(), oldEffect.getStati());
                 map.broadcastMessage(packet, getPosition());
                 if (getController() != null && !getController().isMapObjectVisible(MapleMonster.this)) {
                     getController().getClient().announce(packet);
                 }
-                stati.remove(stats.get(i));
+                stati.remove(stat);
             }
         }
     }
