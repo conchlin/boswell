@@ -442,11 +442,11 @@ class UserRemote {
             return mplew.packet
         }
 
-        fun cancelForeignBuff(cid: Int, statups: List<MapleBuffStat?>?): ByteArray? {
+        fun cancelForeignBuff(cid: Int, statups: List<MapleBuffStat>): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
             mplew.writeShort(SendOpcode.CANCEL_FOREIGN_BUFF.value)
             mplew.writeInt(cid)
-            writeLongMaskFromList(mplew, statups as List<MapleBuffStat>)
+            writeLongMaskFromList(mplew, statups)
 
             return mplew.packet
         }
