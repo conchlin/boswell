@@ -32,6 +32,7 @@ import java.util.List;
 import enums.UserEffectType;
 import network.packet.NpcPool;
 import network.packet.PetPacket;
+import network.packet.ScriptMan;
 import network.packet.UserLocal;
 import server.skills.*;
 import net.server.Server;
@@ -1087,7 +1088,7 @@ public class AbstractPlayerInteraction {
     }
 
     public void npcTalk(int npcid, String message) {
-        c.announce(MaplePacketCreator.getNPCTalk(npcid, (byte) 0, message, "00 00", (byte) 0));
+        c.announce(ScriptMan.Packet.getNPCTalk(npcid, (byte) 0, message, "00 00", (byte) 0));
     }
 
     public long getCurrentTime() {
