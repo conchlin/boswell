@@ -1,5 +1,6 @@
 package network.packet
 
+import script.ScriptMessageType
 import network.opcode.SendOpcode
 import tools.HexTool
 import tools.data.output.MaplePacketLittleEndianWriter
@@ -7,18 +8,22 @@ import tools.data.output.MaplePacketLittleEndianWriter
 class ScriptMan {
     companion object Packet {
 
-        /**
-         * Possible values for `speaker`:<br></br> 0: Npc talking (left)<br></br>
-         * 1: Npc talking (right)<br></br> 2: Player talking (left)<br></br> 3: Player talking
-         * (left)<br></br>
-         *
-         * @param npc Npcid
-         * @param msgType
-         * @param talk
-         * @param endBytes
-         * @param speaker
-         * @return
-         */
+        fun onScriptMessage(npcId: Int, msgType: Byte, text: String?, vararg args: Int): ByteArray? {
+            val mplew = MaplePacketLittleEndianWriter()
+            mplew.writeShort(SendOpcode.NPC_TALK.value)
+            mplew.write(4) // not 100% sure why this needs to be 4...
+            mplew.writeInt(npcId)
+            mplew.write(msgType)
+            mplew.writeAsciiString(text)
+            when (msgType) {
+                ScriptMessageType.Say -> {
+                    mplew.write(args[0]) // speaker
+                }
+            }
+
+            return mplew.packet
+        }
+
         fun getNPCTalk(npc: Int, msgType: Byte, talk: String?, endBytes: String?, speaker: Byte): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
             mplew.writeShort(SendOpcode.NPC_TALK.value)

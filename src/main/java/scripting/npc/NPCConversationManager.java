@@ -34,6 +34,7 @@ import net.server.world.MaplePartyCharacter;
 import network.packet.ScriptMan;
 import provider.MapleData;
 import provider.MapleDataProviderFactory;
+import script.ScriptMessageType;
 import scripting.AbstractPlayerInteraction;
 import server.*;
 import server.events.gm.MapleEvent;
@@ -165,7 +166,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     }
 
     public void sendOk(String text) {
-        getClient().announce(ScriptMan.Packet.getNPCTalk(npc, (byte) 0, text, "00 00", (byte) 0));
+        getClient().announce(ScriptMan.Packet.onScriptMessage(npc, ScriptMessageType.Say, text, 0));
     }
 
     public void sendDefault() {
@@ -197,7 +198,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     }
 
     public void sendOk(String text, byte speaker) {
-        getClient().announce(ScriptMan.Packet.getNPCTalk(npc, (byte) 0, text, "00 00", speaker));
+        getClient().announce(ScriptMan.Packet.onScriptMessage(npc, ScriptMessageType.Say, text, speaker));
     }
 
     public void sendYesNo(String text, byte speaker) {
