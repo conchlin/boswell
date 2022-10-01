@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import network.opcode.SendOpcode;
+import network.packet.UserCommon;
 import tools.MaplePacketCreator;
 import tools.Pair;
 import tools.data.output.MaplePacketLittleEndianWriter;
@@ -131,7 +132,7 @@ public class MaplePlayerShop extends AbstractMapleMapObject {
                 visitor.setSlot(i);
                 
                 this.broadcast(MaplePacketCreator.getPlayerShopNewVisitor(visitor, i + 1));
-                owner.getMap().broadcastMessage(MaplePacketCreator.updatePlayerShopBox(this));
+                owner.getMap().broadcastMessage(UserCommon.Packet.updatePlayerShopBox(this));
                 break;
             }
         }
@@ -152,7 +153,7 @@ public class MaplePlayerShop extends AbstractMapleMapObject {
                     visitor.setSlot(-1);
                     
                     this.broadcast(MaplePacketCreator.getPlayerShopRemoveVisitor(i + 1));
-                    owner.getMap().broadcastMessage(MaplePacketCreator.updatePlayerShopBox(this));
+                    owner.getMap().broadcastMessage(UserCommon.Packet.updatePlayerShopBox(this));
                     return;
                 }
             }
@@ -183,7 +184,7 @@ public class MaplePlayerShop extends AbstractMapleMapObject {
                         }
                         
                         this.broadcastRestoreToVisitors();
-                        owner.getMap().broadcastMessage(MaplePacketCreator.updatePlayerShopBox(this));
+                        owner.getMap().broadcastMessage(UserCommon.Packet.updatePlayerShopBox(this));
                         return;
                     }
                 }
@@ -191,7 +192,7 @@ public class MaplePlayerShop extends AbstractMapleMapObject {
                 visitorLock.unlock();
             }
             
-            owner.getMap().broadcastMessage(MaplePacketCreator.updatePlayerShopBox(this));
+            owner.getMap().broadcastMessage(UserCommon.Packet.updatePlayerShopBox(this));
         }
     }
 
@@ -444,7 +445,7 @@ public class MaplePlayerShop extends AbstractMapleMapObject {
     public void closeShop() {
         clearChatLog();
         removeVisitors();
-        owner.getMap().broadcastMessage(MaplePacketCreator.removePlayerShopBox(this));
+        owner.getMap().broadcastMessage(UserCommon.Packet.removePlayerShopBox(this));
     }
 
     public void sendShop(MapleClient c) {
@@ -575,12 +576,12 @@ public class MaplePlayerShop extends AbstractMapleMapObject {
 
     @Override
     public void sendDestroyData(MapleClient client) {
-        client.announce(MaplePacketCreator.removePlayerShopBox(this));
+        client.announce(UserCommon.Packet.removePlayerShopBox(this));
     }
 
     @Override
     public void sendSpawnData(MapleClient client) {
-        client.announce(MaplePacketCreator.updatePlayerShopBox(this));
+        client.announce(UserCommon.Packet.updatePlayerShopBox(this));
     }
 
     @Override

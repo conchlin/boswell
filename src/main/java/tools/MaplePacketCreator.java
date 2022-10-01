@@ -1438,25 +1438,6 @@ public class MaplePacketCreator {
     }
 
     /**
-     * Gets a general chat packet.
-     *
-     * @param cidfrom The character ID who sent the chat.
-     * @param text The text of the chat.
-     * @param whiteBG
-     * @param show
-     * @return The general chat packet.
-     */
-    public static byte[] getChatText(int cidfrom, String text, boolean gm, int show) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.CHATTEXT.getValue());
-        mplew.writeInt(cidfrom);
-        mplew.writeBool(gm);
-        mplew.writeMapleAsciiString(text);
-        mplew.write(show);
-        return mplew.getPacket();
-    }
-
-    /**
      * Gets a packet telling the client to show an EXP increase.
      *
      * @param gain The amount of EXP gained.
@@ -2107,36 +2088,6 @@ public class MaplePacketCreator {
         mplew.write(joinable);
     }
 
-    private static void updatePlayerShopBoxInfo(final MaplePacketLittleEndianWriter mplew, MaplePlayerShop shop) {
-        byte[] roomInfo = shop.getShopRoomInfo();
-
-        mplew.write(4);
-        mplew.writeInt(shop.getObjectId());
-        mplew.writeMapleAsciiString(shop.getDescription());
-        mplew.write(0);                 // pw
-        mplew.write(shop.getItemId() % 100);
-        mplew.write(roomInfo[0]);       // curPlayers
-        mplew.write(roomInfo[1]);       // maxPlayers
-        mplew.write(0);
-    }
-
-    public static byte[] updatePlayerShopBox(MaplePlayerShop shop) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.UPDATE_CHAR_BOX.getValue());
-        mplew.writeInt(shop.getOwner().getId());
-
-        updatePlayerShopBoxInfo(mplew, shop);
-        return mplew.getPacket();
-    }
-
-    public static byte[] removePlayerShopBox(MaplePlayerShop shop) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter(7);
-        mplew.writeShort(SendOpcode.UPDATE_CHAR_BOX.getValue());
-        mplew.writeInt(shop.getOwner().getId());
-        mplew.write(0);
-        return mplew.getPacket();
-    }
-
     private static void serializeMovementList(LittleEndianWriter lew, List<LifeMovementFragment> moves) {
         lew.write(moves.size());
         for (LifeMovementFragment move : moves) {
@@ -2267,19 +2218,6 @@ public class MaplePacketCreator {
         if (addMovement > -1) {
             mplew.write(addMovement);
         }
-        return mplew.getPacket();
-    }
-
-    public static byte[] getScrollEffect(int chr, ScrollResult scrollSuccess, boolean legendarySpirit, boolean whiteScroll) {   // thanks to Rien dev team
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.SHOW_SCROLL_EFFECT.getValue());
-        mplew.writeInt(chr);
-
-        mplew.writeBool(scrollSuccess == ScrollResult.SUCCESS);
-        mplew.writeBool(scrollSuccess == ScrollResult.CURSE);
-        mplew.writeBool(legendarySpirit);
-        mplew.writeBool(whiteScroll);
-
         return mplew.getPacket();
     }
 
@@ -4762,30 +4700,6 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    public static byte[] addOmokBox(MapleCharacter c, int ammount, int type) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.UPDATE_CHAR_BOX.getValue());
-        mplew.writeInt(c.getId());
-        addAnnounceBox(mplew, c.getMiniGame(), ammount, type);
-        return mplew.getPacket();
-    }
-
-    public static byte[] addMatchCardBox(MapleCharacter c, int ammount, int type) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.UPDATE_CHAR_BOX.getValue());
-        mplew.writeInt(c.getId());
-        addAnnounceBox(mplew, c.getMiniGame(), ammount, type);
-        return mplew.getPacket();
-    }
-
-    public static byte[] removeMinigameBox(MapleCharacter chr) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter(7);
-        mplew.writeShort(SendOpcode.UPDATE_CHAR_BOX.getValue());
-        mplew.writeInt(chr.getId());
-        mplew.write(0);
-        return mplew.getPacket();
-    }
-
     public static byte[] getPlayerShopChat(MapleCharacter c, String chat, byte slot) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendOpcode.PLAYER_INTERACTION.getValue());
@@ -5199,19 +5113,6 @@ public class MaplePacketCreator {
             mplew.writeLong(getTime(notes.getLong("timestamp")));
             mplew.write(notes.getByte("fame"));//FAME :D
             notes.next();
-        }
-        return mplew.getPacket();
-    }
-
-    public static byte[] useChalkboard(MapleCharacter chr, boolean close) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.CHALKBOARD.getValue());
-        mplew.writeInt(chr.getId());
-        if (close) {
-            mplew.write(0);
-        } else {
-            mplew.write(1);
-            mplew.writeMapleAsciiString(chr.getChalkboard());
         }
         return mplew.getPacket();
     }

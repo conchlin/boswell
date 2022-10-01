@@ -2386,7 +2386,7 @@ public class MapleMap {
 
         if (chr.getChalkboard() != null) {
             if (!GameConstants.isFreeMarketRoom(mapid)) {
-                chr.announce(MaplePacketCreator.useChalkboard(chr, false)); // update player's chalkboard when changing maps found thanks to Vcoc
+                chr.announce(UserCommon.Packet.onADBoard(chr, false)); // update player's chalkboard when changing maps found thanks to Vcoc
             } else {
                 chr.setChalkboard(null);
             }

@@ -27,6 +27,8 @@ import net.server.Server;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import network.packet.UserCommon;
 import tools.MaplePacketCreator;
 
 /**
@@ -107,15 +109,15 @@ public class MapleMiniGame extends AbstractMapleMapObject {
         MapleCharacter owner = this.getOwner();
         if (GameType == MiniGameType.OMOK) {
             owner.announce(MaplePacketCreator.getMiniGameNewVisitor(this, challenger, 1));
-            owner.getMap().broadcastMessage(MaplePacketCreator.addOmokBox(owner, 2, 0));
+            owner.getMap().broadcastMessage(UserCommon.Packet.addOmokBox(owner, 2, 0));
         } else if (GameType == MiniGameType.MATCH_CARD) {
             owner.announce(MaplePacketCreator.getMatchCardNewVisitor(this, challenger, 1));
-            owner.getMap().broadcastMessage(MaplePacketCreator.addMatchCardBox(owner, 2, 0));
+            owner.getMap().broadcastMessage(UserCommon.Packet.addMatchCardBox(owner, 2, 0));
         }
     }
     
     public void closeRoom(boolean forceClose) {
-        owner.getMap().broadcastMessage(MaplePacketCreator.removeMinigameBox(owner));
+        owner.getMap().broadcastMessage(UserCommon.Packet.removeMinigameBox(owner));
         
         if (forceClose) {
             this.broadcastToOwner(MaplePacketCreator.getMiniGameClose(false, 4));
@@ -142,9 +144,9 @@ public class MapleMiniGame extends AbstractMapleMapObject {
             
             this.getOwner().getClient().announce(MaplePacketCreator.getMiniGameRemoveVisitor());
             if (GameType == MiniGameType.OMOK) {
-                this.getOwner().getMap().broadcastMessage(MaplePacketCreator.addOmokBox(owner, 1, 0));
+                this.getOwner().getMap().broadcastMessage(UserCommon.Packet.addOmokBox(owner, 1, 0));
             } else if (GameType == MiniGameType.MATCH_CARD) {
-                this.getOwner().getMap().broadcastMessage(MaplePacketCreator.addMatchCardBox(owner, 1, 0));
+                this.getOwner().getMap().broadcastMessage(UserCommon.Packet.addMatchCardBox(owner, 1, 0));
             }
         }
     }
@@ -175,7 +177,7 @@ public class MapleMiniGame extends AbstractMapleMapObject {
     }
 
     private void updateMiniGameBox() {
-        this.getOwner().getMap().broadcastMessage(MaplePacketCreator.addOmokBox(owner, visitor != null ? 2 : 1, inprogress));
+        this.getOwner().getMap().broadcastMessage(UserCommon.Packet.addOmokBox(owner, visitor != null ? 2 : 1, inprogress));
     }
     
     private synchronized boolean minigameMatchFinish() {

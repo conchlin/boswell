@@ -23,6 +23,7 @@ package net.server.channel.handlers;
 
 import client.MapleClient;
 import client.MapleCharacter;
+import network.packet.UserCommon;
 import server.skills.PlayerSkill;
 import server.skills.Skill;
 import client.inventory.Equip;
@@ -176,7 +177,7 @@ public final class ScrollHandler extends AbstractMaplePacketHandler {
                     mods.add(new ModifyInventory(0, scrolled));
                 }
                 c.announce(MaplePacketCreator.modifyInventory(true, mods));
-                chr.getMap().broadcastMessage(MaplePacketCreator.getScrollEffect(chr.getId(), scrollSuccess, legendarySpirit, whiteScroll));
+                chr.getMap().broadcastMessage(UserCommon.Packet.onShowItemUpgradeEffect(chr.getId(), scrollSuccess, legendarySpirit, whiteScroll));
                 if (dst < 0 && (scrollSuccess == Equip.ScrollResult.SUCCESS || scrollSuccess == Equip.ScrollResult.CURSE)) {
                     chr.equipChanged();
                 }
@@ -198,7 +199,7 @@ public final class ScrollHandler extends AbstractMaplePacketHandler {
     
     private static void announceCannotScroll(MapleClient c, boolean legendarySpirit) {
         if (legendarySpirit) {
-            c.announce(MaplePacketCreator.getScrollEffect(c.getPlayer().getId(), Equip.ScrollResult.FAIL, false, false));
+            c.announce(UserCommon.Packet.onShowItemUpgradeEffect(c.getPlayer().getId(), Equip.ScrollResult.FAIL, false, false));
         } else {
             c.announce(MaplePacketCreator.getInventoryFull());
         }

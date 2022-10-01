@@ -23,6 +23,7 @@ package net.server.channel.handlers;
 
 import client.MapleClient;
 import net.AbstractMaplePacketHandler;
+import network.packet.UserCommon;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
@@ -33,8 +34,8 @@ import tools.data.input.SeekableLittleEndianAccessor;
 public final class CloseChalkboardHandler extends AbstractMaplePacketHandler {
     
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         c.getPlayer().setChalkboard(null);
-        c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.useChalkboard(c.getPlayer(), true));
+        c.getPlayer().getMap().broadcastMessage(UserCommon.Packet.onADBoard(c.getPlayer(), true));
     }
 }
