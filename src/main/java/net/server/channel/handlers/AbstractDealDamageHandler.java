@@ -33,6 +33,7 @@ import constants.skills.*;
 import net.AbstractMaplePacketHandler;
 import network.packet.MobPool;
 import network.packet.UserRemote;
+import network.packet.WvsContext;
 import scripting.AbstractPlayerInteraction;
 import server.MapleStatEffect;
 import server.TimerManager;
@@ -106,7 +107,7 @@ public abstract class AbstractDealDamageHandler extends AbstractMaplePacketHandl
                 theSkill = SkillFactory.getSkill(GameConstants.getHiddenSkill(attack.skill)); //returns back the skill id if its not a hidden skill so we are gucci
                 attackEffect = attack.getAttackEffect(player, theSkill);
                 if (attackEffect == null) {
-                    player.getClient().announce(MaplePacketCreator.enableActions());
+                    player.getClient().announce(WvsContext.Packet.enableActions());
                     return;
                 }
                 if (player.getMp() < attackEffect.getMpCon()) {
@@ -123,7 +124,7 @@ public abstract class AbstractDealDamageHandler extends AbstractMaplePacketHandl
                             attackEffect.applyTo(player);
                         }
                     } else {
-                        player.getClient().announce(MaplePacketCreator.enableActions());
+                        player.getClient().announce(WvsContext.Packet.enableActions());
                     }
                 }
                 int mobCount = attackEffect.getMobCount();

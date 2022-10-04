@@ -47,6 +47,7 @@ import com.google.gson.JsonObject;
 import net.database.DatabaseConnection;
 import net.database.Statements;
 import network.packet.UserLocal;
+import network.packet.WvsContext;
 import tools.*;
 
 import javax.script.ScriptEngine;
@@ -1223,7 +1224,7 @@ public class MapleClient {
 
     public void announceHint(String msg, int length) {
         announce(UserLocal.Packet.onBalloonMessage(msg, length, 10));
-        announce(MaplePacketCreator.enableActions());
+        announce(WvsContext.Packet.enableActions());
     }
 
     public void changeChannel(int channel) {
@@ -1233,18 +1234,18 @@ public class MapleClient {
             return;
         }
         if (!player.isAlive() || FieldLimit.CANNOTMIGRATE.check(player.getMap().getFieldLimit())) {
-            announce(MaplePacketCreator.enableActions());
+            announce(WvsContext.Packet.enableActions());
             return;
         } else if (MapleMiniDungeonInfo.isDungeonMap(player.getMapId())) {
             announce(MaplePacketCreator.serverNotice(5, "Changing channels or entering Cash Shop or MTS are disabled when inside a Mini-Dungeon."));
-            announce(MaplePacketCreator.enableActions());
+            announce(WvsContext.Packet.enableActions());
             return;
         }
 
         String[] socket = Server.getInstance().getInetSocket(getWorld(), channel);
         if (socket == null) {
             announce(MaplePacketCreator.serverNotice(1, "Channel " + channel + " is currently disabled. Try another channel."));
-            announce(MaplePacketCreator.enableActions());
+            announce(WvsContext.Packet.enableActions());
             return;
         }
 

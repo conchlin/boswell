@@ -24,6 +24,7 @@ package net.server.channel.handlers;
 import client.MapleCharacter;
 import client.MapleClient;
 import net.AbstractMaplePacketHandler;
+import network.packet.WvsContext;
 import server.maps.FieldLimit;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
@@ -35,7 +36,7 @@ import tools.data.input.SeekableLittleEndianAccessor;
 public final class TrockAddMapHandler extends AbstractMaplePacketHandler {
     
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         MapleCharacter chr = c.getPlayer();
         byte type = slea.readByte();
         boolean vip = slea.readByte() == 1;
@@ -45,7 +46,7 @@ public final class TrockAddMapHandler extends AbstractMaplePacketHandler {
                 chr.deleteFromVipTrocks(mapId);
             else
                 chr.deleteFromTrocks(mapId);
-            c.announce(MaplePacketCreator.trockRefreshMapList(chr, true, vip));
+            c.announce(WvsContext.Packet.trockRefreshMapList(chr, true, vip));
         } else if (type == 0x01) {
             if (!FieldLimit.CANNOTVIPROCK.check(chr.getMap().getFieldLimit())) {
                 if (vip)
@@ -53,7 +54,7 @@ public final class TrockAddMapHandler extends AbstractMaplePacketHandler {
                 else
                     chr.addTrockMap();
 
-                 c.announce(MaplePacketCreator.trockRefreshMapList(chr, false, vip));
+                 c.announce(WvsContext.Packet.trockRefreshMapList(chr, false, vip));
             } else {
                 chr.message("You may not save this map.");
             }

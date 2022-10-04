@@ -26,6 +26,8 @@ import client.MapleCharacter;
 import client.autoban.AutobanFactory;
 import constants.GameConstants;
 import java.awt.Point;
+
+import network.packet.WvsContext;
 import scripting.portal.PortalScriptManager;
 import server.MaplePortal;
 import tools.MaplePacketCreator;
@@ -165,7 +167,7 @@ public class MapleGenericPortal implements MaplePortal {
             }
         }
         if (!changed) {
-            c.announce(MaplePacketCreator.enableActions());
+            c.announce(WvsContext.Packet.enableActions());
         }
     }
 

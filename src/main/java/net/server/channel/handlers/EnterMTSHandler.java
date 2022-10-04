@@ -5,6 +5,7 @@ import client.MapleClient;
 import constants.GameConstants;
 import constants.MapConstants;
 import net.AbstractMaplePacketHandler;
+import network.packet.WvsContext;
 import server.maps.MapleMiniDungeonInfo;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
@@ -41,6 +42,6 @@ public class EnterMTSHandler extends AbstractMaplePacketHandler {
             player.changeMap(910000000, "out00");
         }
 
-        c.announce(MaplePacketCreator.enableActions());
+        c.announce(WvsContext.Packet.enableActions());
     }
 }

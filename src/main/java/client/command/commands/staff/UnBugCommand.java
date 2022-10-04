@@ -25,6 +25,7 @@ package client.command.commands.staff;
 
 import client.command.Command;
 import client.MapleClient;
+import network.packet.WvsContext;
 import tools.MaplePacketCreator;
 
 public class UnBugCommand extends Command {
@@ -34,6 +35,6 @@ public class UnBugCommand extends Command {
 
     @Override
     public void execute(MapleClient c, String[] params) {
-        c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.enableActions());
+        c.getPlayer().getMap().broadcastMessage(WvsContext.Packet.enableActions());
     }
 }

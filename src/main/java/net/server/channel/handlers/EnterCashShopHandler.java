@@ -25,6 +25,7 @@ import client.MapleCharacter;
 import client.MapleClient;
 import net.AbstractMaplePacketHandler;
 import net.server.Server;
+import network.packet.WvsContext;
 import server.maps.MapleMiniDungeonInfo;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
@@ -40,19 +41,19 @@ public class EnterCashShopHandler extends AbstractMaplePacketHandler {
             MapleCharacter mc = c.getPlayer();
 
             if (mc.cannotEnterCashShop()) {
-                c.announce(MaplePacketCreator.enableActions());
+                c.announce(WvsContext.Packet.enableActions());
                 return;
             }
             
             if(mc.getEventInstance() != null) {
                 c.announce(MaplePacketCreator.serverNotice(5, "Entering Cash Shop or MTS are disabled when registered on an event."));
-                c.announce(MaplePacketCreator.enableActions());
+                c.announce(WvsContext.Packet.enableActions());
                 return;
             }
             
             if(MapleMiniDungeonInfo.isDungeonMap(mc.getMapId())) {
                 c.announce(MaplePacketCreator.serverNotice(5, "Changing channels or entering Cash Shop or MTS are disabled when inside a Mini-Dungeon."));
-                c.announce(MaplePacketCreator.enableActions());
+                c.announce(WvsContext.Packet.enableActions());
                 return;
             }
             

@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.AbstractMaplePacketHandler;
+import network.packet.WvsContext;
 import server.MapleItemInformationProvider;
 import server.life.MapleLifeFactory;
 import server.life.MapleMonster;
@@ -53,13 +54,12 @@ public final class AdminCommandHandler extends AbstractMaplePacketHandler {
         switch (mode) {
             case 0x00: // Level1~Level8 & Package1~Package2
                 int[][] toSpawn = MapleItemInformationProvider.getInstance().getSummonMobs(slea.readInt());
-                for (int z = 0; z < toSpawn.length; z++) {
-                    int[] toSpawnChild = toSpawn[z];
+                for (int[] toSpawnChild : toSpawn) {
                     if (Randomizer.nextInt(100) < toSpawnChild[1]) {
                         c.getPlayer().getMap().spawnMonsterOnGroundBelow(MapleLifeFactory.getMonster(toSpawnChild[0]), c.getPlayer().getPosition());
                     }
                 }
-                c.announce(MaplePacketCreator.enableActions());
+                c.announce(WvsContext.Packet.enableActions());
                 break;
             case 0x01: { // /d (inv)
                 byte type = slea.readByte();

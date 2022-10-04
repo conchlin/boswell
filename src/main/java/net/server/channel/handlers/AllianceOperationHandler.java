@@ -29,6 +29,7 @@ import net.server.Server;
 import net.server.guild.MapleGuild;
 import net.server.guild.MapleGuildCharacter;
 import net.server.guild.MapleAlliance;
+import network.packet.WvsContext;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 import tools.data.output.MaplePacketLittleEndianWriter;
@@ -45,7 +46,7 @@ public final class AllianceOperationHandler extends AbstractMaplePacketHandler {
         MapleCharacter chr = c.getPlayer();
         
         if (chr.getGuild() == null) {
-            c.announce(MaplePacketCreator.enableActions());
+            c.announce(WvsContext.Packet.enableActions());
             return;
         }
         
@@ -56,18 +57,18 @@ public final class AllianceOperationHandler extends AbstractMaplePacketHandler {
         byte b = slea.readByte();
         if (alliance == null) {
             if (b != 4) {
-                c.announce(MaplePacketCreator.enableActions());
+                c.announce(WvsContext.Packet.enableActions());
                 return;
             }
         } else {
             if (b == 4) {
                 chr.dropMessage(5, "Your guild is already registered on a guild alliance.");
-                c.announce(MaplePacketCreator.enableActions());
+                c.announce(WvsContext.Packet.enableActions());
                 return;
             }
             
             if (chr.getMGC().getAllianceRank() > 2 || !alliance.getGuilds().contains(chr.getGuildId())) {
-                c.announce(MaplePacketCreator.enableActions());
+                c.announce(WvsContext.Packet.enableActions());
                 return;
             }
         }

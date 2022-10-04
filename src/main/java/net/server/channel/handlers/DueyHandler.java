@@ -26,6 +26,7 @@ import client.processor.DueyProcessor;
 import constants.ServerConstants;
 
 import net.AbstractMaplePacketHandler;
+import network.packet.WvsContext;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
@@ -34,7 +35,7 @@ public final class DueyHandler extends AbstractMaplePacketHandler {
     @Override
     public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
     	if (!ServerConstants.USE_DUEY){
-            c.announce(MaplePacketCreator.enableActions());
+            c.announce(WvsContext.Packet.enableActions());
             return;
     	}
             

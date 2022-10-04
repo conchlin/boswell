@@ -29,6 +29,7 @@ import client.MapleClient;
 import client.MapleCharacter;
 import net.server.world.MaplePartyCharacter;
 import network.packet.TownPortalPool;
+import network.packet.WvsContext;
 import server.MaplePortal;
 import server.MapleStatEffect;
 import tools.MaplePacketCreator;
@@ -155,7 +156,7 @@ public class MapleDoor extends AbstractMapleMapObject {
                 chr.changeMap(town, getTownPortal());
             }
         } else {
-            chr.getClient().announce(MaplePacketCreator.enableActions());
+            chr.getClient().announce(WvsContext.Packet.enableActions());
         }
     }
 

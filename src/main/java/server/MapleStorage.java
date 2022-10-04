@@ -25,6 +25,7 @@ import client.inventory.MapleInventoryType;
 import net.database.Statements;
 import net.server.audit.locks.MonitoredLockType;
 import net.server.audit.locks.factory.MonitoredReentrantLockFactory;
+import network.packet.WvsContext;
 import provider.MapleData;
 import provider.MapleDataProvider;
 import provider.MapleDataProviderFactory;
@@ -212,7 +213,7 @@ public class MapleStorage {
     public void sendStorage(MapleClient c, int npcId) {
         if (c.getPlayer().getLevel() < 15) {
             c.getPlayer().dropMessage(1, "You may only use the storage once you have reached level 15.");
-            c.announce(MaplePacketCreator.enableActions());
+            c.announce(WvsContext.Packet.enableActions());
             return;
         }
 

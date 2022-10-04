@@ -23,8 +23,8 @@ package net.server.channel.handlers;
 
 import client.MapleCharacter;
 import client.MapleClient;
+import network.packet.WvsContext;
 import server.skills.PlayerSkill;
-import server.skills.Skill;
 import client.inventory.Item;
 import client.inventory.MapleInventory;
 import client.inventory.MapleInventoryType;
@@ -33,19 +33,18 @@ import net.AbstractMaplePacketHandler;
 import client.inventory.manipulator.MapleInventoryManipulator;
 import server.MapleItemInformationProvider;
 import server.skills.SkillFactory;
-import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 public final class SkillBookHandler extends AbstractMaplePacketHandler {
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         if (!c.getPlayer().isAlive()) {
-            c.announce(MaplePacketCreator.enableActions());
+            c.announce(WvsContext.Packet.enableActions());
             return;
         }
         
         slea.readInt();
-        short slot = (short) slea.readShort();
+        short slot = slea.readShort();
         int itemId = slea.readInt();
         
         boolean canuse;
@@ -68,7 +67,8 @@ public final class SkillBookHandler extends AbstractMaplePacketHandler {
                 PlayerSkill skill2 = SkillFactory.getSkill(skilldata.get("skillid"));
                 if (skilldata.get("skillid") == 0) {
                     canuse = false;
-                } else if ((player.getSkillLevel(skill2) >= skilldata.get("reqSkillLevel") || skilldata.get("reqSkillLevel") == 0) && player.getMasterLevel(skill2) < skilldata.get("masterLevel")) {
+                } else if ((player.getSkillLevel(skill2) >= skilldata.get("reqSkillLevel")
+                        || skilldata.get("reqSkillLevel") == 0) && player.getMasterLevel(skill2) < skilldata.get("masterLevel")) {
                     inv.lockInventory();
                     try {
                         Item used = inv.getItem(slot);
@@ -97,7 +97,7 @@ public final class SkillBookHandler extends AbstractMaplePacketHandler {
             }
             
             // thanks Vcoc for noting skill book result not showing for all in area
-            player.getMap().broadcastMessage(MaplePacketCreator.skillBookResult(player, skill, maxlevel, canuse, success));
+            player.getMap().broadcastMessage(WvsContext.Packet.skillBookResult(player, skill, maxlevel, canuse, success));
         }
     }
 }

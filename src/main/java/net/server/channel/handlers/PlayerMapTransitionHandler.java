@@ -27,6 +27,7 @@ import client.MapleClient;
 import java.util.Collections;
 import java.util.List;
 import net.AbstractMaplePacketHandler;
+import network.packet.WvsContext;
 import server.life.MapleMonster;
 import server.maps.MapleMapObject;
 import tools.MaplePacketCreator;
@@ -42,7 +43,7 @@ public final class PlayerMapTransitionHandler extends AbstractMaplePacketHandler
     // this whole file seems useless
     
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         MapleCharacter chr = c.getPlayer();
         chr.setMapTransitionComplete();
         
@@ -52,7 +53,7 @@ public final class PlayerMapTransitionHandler extends AbstractMaplePacketHandler
             
             final List<Pair<MapleBuffStat, BuffValueHolder>> stat = Collections.singletonList(new Pair<>(
                     MapleBuffStat.HOMING_BEACON, new BuffValueHolder(0, 0, 0)));
-            chr.announce(MaplePacketCreator.giveBuff(1, beaconid, stat));
+            chr.announce(WvsContext.Packet.giveBuff(1, beaconid, stat));
         }
     }
 }

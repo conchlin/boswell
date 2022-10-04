@@ -94,7 +94,7 @@ class UserCommon {
             mplew.write(game.gameType.value)
             mplew.writeInt(game.objectId) // gameid/shopid
             mplew.writeMapleAsciiString(game.description) // desc
-            mplew.writeBool(!game.password.isEmpty()) // password here, thanks GabrielSin!
+            mplew.writeBool(game.password.isNotEmpty()) // password here, thanks GabrielSin!
             mplew.write(game.pieceType)
             mplew.write(ammount)
             mplew.write(2) //player capacity

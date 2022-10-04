@@ -32,6 +32,7 @@ import net.server.guild.MapleGuild;
 import net.server.world.MapleParty;
 import net.server.world.MaplePartyCharacter;
 import network.packet.ScriptMan;
+import network.packet.WvsContext;
 import provider.MapleData;
 import provider.MapleDataProviderFactory;
 import script.ScriptMessageType;
@@ -150,7 +151,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public void dispose() {
         NPCScriptManager.getInstance().dispose(this);
-        getClient().announce(MaplePacketCreator.enableActions());
+        getClient().announce(WvsContext.Packet.enableActions());
     }
 
     public void sendNext(String text) {
@@ -483,7 +484,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
             if (hasItem(4001168)) gainItem(4001168, (short) -1); // take away golden maple leaf
         } else {
             getPlayer().message("You do not have space for this transaction.");
-            getPlayer().getClient().announce(MaplePacketCreator.enableActions());
+            getPlayer().getClient().announce(WvsContext.Packet.enableActions());
         }
     }
 

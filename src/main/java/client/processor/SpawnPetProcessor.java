@@ -25,6 +25,7 @@ import client.MapleClient;
 import client.inventory.MapleInventoryType;
 import client.inventory.MaplePet;
 import network.packet.PetPacket;
+import network.packet.WvsContext;
 import provider.MapleDataTool;
 import client.inventory.manipulator.MapleInventoryManipulator;
 import java.io.File;
@@ -52,7 +53,7 @@ public class SpawnPetProcessor {
                 {
                     if (chr.haveItem(petid + 1)) {
                         chr.dropMessage(5, "You can't hatch your " + (petid == 5000028 ? "Dragon egg" : "Robo egg") + " if you already have a Baby " + (petid == 5000028 ? "Dragon." : "Robo."));
-                        c.announce(MaplePacketCreator.enableActions());
+                        c.announce(WvsContext.Packet.enableActions());
                         return;
                     } else {
                         int evolveid = MapleDataTool.getInt("info/evol1", dataRoot.getData("Pet/" + petid + ".img"));
@@ -64,7 +65,7 @@ public class SpawnPetProcessor {
                         MapleInventoryManipulator.removeById(c, MapleInventoryType.CASH, petid, (short) 1, false, false);
                         MapleInventoryManipulator.addById(c, evolveid, (short) 1, null, petId, expiration);
                         MaplePet.deleteFromDb(chr, petid);
-                        c.announce(MaplePacketCreator.enableActions());
+                        c.announce(WvsContext.Packet.enableActions());
                         return;
                     }
                 }
@@ -86,8 +87,8 @@ public class SpawnPetProcessor {
                     pet.saveToDb();
                     chr.addPet(pet);
                     chr.getMap().broadcastMessage(c.getPlayer(), PetPacket.Packet.showPet(c.getPlayer(), pet, false, false), true);
-                    c.announce(MaplePacketCreator.petStatUpdate(c.getPlayer()));
-                    c.announce(MaplePacketCreator.enableActions());
+                    c.announce(WvsContext.Packet.petStatUpdate(c.getPlayer()));
+                    c.announce(WvsContext.Packet.enableActions());
 
                     chr.commitExcludedItems();
                     chr.getClient().getWorldServer().registerPetHunger(chr, chr.getPetIndex(pet));

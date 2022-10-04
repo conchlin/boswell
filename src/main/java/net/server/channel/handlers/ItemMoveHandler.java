@@ -25,6 +25,7 @@ import client.MapleClient;
 import client.inventory.MapleInventoryType;
 import net.AbstractMaplePacketHandler;
 import client.inventory.manipulator.MapleInventoryManipulator;
+import network.packet.WvsContext;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
@@ -37,7 +38,7 @@ public final class ItemMoveHandler extends AbstractMaplePacketHandler {
     public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         slea.skip(4);
         if(c.getPlayer().getAutobanManager().getLastSpam(6) + 300 > currentServerTime()) {
-            c.announce(MaplePacketCreator.enableActions());
+            c.announce(WvsContext.Packet.enableActions());
             return;
         }
         

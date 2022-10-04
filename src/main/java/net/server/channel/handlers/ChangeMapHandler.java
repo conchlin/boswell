@@ -33,6 +33,7 @@ import client.inventory.MapleInventoryType;
 import client.inventory.manipulator.MapleInventoryManipulator;
 import constants.MapConstants;
 import network.packet.UserLocal;
+import network.packet.WvsContext;
 import server.MaplePortal;
 import server.MapleTrade;
 import server.maps.MapleMap;
@@ -51,7 +52,7 @@ public final class ChangeMapHandler extends AbstractMaplePacketHandler {
                 FilePrinter.printError(FilePrinter.PORTAL_STUCK + chr.getName() + ".txt", "Player " + chr.getName() + " got stuck when changing maps. Timestamp: " + Calendar.getInstance().getTime().toString() + " Last visited mapids: " + chr.getLastVisitedMapids());
             }
 
-            c.announce(MaplePacketCreator.enableActions());
+            c.announce(WvsContext.Packet.enableActions());
             return;
         }
 
@@ -155,7 +156,7 @@ public final class ChangeMapHandler extends AbstractMaplePacketHandler {
 
                 if (portal != null && !portal.getPortalStatus()) {
                     c.announce(MaplePacketCreator.blockedMessage(1));
-                    c.announce(MaplePacketCreator.enableActions());
+                    c.announce(WvsContext.Packet.enableActions());
                     return;
                 }
 
@@ -167,13 +168,13 @@ public final class ChangeMapHandler extends AbstractMaplePacketHandler {
 
                 if (portal != null) {
                     if (portal.getPosition().distanceSq(chr.getPosition()) > 400000) {
-                        c.announce(MaplePacketCreator.enableActions());
+                        c.announce(WvsContext.Packet.enableActions());
                         return;
                     }
 
                     portal.enterPortal(c);
                 } else {
-                    c.announce(MaplePacketCreator.enableActions());
+                    c.announce(WvsContext.Packet.enableActions());
                 }
             } catch (Exception e) {
                 e.printStackTrace();

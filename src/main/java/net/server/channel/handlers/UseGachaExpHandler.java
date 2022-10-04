@@ -25,6 +25,7 @@ package net.server.channel.handlers;
 import client.MapleClient;
 import client.autoban.AutobanFactory;
 import net.AbstractMaplePacketHandler;
+import network.packet.WvsContext;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
@@ -48,6 +49,6 @@ public class UseGachaExpHandler extends AbstractMaplePacketHandler {
             }
         }
         
-        c.announce(MaplePacketCreator.enableActions());
+        c.announce(WvsContext.Packet.enableActions());
     }
 }

@@ -26,6 +26,7 @@ import client.MapleClient;
 import network.packet.MessageBoxPool;
 import network.packet.PetPacket;
 import network.packet.UserCommon;
+import network.packet.WvsContext;
 import server.skills.PlayerSkill;
 import client.creator.veteran.*;
 import client.inventory.Equip;
@@ -74,7 +75,7 @@ public final class UseCashItemHandler extends AbstractMaplePacketHandler {
         long timeNow = currentServerTime();
         if (timeNow - player.getLastUsedCashItem() < 3000) {
             player.dropMessage(1, "You have used a cash item recently. Wait a moment, then try again.");
-            c.announce(MaplePacketCreator.enableActions());
+            c.announce(WvsContext.Packet.enableActions());
             return;
         }
         player.setLastUsedCashItem(timeNow);
@@ -90,7 +91,7 @@ public final class UseCashItemHandler extends AbstractMaplePacketHandler {
             toUse = cashInv.findById(itemId);
 
             if (toUse == null) {
-                c.announce(MaplePacketCreator.enableActions());
+                c.announce(WvsContext.Packet.enableActions());
                 return;
             }
 
@@ -98,7 +99,7 @@ public final class UseCashItemHandler extends AbstractMaplePacketHandler {
         }
 
         if (toUse.getQuantity() < 1) {
-            c.announce(MaplePacketCreator.enableActions());
+            c.announce(WvsContext.Packet.enableActions());
             return;
         }
 
@@ -149,11 +150,11 @@ public final class UseCashItemHandler extends AbstractMaplePacketHandler {
 
             if (!success) {
                 MapleInventoryManipulator.addById(c, itemId, (short) 1);
-                c.announce(MaplePacketCreator.enableActions());
+                c.announce(WvsContext.Packet.enableActions());
             }
         } else if (itemType == 505) { // AP/SP reset
             if (!player.isAlive()) {
-                c.announce(MaplePacketCreator.enableActions());
+                c.announce(WvsContext.Packet.enableActions());
                 return;
             }
 
@@ -352,7 +353,7 @@ public final class UseCashItemHandler extends AbstractMaplePacketHandler {
         } else if (itemType == 517) {
             MaplePet pet = player.getPet(0);
             if (pet == null) {
-                c.announce(MaplePacketCreator.enableActions());
+                c.announce(WvsContext.Packet.enableActions());
                 return;
             }
             String newName = slea.readMapleAsciiString();
@@ -364,12 +365,12 @@ public final class UseCashItemHandler extends AbstractMaplePacketHandler {
                 player.forceUpdateItem(item);
 
             player.getMap().broadcastMessage(player, PetPacket.Packet.changePetName(player, newName), true);
-            c.announce(MaplePacketCreator.enableActions());
+            c.announce(WvsContext.Packet.enableActions());
             remove(c, position, itemId);
         } else if (itemType == 520) {
             player.gainMeso(ii.getMeso(itemId), true, false, true);
             remove(c, position, itemId);
-            c.announce(MaplePacketCreator.enableActions());
+            c.announce(WvsContext.Packet.enableActions());
         } else if (itemType == 523) {
             int itemid = slea.readInt();
 
@@ -379,7 +380,7 @@ public final class UseCashItemHandler extends AbstractMaplePacketHandler {
             if (!hmsAvailable.isEmpty()) remove(c, position, itemId);
 
             c.announce(MaplePacketCreator.owlOfMinerva(c, itemid, hmsAvailable));
-            c.announce(MaplePacketCreator.enableActions());
+            c.announce(WvsContext.Packet.enableActions());
 
         } else if (itemType == 524) {
             for (byte i = 0; i < 3; i++) {
@@ -396,7 +397,7 @@ public final class UseCashItemHandler extends AbstractMaplePacketHandler {
                     break;
                 }
             }
-            c.announce(MaplePacketCreator.enableActions());
+            c.announce(WvsContext.Packet.enableActions());
         } else if (itemType == 530) {
             ii.getItemEffect(itemId).applyTo(player);
             remove(c, position, itemId);
@@ -405,13 +406,13 @@ public final class UseCashItemHandler extends AbstractMaplePacketHandler {
         } else if (itemType == 537) {
             if (GameConstants.isFreeMarketRoom(player.getMapId())) {
                 player.dropMessage(5, "You cannot use the chalkboard here.");
-                player.getClient().announce(MaplePacketCreator.enableActions());
+                player.getClient().announce(WvsContext.Packet.enableActions());
                 return;
             }
 
             player.setChalkboard(slea.readMapleAsciiString());
             player.getMap().broadcastMessage(UserCommon.Packet.onADBoard(player, false));
-            player.getClient().announce(MaplePacketCreator.enableActions());
+            player.getClient().announce(WvsContext.Packet.enableActions());
             //remove(c, position, itemId);
         } else if (itemType == 539) {
             List<String> strLines = new LinkedList<>();
@@ -430,7 +431,7 @@ public final class UseCashItemHandler extends AbstractMaplePacketHandler {
         } else if (itemType == 543) {
             if (itemId == 5432000 && !c.gainCharacterSlot()) {
                 player.dropMessage(1, "You have already used up all 12 extra character slots.");
-                c.announce(MaplePacketCreator.enableActions());
+                c.announce(WvsContext.Packet.enableActions());
                 return;
             }
 
@@ -471,25 +472,25 @@ public final class UseCashItemHandler extends AbstractMaplePacketHandler {
                     remove(c, position, itemId);
                 }
             } else {
-                c.announce(MaplePacketCreator.enableActions());
+                c.announce(WvsContext.Packet.enableActions());
             }
         } else if (itemType == 550) { //Extend item expiration
-            c.announce(MaplePacketCreator.enableActions());
+            c.announce(WvsContext.Packet.enableActions());
         } else if (itemType == 552) {
             MapleInventoryType type = MapleInventoryType.getByType((byte) slea.readInt());
             short slot = (short) slea.readInt();
             Item item = player.getInventory(type).getItem(slot);
             if (item == null || item.getQuantity() <= 0 || MapleKarmaManipulator.hasKarmaFlag(item) || !ii.isKarmaAble(item.getItemId())) {
-                c.announce(MaplePacketCreator.enableActions());
+                c.announce(WvsContext.Packet.enableActions());
                 return;
             }
 
             MapleKarmaManipulator.setKarmaFlag(item);
             player.forceUpdateItem(item);
             remove(c, position, itemId);
-            c.announce(MaplePacketCreator.enableActions());
+            c.announce(WvsContext.Packet.enableActions());
         } else if (itemType == 552) { //DS EGG THING
-            c.announce(MaplePacketCreator.enableActions());
+            c.announce(WvsContext.Packet.enableActions());
         } else if (itemType == 557) {
             slea.readInt();
             int itemSlot = slea.readInt();
@@ -501,7 +502,7 @@ public final class UseCashItemHandler extends AbstractMaplePacketHandler {
             equip.setVicious(equip.getVicious() + 1);
             equip.setUpgradeSlots(equip.getUpgradeSlots() + 1);
             remove(c, position, itemId);
-            c.announce(MaplePacketCreator.enableActions());
+            c.announce(WvsContext.Packet.enableActions());
             c.announce(MaplePacketCreator.sendHammerData(equip.getVicious()));
             player.forceUpdateItem(equip);
         } else if (itemType == 561) { //VEGA'S SPELL
@@ -560,11 +561,11 @@ public final class UseCashItemHandler extends AbstractMaplePacketHandler {
                     player.equipChanged();
                 }
 
-                client.announce(MaplePacketCreator.enableActions());
+                client.announce(WvsContext.Packet.enableActions());
             }, 1000 * 3);
         } else {
             System.out.println("NEW CASH ITEM: " + itemType + "\n" + slea.toString());
-            c.announce(MaplePacketCreator.enableActions());
+            c.announce(WvsContext.Packet.enableActions());
         }
     }
 

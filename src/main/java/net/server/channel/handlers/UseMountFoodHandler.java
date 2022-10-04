@@ -30,6 +30,7 @@ import client.inventory.MapleInventoryType;
 import constants.ExpTable;
 import net.AbstractMaplePacketHandler;
 import client.inventory.manipulator.MapleInventoryManipulator;
+import network.packet.WvsContext;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
@@ -80,7 +81,7 @@ public final class UseMountFoodHandler extends AbstractMaplePacketHandler {
                 }
                 
                 if (mountLevelup != null) {
-                    chr.getMap().broadcastMessage(MaplePacketCreator.updateMount(chr.getId(), mount, mountLevelup));
+                    chr.getMap().broadcastMessage(WvsContext.Packet.updateMount(chr.getId(), mount, mountLevelup));
                 }
             } finally {
                 c.releaseClient();

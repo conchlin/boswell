@@ -38,6 +38,7 @@ import client.MapleCharacter;
 import constants.ItemConstants;
 import net.AbstractMaplePacketHandler;
 import client.inventory.manipulator.MapleInventoryManipulator;
+import network.packet.WvsContext;
 import server.MapleItemInformationProvider;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
@@ -50,7 +51,7 @@ public final class InventoryMergeHandler extends AbstractMaplePacketHandler {
         chr.getAutobanManager().setTimestamp(2, slea.readInt(), 3);
         MapleInventoryType inventoryType = MapleInventoryType.getByType(slea.readByte());
         if (inventoryType.equals(MapleInventoryType.UNDEFINED)) {
-            c.getSession().write(MaplePacketCreator.enableActions());
+            c.getSession().write(WvsContext.Packet.enableActions());
             return;
         }
 
@@ -124,6 +125,6 @@ public final class InventoryMergeHandler extends AbstractMaplePacketHandler {
 
 
         c.getSession().write(MaplePacketCreator.finishedGather(inventoryType.getType()));
-        c.getSession().write(MaplePacketCreator.enableActions());
+        c.getSession().write(WvsContext.Packet.enableActions());
     }
 }

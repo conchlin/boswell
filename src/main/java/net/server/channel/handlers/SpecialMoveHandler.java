@@ -28,6 +28,7 @@ import net.AbstractMaplePacketHandler;
 import network.packet.MobPool;
 import network.packet.UserLocal;
 import network.packet.UserRemote;
+import network.packet.WvsContext;
 import server.MapleStatEffect;
 import server.TimerManager;
 import server.life.MapleMonster;
@@ -97,7 +98,7 @@ public final class SpecialMoveHandler extends AbstractMaplePacketHandler {
             }
             byte direction = slea.readByte();   // thanks MedicOP for pointing some 3rd-party related issues with Magnet
             chr.getMap().broadcastMessage(chr, UserRemote.Packet.showBuffEffect(chr.getId(), skillid, chr.getSkillLevel(skillid), 1, direction), false);
-            c.announce(MaplePacketCreator.enableActions());
+            c.announce(WvsContext.Packet.enableActions());
             return;
         } else if (skillid == Brawler.MP_RECOVERY) {// MP Recovery
             PlayerSkill s = SkillFactory.getSkill(skillid);
@@ -118,13 +119,13 @@ public final class SpecialMoveHandler extends AbstractMaplePacketHandler {
         if (chr.isAlive()) {
             if (skill.getId() == Priest.MYSTIC_DOOR && !chr.canDoor()) {
                 chr.message("Please wait 5 seconds before casting Mystic Door again");
-                c.announce(MaplePacketCreator.enableActions());
+                c.announce(WvsContext.Packet.enableActions());
             } else {
                 skill.getEffect(skillLevel).applyTo(c.getPlayer(), pos);
             }
 
         } else {
-            c.announce(MaplePacketCreator.enableActions());
+            c.announce(WvsContext.Packet.enableActions());
         }
     }
 }

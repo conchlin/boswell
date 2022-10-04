@@ -42,6 +42,7 @@ import java.util.concurrent.locks.Lock;
 import net.server.audit.locks.factory.MonitoredReentrantLockFactory;
 import net.server.Server;
 import network.packet.EmployeePool;
+import network.packet.WvsContext;
 import server.MapleItemInformationProvider;
 import net.database.DatabaseConnection;
 import tools.MaplePacketCreator;
@@ -221,7 +222,7 @@ public class MapleHiredMerchant extends AbstractMapleMapObject {
 
                     if (!MapleInventory.checkSpot(chr, iitem)) {
                         chr.announce(MaplePacketCreator.serverNotice(1, "Have a slot available on your inventory to claim back the item."));
-                        chr.announce(MaplePacketCreator.enableActions());
+                        chr.announce(WvsContext.Packet.enableActions());
                         return;
                     }
 
@@ -263,10 +264,10 @@ public class MapleHiredMerchant extends AbstractMapleMapObject {
 
             newItem.setQuantity((short) ((pItem.getItem().getQuantity() * quantity)));
             if (quantity < 1 || !pItem.isExist() || pItem.getBundles() < quantity) {
-                c.announce(MaplePacketCreator.enableActions());
+                c.announce(WvsContext.Packet.enableActions());
                 return;
             } else if (newItem.getInventoryType().equals(MapleInventoryType.EQUIP) && newItem.getQuantity() > 1) {
-                c.announce(MaplePacketCreator.enableActions());
+                c.announce(WvsContext.Packet.enableActions());
                 return;
             }
 
@@ -316,12 +317,12 @@ public class MapleHiredMerchant extends AbstractMapleMapObject {
                     }
                 } else {
                     c.getPlayer().dropMessage(1, "Your inventory is full. Please clear a slot before buying this item.");
-                    c.announce(MaplePacketCreator.enableActions());
+                    c.announce(WvsContext.Packet.enableActions());
                     return;
                 }
             } else {
                 c.getPlayer().dropMessage(1, "You don't have enough mesos to purchase this item.");
-                c.announce(MaplePacketCreator.enableActions());
+                c.announce(WvsContext.Packet.enableActions());
                 return;
             }
             try {

@@ -34,6 +34,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import net.AbstractMaplePacketHandler;
+import network.packet.WvsContext;
 import server.cashshop.CashShop;
 import server.cashshop.CashItem;
 import server.cashshop.CashItemFactory;
@@ -53,7 +54,7 @@ public final class CashOperationHandler extends AbstractMaplePacketHandler {
         CashShop cs = chr.getCashShop();
         
         if (!cs.isOpened()) {
-            c.announce(MaplePacketCreator.enableActions());
+            c.announce(WvsContext.Packet.enableActions());
             return;
         }
         
@@ -374,7 +375,7 @@ public final class CashOperationHandler extends AbstractMaplePacketHandler {
                 c.releaseClient();
             }
         } else {
-            c.announce(MaplePacketCreator.enableActions());
+            c.announce(WvsContext.Packet.enableActions());
         }
     }
 

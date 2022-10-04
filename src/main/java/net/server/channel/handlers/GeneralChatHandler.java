@@ -28,6 +28,7 @@ import client.command.CommandsExecutor;
 import constants.ServerConstants;
 import net.AbstractMaplePacketHandler;
 import network.packet.UserCommon;
+import network.packet.WvsContext;
 import tools.FilePrinter;
 import tools.LogHelper;
 import tools.MaplePacketCreator;
@@ -39,7 +40,7 @@ public final class GeneralChatHandler extends AbstractMaplePacketHandler {
                 String s = slea.readMapleAsciiString();
                 MapleCharacter chr = c.getPlayer();
                 if(chr.getAutobanManager().getLastSpam(7) + 200 > currentServerTime()) {
-                        c.announce(MaplePacketCreator.enableActions());
+                        c.announce(WvsContext.Packet.enableActions());
                         return;
                 }
                 if (s.length() > Byte.MAX_VALUE && !chr.isGM()) {

@@ -46,7 +46,7 @@ public final class FamilyAddHandler extends AbstractMaplePacketHandler {
         } else {
             c.getPlayer().dropMessage("The player cannot be found!");
         }
-        c.announce(MaplePacketCreator.enableActions());*/
+        c.announce(WvsContext.Packet.enableActions());*/
     }
 }
 

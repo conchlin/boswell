@@ -41,6 +41,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import network.packet.UserRemote;
+import network.packet.WvsContext;
 import server.MapleItemInformationProvider;
 import server.maps.MapleMap;
 import tools.FilePrinter;
@@ -120,7 +121,7 @@ public class MapleInventoryManipulator {
                             break;
                         }
                     } else {
-                        c.announce(MaplePacketCreator.enableActions());
+                        c.announce(WvsContext.Packet.enableActions());
                         return false;
                     }
                 }
@@ -505,7 +506,7 @@ public class MapleInventoryManipulator {
         
         Equip source = (Equip) eqpInv.getItem(src);
         if (source == null || !ii.canWearEquipment(chr, source, dst)) {
-            c.announce(MaplePacketCreator.enableActions());
+            c.announce(WvsContext.Packet.enableActions());
             return;
         } else if ((((source.getItemId() >= 1902000 && source.getItemId() <= 1902002) || source.getItemId() == 1912000) && chr.isCygnus()) || ((source.getItemId() >= 1902005 && source.getItemId() <= 1902007) || source.getItemId() == 1912005) && !chr.isCygnus()) {// Adventurer taming equipment
             return;

@@ -40,6 +40,7 @@ import net.server.world.PartyOperation;
 import net.server.world.World;
 import network.packet.FuncKeyMappedMan;
 import network.packet.NpcPool;
+import network.packet.WvsContext;
 import server.quest.requirements.PetRequirement;
 import server.skills.SkillFactory;
 import net.database.DatabaseConnection;
@@ -338,7 +339,7 @@ public final class PlayerLoggedinHandler extends AbstractMaplePacketHandler {
 
                 c.announce(MaplePacketCreator.updateGender(player));
                 player.checkMessenger();
-                c.announce(MaplePacketCreator.enableReport());
+                c.announce(WvsContext.Packet.enableReport());
                 player.changeSkillLevel(SkillFactory.getSkill(10000000 * player.getJobType() + 12), (byte) (player.getLinkedLevel() / 10), 20, -1);
                 player.checkBerserk(player.isHidden());
 

@@ -33,6 +33,7 @@ import java.util.Map;
 import net.AbstractMaplePacketHandler;
 import net.server.Server;
 import net.server.channel.Channel;
+import network.packet.WvsContext;
 import server.MTSItemInfo;
 import client.inventory.manipulator.MapleInventoryManipulator;
 import server.MapleItemInformationProvider;
@@ -253,7 +254,7 @@ public final class MTSHandler extends AbstractMaplePacketHandler {
                 c.getPlayer().changeType(type);
                 c.getPlayer().changeCI(ci);
                 c.enableCSActions();
-                c.announce(MaplePacketCreator.enableActions());
+                c.announce(WvsContext.Packet.enableActions());
                 c.announce(getMTSSearch(tab, type, ci, search, c.getPlayer().getCurrentPage()));
                 c.announce(MaplePacketCreator.showMTSCash(c.getPlayer()));
                 c.announce(MaplePacketCreator.transferInventory(getTransfer(c.getPlayer().getId())));
@@ -363,7 +364,7 @@ public final class MTSHandler extends AbstractMaplePacketHandler {
                 }
                 c.announce(getMTS(c.getPlayer().getCurrentTab(), c.getPlayer().getCurrentType(), c.getPlayer().getCurrentPage()));
                 c.enableCSActions();
-                c.announce(MaplePacketCreator.enableActions());
+                c.announce(WvsContext.Packet.enableActions());
                 c.announce(MaplePacketCreator.transferInventory(getTransfer(c.getPlayer().getId())));
                 c.announce(MaplePacketCreator.notYetSoldInv(getNotYetSold(c.getPlayer().getId())));
             } else if (op == 10) { //delete from cart
@@ -432,7 +433,7 @@ public final class MTSHandler extends AbstractMaplePacketHandler {
                                     c.announce(MaplePacketCreator.showMTSCash(c.getPlayer()));
                                     c.announce(MaplePacketCreator.transferInventory(getTransfer(c.getPlayer().getId())));
                                     c.announce(MaplePacketCreator.notYetSoldInv(getNotYetSold(c.getPlayer().getId())));
-                                    c.announce(MaplePacketCreator.enableActions());
+                                    c.announce(WvsContext.Packet.enableActions());
                                 } else {
                                     c.announce(MaplePacketCreator.MTSFailBuy());
                                 }

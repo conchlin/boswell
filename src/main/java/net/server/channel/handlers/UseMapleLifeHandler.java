@@ -22,6 +22,7 @@ package net.server.channel.handlers;
 import client.MapleCharacter;
 import client.MapleClient;
 import net.AbstractMaplePacketHandler;
+import network.packet.WvsContext;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
@@ -38,7 +39,7 @@ public class UseMapleLifeHandler extends AbstractMaplePacketHandler {
         if(timeNow - player.getLastUsedCashItem() < 3000) {
             player.dropMessage(5, "Please wait a moment before trying again.");
             c.announce(MaplePacketCreator.sendMapleLifeError(3));
-            c.announce(MaplePacketCreator.enableActions());
+            c.announce(WvsContext.Packet.enableActions());
             return;
         }
         player.setLastUsedCashItem(timeNow);
@@ -49,6 +50,6 @@ public class UseMapleLifeHandler extends AbstractMaplePacketHandler {
         } else {
             c.announce(MaplePacketCreator.sendMapleLifeNameError());
         }
-        c.announce(MaplePacketCreator.enableActions());
+        c.announce(WvsContext.Packet.enableActions());
     }
 }

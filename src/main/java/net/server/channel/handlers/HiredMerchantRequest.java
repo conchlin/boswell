@@ -25,9 +25,12 @@ import client.inventory.ItemFactory;
 import client.MapleCharacter;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.List;
+
 import client.MapleClient;
 import constants.GameConstants;
 import net.AbstractMaplePacketHandler;
+import network.packet.WvsContext;
 import server.maps.MapleMapObjectType;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
@@ -38,15 +41,16 @@ import tools.data.input.SeekableLittleEndianAccessor;
  */
 public final class HiredMerchantRequest extends AbstractMaplePacketHandler {
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         MapleCharacter chr = c.getPlayer();
-        if (chr.getMap().getMapObjectsInRange(chr.getPosition(), 23000, Arrays.asList(MapleMapObjectType.HIRED_MERCHANT)).isEmpty() && (GameConstants.isFreeMarketRoom(chr.getMapId()))) {
+        if (chr.getMap().getMapObjectsInRange(chr.getPosition(), 23000,
+                List.of(MapleMapObjectType.HIRED_MERCHANT)).isEmpty() && (GameConstants.isFreeMarketRoom(chr.getMapId()))) {
             if (!chr.hasMerchant()) {
                 try {
                     if (ItemFactory.MERCHANT.loadItems(chr.getId(), false).isEmpty() && chr.getMerchantMeso() == 0) {
-                        c.announce(MaplePacketCreator.hiredMerchantBox());
+                        c.announce(WvsContext.Packet.hiredMerchantBox());
                     } else {
-                        chr.announce(MaplePacketCreator.retrieveFirstMessage());
+                        chr.announce(WvsContext.Packet.retrieveFirstMessage());
                     }
                 } catch (SQLException ex) {
                     ex.printStackTrace();

@@ -35,6 +35,7 @@ import constants.ServerConstants;
 import net.AbstractMaplePacketHandler;
 import network.packet.EmployeePool;
 import network.packet.UserCommon;
+import network.packet.WvsContext;
 import server.MapleItemInformationProvider;
 import server.MapleTrade;
 import constants.GameConstants;
@@ -135,7 +136,7 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
     @Override
     public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         if (!c.tryacquireClient()) {    // thanks GabrielSin for pointing dupes within player interactions
-            c.announce(MaplePacketCreator.enableActions());
+            c.announce(WvsContext.Packet.enableActions());
             return;
         }
         
@@ -321,7 +322,7 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
                     } else if (ob instanceof MapleHiredMerchant merchant && chr.getHiredMerchant() == null) {
                         if (chr.getTrade() != null) {
                             //Apparently there is a dupe exploit that causes racing conditions when saving/retrieving from the db with stuff like trade open.
-                            c.announce(MaplePacketCreator.enableActions());
+                            c.announce(WvsContext.Packet.enableActions());
                             return;
                         }
                         merchant.visitShop(chr);
@@ -355,7 +356,7 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
             } else if (mode == Action.OPEN_STORE.getCode() || mode == Action.OPEN_CASH.getCode()) {
                 if (chr.getTrade() != null) {
                     //Apparently there is a dupe exploit that causes racing conditions when saving/retrieving from the db with stuff like trade open.
-                    c.announce(MaplePacketCreator.enableActions());
+                    c.announce(WvsContext.Packet.enableActions());
                     return;
                 }
                 
@@ -488,13 +489,13 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
 
                 if (targetSlot < 1 || targetSlot > 9) {
                     System.out.println("[Hack] " + chr.getName() + " Trying to dupe on trade slot.");
-                    c.announce(MaplePacketCreator.enableActions());
+                    c.announce(WvsContext.Packet.enableActions());
                     return;
                 }
                 
                 if (item == null) {
                     c.announce(MaplePacketCreator.serverNotice(1, "Invalid item description."));
-                    c.announce(MaplePacketCreator.enableActions());
+                    c.announce(WvsContext.Packet.enableActions());
                     return;
                 }
                 
@@ -510,7 +511,7 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
                 
                 if (quantity < 1 || quantity > item.getQuantity()) {
                     c.announce(MaplePacketCreator.serverNotice(1, "You don't have enough quantity of the item."));
-                    c.announce(MaplePacketCreator.enableActions());
+                    c.announce(WvsContext.Packet.enableActions());
                     return;
                 }
                 
@@ -520,7 +521,7 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
                         if (ii.isDropRestricted(item.getItemId())) { // ensure that undroppable items do not make it to the trade window
                             if (!MapleKarmaManipulator.hasKarmaFlag(item)) {
                                 c.announce(MaplePacketCreator.serverNotice(1, "That item is untradeable."));
-                                c.announce(MaplePacketCreator.enableActions());
+                                c.announce(WvsContext.Packet.enableActions());
                                 return;
                             }
                         }
@@ -531,7 +532,7 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
                             Item checkItem = chr.getInventory(ivType).getItem(pos);
                             if (checkItem != item || checkItem.getPosition() != item.getPosition()) {
                                 c.announce(MaplePacketCreator.serverNotice(1, "Invalid item description."));
-                                c.announce(MaplePacketCreator.enableActions());
+                                c.announce(WvsContext.Packet.enableActions());
                                 return;
                             }
                             
@@ -563,7 +564,7 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
             } else if (mode == Action.ADD_ITEM.getCode() || mode == Action.PUT_ITEM.getCode()) {
                 if (chr.getTrade() != null) {
                     //Apparently there is a dupe exploit that causes racing conditions when saving/retrieving from the db with stuff like trade open.
-                    c.announce(MaplePacketCreator.enableActions());
+                    c.announce(WvsContext.Packet.enableActions());
                     return;
                 }
 
@@ -574,7 +575,7 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
 
                 if (ivItem == null || ivItem.isUntradeable()) {
                     c.announce(MaplePacketCreator.serverNotice(1, "Could not perform shop operation with that item."));
-                    c.announce(MaplePacketCreator.enableActions());
+                    c.announce(WvsContext.Packet.enableActions());
                     return;
                 }
 
@@ -585,7 +586,7 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
                     bundles = 1;
                 } else if (ivItem.getQuantity() < (bundles * perBundle)) {     // thanks GabrielSin for finding a dupe here
                     c.announce(MaplePacketCreator.serverNotice(1, "Could not perform shop operation with that item."));
-                    c.announce(MaplePacketCreator.enableActions());
+                    c.announce(WvsContext.Packet.enableActions());
                     return;
                 }
 
@@ -661,7 +662,7 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
             } else if (mode == Action.REMOVE_ITEM.getCode()) {
                 if (chr.getTrade() != null) {
                     //Apparently there is a dupe exploit that causes racing conditions when saving/retrieving from the db with stuff like trade open.
-                    c.announce(MaplePacketCreator.enableActions());
+                    c.announce(WvsContext.Packet.enableActions());
                     return;
                 }
 
@@ -703,7 +704,7 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
             } else if (mode == Action.BUY.getCode() || mode == Action.MERCHANT_BUY.getCode()) {
                 if (chr.getTrade() != null) {
                     //Apparently there is a dupe exploit that causes racing conditions when saving/retrieving from the db with stuff like trade open.
-                    c.announce(MaplePacketCreator.enableActions());
+                    c.announce(WvsContext.Packet.enableActions());
                     return;
                 }
 
@@ -728,7 +729,7 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
             } else if (mode == Action.TAKE_ITEM_BACK.getCode()) {
                 if (chr.getTrade() != null) {
                     //Apparently there is a dupe exploit that causes racing conditions when saving/retrieving from the db with stuff like trade open.
-                    c.announce(MaplePacketCreator.enableActions());
+                    c.announce(WvsContext.Packet.enableActions());
                     return;
                 }
 
@@ -752,7 +753,7 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
             } else if (mode == Action.CLOSE_MERCHANT.getCode()) {
                 if (chr.getTrade() != null) {
                     //Apparently there is a dupe exploit that causes racing conditions when saving/retrieving from the db with stuff like trade open.
-                    c.announce(MaplePacketCreator.enableActions());
+                    c.announce(WvsContext.Packet.enableActions());
                     return;
                 }
 
@@ -763,7 +764,7 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
             } else if (mode == Action.MAINTENANCE_OFF.getCode()) {
                 if (chr.getTrade() != null) {
                     //Apparently there is a dupe exploit that causes racing conditions when saving/retrieving from the db with stuff like trade open.
-                    c.announce(MaplePacketCreator.enableActions());
+                    c.announce(WvsContext.Packet.enableActions());
                     return;
                 }
 
@@ -781,7 +782,7 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
                 }
 
                 chr.setHiredMerchant(null);
-                c.announce(MaplePacketCreator.enableActions());
+                c.announce(WvsContext.Packet.enableActions());
             } else if (mode == Action.BAN_PLAYER.getCode()) {
                 slea.skip(1);
 

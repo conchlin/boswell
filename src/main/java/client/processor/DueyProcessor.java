@@ -45,6 +45,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import net.server.channel.Channel;
+import network.packet.WvsContext;
 import server.DueyPackage;
 import server.MapleItemInformationProvider;
 import server.MapleTrade;
@@ -449,7 +450,7 @@ public class DueyProcessor {
             try {
                 long timeNow = System.currentTimeMillis();
                 if(timeNow - c.getPlayer().getNpcCooldown() < ServerConstants.BLOCK_NPC_RACE_CONDT) {
-                    c.announce(MaplePacketCreator.enableActions());
+                    c.announce(WvsContext.Packet.enableActions());
                     return;
                 }
                 c.getPlayer().setNpcCooldown(timeNow);

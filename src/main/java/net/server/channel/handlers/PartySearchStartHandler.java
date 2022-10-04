@@ -23,6 +23,7 @@ package net.server.channel.handlers;
 
 import net.AbstractMaplePacketHandler;
 import net.server.world.MapleParty;
+import network.packet.WvsContext;
 import tools.data.input.SeekableLittleEndianAccessor;
 import tools.MaplePacketCreator;
 import client.MapleCharacter;
@@ -44,19 +45,19 @@ public class PartySearchStartHandler extends AbstractMaplePacketHandler {
             MapleCharacter chr = c.getPlayer();
             if (min > max) {
                 chr.dropMessage(1, "The min. value is higher than the max!");
-                c.announce(MaplePacketCreator.enableActions());
+                c.announce(WvsContext.Packet.enableActions());
                 return;
             }
 
             if (max - min > 30) {
                 chr.dropMessage(1, "You can only search for party members within a range of 30 levels.");
-                c.announce(MaplePacketCreator.enableActions());
+                c.announce(WvsContext.Packet.enableActions());
                 return;
             }
 
             if (chr.getLevel() < min || chr.getLevel() > max) {
                 chr.dropMessage(1, "The range of level for search has to include your own level.");
-                c.announce(MaplePacketCreator.enableActions());
+                c.announce(WvsContext.Packet.enableActions());
                 return;
             }
 

@@ -29,6 +29,7 @@ import client.*;
 import client.MapleCharacter.CancelCooldownAction;
 import network.packet.UserLocal;
 import network.packet.UserRemote;
+import network.packet.WvsContext;
 import server.MapleStatEffect;
 import server.TimerManager;
 import server.skills.PlayerSkill;
@@ -112,7 +113,7 @@ public final class CloseRangeDamageHandler extends AbstractDealDamageHandler {
                                 MapleBuffStat.COMBO, new BuffValueHolder(0, 0, neworbcount)));
                         chr.setBuffedValue(MapleBuffStat.COMBO, neworbcount);                 
                         duration -= (int) (currentServerTime() - chr.getBuffedStarttime(MapleBuffStat.COMBO));
-                        c.announce(MaplePacketCreator.giveBuff(oid, duration, stat));
+                        c.announce(WvsContext.Packet.giveBuff(oid, duration, stat));
                         chr.getMap().broadcastMessage(chr, UserRemote.Packet.giveForeignBuff(chr.getId(), stat), false);
                     }
                 }

@@ -2447,9 +2447,9 @@ public class MapleMap {
         if (mapEffect != null) {
             mapEffect.sendStartData(chr.getClient());
         }
-        chr.getClient().announce(MaplePacketCreator.resetForcedStats());
+        chr.getClient().announce(WvsContext.Packet.resetForcedStats());
         if (mapid == 914000200 || mapid == 914000210 || mapid == 914000220) {
-            chr.getClient().announce(MaplePacketCreator.aranGodlyStats());
+            chr.getClient().announce(WvsContext.Packet.aranGodlyStats());
         }
         if (chr.getEventInstance() != null && chr.getEventInstance().isTimerStarted()) {
             chr.getClient().announce(MaplePacketCreator.getClock((int) (chr.getEventInstance().getTimeLeft() / 1000)));

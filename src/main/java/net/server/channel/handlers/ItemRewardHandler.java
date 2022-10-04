@@ -29,6 +29,7 @@ import java.util.List;
 import net.AbstractMaplePacketHandler;
 import net.server.Server;
 import client.inventory.manipulator.MapleInventoryManipulator;
+import network.packet.WvsContext;
 import server.MapleItemInformationProvider;
 import server.MapleItemInformationProvider.RewardItem;
 import tools.MaplePacketCreator;
@@ -76,6 +77,6 @@ public final class ItemRewardHandler extends AbstractMaplePacketHandler {
                 break;
             }
         }
-        c.announce(MaplePacketCreator.enableActions());
+        c.announce(WvsContext.Packet.enableActions());
     }
 }

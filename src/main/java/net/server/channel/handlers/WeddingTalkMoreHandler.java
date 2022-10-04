@@ -22,6 +22,7 @@ package net.server.channel.handlers;
 
 import client.MapleClient;
 import net.AbstractMaplePacketHandler;
+import network.packet.WvsContext;
 import scripting.event.EventInstanceManager;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
@@ -42,6 +43,6 @@ public final class WeddingTalkMoreHandler extends AbstractMaplePacketHandler {
         }
         
         c.announce(Wedding.OnWeddingProgress(true, 0, 0, (byte) 3));
-        c.announce(MaplePacketCreator.enableActions());
+        c.announce(WvsContext.Packet.enableActions());
     }
 }

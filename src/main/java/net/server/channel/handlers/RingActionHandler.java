@@ -37,6 +37,7 @@ import client.processor.DueyProcessor;
 import net.AbstractMaplePacketHandler;
 import net.server.world.World;
 import net.server.channel.Channel;
+import network.packet.WvsContext;
 import server.MapleItemInformationProvider;
 import scripting.event.EventInstanceManager;
 import net.database.DatabaseConnection;
@@ -314,20 +315,20 @@ public final class RingActionHandler extends AbstractMaplePacketHandler {
                 final MapleCharacter target = c.getPlayer();
                 
                 if (source == null) {
-                    target.announce(MaplePacketCreator.enableActions());
+                    target.announce(WvsContext.Packet.enableActions());
                     return;
                 }
                 
                 final int itemid = source.getMarriageItemId();
                 if (target.getPartnerId() > 0 || source.getId() != id || itemid <= 0 || !source.haveItem(itemid) || source.getPartnerId() > 0 || !source.isAlive() || !target.isAlive()) {
-                    target.announce(MaplePacketCreator.enableActions());
+                    target.announce(WvsContext.Packet.enableActions());
                     return;
                 }
                 
                 if (accepted) {
                     final int newItemId = getBoxId(itemid);
                     if (!MapleInventoryManipulator.checkSpace(c, newItemId, 1, "") || !MapleInventoryManipulator.checkSpace(source.getClient(), newItemId, 1, "")) {
-                        target.announce(MaplePacketCreator.enableActions());
+                        target.announce(WvsContext.Packet.enableActions());
                         return;
                     }
                     
@@ -373,12 +374,12 @@ public final class RingActionHandler extends AbstractMaplePacketHandler {
                 try {
                     itemId = c.getPlayer().getInventory(MapleInventoryType.ETC).getItem(slot).getItemId();
                 } catch(NullPointerException npe) {
-                    c.announce(MaplePacketCreator.enableActions());
+                    c.announce(WvsContext.Packet.enableActions());
                     return;
                 }
                 
                 if((itemId != 4031377 && itemId != 4031395) || !c.getPlayer().haveItem(itemId)) {
-                    c.announce(MaplePacketCreator.enableActions());
+                    c.announce(WvsContext.Packet.enableActions());
                     return;
                 }
                 
@@ -443,7 +444,7 @@ public final class RingActionHandler extends AbstractMaplePacketHandler {
                 if(invitationid == 4031406 || invitationid == 4031407) {
                     Item item = c.getPlayer().getInventory(MapleInventoryType.ETC).getItem(slot);
                     if(item == null || item.getItemId() != invitationid) {
-                        c.announce(MaplePacketCreator.enableActions());
+                        c.announce(WvsContext.Packet.enableActions());
                         return;
                     }
 
@@ -501,6 +502,6 @@ public final class RingActionHandler extends AbstractMaplePacketHandler {
                 break;
         }
         
-        c.announce(MaplePacketCreator.enableActions());
+        c.announce(WvsContext.Packet.enableActions());
     }
 }

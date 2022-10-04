@@ -25,6 +25,7 @@ package client.processor;
 
 import client.MapleCharacter;
 import client.MapleClient;
+import network.packet.WvsContext;
 import server.skills.PlayerSkill;
 import server.skills.Skill;
 import client.autoban.AutobanFactory;
@@ -45,7 +46,7 @@ public class AssignSPProcessor {
         c.lockClient();
         try {
             if (skillid == Aran.HIDDEN_FULL_DOUBLE || skillid == Aran.HIDDEN_FULL_TRIPLE || skillid == Aran.HIDDEN_OVER_DOUBLE || skillid == Aran.HIDDEN_OVER_TRIPLE) {
-                c.announce(MaplePacketCreator.enableActions());
+                c.announce(WvsContext.Packet.enableActions());
                 return;
             }
 
@@ -80,7 +81,7 @@ public class AssignSPProcessor {
                 if (!isBeginnerSkill) {
                     player.gainSp(-1, GameConstants.getSkillBook(skillid/10000), false);
                 } else {
-                    player.announce(MaplePacketCreator.enableActions());
+                    player.announce(WvsContext.Packet.enableActions());
                 }
                 if (skill.getId() == Aran.FULL_SWING) {
                     player.changeSkillLevel(skill, (byte) (curLevel + 1), player.getMasterLevel(skill), player.getSkillExpiration(skill));

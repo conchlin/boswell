@@ -25,6 +25,7 @@ import client.MapleClient;
 import client.MapleQuestStatus;
 import enums.UserEffectType;
 import network.packet.UserLocal;
+import network.packet.WvsContext;
 import scripting.AbstractPlayerInteraction;
 import server.quest.MapleQuest;
 import tools.MaplePacketCreator;
@@ -101,7 +102,7 @@ public class MapScriptMethods extends AbstractPlayerInteraction {
         if (status.equals(infoex)) {
             etm.append("Earned the ").append(questName).append(" title!");
             smp.append("You have earned the <").append(questName).append(">").append(rewardstring);
-            getPlayer().announce(MaplePacketCreator.getShowQuestCompletion(quest.getId()));
+            getPlayer().announce(WvsContext.Packet.getShowQuestCompletion(quest.getId()));
         } else {
             getPlayer().announce(MaplePacketCreator.earnTitleMessage(status + "/" + infoex + " regions explored."));
             etm.append("Trying for the ").append(questName).append(" title.");
@@ -128,7 +129,7 @@ public class MapScriptMethods extends AbstractPlayerInteraction {
         getPlayer().announce(MaplePacketCreator.earnTitleMessage("The One Who's Touched the Sky title in progress."));
         if (Integer.toString(q.getMedalProgress()).equals(quest.getInfoEx())) {
             showInfoText("The One Who's Touched the Sky" + rewardstring);
-            getPlayer().announce(MaplePacketCreator.getShowQuestCompletion(quest.getId()));
+            getPlayer().announce(WvsContext.Packet.getShowQuestCompletion(quest.getId()));
         } else {
             showInfoText("The One Who's Touched the Sky title in progress. " + status + "/5 Completed");
         }

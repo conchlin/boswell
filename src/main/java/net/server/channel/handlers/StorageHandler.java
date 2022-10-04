@@ -32,6 +32,7 @@ import client.inventory.manipulator.MapleKarmaManipulator;
 import constants.ItemConstants;
 import constants.ServerConstants;
 import net.AbstractMaplePacketHandler;
+import network.packet.WvsContext;
 import server.MapleItemInformationProvider;
 import server.MapleStorage;
 import tools.FilePrinter;
@@ -51,12 +52,12 @@ public final class StorageHandler extends AbstractMaplePacketHandler {
 
 		if (chr.getLevel() < 15) {
 			chr.dropMessage(1, "You may only use the storage once you have reached level 15.");
-			c.announce(MaplePacketCreator.enableActions());
+			c.announce(WvsContext.Packet.enableActions());
 			return;
 		}
 		if (chr.getTrade() != null || chr.getShop() != null) {
 			//Apparently there is a dupe exploit that causes racing conditions when saving/retrieving from the db with stuff like trade open.
-			c.announce(MaplePacketCreator.enableActions());
+			c.announce(WvsContext.Packet.enableActions());
 			return;
 		}
 
@@ -112,7 +113,7 @@ public final class StorageHandler extends AbstractMaplePacketHandler {
 						return;
 					}
 					if (quantity < 1) {
-						c.announce(MaplePacketCreator.enableActions());
+						c.announce(WvsContext.Packet.enableActions());
 						return;
 					}
 					if (storage.isFull()) {
@@ -131,7 +132,7 @@ public final class StorageHandler extends AbstractMaplePacketHandler {
 							item = inv.getItem(slot);
 							if (item != null && item.getItemId() == itemId && (item.getQuantity() >= quantity || ItemConstants.isRechargeable(itemId))) {
 								if (ItemConstants.isWeddingRing(itemId) || ItemConstants.isWeddingToken(itemId)) {
-									c.announce(MaplePacketCreator.enableActions());
+									c.announce(WvsContext.Packet.enableActions());
 									return;
 								}
 
@@ -141,7 +142,7 @@ public final class StorageHandler extends AbstractMaplePacketHandler {
 
 								MapleInventoryManipulator.removeFromSlot(c, invType, slot, quantity, false);
 							} else {
-								c.announce(MaplePacketCreator.enableActions());
+								c.announce(WvsContext.Packet.enableActions());
 								return;
 							}
 							item = item.copy();
@@ -167,13 +168,13 @@ public final class StorageHandler extends AbstractMaplePacketHandler {
 						if (meso < 0 && (storageMesos - meso) < 0) {
 							meso = Integer.MIN_VALUE + storageMesos;
 							if (meso < playerMesos) {
-								c.announce(MaplePacketCreator.enableActions());
+								c.announce(WvsContext.Packet.enableActions());
 								return;
 							}
 						} else if (meso > 0 && (playerMesos + meso) < 0) {
 							meso = Integer.MAX_VALUE - playerMesos;
 							if (meso > storageMesos) {
-								c.announce(MaplePacketCreator.enableActions());
+								c.announce(WvsContext.Packet.enableActions());
 								return;
 							}
 						}
@@ -182,7 +183,7 @@ public final class StorageHandler extends AbstractMaplePacketHandler {
 						FilePrinter.print(FilePrinter.STORAGE + c.getPlayer().getName() + ".txt", c.getPlayer().getName() + (meso > 0 ? " took out " : " stored ") + Math.abs(meso) + " mesos");
 						chr.setUsedStorage();
 					} else {
-						c.announce(MaplePacketCreator.enableActions());
+						c.announce(WvsContext.Packet.enableActions());
 						return;
 					}
 					storage.sendMeso(c);

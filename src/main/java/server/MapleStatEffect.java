@@ -35,6 +35,7 @@ import java.util.concurrent.ScheduledFuture;
 
 import net.server.Server;
 import network.packet.UserRemote;
+import network.packet.WvsContext;
 import provider.MapleData;
 import provider.MapleDataTool;
 import server.life.MapleMonster;
@@ -979,7 +980,7 @@ public class MapleStatEffect {
             applyto.updateMp(newMp);
             hpmpupdate.add(new Pair<>(MapleStat.MP, Integer.valueOf(applyto.getMp())));
         }
-        applyto.getClient().announce(MaplePacketCreator.updatePlayerStats(hpmpupdate, true, applyto));
+        applyto.getClient().announce(WvsContext.Packet.updatePlayerStats(hpmpupdate, true, applyto));
         if (moveTo != -1) {
             if (moveTo != applyto.getMapId()) {
                 MapleMap target;
@@ -1226,7 +1227,7 @@ public class MapleStatEffect {
 
     public final void applyComboBuff(final MapleCharacter applyto, int combo) {
         final List<Pair<MapleBuffStat, BuffValueHolder>> stat = Collections.singletonList(new Pair<>(MapleBuffStat.ARAN_COMBO, new BuffValueHolder(0, 0, combo)));
-        applyto.announce(MaplePacketCreator.giveBuff(sourceid, 99999, stat));
+        applyto.announce(WvsContext.Packet.giveBuff(sourceid, 99999, stat));
 
         final long starttime = Server.getInstance().getCurrentTime();
 //	final CancelEffectAction cancelAction = new CancelEffectAction(applyto, this, starttime);
@@ -1236,7 +1237,7 @@ public class MapleStatEffect {
 
     public final void applyBeaconBuff(final MapleCharacter applyto, int objectid) { // thanks Thora & Hyun for reporting an issue with homing beacon autoflagging mobs when changing maps
         final List<Pair<MapleBuffStat, BuffValueHolder>> stat = Collections.singletonList(new Pair<>(MapleBuffStat.HOMING_BEACON, new BuffValueHolder(0, 0, objectid)));
-        applyto.announce(MaplePacketCreator.giveBuff(1, sourceid, stat));
+        applyto.announce(WvsContext.Packet.giveBuff(1, sourceid, stat));
 
         final long starttime = Server.getInstance().getCurrentTime();
         applyto.registerEffect(this, starttime, null, statups);
@@ -1248,7 +1249,7 @@ public class MapleStatEffect {
 
         long leftDuration = (starttime + localDuration) - Server.getInstance().getCurrentTime();
         if (leftDuration > 0) {
-            target.announce(MaplePacketCreator.giveBuff((skill ? sourceid : -sourceid), (int) leftDuration, activeStats));
+            target.announce(WvsContext.Packet.giveBuff((skill ? sourceid : -sourceid), (int) leftDuration, activeStats));
         }
     }
 
@@ -1321,19 +1322,19 @@ public class MapleStatEffect {
             byte[] buff = null;
             byte[] mbuff = null;
             if (getSummonMovementType() == null && this.isActive(applyto)) {
-                buff = MaplePacketCreator.giveBuff((skill ? sourceid : -sourceid), localDuration, localstatups);
+                buff = WvsContext.Packet.giveBuff((skill ? sourceid : -sourceid), localDuration, localstatups);
             }
             if (isDisease()) {
-                buff = MaplePacketCreator.giveBuff((sourceLevel << 16 | sourceid), localDuration, localstatups);
+                buff = WvsContext.Packet.giveBuff((sourceLevel << 16 | sourceid), localDuration, localstatups);
                 mbuff = UserRemote.Packet.giveForeignBuff(applyto.getId(), localstatups);
             } else if (getSummonMovementType() == null) {
-                buff = MaplePacketCreator.giveBuff((skill ? sourceid : -sourceid), localDuration, localstatups);
+                buff = WvsContext.Packet.giveBuff((skill ? sourceid : -sourceid), localDuration, localstatups);
             }
             if (isDash()) {
-                buff = MaplePacketCreator.givePirateBuff(statups, sourceid, seconds);
+                buff = WvsContext.Packet.givePirateBuff(statups, sourceid, seconds);
                 mbuff = UserRemote.Packet.giveForeignPirateBuff(applyto.getId(), sourceid, seconds, localstatups);
             } else if (isInfusion()) {
-                buff = MaplePacketCreator.givePirateBuff(localstatups, sourceid, seconds);
+                buff = WvsContext.Packet.givePirateBuff(localstatups, sourceid, seconds);
                 mbuff = UserRemote.Packet.giveForeignPirateBuff(applyto.getId(), sourceid, seconds, localstatups);
             } else if (isDs()) {
                 List<Pair<MapleBuffStat, BuffValueHolder>> dsstat = Collections.singletonList(new Pair<>(MapleBuffStat.DARKSIGHT,  new BuffValueHolder(0, 0, 0)));
@@ -1346,7 +1347,7 @@ public class MapleStatEffect {
                 if (comboCount == null) comboCount = 0;
 
                 List<Pair<MapleBuffStat, BuffValueHolder>> cbstat = Collections.singletonList(new Pair<>(MapleBuffStat.COMBO,new BuffValueHolder(0, 0, comboCount)));
-                buff = MaplePacketCreator.giveBuff((skill ? sourceid : -sourceid), localDuration, cbstat);
+                buff = WvsContext.Packet.giveBuff((skill ? sourceid : -sourceid), localDuration, cbstat);
                 mbuff = UserRemote.Packet.giveForeignBuff(applyto.getId(), cbstat);
             } else if (isMonsterRiding()) {
                 if (sourceid == Corsair.BATTLE_SHIP) {//hp
@@ -1356,7 +1357,7 @@ public class MapleStatEffect {
 
                     localstatups = statups;
                 }
-                buff = MaplePacketCreator.giveBuff(localsourceid, localDuration, localstatups);
+                buff = WvsContext.Packet.giveBuff(localsourceid, localDuration, localstatups);
                 mbuff = UserRemote.Packet.showMonsterRiding(applyto.getId(), givemount);
                 localDuration = duration;
             } else if (isShadowPartner()) {

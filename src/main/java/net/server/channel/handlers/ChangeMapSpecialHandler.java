@@ -2,6 +2,7 @@ package net.server.channel.handlers;
 
 import client.MapleClient;
 import net.AbstractMaplePacketHandler;
+import network.packet.WvsContext;
 import server.MaplePortal;
 import server.MapleTrade;
 import server.MapleTrade.TradeResult;
@@ -16,11 +17,11 @@ public final class ChangeMapSpecialHandler extends AbstractMaplePacketHandler {
                 slea.readShort();
                 MaplePortal portal = c.getPlayer().getMap().getPortal(startwp);
                 if (portal == null || c.getPlayer().portalDelay() > currentServerTime() || c.getPlayer().getBlockedPortals().contains(portal.getScriptName())) {
-                        c.announce(MaplePacketCreator.enableActions());
+                        c.announce(WvsContext.Packet.enableActions());
                         return;
                 }
                 if (c.getPlayer().isChangingMaps() || c.getPlayer().isBanned()) {
-                        c.announce(MaplePacketCreator.enableActions());
+                        c.announce(WvsContext.Packet.enableActions());
                         return;
                 }
                 if (c.getPlayer().getTrade() != null) {

@@ -30,10 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import enums.UserEffectType;
-import network.packet.NpcPool;
-import network.packet.PetPacket;
-import network.packet.ScriptMan;
-import network.packet.UserLocal;
+import network.packet.*;
 import server.skills.*;
 import net.server.Server;
 import net.server.channel.Channel;
@@ -507,8 +504,8 @@ public class AbstractPlayerInteraction {
         getPlayer().addPet(evolved);
 
         getPlayer().getMap().broadcastMessage(c.getPlayer(), PetPacket.Packet.showPet(c.getPlayer(), evolved, false, false), true);
-        c.announce(MaplePacketCreator.petStatUpdate(c.getPlayer()));
-        c.announce(MaplePacketCreator.enableActions());
+        c.announce(WvsContext.Packet.petStatUpdate(c.getPlayer()));
+        c.announce(WvsContext.Packet.enableActions());
         c.getWorldServer().registerPetHunger(c.getPlayer(), c.getPlayer().getPetIndex(evolved));
 
         MapleInventoryManipulator.removeFromSlot(c, MapleInventoryType.CASH, target.getPosition(), (short) 1, false);
@@ -640,7 +637,7 @@ public class AbstractPlayerInteraction {
 
     public void showInfo(String path) {
         c.announce(UserLocal.Packet.onEffect(UserEffectType.SHOW_INFO.getEffect(), path));
-        c.announce(MaplePacketCreator.enableActions());
+        c.announce(WvsContext.Packet.enableActions());
     }
 
     public void guildMessage(int type, String message) {
@@ -805,7 +802,7 @@ public class AbstractPlayerInteraction {
 
     public void showInstruction(String msg, int width, int height) {
         c.announce(UserLocal.Packet.onBalloonMessage(msg, width, height));
-        c.announce(MaplePacketCreator.enableActions());
+        c.announce(WvsContext.Packet.enableActions());
     }
 
     public void disableMinimap() {
@@ -926,7 +923,7 @@ public class AbstractPlayerInteraction {
     }
 
     public void enableActions() {
-        c.announce(MaplePacketCreator.enableActions());
+        c.announce(WvsContext.Packet.enableActions());
     }
 
     public void showEffect(String effect){
@@ -947,7 +944,7 @@ public class AbstractPlayerInteraction {
 
     public void updateAreaInfo(Short area, String info) {
         c.getPlayer().updateAreaInfo(area, info);
-        c.announce(MaplePacketCreator.enableActions());//idk, nexon does the same :P
+        c.announce(WvsContext.Packet.enableActions());//idk, nexon does the same :P
     }
 
     public boolean containsAreaInfo(short area, String info) {

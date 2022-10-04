@@ -38,6 +38,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import network.opcode.SendOpcode;
 import network.packet.UserCommon;
+import network.packet.WvsContext;
 import tools.MaplePacketCreator;
 import tools.Pair;
 import tools.data.output.MaplePacketLittleEndianWriter;
@@ -232,7 +233,7 @@ public class MaplePlayerShop extends AbstractMapleMapObject {
                     
                     if (!MapleInventory.checkSpot(chr, iitem)) {
                         chr.announce(MaplePacketCreator.serverNotice(1, "Have a slot available on your inventory to claim back the item."));
-                        chr.announce(MaplePacketCreator.enableActions());
+                        chr.announce(WvsContext.Packet.enableActions());
                         return;
                     }
                     
@@ -259,10 +260,10 @@ public class MaplePlayerShop extends AbstractMapleMapObject {
                 
                 newItem.setQuantity((short) ((pItem.getItem().getQuantity() * quantity)));
                 if (quantity < 1 || !pItem.isExist() || pItem.getBundles() < quantity) {
-                    c.announce(MaplePacketCreator.enableActions());
+                    c.announce(WvsContext.Packet.enableActions());
                     return false;
                 } else if (newItem.getInventoryType().equals(MapleInventoryType.EQUIP) && newItem.getQuantity() > 1) {
-                    c.announce(MaplePacketCreator.enableActions());
+                    c.announce(WvsContext.Packet.enableActions());
                     return false;
                 }
                 
@@ -276,7 +277,7 @@ public class MaplePlayerShop extends AbstractMapleMapObject {
                         if (canBuy(c, newItem)) {
                             if (!owner.canHoldMeso(price)) {
                                 owner.dropMessage(1, "Transaction failed since the shop owner can't hold any more mesos.");
-                                c.announce(MaplePacketCreator.enableActions());
+                                c.announce(WvsContext.Packet.enableActions());
                                 return false;
                             }
                             
@@ -303,12 +304,12 @@ public class MaplePlayerShop extends AbstractMapleMapObject {
                             }
                         } else {
                             c.getPlayer().dropMessage(1, "Your inventory is full. Please clear a slot before buying this item.");
-                            c.announce(MaplePacketCreator.enableActions());
+                            c.announce(WvsContext.Packet.enableActions());
                             return false;
                         }
                     } else {
                         c.getPlayer().dropMessage(1, "You don't have enough mesos to purchase this item.");
-                        c.announce(MaplePacketCreator.enableActions());
+                        c.announce(WvsContext.Packet.enableActions());
                         return false;
                     }
                     

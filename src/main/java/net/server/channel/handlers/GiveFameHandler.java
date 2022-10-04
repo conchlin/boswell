@@ -26,6 +26,7 @@ import client.MapleCharacter.FameStatus;
 import client.autoban.AutobanFactory;
 import client.MapleClient;
 import net.AbstractMaplePacketHandler;
+import network.packet.WvsContext;
 import server.achievements.WorldTour;
 import tools.FilePrinter;
 import tools.MaplePacketCreator;
@@ -62,7 +63,7 @@ public final class GiveFameHandler extends AbstractMaplePacketHandler {
                 player.message("Could not process the request, since this character currently has the minimum/maximum level of fame.");
             }
         } else {
-            c.announce(MaplePacketCreator.giveFameErrorResponse(status == FameStatus.NOT_TODAY ? 3 : 4));
+            c.announce(WvsContext.Packet.giveFameErrorResponse(status == FameStatus.NOT_TODAY ? 3 : 4));
         }
     }
 }

@@ -22,6 +22,7 @@
 package net.server.channel.handlers;
 
 import net.AbstractMaplePacketHandler;
+import network.packet.WvsContext;
 import server.life.MapleMonster;
 import server.maps.MapleMap;
 import tools.MaplePacketCreator;
@@ -98,6 +99,6 @@ public final class MobDamageMobFriendlyHandler extends AbstractMaplePacketHandle
         }
 
         map.broadcastMessage(MaplePacketCreator.MobDamageMobFriendly(monster, damage, remainingHp), monster.getPosition());
-        c.announce(MaplePacketCreator.enableActions());
+        c.announce(WvsContext.Packet.enableActions());
     }
 }

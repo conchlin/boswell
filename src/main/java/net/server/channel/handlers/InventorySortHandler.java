@@ -33,6 +33,7 @@ import client.inventory.MapleInventoryType;
 import client.MapleCharacter;
 import net.AbstractMaplePacketHandler;
 import client.inventory.manipulator.MapleInventoryManipulator;
+import network.packet.WvsContext;
 import tools.LogHelper;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
@@ -81,7 +82,7 @@ public final class InventorySortHandler extends AbstractMaplePacketHandler {
         }
 
         c.announce(MaplePacketCreator.finishedSort2(inventoryType));
-        c.announce(MaplePacketCreator.enableActions());
+        c.announce(WvsContext.Packet.enableActions());
     }
 
 }

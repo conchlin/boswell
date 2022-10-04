@@ -30,6 +30,7 @@ import net.AbstractMaplePacketHandler;
 import net.server.Server;
 import client.inventory.manipulator.MapleInventoryManipulator;
 import network.packet.MobPool;
+import network.packet.WvsContext;
 import server.MapleItemInformationProvider;
 import server.life.MapleMonster;
 import tools.MaplePacketCreator;
@@ -65,7 +66,7 @@ public final class UseCatchItemHandler extends AbstractMaplePacketHandler {
                     MapleInventoryManipulator.removeById(c, MapleInventoryType.USE, itemId, 1, true, true);
                     MapleInventoryManipulator.addById(c, 1902000, (short) 1, "", -1);
                  }
-                c.announce(MaplePacketCreator.enableActions());
+                c.announce(WvsContext.Packet.enableActions());
                 break;
             case 2270001:
                 if (mob.getId() == 9500197) {
@@ -80,7 +81,7 @@ public final class UseCatchItemHandler extends AbstractMaplePacketHandler {
                             c.announce(MaplePacketCreator.catchMessage(0));
                         }
                     }
-                    c.announce(MaplePacketCreator.enableActions());
+                    c.announce(WvsContext.Packet.enableActions());
                 }
                 break;
             case 2270002:
@@ -105,7 +106,7 @@ public final class UseCatchItemHandler extends AbstractMaplePacketHandler {
                             c.announce(MaplePacketCreator.catchMessage(0));
                         }
                     }
-                    c.announce(MaplePacketCreator.enableActions());
+                    c.announce(WvsContext.Packet.enableActions());
                 }
                 break;
             case 2270003:
@@ -119,7 +120,7 @@ public final class UseCatchItemHandler extends AbstractMaplePacketHandler {
                         c.announce(MaplePacketCreator.catchMessage(0));
                     }
                 }
-                c.announce(MaplePacketCreator.enableActions());
+                c.announce(WvsContext.Packet.enableActions());
                 break;
             case 2270005:
                 if (mob.getId() == 9300187) {
@@ -132,7 +133,7 @@ public final class UseCatchItemHandler extends AbstractMaplePacketHandler {
                         c.announce(MaplePacketCreator.catchMessage(0));
                     }
                 }
-                c.announce(MaplePacketCreator.enableActions());
+                c.announce(WvsContext.Packet.enableActions());
                 break;
             case 2270006:
                 if (mob.getId() == 9300189) {
@@ -145,7 +146,7 @@ public final class UseCatchItemHandler extends AbstractMaplePacketHandler {
                         c.announce(MaplePacketCreator.catchMessage(0));
                     }
                 }
-                c.announce(MaplePacketCreator.enableActions());
+                c.announce(WvsContext.Packet.enableActions());
                 break;
             case 2270007:
                 if (mob.getId() == 9300191) {
@@ -158,7 +159,7 @@ public final class UseCatchItemHandler extends AbstractMaplePacketHandler {
                         c.announce(MaplePacketCreator.catchMessage(0));
                     }
                 }
-                c.announce(MaplePacketCreator.enableActions());
+                c.announce(WvsContext.Packet.enableActions());
                 break;
             case 2270004:
                 if (mob.getId() == 9300175) {
@@ -171,7 +172,7 @@ public final class UseCatchItemHandler extends AbstractMaplePacketHandler {
                     c.announce(MaplePacketCreator.catchMessage(0));
                     }
                 }
-                c.announce(MaplePacketCreator.enableActions());
+                c.announce(WvsContext.Packet.enableActions());
                 break;
             case 2270008:
                 if (mob.getId() == 9500336) {
@@ -184,7 +185,7 @@ public final class UseCatchItemHandler extends AbstractMaplePacketHandler {
                     } else {
                         chr.message("You cannot use the Fishing Net yet.");
                     }
-                    c.announce(MaplePacketCreator.enableActions());
+                    c.announce(WvsContext.Packet.enableActions());
                 }
                 break;
             default:
@@ -214,7 +215,7 @@ public final class UseCatchItemHandler extends AbstractMaplePacketHandler {
                         }
                     }
                 }
-                c.announce(MaplePacketCreator.enableActions());
+                c.announce(WvsContext.Packet.enableActions());
                 
                 // System.out.println("UseCatchItemHandler: \r\n" + slea.toString());
         }
