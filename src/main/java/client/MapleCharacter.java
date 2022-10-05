@@ -27,6 +27,7 @@ import client.listeners.DamageListener;
 import client.listeners.MobKilledEvent;
 import client.listeners.MobKilledListener;
 import constants.*;
+import enums.FameResponseType;
 import enums.UserEffectType;
 import net.database.DatabaseConnection;
 import net.database.Statements;
@@ -879,15 +880,17 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         return true;
     }
 
-    public FameStatus canGiveFame(MapleCharacter from) {
+    public int canGiveFame(MapleCharacter from) {
         if (this.isGM()) {
-            return FameStatus.OK;
+            return FameResponseType.GiveSuccess.getValue();
         } else if (lastfametime >= System.currentTimeMillis() - 3600000 * 24) {
-            return FameStatus.NOT_TODAY;
-        } else if (lastmonthfameids.contains(Integer.valueOf(from.getId()))) {
-            return FameStatus.NOT_THIS_MONTH;
+            return FameResponseType.AlreadyUsedDay.getValue();
+        } else if (lastmonthfameids.contains(from.getId())) {
+            return FameResponseType.AlreadyUsedMonth.getValue();
+        } else if (this.getLevel() < 15) {
+            return FameResponseType.UnderLevel15.getValue();
         } else {
-            return FameStatus.OK;
+            return FameResponseType.GiveSuccess.getValue();
         }
     }
 
@@ -2535,11 +2538,6 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         }
     }
 
-    public enum FameStatus {
-
-        OK, NOT_TODAY, NOT_THIS_MONTH
-    }
-
     public void forceUpdateItem(Item item) {
         final List<ModifyInventory> mods = new LinkedList<>();
         mods.add(new ModifyInventory(3, item));
@@ -2662,8 +2660,8 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
             updateSingleStat(MapleStat.FAME, thisFame);
 
             if (fromPlayer != null) {
-                fromPlayer.announce(WvsContext.Packet.giveFameResponse(mode, getName(), thisFame));
-                announce(WvsContext.Packet.receiveFame(mode, fromPlayer.getName()));
+                fromPlayer.announce(WvsContext.Packet.onFameResponse(FameResponseType.GiveSuccess.getValue(), getName(), mode, thisFame));
+                announce(WvsContext.Packet.onFameResponse(FameResponseType.ReceiveSuccess.getValue(), fromPlayer.getName(), mode));
             } else {
                 announce(MaplePacketCreator.getShowFameGain(delta));
             }

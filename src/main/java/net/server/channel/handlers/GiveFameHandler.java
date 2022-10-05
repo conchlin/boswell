@@ -22,24 +22,25 @@
 package net.server.channel.handlers;
 
 import client.MapleCharacter;
-import client.MapleCharacter.FameStatus;
 import client.autoban.AutobanFactory;
 import client.MapleClient;
+import enums.FameResponseType;
 import net.AbstractMaplePacketHandler;
 import network.packet.WvsContext;
 import server.achievements.WorldTour;
 import tools.FilePrinter;
-import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 public final class GiveFameHandler extends AbstractMaplePacketHandler {
     
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         MapleCharacter target = (MapleCharacter) c.getPlayer().getMap().getMapObject(slea.readInt());
         int mode = slea.readByte();
         int famechange = 2 * mode - 1;
         MapleCharacter player = c.getPlayer();
+        int status = player.canGiveFame(target);
+
         if (target == null || target.getId() == player.getId() || player.getLevel() < 15) {
             return;
         } else if (famechange != 1 && famechange != -1) {
@@ -48,13 +49,11 @@ public final class GiveFameHandler extends AbstractMaplePacketHandler {
             c.disconnect(true, false);
             return;
         }
-        
-        FameStatus status = player.canGiveFame(target);
 
         target.finishWorldTour(WorldTour.AchievementType.FAME, target.getFame());
         target.finishWorldTour(famechange == 1 ? WorldTour.AchievementType.FAMEGAIN : WorldTour.AchievementType.FAMELOSS, famechange);
 
-        if (status == FameStatus.OK) {
+        if (status == FameResponseType.GiveSuccess.getValue()) {
             if (target.gainFame(famechange, player, mode)) {
                 if (!player.isGM()) {
                     player.hasGivenFame(target);
@@ -63,7 +62,7 @@ public final class GiveFameHandler extends AbstractMaplePacketHandler {
                 player.message("Could not process the request, since this character currently has the minimum/maximum level of fame.");
             }
         } else {
-            c.announce(WvsContext.Packet.giveFameErrorResponse(status == FameStatus.NOT_TODAY ? 3 : 4));
+            c.announce(WvsContext.Packet.onFameResponse(status, ""));
         }
     }
 }

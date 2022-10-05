@@ -4,6 +4,7 @@ import client.*
 import constants.GameConstants
 import constants.skills.Buccaneer
 import constants.skills.ThunderBreaker
+import enums.FameResponseType
 import network.opcode.SendOpcode
 import tools.Pair
 import tools.data.output.MaplePacketLittleEndianWriter
@@ -258,43 +259,27 @@ class WvsContext {
             return mplew.packet
         }
 
-        fun giveFameResponse(mode: Int, charname: String?, newfame: Int): ByteArray? {
-            val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.FAME_RESPONSE.value)
-            mplew.write(0)
-            mplew.writeMapleAsciiString(charname)
-            mplew.write(mode)
-            mplew.writeShort(newfame)
-            mplew.writeShort(0)
-
-            return mplew.packet
-        }
-
         /**
-         * status can be: <br></br> 0: ok, use giveFameResponse<br></br> 1: the username is
-         * incorrectly entered<br></br> 2: users under level 15 are unable to toggle with
-         * fame.<br></br> 3: can't raise or drop fame anymore today.<br></br> 4: can't raise
-         * or drop fame for this character for this month anymore.<br></br> 5: received
-         * fame, use receiveFame()<br></br> 6: level of fame neither has been raised nor
-         * dropped due to an unexpected error
+         * Packet that handles the receiving and giving of fame
          *
-         * @param status
-         * @return
+         * response: use FameResponseType as input
          */
-        fun giveFameErrorResponse(status: Int): ByteArray? {
+        fun onFameResponse(response: Int, name: String?, vararg args: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
             mplew.writeShort(SendOpcode.FAME_RESPONSE.value)
-            mplew.write(status)
-
-            return mplew.packet
-        }
-
-        fun receiveFame(mode: Int, charnameFrom: String?): ByteArray? {
-            val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.FAME_RESPONSE.value)
-            mplew.write(5)
-            mplew.writeMapleAsciiString(charnameFrom)
-            mplew.write(mode)
+            mplew.write(response)
+            when (response) {
+                FameResponseType.GiveSuccess.value -> {
+                    mplew.writeMapleAsciiString(name)
+                    mplew.write(args[0]) // mode
+                    mplew.writeShort(args[1]) // new fame amount
+                    mplew.writeShort(0)
+                }
+                FameResponseType.ReceiveSuccess.value -> {
+                    mplew.writeMapleAsciiString(name)
+                    mplew.write(args[0]) // mode
+                }
+            }
 
             return mplew.packet
         }
