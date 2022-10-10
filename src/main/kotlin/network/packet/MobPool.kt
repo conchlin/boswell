@@ -6,8 +6,8 @@ import network.opcode.SendOpcode
 import server.life.MapleMonster
 import server.movement.LifeMovementFragment
 import tools.MaplePacketCreator
-import tools.data.output.LittleEndianWriter
 import tools.data.output.MaplePacketLittleEndianWriter
+import tools.packets.PacketUtil
 import java.awt.Point
 
 class MobPool {
@@ -31,7 +31,7 @@ class MobPool {
             mplew.write(action)
             mplew.writeInt(skillInfo)
             mplew.writePos(pos)
-            serializeMovementList(mplew, moves)
+            PacketUtil.serializeMovementList(mplew, moves)
 
             return mplew.packet
         }
@@ -202,17 +202,6 @@ class MobPool {
             mplew.write(success)
 
             return mplew.packet
-        }
-
-        private fun serializeMovementList(lew: LittleEndianWriter, moves: List<LifeMovementFragment?>?) {
-            if (moves != null) {
-                lew.write(moves.size)
-            }
-            if (moves != null) {
-                for (move in moves) {
-                    move?.serialize(lew)
-                }
-            }
         }
     }
 }

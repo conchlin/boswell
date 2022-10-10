@@ -227,7 +227,6 @@ public class Wedding extends MaplePacketCreator {
      *    @param ReservedGroomName The groom IGN of the wedding
      *    @param ReservedBrideName The bride IGN of the wedding
      *    @param m_dwField The current field id (the id of the cake map, ex. 680000300)
-     *    @param m_uCount The current user count (equal to m_dwUsers.size)
      *    @param m_dwUsers The List of all MapleCharacter guests within the current cake map to be encoded
      *    @return mplew (MaplePacket) Byte array to be converted and read for byte[]->ImageIO
      */
@@ -241,7 +240,7 @@ public class Wedding extends MaplePacketCreator {
         
         for (MapleCharacter guest : m_dwUsers) {
             // Begin Avatar Encoding
-            addCharLook(mplew, guest, false); // CUser::EncodeAvatar
+            PacketUtil.addCharLook(mplew, guest, false); // CUser::EncodeAvatar
             mplew.writeInt(30000); // v20 = *(_DWORD *)(v13 + 2192) -- new groom marriage ID??
             mplew.writeInt(30000); // v20 = *(_DWORD *)(v13 + 2192) -- new bride marriage ID??
             mplew.writeMapleAsciiString(guest.getName());
@@ -410,7 +409,7 @@ public class Wedding extends MaplePacketCreator {
                 mplew.writeLong(32);
                 mplew.write(items.size());
                 for (Item item : items) {
-                    addItemInfo(mplew, item, true);
+                    PacketUtil.addItemInfoZeroPos(mplew, item);
                 }
                 break;
             }

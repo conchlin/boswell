@@ -4,8 +4,8 @@ import net.server.channel.handlers.SummonDamageHandler.SummonAttackEntry
 import network.opcode.SendOpcode
 import server.maps.MapleSummon
 import server.movement.LifeMovementFragment
-import tools.data.output.LittleEndianWriter
 import tools.data.output.MaplePacketLittleEndianWriter
+import tools.packets.PacketUtil
 import java.awt.Point
 
 class SummonedPool {
@@ -61,7 +61,7 @@ class SummonedPool {
             mplew.writeInt(cid)
             mplew.writeInt(oid)
             mplew.writePos(startPos)
-            serializeMovementList(mplew, moves)
+            PacketUtil.serializeMovementList(mplew, moves)
 
             return mplew.packet
         }
@@ -112,17 +112,6 @@ class SummonedPool {
             mplew.write(newStance)
 
             return mplew.packet
-        }
-
-        private fun serializeMovementList(lew: LittleEndianWriter, moves: List<LifeMovementFragment?>?) {
-            if (moves != null) {
-                lew.write(moves.size)
-            }
-            if (moves != null) {
-                for (move in moves) {
-                    move?.serialize(lew)
-                }
-            }
         }
     }
 }

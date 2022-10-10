@@ -3,8 +3,8 @@ package network.packet
 import network.opcode.SendOpcode
 import server.maps.MapleDragon
 import server.movement.LifeMovementFragment
-import tools.data.output.LittleEndianWriter
 import tools.data.output.MaplePacketLittleEndianWriter
+import tools.packets.PacketUtil
 import java.awt.Point
 
 class DragonPacket {
@@ -36,7 +36,7 @@ class DragonPacket {
             mplew.writeShort(SendOpcode.MOVE_DRAGON.value)
             mplew.writeInt(dragon.owner.id)
             mplew.writePos(p)
-            serializeMovementList(mplew, res)
+            PacketUtil.serializeMovementList(mplew, res)
 
             return mplew.packet
         }
@@ -47,13 +47,6 @@ class DragonPacket {
             mplew.writeInt(charid)
 
             return mplew.packet
-        }
-
-        private fun serializeMovementList(lew: LittleEndianWriter, moves: List<LifeMovementFragment?>?) {
-            lew.write(moves!!.size)
-            for (move in moves) {
-                move!!.serialize(lew)
-            }
         }
     }
 }

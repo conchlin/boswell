@@ -4,8 +4,8 @@ import client.MapleCharacter
 import client.inventory.MaplePet
 import network.opcode.SendOpcode
 import server.movement.LifeMovementFragment
-import tools.data.output.LittleEndianWriter
 import tools.data.output.MaplePacketLittleEndianWriter
+import tools.packets.PacketUtil
 import java.awt.Point
 
 class PetPacket {
@@ -44,7 +44,7 @@ class PetPacket {
             mplew.writeInt(chr.id)
             mplew.write(chr.getPetIndex(pet))
             mplew.writePos(p)
-            serializeMovementList(mplew, moves)
+            PacketUtil.serializeMovementList(mplew, moves)
 
             return mplew.packet
         }
@@ -121,13 +121,6 @@ class PetPacket {
             mplew.writePos(pet.pos)
             mplew.write(pet.stance)
             mplew.writeInt(pet.fh)
-        }
-
-        private fun serializeMovementList(lew: LittleEndianWriter, moves: List<LifeMovementFragment?>?) {
-            lew.write(moves!!.size)
-            for (move in moves) {
-                move!!.serialize(lew)
-            }
         }
     }
 }
