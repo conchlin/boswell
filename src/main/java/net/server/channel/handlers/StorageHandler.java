@@ -30,13 +30,13 @@ import client.inventory.MapleInventoryType;
 import client.inventory.manipulator.MapleInventoryManipulator;
 import client.inventory.manipulator.MapleKarmaManipulator;
 import constants.ItemConstants;
-import constants.ServerConstants;
+import enums.TrunkErrorType;
 import net.AbstractMaplePacketHandler;
+import network.packet.Trunk;
 import network.packet.WvsContext;
 import server.MapleItemInformationProvider;
 import server.MapleStorage;
 import tools.FilePrinter;
-import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 /**
@@ -76,13 +76,13 @@ public final class StorageHandler extends AbstractMaplePacketHandler {
 					Item item = storage.getItem(slot);
 					if (item != null) {
 						if (MapleItemInformationProvider.getInstance().isPickupRestricted(item.getItemId()) && chr.haveItemWithId(item.getItemId(), true)) {
-							c.announce(MaplePacketCreator.getStorageError((byte) 0x0C));
+							c.announce(Trunk.Packet.getStorageError(TrunkErrorType.OneOfAKind.getError()));
 							return;
 						}
 
 						int takeoutFee = storage.getTakeOutFee();
 						if (chr.getMeso() < takeoutFee) {
-							c.announce(MaplePacketCreator.getStorageError((byte) 0x0B));
+							c.announce(Trunk.Packet.getStorageError(TrunkErrorType.InsufficientMesos.getError()));
 							return;
 						} else {
 							chr.gainMeso(-takeoutFee, false);
@@ -97,7 +97,7 @@ public final class StorageHandler extends AbstractMaplePacketHandler {
 							MapleInventoryManipulator.addFromDrop(c, item, false);
 							storage.sendTakenOut(c, item.getInventoryType());
 						} else {
-							c.announce(MaplePacketCreator.getStorageError((byte) 0x0A));
+							c.announce(Trunk.Packet.getStorageError(TrunkErrorType.FullInventory.getError()));
 						}
 					}
 				} else if (mode == 5) { // store
@@ -117,13 +117,13 @@ public final class StorageHandler extends AbstractMaplePacketHandler {
 						return;
 					}
 					if (storage.isFull()) {
-						c.announce(MaplePacketCreator.getStorageError((byte) 0x11));
+						c.announce(Trunk.Packet.getStorageError(TrunkErrorType.FullTrunk.getError()));
 						return;
 					}
 
 					int storeFee = storage.getStoreFee();
 					if (chr.getMeso() < storeFee) {
-						c.announce(MaplePacketCreator.getStorageError((byte) 0x0B));
+						c.announce(Trunk.Packet.getStorageError(TrunkErrorType.InsufficientMesos.getError()));
 					} else {
 						Item item;
 

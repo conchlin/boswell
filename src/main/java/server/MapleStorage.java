@@ -25,6 +25,7 @@ import client.inventory.MapleInventoryType;
 import net.database.Statements;
 import net.server.audit.locks.MonitoredLockType;
 import net.server.audit.locks.factory.MonitoredReentrantLockFactory;
+import network.packet.Trunk;
 import network.packet.WvsContext;
 import provider.MapleData;
 import provider.MapleDataProvider;
@@ -237,7 +238,7 @@ public class MapleStorage {
             }
 
             currentNpcid = npcId;
-            c.announce(MaplePacketCreator.getStorage(npcId, slots, storageItems, meso));
+            c.announce(Trunk.Packet.getStorage(npcId, slots, storageItems, meso));
         } finally {
             lock.unlock();
         }
@@ -246,7 +247,7 @@ public class MapleStorage {
     public void sendStored(MapleClient c, MapleInventoryType type) {
         lock.lock();
         try {
-            c.announce(MaplePacketCreator.storeStorage(slots, type, typeItems.get(type)));
+            c.announce(Trunk.Packet.storeStorage(slots, type, typeItems.get(type)));
         } finally {
             lock.unlock();
         }
@@ -255,7 +256,7 @@ public class MapleStorage {
     public void sendTakenOut(MapleClient c, MapleInventoryType type) {
         lock.lock();
         try {
-            c.announce(MaplePacketCreator.takeOutStorage(slots, type, typeItems.get(type)));
+            c.announce(Trunk.Packet.takeOutStorage(slots, type, typeItems.get(type)));
         } finally {
             lock.unlock();
         }
@@ -272,7 +273,7 @@ public class MapleStorage {
                 typeItems.put(type, new ArrayList<>(items));
             }
 
-            c.announce(MaplePacketCreator.arrangeStorage(slots, items));
+            c.announce(Trunk.Packet.arrangeStorage(slots, items));
         } finally {
             lock.unlock();
         }
@@ -290,7 +291,7 @@ public class MapleStorage {
     }
 
     public void sendMeso(MapleClient c) {
-        c.announce(MaplePacketCreator.mesoStorage(slots, meso));
+        c.announce(Trunk.Packet.mesoStorage(slots, meso));
     }
 
     public int getStoreFee() {  // thanks to GabrielSin
