@@ -32,6 +32,7 @@ import net.server.guild.MapleGuild;
 import net.server.world.MapleParty;
 import net.server.world.MaplePartyCharacter;
 import network.packet.ScriptMan;
+import network.packet.StoreBank;
 import network.packet.WvsContext;
 import provider.MapleData;
 import provider.MapleDataProviderFactory;
@@ -535,7 +536,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     }
 
     public void showFredrick() {
-        c.announce(MaplePacketCreator.getFredrick(getPlayer()));
+        c.announce(StoreBank.Packet.onStoreBankResult(getPlayer()));
     }
 
     public int partyMembersInMap() {

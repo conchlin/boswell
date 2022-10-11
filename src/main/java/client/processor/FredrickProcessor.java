@@ -40,6 +40,7 @@ import client.inventory.manipulator.MapleInventoryManipulator;
 import java.util.Collections;
 import net.server.Server;
 import net.server.world.World;
+import network.packet.StoreBank;
 import server.MapleItemInformationProvider;
 import server.maps.MapleHiredMerchant;
 import net.database.DatabaseConnection;
@@ -61,7 +62,8 @@ public class FredrickProcessor {
             for (Pair<Item, MapleInventoryType> it : items) {
                 itemids.add(it.getLeft().getItemId());
             }
-            
+
+            // todo add these storebank message results to an enum
             if (chr.canHoldUniques(itemids)) {
                 return 0x22;
             } else {
@@ -278,7 +280,7 @@ public class FredrickProcessor {
                     
                     byte response = canRetrieveFromFredrick(chr, items);
                     if (response != 0) {
-                        chr.announce(MaplePacketCreator.fredrickMessage(response));
+                        chr.announce(StoreBank.Packet.onStoreBankMessage(response));
                         return;
                     }
                     
@@ -297,7 +299,7 @@ public class FredrickProcessor {
                             FilePrinter.print(FilePrinter.FREDRICK + chr.getName() + ".txt", chr.getName() + " gained " + item.getQuantity() + " " + itemName + " (" + item.getItemId() + ")");
                         }
 
-                        chr.announce(MaplePacketCreator.fredrickMessage((byte) 0x1E));
+                        chr.announce(StoreBank.Packet.onStoreBankMessage((byte) 0x1E));
                         removeFredrickLog(chr.getId());
                     } else {
                         chr.message("An unknown error has occured.");

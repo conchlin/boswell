@@ -3371,50 +3371,6 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    public static byte[] fredrickMessage(byte operation) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.FREDRICK_MESSAGE.getValue());
-        mplew.write(operation);
-        return mplew.getPacket();
-    }
-
-    public static byte[] getFredrick(byte op) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.FREDRICK.getValue());
-        mplew.write(op);
-
-        if (op == 0x24) {
-            mplew.skip(8);
-        } else {
-            mplew.write(0);
-        }
-
-        return mplew.getPacket();
-    }
-
-    public static byte[] getFredrick(MapleCharacter chr) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.FREDRICK.getValue());
-        mplew.write(0x23);
-        mplew.writeInt(9030000); // Fredrick
-        mplew.writeInt(32272); //id
-        mplew.skip(5);
-        mplew.writeInt(chr.getMerchantNetMeso());
-        mplew.write(0);
-        try {
-            List<Pair<Item, MapleInventoryType>> items = ItemFactory.MERCHANT.loadItems(chr.getId(), false);
-            mplew.write(items.size());
-
-            for (Pair<Item, MapleInventoryType> item : items) {
-                PacketUtil.addItemInfoZeroPos(mplew, item.getLeft());
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        mplew.skip(3);
-        return mplew.getPacket();
-    }
-
     public static byte[] getPlayerShopChat(MapleCharacter c, String chat, byte slot) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendOpcode.PLAYER_INTERACTION.getValue());
