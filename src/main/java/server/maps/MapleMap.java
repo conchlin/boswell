@@ -2582,9 +2582,9 @@ public class MapleMap {
 
         removeMapObject(chr.getObjectId());
         if (!chr.isHidden()) {
-            broadcastMessage(MaplePacketCreator.removePlayerFromMap(chr.getId()));
+            broadcastMessage(UserPool.Packet.onUserLeaveField(chr.getId()));
         } else {
-            broadcastGMMessage(MaplePacketCreator.removePlayerFromMap(chr.getId()));
+            broadcastGMMessage(UserPool.Packet.onUserLeaveField(chr.getId()));
         }
         for (MapleMonster monster : chr.getControlledMonsters()) {
             monster.setController(null);
@@ -2752,14 +2752,14 @@ public class MapleMap {
                 for (MapleCharacter chr : characters) {
                     if (chr.isGM()) {
                         if (chr != source) {
-                            chr.announce(MaplePacketCreator.spawnPlayerMapObject(chr.getClient(), player));
+                            chr.announce(UserPool.Packet.onUserEnterField(chr.getClient(), player));
                         }
                     }
                 }
             } else {
                 for (MapleCharacter chr : characters) {
                     if (chr != source) {
-                        chr.announce(MaplePacketCreator.spawnPlayerMapObject(chr.getClient(), player));
+                        chr.announce(UserPool.Packet.onUserEnterField(chr.getClient(), player));
                     }
                 }
             }

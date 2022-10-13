@@ -792,7 +792,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                 this.hidden = true;
                 announce(MaplePacketCreator.getGMEffect(0x10, (byte) 1));
                 if (!login) {
-                    getMap().broadcastNONGMMessage(this, MaplePacketCreator.removePlayerFromMap(getId()), false);
+                    getMap().broadcastNONGMMessage(this, UserPool.Packet.onUserLeaveField(getId()), false);
                 }
                 List<Pair<MapleBuffStat, BuffValueHolder>> ldsstat = Collections.singletonList(
                         new Pair<>(MapleBuffStat.DARKSIGHT, new BuffValueHolder(0, 0, 0)));
@@ -2156,8 +2156,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                     byte recHP = (byte) (healHP / ServerConstants.CHAIR_EXTRA_HEAL_MULTIPLIER);
 
                     client.announce(UserLocal.Packet.onEffect(UserEffectType.RECOVERY.getEffect(), "", recHP));
-                    getMap().broadcastMessage(MapleCharacter.this,
-                            UserRemote.Packet.onRemoteUserEffect(id, UserEffectType.RECOVERY.getEffect(), recHP), false);
+                    //getMap().broadcastMessage(MapleCharacter.this, UserRemote.Packet.onRemoteUserEffect(id, UserEffectType.RECOVERY.getEffect(), recHP), false);
                 } else if (MapleCharacter.this.getMp() >= localmaxmp) {
                     stopChairTask();    // optimizing schedule management when player is already with full pool.
                 }
@@ -8143,13 +8142,13 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 
     @Override
     public void sendDestroyData(MapleClient client) {
-        client.announce(MaplePacketCreator.removePlayerFromMap(this.getObjectId()));
+        client.announce(UserPool.Packet.onUserLeaveField(this.getObjectId()));
     }
 
     @Override
     public void sendSpawnData(MapleClient client) {
         if (!this.isHidden() || client.getPlayer().gmLevel() > 1) {
-            client.announce(MaplePacketCreator.spawnPlayerMapObject(client, this));
+            client.announce(UserPool.Packet.onUserEnterField(client, this));
 
 /*            if (buffEffects.containsKey(getJobMapChair(job))) { // mustn't effLock, chrLock this function
                 client.announce(MaplePacketCreator.giveForeignChairSkillEffect(id));

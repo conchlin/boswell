@@ -1094,123 +1094,6 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    /**
-     * Gets a packet spawning a player as a mapobject to other clients.
-     *
-     * @param target The client receiving this packet.
-     * @param chr The character to spawn to other clients.
-     * the map or already is.
-     * @return The spawn player packet.
-     */
-    public static byte[] spawnPlayerMapObject(MapleClient target, MapleCharacter chr) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.SPAWN_PLAYER.getValue());
-        mplew.writeInt(chr.getId());
-        mplew.write(chr.getLevel()); //v83
-        mplew.writeMapleAsciiString(chr.getName());
-        if (chr.getGuildId() < 1) {
-            mplew.writeMapleAsciiString("");
-            mplew.write(new byte[6]);
-        } else {
-            MapleGuildSummary gs = chr.getClient().getWorldServer().getGuildSummary(chr.getGuildId(), chr.getWorld());
-            if (gs != null) {
-                mplew.writeMapleAsciiString(gs.getName());
-                mplew.writeShort(gs.getLogoBG());
-                mplew.write(gs.getLogoBGColor());
-                mplew.writeShort(gs.getLogo());
-                mplew.write(gs.getLogoColor());
-            } else {
-                mplew.writeMapleAsciiString("");
-                mplew.write(new byte[6]);
-            }
-        }
-
-        PacketUtil.writeForeignBuffs(mplew, chr);
-
-        mplew.writeShort(chr.getJob().getId());
-
-        /* replace "mplew.writeShort(chr.getJob().getId())" with this snippet for 3rd person FJ animation on all classes
-                if (chr.getJob().isA(MapleJob.HERMIT) || chr.getJob().isA(MapleJob.DAWNWARRIOR2) || chr.getJob().isA(MapleJob.NIGHTWALKER2)) {
-			mplew.writeShort(chr.getJob().getId());
-                } else {
-			mplew.writeShort(412);
-                }*/
-        PacketUtil.addCharLook(mplew, chr, false);
-        mplew.writeInt(chr.getInventory(MapleInventoryType.CASH).countById(5110000));
-        mplew.writeInt(chr.getItemEffect());
-        mplew.writeInt(ItemConstants.getInventoryType(chr.getChair()) == MapleInventoryType.SETUP ? chr.getChair() : 0);
-        mplew.writePos(chr.getPosition());
-        mplew.write(chr.getStance());
-        mplew.writeShort(chr.getFh());
-        mplew.write(0); // admin byte
-        MaplePet[] pet = chr.getPets();
-        for (int i = 0; i < 3; i++) {
-            if (pet[i] != null) {
-                PacketUtil.addPetInfo(mplew, pet[i], false);
-            }
-        }
-        mplew.write(0); //end of pets
-        if (chr.getMount() == null) {
-            mplew.writeInt(1); // mob level
-            mplew.writeLong(0); // mob exp + tiredness
-        } else {
-            mplew.writeInt(chr.getMount().getLevel());
-            mplew.writeInt(chr.getMount().getExp());
-            mplew.writeInt(chr.getMount().getTiredness());
-        }
-
-        MaplePlayerShop mps = chr.getPlayerShop();
-        if (mps != null && mps.isOwner(chr)) {
-            if (mps.hasFreeSlot()) {
-                PacketUtil.addAnnounceBox(mplew, mps, mps.getVisitors().length);
-            } else {
-                PacketUtil.addAnnounceBox(mplew, mps, 1);
-            }
-        } else {
-            MapleMiniGame miniGame = chr.getMiniGame();
-            if (miniGame != null && miniGame.isOwner(chr)) {
-                if (miniGame.hasFreeSlot()) {
-                    PacketUtil.addAnnounceBox(mplew, miniGame, 1, 0);
-                } else {
-                    PacketUtil.addAnnounceBox(mplew, miniGame, 2, miniGame.isMatchInProgress() ? 1 : 0);
-                }
-            } else {
-                mplew.write(0);
-            }
-        }
-
-        if (chr.getChalkboard() != null) {
-            mplew.write(1);
-            mplew.writeMapleAsciiString(chr.getChalkboard());
-        } else {
-            mplew.write(0);
-        }
-        PacketUtil.addRingLook(mplew, chr, true);  // crush
-        PacketUtil.addRingLook(mplew, chr, false); // friendship
-        PacketUtil.addMarriageRingLook(target, mplew, chr);
-        /* above
-           if ( CInPacket::Decode1(a2) ) {
-		    v39 = CInPacket::Decode4(a2);
-		    if ( v39 > 0 )
-		    {
-		      v40 = v39;
-		      do
-		      {
-		        v41 = CInPacket::Decode4(a2);
-		        CUserPool::OnNewYearCardRecordAdd(0, v5, v41);
-		        --v40;
-		      }
-		      while ( v40 );
-		    }
-		  }
-
-         */
-        PacketUtil.encodeNewYearCardInfo(mplew, chr);  // new year seems to crash sometimes...
-        mplew.skip(2);
-        mplew.write(chr.getTeam());//only needed in specific fields
-        return mplew.getPacket();
-    }
-
     public static byte[] onNewYearCardRes(MapleCharacter user, int cardId, int mode, int msg) {
         NewYearCardRecord newyear = user.getNewYearRecord(cardId);
         return onNewYearCardRes(user, newyear, mode, msg);
@@ -1377,13 +1260,6 @@ public class MaplePacketCreator {
         if (addMovement > -1) {
             mplew.write(addMovement);
         }
-        return mplew.getPacket();
-    }
-
-    public static byte[] removePlayerFromMap(int cid) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.REMOVE_PLAYER_FROM_MAP.getValue());
-        mplew.writeInt(cid);
         return mplew.getPacket();
     }
 

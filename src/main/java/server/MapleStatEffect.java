@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 
 import net.server.Server;
+import network.packet.UserPool;
 import network.packet.UserRemote;
 import network.packet.WvsContext;
 import provider.MapleData;
@@ -927,8 +928,8 @@ public class MapleStatEffect {
         if (!primary && isResurrection()) {
             hpchange = applyto.getMaxHp();
             applyto.setStance(0);
-            applyto.getMap().broadcastMessage(applyto, MaplePacketCreator.removePlayerFromMap(applyto.getId()), false);
-            applyto.getMap().broadcastMessage(applyto, MaplePacketCreator.spawnPlayerMapObject(applyfrom.getClient(), applyto), false);
+            applyto.getMap().broadcastMessage(applyto, UserPool.Packet.onUserLeaveField(applyto.getId()), false);
+            applyto.getMap().broadcastMessage(applyto, UserPool.Packet.onUserEnterField(applyfrom.getClient(), applyto), false);
         }
         if (canDispel()) {
             List<MapleBuffStat> toDispel = new ArrayList<>();
