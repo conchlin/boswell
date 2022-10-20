@@ -28,6 +28,7 @@ import client.MapleClient;
 import client.MapleCharacter;
 import client.inventory.MaplePet;
 import client.inventory.manipulator.MapleInventoryManipulator;
+import network.packet.DropPool;
 import server.maps.MapleMapItem;
 import server.maps.MapleMapObject;
 import server.maps.MapleMapObjectType;
@@ -70,7 +71,7 @@ public class ForceVacCommand extends Command {
                     }
                 }
 
-                player.getMap().pickItemDrop(MaplePacketCreator.removeItemFromMap(mapItem.getObjectId(), 2, player.getId()), mapItem);
+                player.getMap().pickItemDrop(DropPool.Packet.onDropLeaveField(mapItem.getObjectId(), 2, player.getId()), mapItem);
             } finally {
                 mapItem.unlockItem();
             }

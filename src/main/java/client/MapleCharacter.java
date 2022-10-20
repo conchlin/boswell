@@ -1712,7 +1712,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                 }*/
 
                 boolean isPet = petIndex > -1;
-                final byte[] pickupPacket = MaplePacketCreator.removeItemFromMap(mapitem.getObjectId(), (isPet) ? 5 : 2, this.getId(), isPet, petIndex);
+                final byte[] pickupPacket = DropPool.Packet.onDropLeaveField(mapitem.getObjectId(), (isPet) ? 5 : 2, this.getId(), isPet, petIndex);
 
                 Item mItem = mapitem.getItem();
                 boolean hasSpaceInventory = true;

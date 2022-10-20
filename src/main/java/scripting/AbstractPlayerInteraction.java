@@ -818,7 +818,7 @@ public class AbstractPlayerInteraction {
         getMap(mapid).killAllMonsters();
         for (MapleMapObject i : getMap(mapid).getMapObjectsInRange(c.getPlayer().getPosition(), Double.POSITIVE_INFINITY, Arrays.asList(MapleMapObjectType.ITEM))) {
             getMap(mapid).removeMapObject(i);
-            getMap(mapid).broadcastMessage(MaplePacketCreator.removeItemFromMap(i.getObjectId(), 0, c.getPlayer().getId()));
+            getMap(mapid).broadcastMessage(DropPool.Packet.onDropLeaveField(i.getObjectId(), 0, c.getPlayer().getId()));
         }
     }
 

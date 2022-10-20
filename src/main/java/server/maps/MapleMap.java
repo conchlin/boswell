@@ -1011,8 +1011,8 @@ public class MapleMap {
 
                     mdrop.setPartyOwnerId(partyid);
 
-                    byte[] removePacket = MaplePacketCreator.silentRemoveItemFromMap(mdrop.getObjectId());
-                    byte[] updatePacket = MaplePacketCreator.updateMapItemObject(mdrop, partyLeaver == null);
+                    byte[] removePacket = DropPool.Packet.onSilentDropLeaveField(mdrop.getObjectId());
+                    byte[] updatePacket = DropPool.Packet.onDropEnterField(mdrop, partyLeaver == null);
 
                     for (MapleCharacter mc : partyMembers) {
                         if (this.equals(mc.getMap())) {
@@ -1029,7 +1029,7 @@ public class MapleMap {
                             partyLeaver.announce(removePacket);
 
                             if (partyLeaver.needQuestItem(mdrop.getQuest(), mdrop.getItemId())) {
-                                partyLeaver.announce(MaplePacketCreator.updateMapItemObject(mdrop, true));
+                                partyLeaver.announce(DropPool.Packet.onDropEnterField(mdrop, true));
                             }
                         }
                     }
@@ -1052,8 +1052,8 @@ public class MapleMap {
                     continue;
                 }
 
-                byte[] removePacket = MaplePacketCreator.silentRemoveItemFromMap(mdrop.getObjectId());
-                byte[] updatePacket = MaplePacketCreator.updateMapItemObject(mdrop, true);
+                byte[] removePacket = DropPool.Packet.onSilentDropLeaveField(mdrop.getObjectId());
+                byte[] updatePacket = DropPool.Packet.onDropEnterField(mdrop, true);
 
                 if (newcomer != null) {
                     if (this.equals(newcomer.getMap())) {
@@ -1079,7 +1079,7 @@ public class MapleMap {
             if (chr1.needQuestItem(questid, idrop.getItemId())) {
                 mdrop.lockItem();
                 try {
-                    c.announce(MaplePacketCreator.dropItemFromMapObject(chr1, mdrop, dropper.getPosition(), dropPos, (byte) 1));
+                    c.announce(DropPool.Packet.onDropEnterField(chr1, mdrop, dropper.getPosition(), dropPos, (byte) 1));
                 } finally {
                     mdrop.unlockItem();
                 }
@@ -1098,7 +1098,7 @@ public class MapleMap {
         spawnAndAddRangedMapObject(mdrop, c -> {
             mdrop.lockItem();
             try {
-                c.announce(MaplePacketCreator.dropItemFromMapObject(c.getPlayer(), mdrop, dropper.getPosition(), droppos, (byte) 1));
+                c.announce(DropPool.Packet.onDropEnterField(c.getPlayer(), mdrop, dropper.getPosition(), droppos, (byte) 1));
             } finally {
                 mdrop.unlockItem();
             }
@@ -2094,7 +2094,7 @@ public class MapleMap {
         spawnAndAddRangedMapObject(mdrop, c -> {
             mdrop.lockItem();
             try {
-                c.announce(MaplePacketCreator.dropItemFromMapObject(c.getPlayer(), mdrop, dropper.getPosition(), droppos, (byte) 1));
+                c.announce(DropPool.Packet.onDropEnterField(c.getPlayer(), mdrop, dropper.getPosition(), droppos, (byte) 1));
             } finally {
                 mdrop.unlockItem();
             }
@@ -2722,7 +2722,7 @@ public class MapleMap {
         chrRLock.lock();
         try {
             for (MapleCharacter chr : characters) {
-                final byte[] packet = MaplePacketCreator.dropItemFromMapObject(chr, mdrop, dropperPos, dropPos, mod);
+                final byte[] packet = DropPool.Packet.onDropEnterField(chr, mdrop, dropperPos, dropPos, mod);
 
                 if (rangeSq < Double.POSITIVE_INFINITY) {
                     if (rangedFrom.distanceSq(chr.getPosition()) <= rangeSq) {
@@ -3278,7 +3278,7 @@ public class MapleMap {
                     return true;
                 }
 
-                MapleMap.this.pickItemDrop(MaplePacketCreator.removeItemFromMap(mapitem.getObjectId(), 0, 0), mapitem);
+                MapleMap.this.pickItemDrop(DropPool.Packet.onDropLeaveField(mapitem.getObjectId(), 0, 0), mapitem);
                 return true;
             } finally {
                 mapitem.unlockItem();
@@ -3357,7 +3357,7 @@ public class MapleMap {
                             unregisterItemDrop(mapitem);
 
                             reactor.setShouldCollect(false);
-                            MapleMap.this.broadcastMessage(MaplePacketCreator.removeItemFromMap(mapitem.getObjectId(), 0, 0), mapitem.getPosition());
+                            MapleMap.this.broadcastMessage(DropPool.Packet.onDropLeaveField(mapitem.getObjectId(), 0, 0), mapitem.getPosition());
 
                             droppedItemCount.decrementAndGet();
                             MapleMap.this.removeMapObject(mapitem);
@@ -3668,7 +3668,7 @@ public class MapleMap {
         for (MapleMapObject i : getMapObjectsInRange(player.getPosition(), Double.POSITIVE_INFINITY, Arrays.asList(MapleMapObjectType.ITEM))) {
             droppedItemCount.decrementAndGet();
             removeMapObject(i);
-            this.broadcastMessage(MaplePacketCreator.removeItemFromMap(i.getObjectId(), 0, player.getId()));
+            this.broadcastMessage(DropPool.Packet.onDropLeaveField(i.getObjectId(), 0, player.getId()));
         }
     }
 
@@ -3676,7 +3676,7 @@ public class MapleMap {
         for (MapleMapObject i : getMapObjectsInRange(new Point(0, 0), Double.POSITIVE_INFINITY, Arrays.asList(MapleMapObjectType.ITEM))) {
             droppedItemCount.decrementAndGet();
             removeMapObject(i);
-            this.broadcastMessage(MaplePacketCreator.removeItemFromMap(i.getObjectId(), 0, 0));
+            this.broadcastMessage(DropPool.Packet.onDropLeaveField(i.getObjectId(), 0, 0));
         }
     }
 

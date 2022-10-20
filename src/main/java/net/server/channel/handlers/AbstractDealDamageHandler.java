@@ -31,6 +31,7 @@ import constants.GameConstants;
 import constants.ServerConstants;
 import constants.skills.*;
 import net.AbstractMaplePacketHandler;
+import network.packet.DropPool;
 import network.packet.MobPool;
 import network.packet.UserRemote;
 import network.packet.WvsContext;
@@ -225,7 +226,7 @@ public abstract class AbstractDealDamageHandler extends AbstractMaplePacketHandl
                             TimerManager.getInstance().schedule(() -> {
                                 map.removeMapObject(mapItem);
                                 map.broadcastMessage(
-                                        MaplePacketCreator.removeItemFromMap(mapItem.getObjectId(), 4, 0), mapItem.getPosition());
+                                        DropPool.Packet.onDropLeaveField(mapItem.getObjectId(), 4, 0), mapItem.getPosition());
                                 mapItem.setPickedUp(true);
                             }, delay);
                             delay += 100;
