@@ -42,7 +42,6 @@ public class ServerConstants {
     public static final long  UPDATE_INTERVAL = 777;            //Dictates the frequency on which the "centralized server time" is updated.
     
     public static final boolean BCRYPT_MIGRATION = false;        //Performs a migration from old SHA-1 and SHA-512 password to bcrypt.
-    public static final boolean COLLECTIVE_CHARSLOT = false;    //Available character slots are contabilized globally rather than per world server.
     public static final boolean DETERRED_MULTICLIENT = false;   //Enables multi-client and suspicious remote IP detection on the login system.
     
     //Besides blocking logging in with several client sessions on the same machine, this also blocks suspicious login attempts for players that tries to login on an account using several diferent remote addresses.

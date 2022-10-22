@@ -25,8 +25,8 @@ import client.MapleSkinColor;
 import client.inventory.Item;
 import client.inventory.MapleInventory;
 import client.inventory.MapleInventoryType;
-import constants.ServerConstants;
 import net.server.Server;
+import network.packet.CLogin;
 import server.MapleItemInformationProvider;
 import tools.FilePrinter;
 import tools.MaplePacketCreator;
@@ -38,7 +38,7 @@ import tools.MaplePacketCreator;
 public abstract class CharacterFactory {
         
         protected synchronized static int createNewCharacter(MapleClient c, String name, int face, int hair, int skin, int gender, CharacterFactoryRecipe recipe) {
-                if (ServerConstants.COLLECTIVE_CHARSLOT ? c.getAvailableCharacterSlots() <= 0 : c.getAvailableCharacterWorldSlots() <= 0) {
+                if (c.getAvailableCharacterWorldSlots() <= 0) {
                         return -3;
                 }
             
@@ -111,7 +111,7 @@ public abstract class CharacterFactory {
 
                 if (!newchar.insertNewChar(recipe)) return -2;
 
-                c.announce(MaplePacketCreator.addNewCharEntry(newchar));
+                c.announce(CLogin.Packet.addNewCharEntry(newchar));
                 
                 Server.getInstance().createCharacterEntry(newchar);
                 Server.getInstance().broadcastGMMessage(c.getWorld(), MaplePacketCreator.sendYellowTip("[New Char]: " + c.getAccountName() + " has created a new character with IGN " + name));

@@ -23,7 +23,7 @@ package net.server.handlers.login;
 
 import client.MapleClient;
 import net.AbstractMaplePacketHandler;
-import tools.MaplePacketCreator;
+import network.packet.CLogin;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 public final class RelogRequestHandler extends AbstractMaplePacketHandler {
@@ -33,7 +33,7 @@ public final class RelogRequestHandler extends AbstractMaplePacketHandler {
     }
 
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
-        c.announce(MaplePacketCreator.getRelogResponse());
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+        c.announce(CLogin.Packet.getRelogResponse());
     }
 }

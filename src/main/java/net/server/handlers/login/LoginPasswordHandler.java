@@ -22,10 +22,12 @@
 package net.server.handlers.login;
 
 import client.MapleClient;
+import enums.LoginResultType;
 import net.MaplePacketHandler;
 import net.database.DatabaseConnection;
 import net.server.Server;
 import net.database.Statements;
+import network.packet.CLogin;
 import tools.*;
 import tools.data.input.SeekableLittleEndianAccessor;
 
@@ -67,21 +69,21 @@ public final class LoginPasswordHandler implements MaplePacketHandler {
             FilePrinter.print(FilePrinter.LOGIN_ATTEMPTS, "Someone tried to login to the account "
                     + login + " when the account has a banned ip or mac. New ip: "
                     + c.getSession().getRemoteAddress().toString());
-            c.announce(MaplePacketCreator.getLoginFailed(3));
+            c.announce(CLogin.Packet.getLoginFailed(LoginResultType.Blocked.getReason()));
             return;
         }
         Calendar tempban = c.getTempBanCalendar();
         if (tempban != null) {
             if (tempban.getTimeInMillis() > System.currentTimeMillis()) {
-                c.announce(MaplePacketCreator.getTempBan(tempban.getTimeInMillis(), c.getGReason()));
+                c.announce(CLogin.Packet.getTempBan(tempban.getTimeInMillis(), c.getGReason()));
                 return;
             }
         }
         if (loginok == 3) {
-            c.announce(MaplePacketCreator.getPermBan(c.getGReason()));//crashes but idc :D
+            c.announce(CLogin.Packet.getPermBan());//crashes but idc :D
             return;
         } else if (loginok != 0) {
-            c.announce(MaplePacketCreator.getLoginFailed(loginok));
+            c.announce(CLogin.Packet.getLoginFailed(loginok));
             return;
         }
         if (c.finishLogin() == 0) {
@@ -98,12 +100,12 @@ public final class LoginPasswordHandler implements MaplePacketHandler {
             }
             login(c);
         } else {
-            c.announce(MaplePacketCreator.getLoginFailed(7));
+            c.announce(CLogin.Packet.getLoginFailed(LoginResultType.AlreadyLoggedIn.getReason()));
         }
     }
 
     private static void login(MapleClient c) {
-        c.announce(MaplePacketCreator.getAuthSuccess(c));//why the fk did I do c.getAccountName()?
+        c.announce(CLogin.Packet.getAuthSuccess(c));//why the fk did I do c.getAccountName()?
         Server.getInstance().registerLoginState(c);
     }
 }

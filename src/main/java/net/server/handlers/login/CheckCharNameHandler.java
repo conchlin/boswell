@@ -24,14 +24,14 @@ package net.server.handlers.login;
 import client.MapleCharacter;
 import client.MapleClient;
 import net.AbstractMaplePacketHandler;
-import tools.MaplePacketCreator;
+import network.packet.CLogin;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 public final class CheckCharNameHandler extends AbstractMaplePacketHandler {
 
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         String name = slea.readMapleAsciiString();
-        c.announce(MaplePacketCreator.charNameResponse(name, !MapleCharacter.canCreateChar(name)));
+        c.announce(CLogin.Packet.onCheckDuplicatedIDResult(name, !MapleCharacter.canCreateChar(name)));
     }
 }

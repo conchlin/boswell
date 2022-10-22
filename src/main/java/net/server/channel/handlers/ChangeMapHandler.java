@@ -32,6 +32,7 @@ import client.MapleClient;
 import client.inventory.MapleInventoryType;
 import client.inventory.manipulator.MapleInventoryManipulator;
 import constants.MapConstants;
+import network.packet.CLogin;
 import network.packet.UserLocal;
 import network.packet.WvsContext;
 import server.MaplePortal;
@@ -75,7 +76,7 @@ public final class ChangeMapHandler extends AbstractMaplePacketHandler {
             c.updateLoginState(MapleClient.LOGIN_SERVER_TRANSITION);
             chr.setSessionTransitionState();
             try {
-                c.announce(MaplePacketCreator.getChannelChange(InetAddress.getByName(socket[0]), Integer.parseInt(socket[1])));
+                c.announce(CLogin.Packet.getChannelChange(InetAddress.getByName(socket[0]), Integer.parseInt(socket[1])));
             } catch (UnknownHostException ex) {
                 ex.printStackTrace();
             }

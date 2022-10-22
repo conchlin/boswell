@@ -46,6 +46,7 @@ import java.util.concurrent.locks.Lock;
 import com.google.gson.JsonObject;
 import net.database.DatabaseConnection;
 import net.database.Statements;
+import network.packet.CLogin;
 import network.packet.UserLocal;
 import network.packet.WvsContext;
 import tools.*;
@@ -172,7 +173,7 @@ public class MapleClient {
     }
 
     public void sendCharList(int server) {
-        this.announce(MaplePacketCreator.getCharList(this, server, 0));
+        this.announce(CLogin.Packet.getCharList(this, server));
     }
 
     public List<MapleCharacter> loadCharacters(int serverId) {
@@ -1284,7 +1285,7 @@ public class MapleClient {
         player.getClient().updateLoginState(MapleClient.LOGIN_SERVER_TRANSITION);
         player.setSessionTransitionState();
         try {
-            announce(MaplePacketCreator.getChannelChange(InetAddress.getByName(socket[0]), Integer.parseInt(socket[1])));
+            announce(CLogin.Packet.getChannelChange(InetAddress.getByName(socket[0]), Integer.parseInt(socket[1])));
         } catch (IOException e) {
             e.printStackTrace();
         }

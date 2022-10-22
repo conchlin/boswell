@@ -1,8 +1,9 @@
 package net.server.handlers.login;
 
 import client.MapleClient;
+import enums.LoginResultType;
 import net.AbstractMaplePacketHandler;
-import tools.MaplePacketCreator;
+import network.packet.CLogin;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 /**
@@ -17,15 +18,15 @@ public final class AcceptToSHandler extends AbstractMaplePacketHandler {
     }
 
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         if (slea.available() == 0 || slea.readByte() != 1 || c.acceptToS()) {
             c.disconnect(false, false);//Client dc's but just because I am cool I do this (:
             return;
         }
         if (c.finishLogin() == 0) {
-            c.announce(MaplePacketCreator.getAuthSuccess(c));
+            c.announce(CLogin.Packet.getAuthSuccess(c));
         } else {
-            c.announce(MaplePacketCreator.getLoginFailed(9));//shouldn't happen XD
+            c.announce(CLogin.Packet.getLoginFailed(LoginResultType.SystemError2.getReason()));//shouldn't happen XD
         }
     }
 }

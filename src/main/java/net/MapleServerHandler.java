@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.Calendar;
 import java.util.concurrent.atomic.AtomicLong;
 
+import network.packet.CLogin;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
@@ -221,7 +222,7 @@ public class MapleServerHandler extends IoHandlerAdapter {
         if(idleLock.tryLock()) {
             try {
                 idleSessions.put(c, Server.getInstance().getCurrentTime());
-                c.announce(MaplePacketCreator.getPing());
+                c.announce(CLogin.Packet.getPing());
             } finally {
                 idleLock.unlock();
             }
@@ -229,7 +230,7 @@ public class MapleServerHandler extends IoHandlerAdapter {
             tempLock.lock();
             try {
                 tempIdleSessions.put(c, Server.getInstance().getCurrentTime());
-                c.announce(MaplePacketCreator.getPing());
+                c.announce(CLogin.Packet.getPing());
             } finally {
                 tempLock.unlock();
             }

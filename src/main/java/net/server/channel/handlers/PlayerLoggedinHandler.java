@@ -28,6 +28,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.google.gson.JsonObject;
+import enums.LoginResultType;
 import net.AbstractMaplePacketHandler;
 import net.server.PlayerBuffValueHolder;
 import net.server.Server;
@@ -38,6 +39,7 @@ import net.server.guild.MapleGuild;
 import net.server.world.MaplePartyCharacter;
 import net.server.world.PartyOperation;
 import net.server.world.World;
+import network.packet.CLogin;
 import network.packet.FuncKeyMappedMan;
 import network.packet.NpcPool;
 import network.packet.WvsContext;
@@ -183,7 +185,7 @@ public final class PlayerLoggedinHandler extends AbstractMaplePacketHandler {
                             if (state == MapleClient.LOGIN_LOGGEDIN) {
                                 c.disconnect(true, false);
                             } else {
-                                c.announce(MaplePacketCreator.getAfterLoginError(7));
+                                c.announce(CLogin.Packet.getAfterLoginError(LoginResultType.AlreadyLoggedIn.getReason()));
                             }
 
                             return;
@@ -195,7 +197,7 @@ public final class PlayerLoggedinHandler extends AbstractMaplePacketHandler {
                 } else {
                     c.setPlayer(null);
                     c.setAccID(0);
-                    c.announce(MaplePacketCreator.getAfterLoginError(10));
+                    c.announce(CLogin.Packet.getAfterLoginError(LoginResultType.TooManyConnections.getReason()));
                     return;
                 }
                 
@@ -416,7 +418,7 @@ public final class PlayerLoggedinHandler extends AbstractMaplePacketHandler {
                 c.releaseClient();
             }
         } else {
-            c.announce(MaplePacketCreator.getAfterLoginError(10));
+            c.announce(CLogin.Packet.getAfterLoginError(LoginResultType.TooManyConnections.getReason()));
         }
     }
 

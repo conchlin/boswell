@@ -22,15 +22,16 @@
 package net.server.handlers.login;
 
 import client.MapleClient;
+import enums.PinCodeResultType;
 import net.AbstractMaplePacketHandler;
 import net.server.coordinator.MapleSessionCoordinator;
-import tools.MaplePacketCreator;
+import network.packet.CLogin;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 public final class AfterLoginHandler extends AbstractMaplePacketHandler {
 
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         byte c2 = slea.readByte();
         byte c3 = 5;
         if (slea.available() > 0) {
@@ -38,23 +39,23 @@ public final class AfterLoginHandler extends AbstractMaplePacketHandler {
         }
         if (c2 == 1 && c3 == 1) {
             if (c.getPin() == null  || c.getPin().equals("")) {
-                c.announce(MaplePacketCreator.registerPin());
+                c.announce(CLogin.Packet.onCheckPinCodeResult(PinCodeResultType.Register.getMode()));
             } else {
-                c.announce(MaplePacketCreator.requestPin());
+                c.announce(CLogin.Packet.onCheckPinCodeResult(PinCodeResultType.Request.getMode()));
             }
         } else if (c2 == 1 && c3 == 0) {
             String pin = slea.readMapleAsciiString();
             if (c.checkPin(pin)) {
-                c.announce(MaplePacketCreator.pinAccepted());
+                c.announce(CLogin.Packet.onCheckPinCodeResult(PinCodeResultType.Accepted.getMode()));
             } else {
-                c.announce(MaplePacketCreator.requestPinAfterFailure());
+                c.announce(CLogin.Packet.onCheckPinCodeResult(PinCodeResultType.Invalid.getMode()));
             }
         } else if (c2 == 2 && c3 == 0) {
             String pin = slea.readMapleAsciiString();
             if (c.checkPin(pin)) {
-                c.announce(MaplePacketCreator.registerPin());
+                c.announce(CLogin.Packet.onCheckPinCodeResult(PinCodeResultType.Register.getMode()));
             } else {
-                c.announce(MaplePacketCreator.requestPinAfterFailure());
+                c.announce(CLogin.Packet.onCheckPinCodeResult(PinCodeResultType.Invalid.getMode()));
             }
         } else if (c2 == 0 && c3 == 5) {
             MapleSessionCoordinator.getInstance().closeSession(c.getSession(), null);

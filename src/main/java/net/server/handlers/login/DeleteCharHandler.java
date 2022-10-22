@@ -22,29 +22,32 @@
 package net.server.handlers.login;
 
 import client.MapleClient;
+import enums.CharDeleteResultType;
+import enums.PinCodeResultType;
 import net.AbstractMaplePacketHandler;
+import network.packet.CLogin;
 import tools.FilePrinter;
-import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 public final class DeleteCharHandler extends AbstractMaplePacketHandler {
 
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         String pic = slea.readMapleAsciiString();
         int cid = slea.readInt();
-        
-        MaplePacketCreator.requestPin(); // for some reason this requests the players pic in this instance
+
+        // for some reason this requests the player's pic in this instance
+        CLogin.Packet.onCheckPinCodeResult(PinCodeResultType.Request.getMode());
         
         if (c.checkPic(pic)) {
             if(c.deleteCharacter(cid, c.getAccID())) {
                 FilePrinter.print(FilePrinter.DELETED_CHAR + c.getAccountName() + ".txt", c.getAccountName() + " deleted CID: " + cid);
-                c.announce(MaplePacketCreator.deleteCharResponse(cid, 0));
+                c.announce(CLogin.Packet.deleteCharResponse(cid, CharDeleteResultType.DeleteOk.getState()));
             } else {
-                c.announce(MaplePacketCreator.deleteCharResponse(cid, 0x14));
+                c.announce(CLogin.Packet.deleteCharResponse(cid, CharDeleteResultType.IncorrectPic.getState()));
             }
         } else {
-            c.announce(MaplePacketCreator.deleteCharResponse(cid, 0x14));
+            c.announce(CLogin.Packet.deleteCharResponse(cid, CharDeleteResultType.IncorrectPic.getState()));
         }
     }
 }

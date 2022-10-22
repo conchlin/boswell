@@ -26,16 +26,17 @@ import client.MapleClient;
 import java.util.List;
 import net.AbstractMaplePacketHandler;
 import net.server.Server;
+import network.packet.CLogin;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 import tools.Pair;
 
 public final class ViewAllCharHandler extends AbstractMaplePacketHandler {
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         try {
             if(!c.canRequestCharlist()) {   // client breaks if the charlist request pops too soon
-                c.announce(MaplePacketCreator.showAllCharacter(0, 0));
+                c.announce(CLogin.Packet.showAllCharacter(0, 0));
                 return;
             }
             
@@ -60,10 +61,10 @@ public final class ViewAllCharHandler extends AbstractMaplePacketHandler {
             
             int charsSize = chrTotal;
             int unk = charsSize + (3 - charsSize % 3); //rowSize?
-            c.announce(MaplePacketCreator.showAllCharacter(charsSize, unk));
+            c.announce(CLogin.Packet.showAllCharacter(charsSize, unk));
             
             for (Pair<Integer, List<MapleCharacter>> wchars : worldChars) {
-                c.announce(MaplePacketCreator.showAllCharacterInfo(wchars.getLeft(), wchars.getRight(), false));
+                c.announce(CLogin.Packet.showAllCharacterInfo(wchars.getLeft(), wchars.getRight(), false));
             }
         } catch (Exception e) {
             e.printStackTrace();

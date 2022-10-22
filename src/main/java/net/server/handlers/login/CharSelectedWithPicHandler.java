@@ -3,11 +3,13 @@ package net.server.handlers.login;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import enums.LoginResultType;
 import net.AbstractMaplePacketHandler;
 import net.server.Server;
 import net.server.coordinator.MapleSessionCoordinator;
 import net.server.coordinator.MapleSessionCoordinator.AntiMulticlientResult;
 import net.server.world.World;
+import network.packet.CLogin;
 import org.apache.mina.core.session.IoSession;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
@@ -34,7 +36,7 @@ public class CharSelectedWithPicHandler extends AbstractMaplePacketHandler {
         String hwid = slea.readMapleAsciiString();
         
         if (!hwid.matches("[0-9A-F]{12}_[0-9A-F]{8}")) {
-            c.announce(MaplePacketCreator.getAfterLoginError(17));
+            c.announce(CLogin.Packet.getAfterLoginError(LoginResultType.WrongGateway.getReason()));
             return;
         }
         
@@ -58,19 +60,19 @@ public class CharSelectedWithPicHandler extends AbstractMaplePacketHandler {
             c.setWorld(server.getCharacterWorld(charId));
             World wserv = c.getWorldServer();
             if(wserv == null || wserv.isWorldCapacityFull()) {
-                c.announce(MaplePacketCreator.getAfterLoginError(10));
+                c.announce(CLogin.Packet.getAfterLoginError(LoginResultType.TooManyConnections.getReason()));
                 return;
             }
             
             String[] socket = server.getInetSocket(c.getWorld(), c.getChannel());
             if(socket == null) {
-                c.announce(MaplePacketCreator.getAfterLoginError(10));
+                c.announce(CLogin.Packet.getAfterLoginError(LoginResultType.TooManyConnections.getReason()));
                 return;
             }
             
             AntiMulticlientResult res = MapleSessionCoordinator.getInstance().attemptGameSession(session, c.getAccID(), hwid);
             if (res != AntiMulticlientResult.SUCCESS) {
-                c.announce(MaplePacketCreator.getAfterLoginError(parseAntiMulticlientError(res)));
+                c.announce(CLogin.Packet.getAfterLoginError(parseAntiMulticlientError(res)));
                 return;
             }
             
@@ -79,12 +81,12 @@ public class CharSelectedWithPicHandler extends AbstractMaplePacketHandler {
             server.setCharacteridInTransition(session, charId);
             
             try {
-                c.announce(MaplePacketCreator.getServerIP(InetAddress.getByName(socket[0]), Integer.parseInt(socket[1]), charId));
+                c.announce(CLogin.Packet.getServerIP(InetAddress.getByName(socket[0]), Integer.parseInt(socket[1]), charId));
             } catch (UnknownHostException | NumberFormatException e) {
                 e.printStackTrace();
             }
         } else {
-            c.announce(MaplePacketCreator.wrongPic());
+            c.announce(CLogin.Packet.wrongPic());
         }
     }
 }
