@@ -254,8 +254,8 @@ public class MapleExpedition {
     }
 
     public void monsterKilled(MapleCharacter chr, MapleMonster mob) {
-        for (int i = 0; i < EXPEDITION_BOSSES.length; i++) {
-            if (mob.getId() == EXPEDITION_BOSSES[i]) { //If the monster killed was a boss
+        for (int expeditionBoss : EXPEDITION_BOSSES) {
+            if (mob.getId() == expeditionBoss) { //If the monster killed was a boss
                 String timeStamp = new SimpleDateFormat("HH:mm:ss").format(new Date());
                 bossLogs.add(">" + mob.getName() + " was killed after " + LogHelper.getTimeString(startTime) + " - " + timeStamp + "\r\n");
                 return;

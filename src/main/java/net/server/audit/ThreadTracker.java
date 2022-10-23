@@ -116,22 +116,22 @@ public class ThreadTracker {
     }
     
     private static String printThreadLog(List<MonitoredLockType> stillLockedPath, String dateFormat) {
-        String s = "----------------------------\r\n" + dateFormat + "\r\n    ";
+        StringBuilder s = new StringBuilder("----------------------------\r\n" + dateFormat + "\r\n    ");
         for(MonitoredLockType lock : stillLockedPath) {
-            s += (lock.name() + " ");
+            s.append(lock.name()).append(" ");
         }
-        s += "\r\n\r\n";
+        s.append("\r\n\r\n");
         
-        return s;
+        return s.toString();
     }
     
     private static String printThreadStack(StackTraceElement[] list, String dateFormat) {
-        String s = "----------------------------\r\n" + dateFormat + "\r\n";
-        for(int i = 0; i < list.length; i++) {
-            s += ("    " + list[i].toString() + "\r\n");
+        StringBuilder s = new StringBuilder("----------------------------\r\n" + dateFormat + "\r\n");
+        for (StackTraceElement stackTraceElement : list) {
+            s.append("    ").append(stackTraceElement.toString()).append("\r\n");
         }
         
-        return s;
+        return s.toString();
     }
     
     public void accessThreadTracker(boolean update, boolean lock, MonitoredLockType lockId, long lockOid) {

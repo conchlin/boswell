@@ -69,18 +69,18 @@ public class XMLDomMapleData implements MapleData {
 
 	@Override
 	public MapleData getChildByPath(String path) {
-		String segments[] = path.split("/");
+		String[] segments = path.split("/");
 		if (segments[0].equals("..")) {
 			return ((MapleData) getParent()).getChildByPath(path.substring(path.indexOf("/") + 1));
 		}
 
 		Node myNode = node;
-		for (int x = 0; x < segments.length; x++) {
+		for (String segment : segments) {
 			NodeList childNodes = myNode.getChildNodes();
 			boolean foundChild = false;
 			for (int i = 0; i < childNodes.getLength(); i++) {
 				Node childNode = childNodes.item(i);
-				if (childNode.getNodeType() == Node.ELEMENT_NODE && childNode.getAttributes().getNamedItem("name").getNodeValue().equals(segments[x])) {
+				if (childNode.getNodeType() == Node.ELEMENT_NODE && childNode.getAttributes().getNamedItem("name").getNodeValue().equals(segment)) {
 					myNode = childNode;
 					foundChild = true;
 					break;

@@ -59,8 +59,8 @@ public class GenericLittleEndianWriter implements LittleEndianWriter {
      */
     @Override
     public void write(byte[] b) {
-        for (int x = 0; x < b.length; x++) {
-            bos.writeByte(b[x]);
+        for (byte value : b) {
+            bos.writeByte(value);
         }
     }
 

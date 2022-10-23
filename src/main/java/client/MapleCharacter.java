@@ -2470,8 +2470,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 
                 long expiration, currenttime = System.currentTimeMillis();
                 Set<PlayerSkill> keys = getSkills().keySet();
-                for (Iterator<PlayerSkill> i = keys.iterator(); i.hasNext(); ) {
-                    PlayerSkill key = i.next();
+                for (PlayerSkill key : keys) {
                     SkillEntry skill = getSkills().get(key);
                     if (skill.expiration != -1 && skill.expiration < currenttime) {
                         changeSkillLevel(key, (byte) -1, 0, -1);
@@ -8570,9 +8569,9 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                 client = null;  // clients still triggers handlers a few times after disconnecting
                 map = null;
                 setListener(null);
-                
-                for (int i = 0; i < inventory.length; i++) {
-                     inventory[i].dispose();
+
+                for (MapleInventory items : inventory) {
+                    items.dispose();
                 }
                 
                 inventory = null;

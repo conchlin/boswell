@@ -654,8 +654,8 @@ public class MapleMonster extends AbstractLoadedMapleLife {
     @Override
     public void sendSpawnData(MapleClient client) {
         int[] removeMob = {5090000, 5090001, 6090000, 6090001, 6090002, 6090003, 6090004, 7090000, 8090000}; // bot-catching mobs
-        for (int mob = 0; mob < removeMob.length; mob++) {
-            if (getId() == removeMob[mob]) {
+        for (int i : removeMob) {
+            if (getId() == i) {
                 return;
             }
         }
