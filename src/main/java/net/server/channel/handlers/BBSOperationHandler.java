@@ -27,9 +27,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import enums.GuildResultType;
 import net.AbstractMaplePacketHandler;
 import net.database.Statements;
 import net.database.DatabaseConnection;
+import network.packet.wvscontext.GuildPacket;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
@@ -102,7 +105,7 @@ public final class BBSOperationHandler extends AbstractMaplePacketHandler {
                     ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY)) {
                 ps.setInt(1, c.getPlayer().getGuildId());
                 try (ResultSet rs = ps.executeQuery()) {
-                    c.announce(MaplePacketCreator.BBSThreadList(rs, start));
+                    c.announce(GuildPacket.Packet.onGuildBBSPacket(start, GuildResultType.LoadBBS.getResult(), rs));
                 }
             }
         } catch (SQLException se) {
@@ -267,7 +270,8 @@ public final class BBSOperationHandler extends AbstractMaplePacketHandler {
                     try (PreparedStatement ps2 = con.prepareStatement("SELECT * FROM bbs_replies WHERE threadid = ?")) {
                         ps2.setInt(1, !bIsThreadIdLocal ? threadid : threadRS.getInt("threadid"));
                         ResultSet repliesRS = ps2.executeQuery();
-                        client.announce(MaplePacketCreator.showThread(bIsThreadIdLocal ? threadid : threadRS.getInt("localthreadid"), threadRS, repliesRS));
+                        client.announce(
+                                GuildPacket.Packet.onGuildBBSPacket(bIsThreadIdLocal ? threadid : threadRS.getInt("localthreadid"), GuildResultType.ShowBBS.getResult(), threadRS, repliesRS));
                     }
                 }
             }

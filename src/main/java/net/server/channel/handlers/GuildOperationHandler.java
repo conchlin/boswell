@@ -21,12 +21,14 @@
 */
 package net.server.channel.handlers;
 
+import enums.GuildResultType;
 import net.server.guild.MapleGuildResponse;
 import net.server.guild.MapleGuild;
 import constants.GameConstants;
 import client.MapleClient;
 import net.AbstractMaplePacketHandler;
 import network.packet.UserRemote;
+import network.packet.wvscontext.GuildPacket;
 import tools.data.input.SeekableLittleEndianAccessor;
 import tools.MaplePacketCreator;
 import client.MapleCharacter;
@@ -139,7 +141,7 @@ public final class GuildOperationHandler extends AbstractMaplePacketHandler {
                     return;
                 }
                 
-                c.announce(MaplePacketCreator.showGuildInfo(mc));
+                c.announce(GuildPacket.Packet.showGuildInfo(mc));
                 
                 allianceId = mc.getGuild().getAllianceId();
                 if(allianceId > 0) Server.getInstance().getAlliance(allianceId).updateAlliancePackets(mc);
@@ -157,11 +159,10 @@ public final class GuildOperationHandler extends AbstractMaplePacketHandler {
                 }
                 
                 allianceId = mc.getGuild().getAllianceId();
-                
-                c.announce(MaplePacketCreator.updateGP(mc.getGuildId(), 0));
+                c.announce(GuildPacket.Packet.onGuildResult(mc.getGuildId(), GuildResultType.GuildPoint.getResult(), 0));
                 Server.getInstance().leaveGuild(mc.getMGC());
                 
-                c.announce(MaplePacketCreator.showGuildInfo(null));
+                c.announce(GuildPacket.Packet.showGuildInfo(null));
                 if(allianceId > 0) Server.getInstance().getAlliance(allianceId).updateAlliancePackets(mc);
                 
                 mc.getMGC().setGuildId(0);

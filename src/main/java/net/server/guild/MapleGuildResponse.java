@@ -21,6 +21,7 @@
 */
 package net.server.guild;
 
+import network.packet.wvscontext.GuildPacket;
 import tools.MaplePacketCreator;
 
 public enum MapleGuildResponse {
@@ -33,15 +34,15 @@ public enum MapleGuildResponse {
     
     private int value;
 
-    private MapleGuildResponse(int val) {
+    MapleGuildResponse(int val) {
         value = val;
     }
 
     public final byte[] getPacket(String targetName) {
         if (value >= MANAGING_INVITE.value) {
-            return MaplePacketCreator.responseGuildMessage((byte) value, targetName);
+            return GuildPacket.Packet.onGuildMessage((byte) value, targetName);
         } else {
-            return MaplePacketCreator.genericGuildMessage((byte) value);
+            return GuildPacket.Packet.onGuildMessage((byte) value);
         }
     }
 }

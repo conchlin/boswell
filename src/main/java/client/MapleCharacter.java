@@ -32,6 +32,7 @@ import enums.UserEffectType;
 import net.database.DatabaseConnection;
 import net.database.Statements;
 import network.packet.*;
+import network.packet.wvscontext.GuildPacket;
 import server.cashshop.CashShop;
 import client.autoban.AutobanFactory;
 import client.autoban.AutobanManager;
@@ -73,7 +74,6 @@ import server.partyquest.*;
 import server.quest.MapleQuest;
 import server.skills.*;
 import tools.*;
-import tools.exceptions.NotEnabledException;
 import tools.packets.Wedding;
 
 import java.awt.*;
@@ -2709,7 +2709,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     }
 
     public void genericGuildMessage(int code) {
-        this.client.announce(MaplePacketCreator.genericGuildMessage((byte) code));
+        this.client.announce(GuildPacket.Packet.onGuildMessage((byte) code));
     }
 
     public int getAccountID() {

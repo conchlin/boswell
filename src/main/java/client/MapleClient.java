@@ -49,6 +49,7 @@ import net.database.Statements;
 import network.packet.CLogin;
 import network.packet.UserLocal;
 import network.packet.WvsContext;
+import network.packet.wvscontext.GuildPacket;
 import tools.*;
 
 import javax.script.ScriptEngine;
@@ -830,7 +831,7 @@ public class MapleClient {
                             if (guild != null) {
                                 final Server server = Server.getInstance();
                                 server.setGuildMemberOnline(player, false, player.getClient().getChannel());
-                                player.getClient().announce(MaplePacketCreator.showGuildInfo(player));
+                                player.getClient().announce(GuildPacket.Packet.showGuildInfo(player));
                             }
                             if (bl != null) {
                                 wserv.loggedOff(player.getName(), player.getId(), channel, player.getBuddylist().getBuddyIds());

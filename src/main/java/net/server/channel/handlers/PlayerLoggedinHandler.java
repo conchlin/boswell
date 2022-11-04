@@ -43,6 +43,7 @@ import network.packet.CLogin;
 import network.packet.FuncKeyMappedMan;
 import network.packet.NpcPool;
 import network.packet.WvsContext;
+import network.packet.wvscontext.GuildPacket;
 import server.quest.requirements.PetRequirement;
 import server.skills.SkillFactory;
 import net.database.DatabaseConnection;
@@ -284,7 +285,7 @@ public final class PlayerLoggedinHandler extends AbstractMaplePacketHandler {
                         playerGuild.getMGC(player.getId()).setCharacter(player);
                         player.setMGC(playerGuild.getMGC(player.getId()));
                         server.setGuildMemberOnline(player, true, c.getChannel());
-                        c.announce(MaplePacketCreator.showGuildInfo(player));
+                        c.announce(GuildPacket.Packet.showGuildInfo(player));
                         int allianceId = player.getGuild().getAllianceId();
                         if (allianceId > 0) {
                             MapleAlliance newAlliance = server.getAlliance(allianceId);

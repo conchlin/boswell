@@ -57,7 +57,9 @@ import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.concurrent.ScheduledFuture;
 
+import enums.GuildResultType;
 import network.packet.UserRemote;
+import network.packet.wvscontext.GuildPacket;
 import scripting.event.EventInstanceManager;
 import server.TimerManager;
 import server.maps.MapleHiredMerchant;
@@ -632,7 +634,9 @@ public class World {
 
     public void changeEmblem(int gid, List<Integer> affectedPlayers, MapleGuildSummary mgs) {
         updateGuildSummary(gid, mgs);
-        sendPacket(affectedPlayers, MaplePacketCreator.guildEmblemChange(gid, mgs.getLogoBG(), mgs.getLogoBGColor(), mgs.getLogo(), mgs.getLogoColor()), -1);
+        sendPacket(affectedPlayers,
+                GuildPacket.Packet.onGuildResult(gid, GuildResultType.EmblemChange.getResult(), mgs.getLogoBG(), mgs.getLogoBGColor(), mgs.getLogo(), mgs.getLogoColor()), -1);
+        //sendPacket(affectedPlayers, MaplePacketCreator.guildEmblemChange(gid, mgs.getLogoBG(), mgs.getLogoBGColor(), mgs.getLogo(), mgs.getLogoColor()), -1);
         setGuildAndRank(affectedPlayers, -1, -1, -1);	//respawn player
     }
 
