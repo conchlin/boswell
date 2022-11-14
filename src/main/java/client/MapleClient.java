@@ -44,6 +44,7 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Lock;
 
 import com.google.gson.JsonObject;
+import enums.PartyResultType;
 import net.database.DatabaseConnection;
 import net.database.Statements;
 import network.packet.CLogin;
@@ -63,7 +64,6 @@ import net.server.guild.MapleGuildCharacter;
 import net.server.world.MapleMessengerCharacter;
 import net.server.world.MapleParty;
 import net.server.world.MaplePartyCharacter;
-import net.server.world.PartyOperation;
 import net.server.world.World;
 
 import org.apache.mina.core.session.IoSession;
@@ -713,7 +713,7 @@ public class MapleClient {
 
         if (party != null) {
             chrp.setOnline(false);
-            wserv.updateParty(party.getId(), PartyOperation.LOG_ONOFF, chrp);
+            wserv.updateParty(party.getId(), PartyResultType.SilentUpdate.getResult(), chrp);
             if (party.getLeader().getId() == idz && map != null) {
                 MaplePartyCharacter lchr = null;
                 for (MaplePartyCharacter pchr : party.getMembers()) {
@@ -722,7 +722,7 @@ public class MapleClient {
                     }
                 }
                 if (lchr != null) {
-                    wserv.updateParty(party.getId(), PartyOperation.CHANGE_LEADER, lchr);
+                    wserv.updateParty(party.getId(), PartyResultType.ChangeLeader.getResult(), lchr);
                 }
             }
         }

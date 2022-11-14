@@ -21,16 +21,16 @@
 */
 package net.server.channel.handlers;
 
+import enums.PartyResultType;
 import net.AbstractMaplePacketHandler;
 import net.server.world.MapleParty;
 import net.server.world.MaplePartyCharacter;
-import net.server.world.PartyOperation;
 import net.server.world.World;
+import network.packet.wvscontext.PartyPacket;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 import client.MapleCharacter;
 import client.MapleClient;
-import constants.ServerConstants;
 import net.server.coordinator.MapleInviteCoordinator;
 import net.server.coordinator.MapleInviteCoordinator.InviteResult;
 import net.server.coordinator.MapleInviteCoordinator.InviteType;
@@ -41,7 +41,7 @@ import java.util.List;
 public final class PartyOperationHandler extends AbstractMaplePacketHandler {
     
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         int operation = slea.readByte();
         MapleCharacter player = c.getPlayer();
         World world = c.getWorldServer();
@@ -98,18 +98,18 @@ public final class PartyOperationHandler extends AbstractMaplePacketHandler {
                         }
                         if (party.getMembers().size() < 6) {
                             if (MapleInviteCoordinator.createInvite(InviteType.PARTY, player, party.getId(), invited.getId())) {
-                                invited.getClient().announce(MaplePacketCreator.partyInvite(player));
+                                invited.getClient().announce(PartyPacket.Packet.onPartyResult(player, PartyResultType.Invite.getResult()));
                             } else {
-                                c.announce(MaplePacketCreator.partyStatusMessage(22, invited.getName()));
+                                c.announce(PartyPacket.Packet.onPartyMessage(PartyResultType.UserHasOtherInvite.getResult(), invited.getName()));
                             }
                         } else {
-                            c.announce(MaplePacketCreator.partyStatusMessage(17));
+                            c.announce(PartyPacket.Packet.onPartyMessage(PartyResultType.Full.getResult()));
                         }
                     } else {
-                        c.announce(MaplePacketCreator.partyStatusMessage(16));
+                        c.announce(PartyPacket.Packet.onPartyMessage(PartyResultType.AlreadyJoined.getResult()));
                     }
                 } else {
-                    c.announce(MaplePacketCreator.partyStatusMessage(19));
+                    c.announce(PartyPacket.Packet.onPartyMessage(PartyResultType.CannotFindUser.getResult()));
                 }
             }
             case 5 -> { // expel
@@ -119,7 +119,7 @@ public final class PartyOperationHandler extends AbstractMaplePacketHandler {
             case 6 -> { // change leader
                 int newLeader = slea.readInt();
                 MaplePartyCharacter newLeadr = party.getMemberById(newLeader);
-                world.updateParty(party.getId(), PartyOperation.CHANGE_LEADER, newLeadr);
+                world.updateParty(party.getId(), PartyResultType.ChangeLeader.getResult(), newLeadr);
             }
         }
     }

@@ -23,17 +23,18 @@ package net.server.channel.handlers;
 
 import client.MapleCharacter;
 import client.MapleClient;
+import enums.PartyResultType;
 import net.AbstractMaplePacketHandler;
 import net.server.coordinator.MapleInviteCoordinator;
 import net.server.coordinator.MapleInviteCoordinator.InviteResult;
 import net.server.coordinator.MapleInviteCoordinator.InviteType;
-import tools.MaplePacketCreator;
+import network.packet.wvscontext.PartyPacket;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 public final class DenyPartyRequestHandler extends AbstractMaplePacketHandler {
     
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         slea.readByte();
         String[] cname = slea.readMapleAsciiString().split("PS: ");
         MapleCharacter cfrom = c.getChannelServer().getPlayerStorage().getCharacterByName(cname[cname.length - 1]);
@@ -42,7 +43,7 @@ public final class DenyPartyRequestHandler extends AbstractMaplePacketHandler {
 
             if (MapleInviteCoordinator.answerInvite(InviteType.PARTY, chr.getId(), cfrom.getPartyId(), false).getLeft() == InviteResult.DENIED) {
                 chr.updatePartySearchAvailability(chr.getParty() == null);
-                cfrom.getClient().announce(MaplePacketCreator.partyStatusMessage(23, chr.getName()));
+                cfrom.getClient().announce(PartyPacket.Packet.onPartyMessage(PartyResultType.UserDenyInvite.getResult(), chr.getName()));
             }
         }
     }

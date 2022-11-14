@@ -29,6 +29,7 @@ import java.util.List;
 
 import com.google.gson.JsonObject;
 import enums.LoginResultType;
+import enums.PartyResultType;
 import net.AbstractMaplePacketHandler;
 import net.server.PlayerBuffValueHolder;
 import net.server.Server;
@@ -37,14 +38,12 @@ import net.server.channel.CharacterIdChannelPair;
 import net.server.guild.MapleAlliance;
 import net.server.guild.MapleGuild;
 import net.server.world.MaplePartyCharacter;
-import net.server.world.PartyOperation;
 import net.server.world.World;
 import network.packet.CLogin;
 import network.packet.FuncKeyMappedMan;
 import network.packet.NpcPool;
 import network.packet.WvsContext;
 import network.packet.wvscontext.GuildPacket;
-import server.quest.requirements.PetRequirement;
 import server.skills.SkillFactory;
 import net.database.DatabaseConnection;
 import tools.MaplePacketCreator;
@@ -319,7 +318,7 @@ public final class PlayerLoggedinHandler extends AbstractMaplePacketHandler {
                     pchar.setChannel(c.getChannel());
                     pchar.setMapId(player.getMapId());
                     pchar.setOnline(true);
-                    wserv.updateParty(player.getParty().getId(), PartyOperation.LOG_ONOFF, pchar);
+                    wserv.updateParty(player.getParty().getId(), PartyResultType.ChangeLeader.getResult(), pchar);
                     player.updatePartyMemberHP();
                 }
 

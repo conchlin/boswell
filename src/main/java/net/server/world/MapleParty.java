@@ -32,12 +32,15 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Map;
 import java.util.Comparator;
+
+import enums.PartyResultType;
 import net.server.audit.LockCollector;
 import net.server.audit.locks.MonitoredReentrantLock;
 import net.server.audit.locks.MonitoredLockType;
 import net.server.audit.locks.factory.MonitoredReentrantLockFactory;
 import net.server.coordinator.MapleMatchCheckerCoordinator;
 import net.server.coordinator.matchchecker.MatchCheckerListenerFactory.MatchCheckerType;
+import network.packet.wvscontext.PartyPacket;
 import scripting.event.EventInstanceManager;
 import server.maps.MapleDoor;
 import server.maps.MapleMap;
@@ -270,7 +273,7 @@ public class MapleParty {
         }
 
         if (newLeadr != null) {
-            world.updateParty(this.getId(), PartyOperation.CHANGE_LEADER, newLeadr);
+            world.updateParty(this.getId(), PartyResultType.ChangeLeader.getResult(), newLeadr);
         }
     }
 
@@ -328,7 +331,7 @@ public class MapleParty {
         MapleParty party = player.getParty();
         if (party == null) {
             if (player.getLevel() < 10) {
-                player.announce(MaplePacketCreator.partyStatusMessage(10));
+                player.announce(PartyPacket.Packet.onPartyMessage(PartyResultType.LevelRequirement.getResult()));
                 return false;
             } else if (player.getAriantColiseum() != null) {
                 player.dropMessage(5, "You cannot request a party creation while participating the Ariant Battle Arena.");
@@ -344,13 +347,15 @@ public class MapleParty {
             
             player.updatePartySearchAvailability(false);
             player.partyOperationUpdate(party, null);
-            
-            player.announce(MaplePacketCreator.partyCreated(partyplayer, partyplayer.getId()));
+
+            player.announce(PartyPacket.Packet.onPartyCreation(partyplayer));
+            //player.announce(MaplePacketCreator.partyCreated(partyplayer, partyplayer.getId()));
+            System.out.println("Party has been created with party id of " + party.id + "and is size of " + party.getMembers().size());
             
             return true;
         } else {
             if (!silentCheck) {
-                player.announce(MaplePacketCreator.partyStatusMessage(16));
+                player.announce(PartyPacket.Packet.onPartyMessage(PartyResultType.AlreadyJoined.getResult()));
             }
             
             return false;
@@ -368,7 +373,7 @@ public class MapleParty {
                     MaplePartyCharacter partyplayer = new MaplePartyCharacter(player);
                     player.getMap().addPartyMember(player);
                     
-                    world.updateParty(party.getId(), PartyOperation.JOIN, partyplayer);
+                    world.updateParty(party.getId(),PartyResultType.Join.getResult(), partyplayer);
                     player.receivePartyMemberHP();
                     player.updatePartyMemberHP();
                     
@@ -378,7 +383,7 @@ public class MapleParty {
                     return true;
                 } else {
                     if (!silentCheck) {
-                        player.announce(MaplePacketCreator.partyStatusMessage(17));
+                        player.announce(PartyPacket.Packet.onPartyMessage(PartyResultType.Full.getResult()));
                     }
                 }
             } else {
@@ -407,7 +412,7 @@ public class MapleParty {
                     mcpq.leftParty(player.getId());
                 }
                 
-                world.updateParty(party.getId(), PartyOperation.DISBAND, partyplayer);
+                world.updateParty(party.getId(), PartyResultType.Disband.getResult(), partyplayer);
                 
                 EventInstanceManager eim = player.getEventInstance();
                 if(eim != null) {
@@ -424,7 +429,7 @@ public class MapleParty {
                     mcpq.leftParty(player.getId());
                 }
 
-                world.updateParty(party.getId(), PartyOperation.LEAVE, partyplayer);
+                world.updateParty(party.getId(), PartyResultType.Leave.getResult(), partyplayer);
                 
                 EventInstanceManager eim = player.getEventInstance();
                 if(eim != null) {
@@ -468,12 +473,12 @@ public class MapleParty {
                         }
 
                         emc.setParty(null);
-                        world.updateParty(party.getId(), PartyOperation.EXPEL, expelled);
+                        world.updateParty(party.getId(), PartyResultType.Expel.getResult(), expelled);
                         
                         emc.updatePartySearchAvailability(true);
                         emc.partyOperationUpdate(party, partyMembers);
                     } else {
-                        world.updateParty(party.getId(), PartyOperation.EXPEL, expelled);
+                        world.updateParty(party.getId(), PartyResultType.Expel.getResult(), expelled);
                     }
                 }
             }

@@ -23,10 +23,13 @@ import client.MapleCharacter;
 import client.MapleJob;
 import constants.ServerConstants;
 import java.io.File;
+
+import enums.PartyResultType;
 import net.server.world.MapleParty;
 import net.server.coordinator.MapleInviteCoordinator.InviteType;
 import net.server.coordinator.partysearch.PartySearchEchelon;
 import net.server.coordinator.partysearch.PartySearchStorage;
+import network.packet.wvscontext.PartyPacket;
 import tools.MaplePacketCreator;
 import tools.Pair;
 
@@ -297,7 +300,7 @@ public class PartySearchCoordinator {
         
         if (MapleInviteCoordinator.createInvite(InviteType.PARTY, leader, partyid, chr.getId())) {
             chr.disablePartySearchInvite(leader.getId());
-            chr.announce(MaplePacketCreator.partySearchInvite(leader));
+            chr.announce(PartyPacket.Packet.onPartyResult(leader, PartyResultType.SearchInvite.getResult()));
             return true;
         } else {
             return false;

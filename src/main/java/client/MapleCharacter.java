@@ -28,11 +28,13 @@ import client.listeners.MobKilledEvent;
 import client.listeners.MobKilledListener;
 import constants.*;
 import enums.FameResponseType;
+import enums.PartyResultType;
 import enums.UserEffectType;
 import net.database.DatabaseConnection;
 import net.database.Statements;
 import network.packet.*;
 import network.packet.wvscontext.GuildPacket;
+import network.packet.wvscontext.PartyPacket;
 import server.cashshop.CashShop;
 import client.autoban.AutobanFactory;
 import client.autoban.AutobanManager;
@@ -1482,7 +1484,8 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
             try {
                 if (party != null) {
                     mpc.setMapId(to.getId());
-                    client.announce(MaplePacketCreator.updateParty(client.getChannel(), party, PartyOperation.SILENT_UPDATE, null));
+                    client.announce(PartyPacket.Packet.onPartySilentUpdate(party, client.getChannel()));
+                    //client.announce(MaplePacketCreator.updateParty(client.getChannel(), party, PartyOperation.SILENT_UPDATE, null));
                     updatePartyMemberHPInternal();
                 }
             } finally {
@@ -7823,7 +7826,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         //so that things like job and lvl change reflects in party, no need for external setMPC() calling.
         mpc = new MaplePartyCharacter(this);
         if (party != null) {
-            Server.getInstance().getWorld(world).updateParty(party.getId(), PartyOperation.SILENT_UPDATE, getMPC());
+            Server.getInstance().getWorld(world).updateParty(party.getId(), PartyResultType.SilentUpdate.getResult(), getMPC());
         }
     }
 
