@@ -27,12 +27,14 @@ import client.listeners.DamageListener;
 import client.listeners.MobKilledEvent;
 import client.listeners.MobKilledListener;
 import constants.*;
+import enums.AllianceResultType;
 import enums.FameResponseType;
 import enums.PartyResultType;
 import enums.UserEffectType;
 import net.database.DatabaseConnection;
 import net.database.Statements;
 import network.packet.*;
+import network.packet.wvscontext.AlliancePacket;
 import network.packet.wvscontext.GuildPacket;
 import network.packet.wvscontext.PartyPacket;
 import server.cashshop.CashShop;
@@ -4403,10 +4405,10 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 
         try {
             Server.getInstance().memberLevelJobUpdate(this.mgc);
-            //Server.getInstance().getGuild(guildid, world, mgc).gainGP(40);
             int allianceId = getGuild().getAllianceId();
             if (allianceId > 0) {
-                Server.getInstance().allianceMessage(allianceId, MaplePacketCreator.updateAllianceJobLevel(this), getId(), -1);
+                Server.getInstance().allianceMessage(allianceId,
+                        AlliancePacket.Packet.onAllianceResult(this, AllianceResultType.JobLevelUpdate.getResult()), getId(), -1);
             }
         } catch (Exception e) {
             e.printStackTrace();

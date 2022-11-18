@@ -28,6 +28,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.google.gson.JsonObject;
+import enums.AllianceResultType;
 import enums.LoginResultType;
 import enums.PartyResultType;
 import net.AbstractMaplePacketHandler;
@@ -43,6 +44,7 @@ import network.packet.CLogin;
 import network.packet.FuncKeyMappedMan;
 import network.packet.NpcPool;
 import network.packet.WvsContext;
+import network.packet.wvscontext.AlliancePacket;
 import network.packet.wvscontext.GuildPacket;
 import server.skills.SkillFactory;
 import net.database.DatabaseConnection;
@@ -297,11 +299,12 @@ public final class PlayerLoggedinHandler extends AbstractMaplePacketHandler {
                                 }
                             }
                             if (newAlliance != null) {
-                                c.announce(MaplePacketCreator.updateAllianceInfo(newAlliance, c.getWorld()));
-                                c.announce(MaplePacketCreator.allianceNotice(newAlliance.getId(), newAlliance.getNotice()));
+                                c.announce(AlliancePacket.Packet.onAllianceResult(newAlliance, AllianceResultType.UpdateInfo.getResult(), c.getWorld()));
+                                c.announce(AlliancePacket.Packet.onAllianceResult(newAlliance, AllianceResultType.Notice.getResult(), newAlliance.getNotice()));
 
                                 if (newcomer) {
-                                    server.allianceMessage(allianceId, MaplePacketCreator.allianceMemberOnline(player, true), player.getId(), -1);
+                                    server.allianceMessage(allianceId,
+                                            AlliancePacket.Packet.onAllianceResult(player, AllianceResultType.LogInOut.getResult(), 1), player.getId(), -1);
                                 }
                             }
                         }

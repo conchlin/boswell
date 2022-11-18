@@ -26,6 +26,7 @@ import java.sql.SQLException;
 
 import client.inventory.manipulator.MapleInventoryManipulator;
 import constants.ServerConstants;
+import enums.AllianceResultType;
 import net.server.Server;
 import net.server.guild.MapleAlliance;
 import net.server.guild.MapleGuild;
@@ -34,6 +35,7 @@ import net.server.world.MaplePartyCharacter;
 import network.packet.ScriptMan;
 import network.packet.StoreBank;
 import network.packet.WvsContext;
+import network.packet.wvscontext.AlliancePacket;
 import provider.MapleData;
 import provider.MapleDataProviderFactory;
 import script.ScriptMessageType;
@@ -493,10 +495,11 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         MapleAlliance alliance = Server.getInstance().getAlliance(c.getPlayer().getGuild().getAllianceId());
         alliance.increaseCapacity(1);
 
-        Server.getInstance().allianceMessage(alliance.getId(), MaplePacketCreator.getGuildAlliances(alliance, c.getWorld()), -1, -1);
-        Server.getInstance().allianceMessage(alliance.getId(), MaplePacketCreator.allianceNotice(alliance.getId(), alliance.getNotice()), -1, -1);
-
-        c.announce(MaplePacketCreator.updateAllianceInfo(alliance, c.getWorld())); // thanks Vcoc for finding an alliance update to leader issue
+        Server.getInstance().allianceMessage(alliance.getId(),
+                AlliancePacket.Packet.onAllianceResult(alliance, AllianceResultType.GuildInfo.getResult(), c.getWorld()), -1, -1);
+        Server.getInstance().allianceMessage(alliance.getId(),
+                AlliancePacket.Packet.onAllianceResult(alliance, AllianceResultType.Notice.getResult(), alliance.getNotice()), -1, -1);
+        c.announce(AlliancePacket.Packet.onAllianceResult(alliance, AllianceResultType.UpdateInfo.getResult(), c.getWorld()));
     }
 
     public void disbandAlliance(MapleClient c, int allianceId) {

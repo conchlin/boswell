@@ -21,6 +21,7 @@
 */
 package net.server.channel.handlers;
 
+import enums.AllianceResultType;
 import enums.GuildResultType;
 import net.server.guild.MapleGuildResponse;
 import net.server.guild.MapleGuild;
@@ -28,6 +29,7 @@ import constants.GameConstants;
 import client.MapleClient;
 import net.AbstractMaplePacketHandler;
 import network.packet.UserRemote;
+import network.packet.wvscontext.AlliancePacket;
 import network.packet.wvscontext.GuildPacket;
 import tools.data.input.SeekableLittleEndianAccessor;
 import tools.MaplePacketCreator;
@@ -224,7 +226,8 @@ public final class GuildOperationHandler extends AbstractMaplePacketHandler {
                 
                 if (mc.getGuild() != null && mc.getGuild().getAllianceId() > 0) {
                     MapleAlliance alliance = mc.getAlliance();
-                    Server.getInstance().allianceMessage(alliance.getId(), MaplePacketCreator.getGuildAlliances(alliance, c.getWorld()), -1, -1);
+                    Server.getInstance().allianceMessage(alliance.getId(), AlliancePacket.Packet.onAllianceResult(alliance,
+                            AllianceResultType.GuildInfo.getResult(), c.getWorld()), -1, -1);
                 }
                 
                 mc.gainMeso(-5000000, true, false, true);
