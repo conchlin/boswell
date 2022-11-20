@@ -273,7 +273,7 @@ public class ReactorActionManager extends AbstractPlayerInteraction {
             
             if(chr != null) {
                 map.damageMonster(chr, mm, damage);
-                map.broadcastMessage(MobPool.Packet.damageMonster(mm, 0, damage));
+                map.broadcastMessage(MobPool.Packet.onDamaged(mm, false, damage, 0));
             }
         }
     }

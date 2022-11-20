@@ -108,7 +108,7 @@ public final class SummonDamageHandler extends AbstractDealDamageHandler {
         }
         slea.readInt();
         player.getMap().broadcastMessage(
-                player, SummonedPool.Packet.summonAttack(player.getId(), oid, animation, allDamage), summon.getPosition());
+                player, SummonedPool.Packet.onAttack(player.getId(), oid, animation, allDamage), summon.getPosition());
 
         for (SummonAttackEntry attackEntry : allDamage) {
             int damage = attackEntry.getDamage();

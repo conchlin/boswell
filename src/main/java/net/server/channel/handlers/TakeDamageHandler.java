@@ -179,7 +179,7 @@ public final class TakeDamageHandler extends AbstractMaplePacketHandler {
                                 bouncedamage = attacker.getMaxHp() / 5;
                             }
                             map.damageMonster(chr, attacker, bouncedamage);
-                            map.broadcastMessage(chr, MobPool.Packet.damageMonster(attacker, 0, bouncedamage), true);
+                            map.broadcastMessage(chr, MobPool.Packet.onDamaged(attacker, false, bouncedamage, 0), true);
                             chr.getClient().announce(MaplePacketCreator.showOwnBuffEffect(id, 5));
                             map.broadcastMessage(chr, UserRemote.Packet.showBuffEffect(chr.getId(), id, 5), false);
                         }
@@ -212,7 +212,7 @@ public final class TakeDamageHandler extends AbstractMaplePacketHandler {
                         bouncedamage = Math.min(bouncedamage, attacker.getMaxHp() / 10);
                         damage -= bouncedamage;
                         map.damageMonster(chr, attacker, bouncedamage);
-                        map.broadcastMessage(chr, MobPool.Packet.damageMonster(attacker, 0, bouncedamage), false, true);
+                        map.broadcastMessage(chr, MobPool.Packet.onDamaged(attacker, false, bouncedamage, 0), false, true);
                         chr.checkMonsterAggro(attacker);
                     }
 
@@ -297,9 +297,9 @@ public final class TakeDamageHandler extends AbstractMaplePacketHandler {
                     }
                 }
             }
-            map.broadcastMessage(chr, UserRemote.Packet.damagePlayer(damagefrom, monsteridfrom, chr.getId(), damage, fake, direction, is_pgmr, pgmr, is_pg, oid, pos_x, pos_y), false);
+            map.broadcastMessage(chr, UserRemote.Packet.onHit(damagefrom, monsteridfrom, chr.getId(), damage, fake, direction, is_pgmr, pgmr, is_pg, oid, pos_x, pos_y), false);
         } else {
-            map.broadcastGMMessage(chr, UserRemote.Packet.damagePlayer(damagefrom, monsteridfrom, chr.getId(), damage, fake, direction, is_pgmr, pgmr, is_pg, oid, pos_x, pos_y), false);
+            map.broadcastGMMessage(chr, UserRemote.Packet.onHit(damagefrom, monsteridfrom, chr.getId(), damage, fake, direction, is_pgmr, pgmr, is_pg, oid, pos_x, pos_y), false);
         }
         if (GameConstants.isDojo(map.getId())) {
             chr.setDojoEnergy(chr.getDojoEnergy() + ServerConstants.DOJO_ENERGY_DMG);

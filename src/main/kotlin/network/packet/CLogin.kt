@@ -19,7 +19,7 @@ class CLogin {
         // use LoginResultType for reason
         fun getLoginFailed(reason: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter(8)
-            mplew.writeShort(SendOpcode.LOGIN_STATUS.value)
+            mplew.writeShort(SendOpcode.CheckPasswordResult.value)
             mplew.write(reason)
             mplew.write(0)
             mplew.writeInt(0)
@@ -29,7 +29,7 @@ class CLogin {
 
         fun getPermBan(): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.LOGIN_STATUS.value)
+            mplew.writeShort(SendOpcode.CheckPasswordResult.value)
             mplew.write(2) // Account is banned
             mplew.write(0)
             mplew.writeInt(0)
@@ -41,7 +41,7 @@ class CLogin {
 
         fun getTempBan(timestampTill: Long, reason: Byte): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter(17)
-            mplew.writeShort(SendOpcode.LOGIN_STATUS.value)
+            mplew.writeShort(SendOpcode.CheckPasswordResult.value)
             mplew.write(2)
             mplew.write(0)
             mplew.writeInt(0)
@@ -63,7 +63,7 @@ class CLogin {
             Server.getInstance().loadAccountCharacters(c)
 
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.LOGIN_STATUS.value)
+            mplew.writeShort(SendOpcode.CheckPasswordResult.value)
             mplew.writeInt(0)
             mplew.writeShort(0)
             mplew.writeInt(c.accID)
@@ -84,9 +84,9 @@ class CLogin {
             return mplew.packet
         }
 
-        fun sendGuestTOS(): ByteArray? {
+        fun onGuestIDLoginResult(): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.GUEST_ID_LOGIN.value)
+            mplew.writeShort(SendOpcode.GuestIDLoginResult.value)
             mplew.writeShort(0x100)
             mplew.writeInt(Randomizer.nextInt(999999))
             mplew.writeLong(0)
@@ -101,15 +101,17 @@ class CLogin {
         /**
          * Gets a packet detailing a server status message.
          *
-         * Possible values for `status`:<br></br> 0 - Normal<br></br> 1 - Highly
-         * populated<br></br> 2 - Full
+         * Possible values for `status`:
+         * <br></br> 0 - Normal
+         * <br></br> 1 - Highly populated
+         * <br></br> 2 - Full
          *
          * @param status The server status.
          * @return The server status packet.
          */
-        fun getServerStatus(status: Int): ByteArray? {
+        fun onCheckUserLimitResult(status: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter(4)
-            mplew.writeShort(SendOpcode.SERVERSTATUS.value)
+            mplew.writeShort(SendOpcode.CheckUserLimitResult.value)
             mplew.writeShort(status)
 
             return mplew.packet
@@ -121,7 +123,7 @@ class CLogin {
          */
         fun onCheckPinCodeResult(mode: Byte): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter(3)
-            mplew.writeShort(SendOpcode.CHECK_PINCODE.value)
+            mplew.writeShort(SendOpcode.CheckPinCodeResult.value)
             mplew.write(mode)
 
             return mplew.packet
@@ -129,15 +131,15 @@ class CLogin {
 
         fun onUpdatePinCodeResult(): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter(3)
-            mplew.writeShort(SendOpcode.UPDATE_PINCODE.value)
+            mplew.writeShort(SendOpcode.UpdatePinCodeResult.value)
             mplew.write(0)
 
             return mplew.packet
         }
 
-        fun showAllCharacter(chars: Int, unk: Int): ByteArray? {
+        fun onViewAllCharResult(chars: Int, unk: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter(11)
-            mplew.writeShort(SendOpcode.VIEW_ALL_CHAR.value)
+            mplew.writeShort(SendOpcode.ViewAllCharResult.value)
             // 2: already connected to server, 3 : unk error (view-all-characters), 5 : cannot find any
             mplew.write(if (chars > 0) 1 else 5)
             mplew.writeInt(chars)
@@ -146,9 +148,9 @@ class CLogin {
             return mplew.packet
         }
 
-        fun showAllCharacterInfo(worldid: Int, chars: List<MapleCharacter?>, usePic: Boolean): ByteArray? {
+        fun onViewAllCharResult(worldid: Int, chars: List<MapleCharacter?>, usePic: Boolean): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.VIEW_ALL_CHAR.value)
+            mplew.writeShort(SendOpcode.ViewAllCharResult.value)
             mplew.write(0)
             mplew.write(worldid)
             mplew.write(chars.size)
@@ -160,11 +162,16 @@ class CLogin {
             return mplew.packet
         }
 
-        // use LoginResultType for reason value
-        fun getAfterLoginError(reason: Int): ByteArray? { //same as above o.o
+        /**
+         *  returns packet detailing any login errors
+         *  see LoginResultType for reason values
+         *
+         *  @param reason the error
+         */
+        fun onSelectCharacterByVACResult(reason: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter(8)
-            mplew.writeShort(SendOpcode.SELECT_CHARACTER_BY_VAC.value)
-            mplew.writeShort(reason) //using other types than stated above = CRASH
+            mplew.writeShort(SendOpcode.SelectCharacterByVACResult.value)
+            mplew.writeShort(reason)
 
             return mplew.packet
         }
@@ -187,7 +194,7 @@ class CLogin {
             channelLoad: List<Channel>
         ): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.SERVERLIST.value)
+            mplew.writeShort(SendOpcode.WorldInformation.value)
             mplew.write(serverId)
             mplew.writeMapleAsciiString(serverName)
             mplew.write(flag)
@@ -219,7 +226,7 @@ class CLogin {
          */
         fun getEndOfServerList(): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter(3)
-            mplew.writeShort(SendOpcode.SERVERLIST.value)
+            mplew.writeShort(SendOpcode.WorldInformation.value)
             mplew.write(0xFF)
 
             return mplew.packet
@@ -234,7 +241,7 @@ class CLogin {
          */
         fun getCharList(c: MapleClient, serverId: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.CHARLIST.value)
+            mplew.writeShort(SendOpcode.SelectWorldResult.value)
             mplew.write(0) // status
             val chars = c.loadCharacters(serverId)
             mplew.write(chars.size.toByte())
@@ -257,7 +264,7 @@ class CLogin {
          */
         fun getServerIP(inetAddr: InetAddress, port: Int, clientId: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.SERVER_IP.value)
+            mplew.writeShort(SendOpcode.SelectCharacterResult.value)
             mplew.writeShort(0)
             val addr = inetAddr.address
             mplew.write(addr)
@@ -269,7 +276,7 @@ class CLogin {
 
         fun onCheckDuplicatedIDResult(charname: String?, nameUsed: Boolean): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.CHAR_NAME_RESPONSE.value)
+            mplew.writeShort(SendOpcode.LoginCheckDuplicatedIDResult.value)
             mplew.writeMapleAsciiString(charname)
             mplew.write(if (nameUsed) 1 else 0)
 
@@ -278,7 +285,7 @@ class CLogin {
 
         fun addNewCharEntry(chr: MapleCharacter?): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.ADD_NEW_CHAR_ENTRY.value)
+            mplew.writeShort(SendOpcode.CreateNewCharacterResult.value)
             mplew.write(0)
             PacketUtil.addCharEntry(mplew, chr, false)
 
@@ -292,7 +299,7 @@ class CLogin {
          */
         fun deleteCharResponse(cid: Int, state: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.DELETE_CHAR_RESPONSE.value)
+            mplew.writeShort(SendOpcode.DeleteCharacterResult.value)
             mplew.writeInt(cid)
             mplew.write(state)
 
@@ -308,7 +315,7 @@ class CLogin {
          */
         fun getChannelChange(inetAddr: InetAddress, port: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.CHANGE_CHANNEL.value)
+            mplew.writeShort(SendOpcode.ChangeChannel.value)
             mplew.write(1)
             val addr = inetAddr.address
             mplew.write(addr)
@@ -319,14 +326,14 @@ class CLogin {
 
         fun getPing(): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter(2)
-            mplew.writeShort(SendOpcode.PING.value)
+            mplew.writeShort(SendOpcode.Ping.value)
 
             return mplew.packet
         }
 
         fun getRelogResponse(): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter(3)
-            mplew.writeShort(SendOpcode.RELOG_RESPONSE.value)
+            mplew.writeShort(SendOpcode.RelogResponse.value)
             mplew.write(1) //1 O.O Must be more types ):
 
             return mplew.packet
@@ -334,7 +341,7 @@ class CLogin {
 
         fun selectWorld(world: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.LAST_CONNECTED_WORLD.value)
+            mplew.writeShort(SendOpcode.LatestConnectedWorld.value)
             //According to GMS, it should be the world that contains the most characters (most active)
             mplew.writeInt(world)
 
@@ -343,7 +350,7 @@ class CLogin {
 
         fun sendRecommended(worlds: List<Pair<Int?, String?>>): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.RECOMMENDED_WORLD_MESSAGE.value)
+            mplew.writeShort(SendOpcode.RecommendedWorldMessage.value)
             mplew.write(worlds.size) //size
             for (world in worlds) {
                 mplew.writeInt(world.getLeft()!!)
@@ -355,7 +362,7 @@ class CLogin {
 
         fun wrongPic(): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter(3)
-            mplew.writeShort(SendOpcode.CHECK_SPW_RESULT.value)
+            mplew.writeShort(SendOpcode.CheckSPWResult.value)
             mplew.write(0)
 
             return mplew.packet

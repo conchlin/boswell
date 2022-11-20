@@ -8,9 +8,9 @@ class FuncKeyMappedMan {
 
     companion object Packet {
 
-        fun getKeymap(keybindings: Map<Int?, MapleKeyBinding?>): ByteArray? {
+        fun onFuncKeyMappedItemInit(keybindings: Map<Int?, MapleKeyBinding?>): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.KEYMAP.value)
+            mplew.writeShort(SendOpcode.FuncKeyMappedItemInit.value)
             mplew.write(0)
             for (x in 0..89) {
                 val binding = keybindings[Integer.valueOf(x)]
@@ -25,17 +25,17 @@ class FuncKeyMappedMan {
             return mplew.packet
         }
 
-        fun sendAutoHpPot(itemId: Int): ByteArray? {
+        fun onPetConsumeItemInit(itemId: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.AUTO_HP_POT.value)
+            mplew.writeShort(SendOpcode.PetConsumeItemInit.value)
             mplew.writeInt(itemId)
 
             return mplew.packet
         }
 
-        fun sendAutoMpPot(itemId: Int): ByteArray? {
+        fun onPetConsumeMPItemInit(itemId: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter(6)
-            mplew.writeShort(SendOpcode.AUTO_MP_POT.value)
+            mplew.writeShort(SendOpcode.PetConsumeMPItemInit.value)
             mplew.writeInt(itemId)
 
             return mplew.packet

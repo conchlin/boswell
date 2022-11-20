@@ -46,9 +46,9 @@ public class MoveDragonHandler extends AbstractMovementPacketHandler {
         if (dragon != null) {
             updatePosition(res, dragon, 0);
             if (chr.isHidden()) {
-                chr.getMap().broadcastGMMessage(chr, DragonPacket.Packet.moveDragon(dragon, p, res));
+                chr.getMap().broadcastGMMessage(chr, DragonPacket.Packet.onMove(dragon, p, res));
             } else {
-                chr.getMap().broadcastMessage(chr, DragonPacket.Packet.moveDragon(dragon, p, res), dragon.getPosition());
+                chr.getMap().broadcastMessage(chr, DragonPacket.Packet.onMove(dragon, p, res), dragon.getPosition());
             }
         }
     }

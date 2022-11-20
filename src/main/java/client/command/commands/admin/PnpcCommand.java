@@ -95,7 +95,7 @@ public class PnpcCommand extends Command {
 
                         MapleMap map = ch.getMapFactory().getMap(mapId);
                         map.addMapObject(npc);
-                        map.broadcastMessage(NpcPool.Packet.spawnNPC(npc));
+                        map.broadcastMessage(NpcPool.Packet.onEnterField(npc));
                     }
 
                     player.yellowMessage("Pnpc created.");

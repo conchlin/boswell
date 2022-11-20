@@ -19,7 +19,7 @@ class TownPortalPool {
          */
         fun onTownPortalCreated(oid: Int, pos: Point?, town: Boolean): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.SPAWN_DOOR.value)
+            mplew.writeShort(SendOpcode.TownPortalCreated.value)
             mplew.writeBool(town)
             mplew.writeInt(oid)
             mplew.writePos(pos)
@@ -29,7 +29,7 @@ class TownPortalPool {
 
         fun onTownPortalRemoved(oid: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter(10)
-            mplew.writeShort(SendOpcode.REMOVE_DOOR.value)
+            mplew.writeShort(SendOpcode.TownPortalRemoved.value)
             mplew.write(0)
             mplew.writeInt(oid)
 

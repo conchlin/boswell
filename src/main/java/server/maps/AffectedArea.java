@@ -127,21 +127,21 @@ public class AffectedArea extends AbstractMapleMapObject {
     }
 
     public final byte[] makeDestroyData() {
-        return AffectedAreaPool.Packet.affectedAreaRemoved(getObjectId());
+        return AffectedAreaPool.Packet.onAffectedAreaRemoved(getObjectId());
     }
 
     public final byte[] makeSpawnData() {
         if (owner != null) {
-            return AffectedAreaPool.Packet.affectedAreaCreated(getObjectId(), owner.getId(), getSourceSkill().getId(), owner.getSkillLevel(SkillFactory.getSkill(source.getSourceId())), this);
+            return AffectedAreaPool.Packet.onAffectedAreaCreated(getObjectId(), owner.getId(), getSourceSkill().getId(), owner.getSkillLevel(SkillFactory.getSkill(source.getSourceId())), this);
         }
-        return AffectedAreaPool.Packet.affectedAreaCreated(getObjectId(), mob.getId(), skill.getSkillId(), skill.getSkillLevel(), this);
+        return AffectedAreaPool.Packet.onAffectedAreaCreated(getObjectId(), mob.getId(), skill.getSkillId(), skill.getSkillLevel(), this);
     }
 
     public final byte[] makeFakeSpawnData(int level) {
         if (owner != null) {
-            return AffectedAreaPool.Packet.affectedAreaCreated(getObjectId(), owner.getId(), getSourceSkill().getId(), level, this);
+            return AffectedAreaPool.Packet.onAffectedAreaCreated(getObjectId(), owner.getId(), getSourceSkill().getId(), level, this);
         }
-        return AffectedAreaPool.Packet.affectedAreaCreated(getObjectId(), mob.getId(), skill.getSkillId(), skill.getSkillLevel(), this);
+        return AffectedAreaPool.Packet.onAffectedAreaCreated(getObjectId(), mob.getId(), skill.getSkillId(), skill.getSkillLevel(), this);
     }
 
     @Override

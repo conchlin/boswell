@@ -13,7 +13,7 @@ class DropPool {
 
         fun onDropEnterField(drop: MapleMapItem, giveOwnership: Boolean): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.DROP_ITEM_FROM_MAPOBJECT.value)
+            mplew.writeShort(SendOpcode.DropEnterField.value)
             mplew.write(2)
             mplew.writeInt(drop.objectId)
             mplew.writeBool(drop.meso > 0)
@@ -38,7 +38,7 @@ class DropPool {
             mod: Byte
         ): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.DROP_ITEM_FROM_MAPOBJECT.value)
+            mplew.writeShort(SendOpcode.DropEnterField.value)
             mplew.write(mod) //nEnterType 0 1 2 3 - mob?
             mplew.writeInt(drop.objectId)
             mplew.writeBool(drop.meso > 0) // 1 mesos, 0 item, 2 and above all item meso bag,
@@ -61,7 +61,7 @@ class DropPool {
 
         fun onDropLeaveField(oid: Int, animation: Int, cid: Int, pet: Boolean, slot: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.REMOVE_ITEM_FROM_MAP.value)
+            mplew.writeShort(SendOpcode.DropLeaveField.value)
             mplew.write(animation) // expire
             mplew.writeInt(oid)
             if (animation >= 2) {

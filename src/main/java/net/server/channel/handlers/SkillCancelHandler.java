@@ -37,16 +37,16 @@ import server.skills.SkillFactory;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
-public final class CancelBuffHandler extends AbstractMaplePacketHandler implements MaplePacketHandler {
+public final class SkillCancelHandler extends AbstractMaplePacketHandler implements MaplePacketHandler {
     
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         int sourceid = slea.readInt();
 
         switch (sourceid) {
             case FPArchMage.BIG_BANG, ILArchMage.BIG_BANG, Bishop.BIG_BANG, Bowmaster.HURRICANE, Marksman.PIERCING_ARROW,
                     Corsair.RAPID_FIRE, WindArcher.HURRICANE, Evan.FIRE_BREATH, Evan.ICE_BREATH
-                    -> c.getPlayer().getMap().broadcastMessage(c.getPlayer(), UserRemote.Packet.skillCancel(c.getPlayer(), sourceid), false);
+                    -> c.getPlayer().getMap().broadcastMessage(c.getPlayer(), UserRemote.Packet.onSkillCancel(c.getPlayer(), sourceid), false);
             default -> c.getPlayer().cancelEffect(SkillFactory.getSkill(sourceid).getEffect(1), false, -1);
         }
     }

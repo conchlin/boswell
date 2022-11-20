@@ -10,7 +10,7 @@ class ScriptMan {
 
         fun onScriptMessage(npcId: Int, msgType: Byte, text: String?, vararg args: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.NPC_TALK.value)
+            mplew.writeShort(SendOpcode.ScriptMessage.value)
             mplew.write(4) // not 100% sure why this needs to be 4...
             mplew.writeInt(npcId)
             mplew.write(msgType)
@@ -26,7 +26,7 @@ class ScriptMan {
 
         fun getNPCTalk(npc: Int, msgType: Byte, talk: String?, endBytes: String?, speaker: Byte): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.NPC_TALK.value)
+            mplew.writeShort(SendOpcode.ScriptMessage.value)
             mplew.write(4) // ?
             mplew.writeInt(npc)
             mplew.write(msgType)
@@ -39,7 +39,7 @@ class ScriptMan {
 
         fun getDimensionalMirror(talk: String?): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.NPC_TALK.value)
+            mplew.writeShort(SendOpcode.ScriptMessage.value)
             mplew.write(4) // ?
             mplew.writeInt(9010022)
             mplew.write(0x0E)
@@ -52,7 +52,7 @@ class ScriptMan {
 
         fun getNPCTalkStyle(npc: Int, talk: String?, styles: IntArray): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.NPC_TALK.value)
+            mplew.writeShort(SendOpcode.ScriptMessage.value)
             mplew.write(4) // ?
             mplew.writeInt(npc)
             mplew.write(7)
@@ -68,7 +68,7 @@ class ScriptMan {
 
         fun getNPCTalkNum(npc: Int, talk: String?, def: Int, min: Int, max: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.NPC_TALK.value)
+            mplew.writeShort(SendOpcode.ScriptMessage.value)
             mplew.write(4) // ?
             mplew.writeInt(npc)
             mplew.write(3)
@@ -84,7 +84,7 @@ class ScriptMan {
 
         fun getNPCTalkText(npc: Int, talk: String?, def: String?): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.NPC_TALK.value)
+            mplew.writeShort(SendOpcode.ScriptMessage.value)
             mplew.write(4) // Doesn't matter
             mplew.writeInt(npc)
             mplew.write(2)

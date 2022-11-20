@@ -25,13 +25,12 @@ import client.MapleClient;
 import client.MapleCharacter;
 import network.packet.UserCommon;
 import server.skills.PlayerSkill;
-import server.skills.Skill;
 import client.inventory.Equip;
 import client.inventory.Equip.ScrollResult;
 import client.inventory.Item;
 import client.inventory.MapleInventory;
 import client.inventory.MapleInventoryType;
-import client.inventory.ModifyInventory;
+import client.inventory.InventoryOperation;
 import constants.ItemConstants;
 import java.util.ArrayList;
 import java.util.List;
@@ -141,10 +140,10 @@ public final class ScrollHandler extends AbstractMaplePacketHandler {
                     useInventory.unlockInventory();
                 }
                 
-                final List<ModifyInventory> mods = new ArrayList<>();
+                final List<InventoryOperation> mods = new ArrayList<>();
                 if (scrollSuccess == Equip.ScrollResult.CURSE) {
                     if(!ItemConstants.isWeddingRing(toScroll.getItemId())) {
-                        mods.add(new ModifyInventory(3, toScroll));
+                        mods.add(new InventoryOperation(3, toScroll));
                         if (dst < 0) {
                             MapleInventory inv = chr.getInventory(MapleInventoryType.EQUIPPED);
 
@@ -169,14 +168,14 @@ public final class ScrollHandler extends AbstractMaplePacketHandler {
                         scrolled = toScroll;
                         scrollSuccess = Equip.ScrollResult.FAIL;
 
-                        mods.add(new ModifyInventory(3, scrolled));
-                        mods.add(new ModifyInventory(0, scrolled));
+                        mods.add(new InventoryOperation(3, scrolled));
+                        mods.add(new InventoryOperation(0, scrolled));
                     }
                 } else {
-                    mods.add(new ModifyInventory(3, scrolled));
-                    mods.add(new ModifyInventory(0, scrolled));
+                    mods.add(new InventoryOperation(3, scrolled));
+                    mods.add(new InventoryOperation(0, scrolled));
                 }
-                c.announce(MaplePacketCreator.modifyInventory(true, mods));
+                c.announce(MaplePacketCreator.onInventoryOperation(true, mods));
                 chr.getMap().broadcastMessage(UserCommon.Packet.onShowItemUpgradeEffect(chr.getId(), scrollSuccess, legendarySpirit, whiteScroll));
                 if (dst < 0 && (scrollSuccess == Equip.ScrollResult.SUCCESS || scrollSuccess == Equip.ScrollResult.CURSE)) {
                     chr.equipChanged();

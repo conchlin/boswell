@@ -35,7 +35,7 @@ import client.inventory.Item;
 import client.inventory.MapleInventory;
 import client.inventory.MapleInventoryType;
 import client.inventory.MaplePet;
-import client.inventory.ModifyInventory;
+import client.inventory.InventoryOperation;
 import client.inventory.manipulator.MapleInventoryManipulator;
 import client.inventory.manipulator.MapleKarmaManipulator;
 import client.processor.AssignAPProcessor;
@@ -364,7 +364,7 @@ public final class UseCashItemHandler extends AbstractMaplePacketHandler {
             if (item != null)
                 player.forceUpdateItem(item);
 
-            player.getMap().broadcastMessage(player, PetPacket.Packet.changePetName(player, newName), true);
+            player.getMap().broadcastMessage(player, PetPacket.Packet.onNameChange(player, newName), true);
             c.announce(WvsContext.Packet.enableActions());
             remove(c, position, itemId);
         } else if (itemType == 520) {
@@ -550,10 +550,10 @@ public final class UseCashItemHandler extends AbstractMaplePacketHandler {
 
                 player.toggleBlockCashShop();
 
-                final List<ModifyInventory> mods = new ArrayList<>();
-                mods.add(new ModifyInventory(3, scrolled));
-                mods.add(new ModifyInventory(0, scrolled));
-                client.announce(MaplePacketCreator.modifyInventory(true, mods));
+                final List<InventoryOperation> mods = new ArrayList<>();
+                mods.add(new InventoryOperation(3, scrolled));
+                mods.add(new InventoryOperation(0, scrolled));
+                client.announce(MaplePacketCreator.onInventoryOperation(true, mods));
 
                 ScrollResult scrollResult = scrolled.getLevel() > curlevel ? ScrollResult.SUCCESS : ScrollResult.FAIL;
                 player.getMap().broadcastMessage(UserCommon.Packet.onShowItemUpgradeEffect(player.getId(), scrollResult, false, false));

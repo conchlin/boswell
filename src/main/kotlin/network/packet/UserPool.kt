@@ -22,7 +22,7 @@ class UserPool {
          */
         fun onUserEnterField(target: MapleClient?, chr: MapleCharacter): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.SPAWN_PLAYER.value)
+            mplew.writeShort(SendOpcode.UserEnterField.value)
             mplew.writeInt(chr.id)
             mplew.write(chr.level) //v83
             mplew.writeMapleAsciiString(chr.name)
@@ -126,7 +126,7 @@ class UserPool {
 
         fun onUserLeaveField(cid: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.REMOVE_PLAYER_FROM_MAP.value)
+            mplew.writeShort(SendOpcode.UserLeaveField.value)
             mplew.writeInt(cid)
 
             return mplew.packet

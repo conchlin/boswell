@@ -9,10 +9,10 @@ class ReactorPool {
     // naming this packet for readability purposes when called in java
     companion object Packet {
 
-        fun triggerReactor(reactor: MapleReactor, stance: Int): ByteArray? {
+        fun onReactorChangeState(reactor: MapleReactor, stance: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
             val pos = reactor.position
-            mplew.writeShort(SendOpcode.REACTOR_HIT.value)
+            mplew.writeShort(SendOpcode.ReactorChangeState.value)
             mplew.writeInt(reactor.objectId)
             mplew.write(reactor.state)
             mplew.writePos(pos)
@@ -23,10 +23,10 @@ class ReactorPool {
             return mplew.packet
         }
 
-        fun spawnReactor(reactor: MapleReactor): ByteArray? {
+        fun onReactorEnterField(reactor: MapleReactor): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
             val pos = reactor.position
-            mplew.writeShort(SendOpcode.REACTOR_SPAWN.value)
+            mplew.writeShort(SendOpcode.ReactorEnterField.value)
             mplew.writeInt(reactor.objectId)
             mplew.writeInt(reactor.id)
             mplew.write(reactor.state)
@@ -37,10 +37,10 @@ class ReactorPool {
             return mplew.packet
         }
 
-        fun destroyReactor(reactor: MapleReactor): ByteArray? {
+        fun onReactorLeaveField(reactor: MapleReactor): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
             val pos = reactor.position
-            mplew.writeShort(SendOpcode.REACTOR_DESTROY.value)
+            mplew.writeShort(SendOpcode.ReactorLeaveField.value)
             mplew.writeInt(reactor.objectId)
             mplew.write(reactor.state)
             mplew.writePos(pos)

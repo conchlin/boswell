@@ -187,7 +187,7 @@ public final class PlayerLoggedinHandler extends AbstractMaplePacketHandler {
                             if (state == MapleClient.LOGIN_LOGGEDIN) {
                                 c.disconnect(true, false);
                             } else {
-                                c.announce(CLogin.Packet.getAfterLoginError(LoginResultType.AlreadyLoggedIn.getReason()));
+                                c.announce(CLogin.Packet.onSelectCharacterByVACResult(LoginResultType.AlreadyLoggedIn.getReason()));
                             }
 
                             return;
@@ -199,7 +199,7 @@ public final class PlayerLoggedinHandler extends AbstractMaplePacketHandler {
                 } else {
                     c.setPlayer(null);
                     c.setAccID(0);
-                    c.announce(CLogin.Packet.getAfterLoginError(LoginResultType.TooManyConnections.getReason()));
+                    c.announce(CLogin.Packet.onSelectCharacterByVACResult(LoginResultType.TooManyConnections.getReason()));
                     return;
                 }
                 
@@ -248,10 +248,10 @@ public final class PlayerLoggedinHandler extends AbstractMaplePacketHandler {
 
                 // pot bindings being passed through other characters on the account detected thanks to Croosade dev team
                 MapleKeyBinding autohpPot = player.getKeymap().get(91);
-                player.announce(FuncKeyMappedMan.Packet.sendAutoHpPot(autohpPot != null ? autohpPot.getAction() : 0));
+                player.announce(FuncKeyMappedMan.Packet.onPetConsumeItemInit(autohpPot != null ? autohpPot.getAction() : 0));
 
                 MapleKeyBinding autompPot = player.getKeymap().get(92);
-                player.announce(FuncKeyMappedMan.Packet.sendAutoMpPot(autompPot != null ? autompPot.getAction() : 0));
+                player.announce(FuncKeyMappedMan.Packet.onPetConsumeMPItemInit(autompPot != null ? autompPot.getAction() : 0));
 
                 player.getMap().addPlayer(player);
                 player.visitMap(player.getMap());
@@ -421,7 +421,7 @@ public final class PlayerLoggedinHandler extends AbstractMaplePacketHandler {
                 c.releaseClient();
             }
         } else {
-            c.announce(CLogin.Packet.getAfterLoginError(LoginResultType.TooManyConnections.getReason()));
+            c.announce(CLogin.Packet.onSelectCharacterByVACResult(LoginResultType.TooManyConnections.getReason()));
         }
     }
 

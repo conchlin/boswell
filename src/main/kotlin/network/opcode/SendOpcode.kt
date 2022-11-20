@@ -1,38 +1,32 @@
 package network.opcode
 
 enum class SendOpcode(val value: Int) {
-    // the names taken from the client are commented if they are different from the enum name
-
     //CLogin::OnPacket
-    LOGIN_STATUS(0),  //OnCheckPasswordResult
-    GUEST_ID_LOGIN(1),  //OnGuestIDLoginResult
-    ACCOUNT_INFO(2),  //OnAccountInfoResult
-    SERVERSTATUS(3),  //OnCheckUserLimitResult
-    GENDER_DONE(4),  //OnSetAccountResult
-    CONFIRM_EULA_RESULT(5),  //OnConfirmEULAResult
-    CHECK_PINCODE(6),  //OnCheckPinCodeResult
-    UPDATE_PINCODE(7),  //OnUpdatePinCodeResult
-    VIEW_ALL_CHAR(8),  //OnViewAllCharResult
-    SELECT_CHARACTER_BY_VAC(9),  //OnSelectCharacterByVACResult
-    SERVERLIST(10),  //OnWorldInformation
-    CHARLIST(11),  //OnSelectWorldResult
-    SERVER_IP(12),  //OnSelectCharacterResult
-    CHAR_NAME_RESPONSE(13),  //OnCheckDuplicatedIDResult
-    ADD_NEW_CHAR_ENTRY(14),  //OnCreateNewCharacterResult
-    DELETE_CHAR_RESPONSE(15),  //OnDeleteCharacterResult
-    CHANGE_CHANNEL(16),
-    PING(17),
-    CHANNEL_SELECTED(20),
-    HACKSHIELD_REQUEST(21),  //maybe this is RELOG_RESPONSE, can't care less
-    RELOG_RESPONSE(22),
-    CHECK_CRC_RESULT(23),
-    LAST_CONNECTED_WORLD(26),
-    RECOMMENDED_WORLD_MESSAGE(27),
-    CHECK_SPW_RESULT(28),
-
+    CheckPasswordResult(0),
+    GuestIDLoginResult(1),
+    AccountInfoResult(2),
+    CheckUserLimitResult(3),
+    SetAccountResult(4),
+    ConfirmEULAResult(5),
+    CheckPinCodeResult(6),
+    UpdatePinCodeResult(7),
+    ViewAllCharResult(8),
+    SelectCharacterByVACResult(9),
+    WorldInformation(10),
+    SelectWorldResult(11),
+    SelectCharacterResult(12),
+    LoginCheckDuplicatedIDResult(13),
+    CreateNewCharacterResult(14),
+    DeleteCharacterResult(15),
+    ChangeChannel(16),
+    Ping(17),
+    RelogResponse(22),
+    LatestConnectedWorld(26),
+    RecommendedWorldMessage(27),
+    CheckSPWResult(28),
     /*CWvsContext::OnPacket*/
-    INVENTORY_OPERATION(29),
-    INVENTORY_GROW(30),
+    InventoryOperation(29),
+    InventoryGrow(30),
     STAT_CHANGED(31),
     GIVE_BUFF(32),  //OnTemporaryStatSet
     CANCEL_BUFF(33),  //OnTemporaryStatReset
@@ -60,10 +54,10 @@ enum class SendOpcode(val value: Int) {
     SET_GENDER(58),
     GUILD_BBS_PACKET(59),
     CHAR_INFO(61),
-    PARTY_OPERATION(62),  //OnPartyResult
+    PartyResult(62),
     BUDDYLIST(63),//OnFriendResult
-    GUILD_OPERATION(65),  //OnGuildResult
-    ALLIANCE_OPERATION(66),  //OnAllianceResult
+    GuildResult(65),
+    AllianceResult(66),
     SPAWN_PORTAL(67),  //OnTownPortal
     SERVERMESSAGE(68),  //OnBroadcastMsg
     INCUBATOR_RESULT(69),
@@ -177,147 +171,127 @@ enum class SendOpcode(val value: Int) {
 
 
     // CUserPool::OnPacket
-    SPAWN_PLAYER(160),  //OnUserEnterField
-    REMOVE_PLAYER_FROM_MAP(161),  //OnUserLeaveField
-    CHATTEXT(162),  //CUser::OnChat 0
-    CHATTEXT1(163),  //CUser::OnChat 1
-    CHALKBOARD(164),  //CUser::OnADBoard
-    UPDATE_CHAR_BOX(165),  //OnMiniRoomBalloon
-    SHOW_CONSUME_EFFECT(166),  //CUser::SetConsumeItemEffect
-    SHOW_SCROLL_EFFECT(167),  //ShowItemUpgradeEffect
-
+    UserEnterField(160),
+    UserLeaveField(161),
+    UserChat(162),
+    UserChat2(163),
+    ADBoard(164),
+    MiniRoomBalloon(165),
+    SetConsumeItemEffect(166),
+    ShowItemUpgradeEffect(167),
     //CUser::OnPetPacket
-    SPAWN_PET(168),  //OnPetActivated
-    MOVE_PET(170),  //OnMove
-    PET_CHAT(171),  //OnAction
-    PET_NAMECHANGE(172),
-    PET_EXCEPTION_LIST(173),
-    PET_COMMAND(174),  //OnActionCommand
+    PetActivated(168),
+    PetMove(170),
+    PetAction(171),
+    PetNameChange(172),
+    PetLoadExceptionList(173),
+    PetActionCommand(174),
     //SummonedPool
-    SPAWN_SPECIAL_MAPOBJECT(175),
-    REMOVE_SPECIAL_MAPOBJECT(176),
-    MOVE_SUMMON(177),
-    SUMMON_ATTACK(177),
-    SUMMON_DAMAGE(179),
-    SUMMON_SKILL(180),
+    SummonCreated(175),
+    SummonRemoved(176),
+    SummonMove(177),
+    SummonAttack(177),
+    SummonDamage(179),
+    SummonSkill(180),
     //DragonPacket
-    SPAWN_DRAGON(181),
-    MOVE_DRAGON(182),
-    REMOVE_DRAGON(183),
-    DRAGON_LEAVE_FIELD(184),
+    DragonEnterField(181),
+    DragonMove(182),
+    DragonLeaveField(183),
     //CUserPool::OnUserRemotePacket
-    MOVE_PLAYER(185),  //OnMove
-    CLOSE_RANGE_ATTACK(186),  //CUserRemote::OnAttack
-    RANGED_ATTACK(187),  //CUserRemote::OnAttack
-    MAGIC_ATTACK(188),  //CUserRemote::OnAttack
-    ENERGY_ATTACK(189),  //CUserRemote::OnAttack
-    SKILL_EFFECT(190),
-    CANCEL_SKILL_EFFECT(191),
-    DAMAGE_PLAYER(192),  //CUserRemote::OnHit
-    FACIAL_EXPRESSION(193),  //CAvatar::SetEmotion
-    SHOW_ITEM_EFFECT(194),  //CUser::SetActiveEffectItem
+    UserMove(185),
+    UserMeleeAttack(186),
+    UserShootAttack(187),
+    UserMagicAttack(188),
+    UserBodyAttack(189),
+    SkillPrepare(190),
+    SkillCancel(191),
+    UserHit(192),
+    SetEmotion(193),
+    SetActiveEffectItem(194),
     SHOW_CHAIR(195),
-    UPDATE_CHAR_LOOK(197),  //CUserRemote::OnAvatarModified
-    SHOW_FOREIGN_EFFECT(198),
-    GIVE_FOREIGN_BUFF(199),
-    CANCEL_FOREIGN_BUFF(200),
-    UPDATE_PARTYMEMBER_HP(201),  //CUserRemote::OnReceiveHP
-    GUILD_NAME_CHANGED(202),
-    GUILD_MARK_CHANGED(203),
-    THROW_GRENADE(204),  //CUserLocal::OnPacket
-
+    AvatarModified(197),
+    RemoteUserEffect(198),
+    SetTemporaryStat(199),
+    ResetTemporaryStat(200),
+    ReceiveHp(201),
+    GuildNameChanged(202),
+    GuildMarkChanged(203),
+    ThrowGrenade(204),
     //CUserLocal::OnPacket
-    SIT_RESULT(205),  //OnSitResult
-    USER_LOCAL_EFFECT(206),  //onEffect
-    TELEPORT(207),  //OnTeleport
-    MESO_GIVE_SUCCEED(209),  //OnMesoGive_Succeeded
-    MESO_GIVE_FAIL(210),  //OnMesoGive_Failed
-    QUEST_RESULT(211),  // OnQuestResult
-    NOTIFY_HP_DEC_BY_FIELD(212),
-    // 213 looks empty
-    BALLOON_MSG(214),  //onBalloonMsg
-    PLAY_EVENT_SOUND(215),  //CUserLocal::OnPlayEventSound
-    Play_MINIGAME_SOUND(216),  //CUserLocal::OnPlayMinigameSound
-    MAKER_RESULT(217),  //OnMakerResult
-    KOREAN_EVENT(219),  // ???
-    OPEN_UI(220),  //OnOpenUI
-    SET_DIRECTION_MODE(221),  //SetDirectionMode
-    DISABLE_UI(222), // onDisableUI
-    HIRE_TUTOR(223),  //OnHireTutor
-    TUTOR_MSG(224),  //OnTutorMsg
-    COMBO_RESPONSE(225),  //OnIncComboResponse
-    RANDOM_EMOTION(226),  //OnRandomEmotion(226)
-    RESIGN_QUEST_RETURN(227),  //OnResignQuestReturn(227)
-    PASS_MATE_NAME(228),  //OnPassMateName
-    RADIO_SCHEDULE(229),  //OnRadioSchedule
-    OPEN_SKILL_GUIDE(230),
-    NOTICE_MSG(231),  //OnNoticeMsg
-    CHAT_MSG(232),  //onChatMsg
-    SAY_MSG(233),  // 233 OnSayImage
-    SKILL_COOLDOWN(234),  //OnSkillCooltimeSet
-
+    SitResult(205),
+    LocalEffect(206),
+    Teleport(207),
+    MesoGiveSucceeded(209),
+    MesoGiveFailed(210),
+    QuestResult(211),
+    NotifyHpDecByField(212),
+    BalloonMsg(214),
+    PlayEventSound(215),
+    PlayMiniGameSound(216),
+    MakerResult(217),
+    OpenClassCompetitionPage(219),
+    OpenUI(220),
+    SetDirectionMode(221),
+    DisableUI(222),
+    HireTutor(223),
+    TutorMsg(224),
+    IncComboResponse(225),
+    RandomEmotion(226),
+    ResignQuestReturn(227),
+    PassMateName(228),
+    RadioSchedule(229),
+    OpenSkillGuide(230),
+    NoticeMsg(231),
+    ChatMsg(232),
+    SayImage(233),
+    SkillCooltimeSet(234),
     //CMobPool::OnPacket
     SPAWN_MONSTER(236),  //OnMobEnterField
     KILL_MONSTER(237),  //OnMobLeaveField
     SPAWN_MONSTER_CONTROL(238),  //OnMobChangeController
-
     //cMobPool::onMobPacket
-    MOVE_MONSTER(239),  //OnMove
-    MOVE_MONSTER_RESPONSE(240),  //OnCtrlAck
-    APPLY_MONSTER_STATUS(242),  //OnStatSet
-    CANCEL_MONSTER_STATUS(243),  //OnStatReset
-    RESET_MONSTER_ANIMATION(244),  //OnSuspendReset
-    AFFECTED_MONSTER(245),  //OnAffected
-    DAMAGE_MONSTER(246),  //OnDamaged
-    SPECIAL_EFFECT_BY_SKILL(247),  //OnSpecialEffectBySkill
-    ARIANT_THING(249),  // OnMobCrcKeyChanged or the ariant_thing lol
-    SHOW_MONSTER_HP(250),  //OnHPIndicator
-    CATCH_MONSTER(251),  //OnCatchEffect
-    CATCH_MONSTER_WITH_ITEM(252),  //OnEffectByItem
-    SHOW_MAGNET(253),  //OnMobSpeaking
-    INC_MOB_CHARGE_COUNT(254),  //OnIncMobChargeCount
-    //OnMobSkillDelay(303) v95
-    //OnEscortFullPath(304) v95
-    //OnEscortStopSay(306) v95
-    //OnEscortReturnBefore(307) v95
-    //OnNextAttack(309) v95
-    MOB_ATTACKED_MOB(255),  //OnMobAttackedByMob(309) v95
-
+    MobMove(239),
+    CtrlAck(240),
+    MobStatSet(242),
+    MobStatReset(243),
+    MobSuspendReset(244),
+    MobAffected(245),
+    MobDamaged(246),
+    SpecialEffectBySkill(247),
+    HPIndicator(250),
+    CatchEffect(251),
+    EffectByItem(252),
+    IncMobChargeCount(254),
+    MobAttackedByMob(255),
     //cNpcPool::onPacket
-    SPAWN_NPC(257),  //OnNpcEnterField
-    REMOVE_NPC(258),  //OnNpcLeaveField
-    SPAWN_NPC_REQUEST_CONTROLLER(259),  //OnNpcChangeController
-
-    //cNpcPool::onNpcPacket
-    NPC_ACTION(260),  //OnMove
-    NPC_UPDATE_LIMITED_INFO(261),  //OnUpdateLimitedInfo(261)
-    NPC_SET_SPECIAL_ACTION(262),  //OnSetSpecialAction(262)
-    SET_NPC_SCRIPTABLE(263),  //cNpcTemplate::OnSetNpcScript
-
+    NpcEnterField(257),
+    NpcLeaveField(258),
+    NpcChangeController(259),
+    NpcAction(260),
+    UpdateLimitedInfo(261),
+    SetSpecialAction(262),
+    SetNpcScript(263),
     //CEmployeePool::OnPacket
-    SPAWN_HIRED_MERCHANT(265),  //OnEmployeeEnterField
-    DESTROY_HIRED_MERCHANT(266),  //OnEmployeeLeaveField
-    UPDATE_HIRED_MERCHANT(267),  //OnEmployeeMiniRoomBalloon
-
+    EmployeeEnterField(265),
+    EmployeeLeaveField(266),
+    EmployeeMiniRoomBalloon(267),
     //CDropPool::OnPacket
-    DROP_ITEM_FROM_MAPOBJECT(268),  //OnDropEnterField
-    REMOVE_ITEM_FROM_MAP(269),  //OnDropLeaveField
-
-    CANNOT_SPAWN_KITE(270),
-    SPAWN_KITE(271),
-    REMOVE_KITE(272),  //CAffectedAreaPool::OnPacket
-
-    SPAWN_MIST(273),  //OnAffectedAreaCreated
-    REMOVE_MIST(274),  //OnAffectedAreaRemoved
-
+    DropEnterField(268),
+    DropLeaveField(269),
+    //CMessageBoxPool::onPacket
+    CreateFailed(270),
+    MessageBoxEnterField(271),
+    MessageBoxLeaveField(272),
+    //CAffectedAreaPool::OnPacket
+    AffectedAreaCreated(273),
+    AffectedAreaRemoved(274),
     //CTownPortalPool::OnPacket
-    SPAWN_DOOR(275),  //OnTownPortalCreated
-    REMOVE_DOOR(276),  //OnTownPortalRemoved
-
+    TownPortalCreated(275),
+    TownPortalRemoved(276),
     //CReactorPool::OnPacket
-    REACTOR_HIT(277),  //OnReactorChangeState
-    REACTOR_SPAWN(279),  //OnReactorEnterField
-    REACTOR_DESTROY(280),  //OnReactorDestroy I assume
+    ReactorChangeState(277),
+    ReactorEnterField(279),
+    ReactorLeaveField(280),
 
     //CField_Snowball
     SNOWBALL_STATE(281),
@@ -336,7 +310,8 @@ enum class SendOpcode(val value: Int) {
     //CField_MonsterCarnival::OnPacket
     MONSTER_CARNIVAL_START(289),  //OnEnter
     MONSTER_CARNIVAL_OBTAINED_CP(290),  //OnPersonalCP
-    MONSTER_CARNIVAL_PARTY_CP(291), MONSTER_CARNIVAL_SUMMON(292),  //OnRequestResult?
+    MONSTER_CARNIVAL_PARTY_CP(291),
+    MONSTER_CARNIVAL_SUMMON(292),  //OnRequestResult?
     MONSTER_CARNIVAL_MESSAGE(293),  //OnRequestResult?
     MONSTER_CARNIVAL_DIED(294),  //OnProcessForDeath
     MONSTER_CARNIVAL_LEAVE(295),  //OnShowMemberOutMsg
@@ -350,7 +325,7 @@ enum class SendOpcode(val value: Int) {
 
     HORNTAIL_CAVE(302),  //CField::OnHontailTimer
     ZAKUM_SHRINE(303),  //CField::OnZakumTimer
-    NPC_TALK(304),  //CScriptMan::OnScriptMessage
+    ScriptMessage(304),
     OPEN_NPC_SHOP(305),
     CONFIRM_SHOP_TRANSACTION(306),
     ADMIN_SHOP_MESSAGE(307),  //lame :P
@@ -388,13 +363,13 @@ enum class SendOpcode(val value: Int) {
     //NOTICE_FREE_CASH_ITEM(396), //v95
 
     //CFuncKeyMappedMan:OnPacket
-    KEYMAP(335),
-    AUTO_HP_POT(336),
-    AUTO_MP_POT(337),  //CMapleTVMan:OnPacket
-
-    SEND_TV(341),  //OnSetMessage
-    REMOVE_TV(342),  //OnClearMessage
-    ENABLE_TV(343),  //OnSendMessageResult
+    FuncKeyMappedItemInit(335),
+    PetConsumeItemInit(336),
+    PetConsumeMPItemInit(337),
+    //CMapleTVMan:OnPacket
+    SetMessage(341),
+    ClearMessage(342),
+    SendMessageResult(343),
 
     MTS_OPERATION2(347),
     MTS_OPERATION(348),

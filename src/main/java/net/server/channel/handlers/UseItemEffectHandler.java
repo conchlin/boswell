@@ -42,6 +42,6 @@ public final class UseItemEffectHandler extends AbstractMaplePacketHandler {
             if (itemId != 0) return;
         }
         c.getPlayer().setItemEffect(itemId);
-        c.getPlayer().getMap().broadcastMessage(c.getPlayer(), UserRemote.Packet.itemEffect(c.getPlayer().getId(), itemId), false);
+        c.getPlayer().getMap().broadcastMessage(c.getPlayer(), UserRemote.Packet.onSetActiveEffectItem(c.getPlayer().getId(), itemId), false);
     }
 }

@@ -61,7 +61,7 @@ import client.inventory.MapleInventory;
 import client.inventory.MapleInventoryProof;
 import client.inventory.MapleInventoryType;
 import client.inventory.MaplePet;
-import client.inventory.ModifyInventory;
+import client.inventory.InventoryOperation;
 import client.inventory.manipulator.MapleInventoryManipulator;
 import constants.GameConstants;
 import constants.ItemConstants;
@@ -503,7 +503,7 @@ public class AbstractPlayerInteraction {
 
         getPlayer().addPet(evolved);
 
-        getPlayer().getMap().broadcastMessage(c.getPlayer(), PetPacket.Packet.showPet(c.getPlayer(), evolved, false, false), true);
+        getPlayer().getMap().broadcastMessage(c.getPlayer(), PetPacket.Packet.onPetActivated(c.getPlayer(), evolved, false, false), true);
         c.announce(WvsContext.Packet.petStatUpdate(c.getPlayer()));
         c.announce(WvsContext.Packet.enableActions());
         c.getWorldServer().registerPetHunger(c.getPlayer(), c.getPlayer().getPetIndex(evolved));
@@ -863,7 +863,7 @@ public class AbstractPlayerInteraction {
         final Item newItem = MapleItemInformationProvider.getInstance().getEquipById(itemid);
         newItem.setPosition(slot);
         c.getPlayer().getInventory(MapleInventoryType.EQUIPPED).addItemFromDB(newItem);
-        c.announce(MaplePacketCreator.modifyInventory(false, Collections.singletonList(new ModifyInventory(0, newItem))));
+        c.announce(MaplePacketCreator.onInventoryOperation(false, Collections.singletonList(new InventoryOperation(0, newItem))));
     }
 
     public void spawnNpc(int npcId, Point pos, MapleMap map) {
@@ -875,7 +875,7 @@ public class AbstractPlayerInteraction {
             npc.setRx1(pos.x - 50);
             npc.setFh(map.getFootholds().findBelow(pos).getId());
             map.addMapObject(npc);
-            map.broadcastMessage(NpcPool.Packet.spawnNPC(npc));
+            map.broadcastMessage(NpcPool.Packet.onEnterField(npc));
         }
     }
 
@@ -901,7 +901,7 @@ public class AbstractPlayerInteraction {
      * @param spawn true to spawn and false to remove
      */
     public void hireTutor(boolean spawn) {
-        c.announce(UserLocal.Packet.hireTutor(spawn));
+        c.announce(UserLocal.Packet.onHireTutor(spawn));
     }
 
     public void displayGuide(int num) {
@@ -935,11 +935,11 @@ public class AbstractPlayerInteraction {
     }
 
     public void tutorMessage(String message) {
-        c.announce(UserLocal.Packet.tutorMessage(message));
+        c.announce(UserLocal.Packet.onTutorMessage(message));
     }
 
     public void guideHint(int hint) {
-        c.announce(UserLocal.Packet.tutorHint(hint));
+        c.announce(UserLocal.Packet.onTutorHint(hint));
     }
 
     public void updateAreaInfo(Short area, String info) {

@@ -137,7 +137,7 @@ public final class PacketProcessor {
             registerHandler(RecvOpcode.CHAR_INFO_REQUEST, new CharInfoRequestHandler());
             registerHandler(RecvOpcode.SPECIAL_MOVE, new SpecialMoveHandler());
             registerHandler(RecvOpcode.USE_INNER_PORTAL, new InnerPortalHandler());
-            registerHandler(RecvOpcode.CANCEL_BUFF, new CancelBuffHandler());
+            registerHandler(RecvOpcode.CANCEL_BUFF, new SkillCancelHandler());
             registerHandler(RecvOpcode.CANCEL_ITEM_EFFECT, new CancelItemEffectHandler());
             registerHandler(RecvOpcode.PLAYER_INTERACTION, new PlayerInteractionHandler());
             registerHandler(RecvOpcode.DISTRIBUTE_AP, new DistributeAPHandler());
@@ -163,7 +163,7 @@ public final class PacketProcessor {
             registerHandler(RecvOpcode.GUILD_OPERATION, new GuildOperationHandler());
             registerHandler(RecvOpcode.DENY_GUILD_REQUEST, new DenyGuildRequestHandler());
             registerHandler(RecvOpcode.BBS_OPERATION, new BBSOperationHandler());
-            registerHandler(RecvOpcode.SKILL_EFFECT, new SkillEffectHandler());
+            registerHandler(RecvOpcode.SKILL_EFFECT, new SkillPrepareHandler());
             registerHandler(RecvOpcode.MESSENGER, new MessengerHandler());
             registerHandler(RecvOpcode.NPC_ACTION, new NPCAnimationHandler());
             registerHandler(RecvOpcode.CHECK_CASH, new TouchingCashShopHandler());

@@ -877,7 +877,7 @@ public class EventInstanceManager {
             npc.setRx1(pos.x - 50);
             npc.setFh(map.getFootholds().findBelow(pos).getId());
             map.addMapObject(npc);
-            map.broadcastMessage(NpcPool.Packet.spawnNPC(npc));
+            map.broadcastMessage(NpcPool.Packet.onEnterField(npc));
         }
     }
 

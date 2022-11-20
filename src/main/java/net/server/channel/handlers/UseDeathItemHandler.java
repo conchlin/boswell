@@ -31,6 +31,6 @@ public final class UseDeathItemHandler extends AbstractMaplePacketHandler {
     public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         int itemId = slea.readInt();
         c.getPlayer().setItemEffect(itemId);
-        c.announce(UserRemote.Packet.itemEffect(c.getPlayer().getId(), itemId));
+        c.announce(UserRemote.Packet.onSetActiveEffectItem(c.getPlayer().getId(), itemId));
     }
 }

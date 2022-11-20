@@ -1083,7 +1083,7 @@ public final class Channel {
         
         Runnable cancelAction = () -> {
             if(chr.isLoggedinWorld()) {
-                map.broadcastMessage(chr, UserRemote.Packet.facialExpression(chr, 0), false);
+                map.broadcastMessage(chr, UserRemote.Packet.onSetEmotion(chr, 0), false);
             }
         };
         
@@ -1098,7 +1098,7 @@ public final class Channel {
             faceLock[lockid].unlock();
         }
         
-        map.broadcastMessage(chr, UserRemote.Packet.facialExpression(chr, emote), false);
+        map.broadcastMessage(chr, UserRemote.Packet.onSetEmotion(chr, emote), false);
     }
     
     public void unregisterFaceExpression(int mapid, MapleCharacter chr) {

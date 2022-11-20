@@ -128,7 +128,7 @@ public final class MoveLifeHandler extends AbstractMovementPacketHandler {
         if (aggro) monster.setControllerKnowsAboutAggro(true);
 
         if (res != null) {
-            chr.getMap().broadcastMessage(chr, MobPool.Packet.moveMonster(skillByte, action, delay, skillInfo, objectid, p, res), monster.getPosition());
+            chr.getMap().broadcastMessage(chr, MobPool.Packet.onMove(skillByte, action, delay, skillInfo, objectid, p, res), monster.getPosition());
             updatePosition(res, monster, -1);
             chr.getMap().moveMonster(monster, monster.getPosition());
         }

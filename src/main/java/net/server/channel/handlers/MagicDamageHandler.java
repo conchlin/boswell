@@ -60,7 +60,7 @@ public final class MagicDamageHandler extends AbstractDealDamageHandler {
 		}
 
 		int charge = (attack.skill == Evan.FIRE_BREATH || attack.skill == Evan.ICE_BREATH || attack.skill == FPArchMage.BIG_BANG || attack.skill == ILArchMage.BIG_BANG || attack.skill == Bishop.BIG_BANG) ? attack.charge : -1;
-		byte[] packet = UserRemote.Packet.magicAttack(chr, attack.skill, attack.skilllevel, attack.stance, attack.numAttackedAndDamage, attack.allDamage, charge, attack.speed, attack.direction, attack.display);
+		byte[] packet = UserRemote.Packet.onMagicAttack(chr, attack.skill, attack.skilllevel, attack.stance, attack.numAttackedAndDamage, attack.allDamage, charge, attack.speed, attack.direction, attack.display);
 		
 		chr.getMap().broadcastMessage(chr, packet, false, true);
 		MapleStatEffect effect = attack.getAttackEffect(chr, null);

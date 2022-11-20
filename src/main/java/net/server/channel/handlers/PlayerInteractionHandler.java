@@ -383,7 +383,7 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
                     merchant.setOpen(true);
                     chr.getMap().addMapObject(merchant);
                     chr.setHiredMerchant(null);
-                    chr.getMap().broadcastMessage(EmployeePool.Packet.spawnHiredMerchantBox(merchant));
+                    chr.getMap().broadcastMessage(EmployeePool.Packet.onEnterField(merchant));
                 }
             } else if (mode == Action.READY.getCode()) {
                 MapleMiniGame game = chr.getMiniGame();
@@ -776,7 +776,7 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
                         } else {
                             merchant.clearMessages();
                             merchant.setOpen(true);
-                            merchant.getMap().broadcastMessage(EmployeePool.Packet.updateHiredMerchantBox(merchant));
+                            merchant.getMap().broadcastMessage(EmployeePool.Packet.onMiniRoomBalloon(merchant));
                         }
                     }
                 }

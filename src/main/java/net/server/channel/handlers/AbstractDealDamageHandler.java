@@ -537,7 +537,7 @@ public abstract class AbstractDealDamageHandler extends AbstractMaplePacketHandl
                         }
                     } else {
                         if (attack.skill == Aran.BODY_PRESSURE) {
-                            map.broadcastMessage(MobPool.Packet.damageMonster(monster, 0, totDamageToOneMonster));
+                            map.broadcastMessage(MobPool.Packet.onDamaged(monster, false, totDamageToOneMonster, 0));
                         }
 
                         map.damageMonster(player, monster, totDamageToOneMonster);
@@ -549,7 +549,7 @@ public abstract class AbstractDealDamageHandler extends AbstractMaplePacketHandl
                             if (ms.left == 145) {
                                 MobSkill toUse = MobSkillFactory.getMobSkill(ms.left, ms.right);
                                 player.addHP(-toUse.getX());
-                                map.broadcastMessage(player, UserRemote.Packet.damagePlayer(0, monster.getId(), player.getId(), toUse.getX(), 0, 0, false, 0, true, monster.getObjectId(), 0, 0), true);
+                                map.broadcastMessage(player, UserRemote.Packet.onHit(0, monster.getId(), player.getId(), toUse.getX(), 0, 0, false, 0, true, monster.getObjectId(), 0, 0), true);
                             }
                         }
                     }
@@ -577,15 +577,12 @@ public abstract class AbstractDealDamageHandler extends AbstractMaplePacketHandl
         else animationTime = fixedTime;
 
         if (animationTime > 0) { // be sure to only use LIMITED ATTACKS with animation time here
-            TimerManager.getInstance().schedule(new Runnable() {
-                @Override
-                public void run() {
-                    map.broadcastMessage(MobPool.Packet.damageMonster(monster, 0, damage), monster.getPosition());
-                    map.damageMonster(attacker, monster, damage);
-                }
+            TimerManager.getInstance().schedule(() -> {
+                map.broadcastMessage(MobPool.Packet.onDamaged(monster, false, damage, 0), monster.getPosition());
+                map.damageMonster(attacker, monster, damage);
             }, animationTime);
         } else {
-            map.broadcastMessage(MobPool.Packet.damageMonster(monster, 0, damage), monster.getPosition());
+            map.broadcastMessage(MobPool.Packet.onDamaged(monster, false, damage, 0), monster.getPosition());
             map.damageMonster(attacker, monster, damage);
         }
     }

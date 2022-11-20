@@ -86,7 +86,7 @@ public class SpawnPetProcessor {
                     pet.setSummoned(true);
                     pet.saveToDb();
                     chr.addPet(pet);
-                    chr.getMap().broadcastMessage(c.getPlayer(), PetPacket.Packet.showPet(c.getPlayer(), pet, false, false), true);
+                    chr.getMap().broadcastMessage(c.getPlayer(), PetPacket.Packet.onPetActivated(c.getPlayer(), pet, false, false), true);
                     c.announce(WvsContext.Packet.petStatUpdate(c.getPlayer()));
                     c.announce(WvsContext.Packet.enableActions());
 

@@ -10,7 +10,7 @@ class MessageBoxPool {
 
         fun onCreateFailed(): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.CANNOT_SPAWN_KITE.value)
+            mplew.writeShort(SendOpcode.CreateFailed.value)
 
             return mplew.packet
         }
@@ -24,7 +24,7 @@ class MessageBoxPool {
             ft: Int
         ): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.SPAWN_KITE.value)
+            mplew.writeShort(SendOpcode.MessageBoxEnterField.value)
             mplew.writeInt(oid)
             mplew.writeInt(itemid)
             mplew.writeMapleAsciiString(msg)
@@ -35,9 +35,9 @@ class MessageBoxPool {
             return mplew.packet
         }
 
-        fun onMessageBoxLeaveField(objectid: Int, animationType: Int): ByteArray? {    // thanks to Arnah
+        fun onMessageBoxLeaveField(objectid: Int, animationType: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.REMOVE_KITE.value)
+            mplew.writeShort(SendOpcode.MessageBoxLeaveField.value)
             mplew.write(animationType) // 0 is 10/10, 1 just vanishes
             mplew.writeInt(objectid)
 

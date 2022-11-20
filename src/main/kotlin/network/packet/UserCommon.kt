@@ -13,7 +13,7 @@ class UserCommon {
 
         fun onUserChat(cidfrom: Int, text: String?, gm: Boolean, show: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.CHATTEXT.value)
+            mplew.writeShort(SendOpcode.UserChat.value)
             mplew.writeInt(cidfrom)
             mplew.writeBool(gm)
             mplew.writeMapleAsciiString(text)
@@ -24,7 +24,7 @@ class UserCommon {
 
         fun onADBoard(chr: MapleCharacter, close: Boolean): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.CHALKBOARD.value)
+            mplew.writeShort(SendOpcode.ADBoard.value)
             mplew.writeInt(chr.id)
             if (close) {
                 mplew.write(0)
@@ -39,7 +39,7 @@ class UserCommon {
         /** begin of onMiniRoomBalloon() **/
         fun updatePlayerShopBox(shop: MaplePlayerShop): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.UPDATE_CHAR_BOX.value)
+            mplew.writeShort(SendOpcode.MiniRoomBalloon.value)
             mplew.writeInt(shop.owner.id)
             updatePlayerShopBoxInfo(mplew, shop)
 
@@ -48,7 +48,7 @@ class UserCommon {
 
         fun removePlayerShopBox(shop: MaplePlayerShop): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter(7)
-            mplew.writeShort(SendOpcode.UPDATE_CHAR_BOX.value)
+            mplew.writeShort(SendOpcode.MiniRoomBalloon.value)
             mplew.writeInt(shop.owner.id)
             mplew.write(0)
 
@@ -69,7 +69,7 @@ class UserCommon {
 
         fun addOmokBox(c: MapleCharacter, ammount: Int, type: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.UPDATE_CHAR_BOX.value)
+            mplew.writeShort(SendOpcode.MiniRoomBalloon.value)
             mplew.writeInt(c.id)
             addAnnounceBox(mplew, c.miniGame, ammount, type)
 
@@ -78,7 +78,7 @@ class UserCommon {
 
         fun addMatchCardBox(c: MapleCharacter, ammount: Int, type: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.UPDATE_CHAR_BOX.value)
+            mplew.writeShort(SendOpcode.MiniRoomBalloon.value)
             mplew.writeInt(c.id)
             addAnnounceBox(mplew, c.miniGame, ammount, type)
 
@@ -103,7 +103,7 @@ class UserCommon {
 
         fun removeMinigameBox(chr: MapleCharacter): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter(7)
-            mplew.writeShort(SendOpcode.UPDATE_CHAR_BOX.value)
+            mplew.writeShort(SendOpcode.MiniRoomBalloon.value)
             mplew.writeInt(chr.id)
             mplew.write(0)
 
@@ -118,7 +118,7 @@ class UserCommon {
             whiteScroll: Boolean
         ): ByteArray? {   // thanks to Rien dev team
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.SHOW_SCROLL_EFFECT.value)
+            mplew.writeShort(SendOpcode.ShowItemUpgradeEffect.value)
             mplew.writeInt(chr)
             mplew.writeBool(scrollSuccess == ScrollResult.SUCCESS)
             mplew.writeBool(scrollSuccess == ScrollResult.CURSE)

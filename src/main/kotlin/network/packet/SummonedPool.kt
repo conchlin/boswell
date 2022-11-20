@@ -15,13 +15,12 @@ class SummonedPool {
          * Gets a packet to spawn a special map object.
          *
          * @param summon
-         * @param skillLevel The level of the skill used.
          * @param animated Animated spawn?
          * @return The spawn packet for the map object.
          */
         fun onSummonCreated(summon: MapleSummon, animated: Boolean): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter(25)
-            mplew.writeShort(SendOpcode.SPAWN_SPECIAL_MAPOBJECT.value)
+            mplew.writeShort(SendOpcode.SummonCreated.value)
             mplew.writeInt(summon.owner.id)
             mplew.writeInt(summon.objectId)
             mplew.writeInt(summon.skill)
@@ -41,13 +40,13 @@ class SummonedPool {
         /**
          * Gets a packet to remove a special map object.
          *
-         * @param summon
-         * @param animated Animated removal?
+         * @param summon MapleSummon
+         * @param animated animation to remove
          * @return The packet removing the object.
          */
         fun onSummonRemoved(summon: MapleSummon, animated: Boolean): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter(11)
-            mplew.writeShort(SendOpcode.REMOVE_SPECIAL_MAPOBJECT.value)
+            mplew.writeShort(SendOpcode.SummonRemoved.value)
             mplew.writeInt(summon.owner.id)
             mplew.writeInt(summon.objectId)
             mplew.write(if (animated) 4 else 1) // ?
@@ -55,9 +54,9 @@ class SummonedPool {
             return mplew.packet
         }
 
-        fun moveSummon(cid: Int, oid: Int, startPos: Point?, moves: List<LifeMovementFragment?>?): ByteArray? {
+        fun onMove(cid: Int, oid: Int, startPos: Point?, moves: List<LifeMovementFragment?>?): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.MOVE_SUMMON.value)
+            mplew.writeShort(SendOpcode.SummonMove.value)
             mplew.writeInt(cid)
             mplew.writeInt(oid)
             mplew.writePos(startPos)
@@ -66,10 +65,10 @@ class SummonedPool {
             return mplew.packet
         }
 
-        fun summonAttack(cid: Int, summonOid: Int, direction: Byte, allDamage: List<SummonAttackEntry>): ByteArray? {
+        fun onAttack(cid: Int, summonOid: Int, direction: Byte, allDamage: List<SummonAttackEntry>): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
             //b2 00 29 f7 00 00 9a a3 04 00 c8 04 01 94 a3 04 00 06 ff 2b 00
-            mplew.writeShort(SendOpcode.SUMMON_ATTACK.value)
+            mplew.writeShort(SendOpcode.SummonAttack.value)
             mplew.writeInt(cid)
             mplew.writeInt(summonOid)
             mplew.write(0) // char level
@@ -84,7 +83,7 @@ class SummonedPool {
             return mplew.packet
         }
 
-        fun summonDamaged(
+        fun onDamaged(
             cid: Int,
             oid: Int,
             damage: Int,
@@ -93,7 +92,7 @@ class SummonedPool {
             isLeft: Boolean
         ): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.SUMMON_DAMAGE.value)
+            mplew.writeShort(SendOpcode.SummonDamage.value)
             mplew.writeInt(cid)
             mplew.writeInt(oid)
             mplew.write(action)
@@ -104,9 +103,9 @@ class SummonedPool {
             return mplew.packet
         }
 
-        fun summonSkill(cid: Int, summonSkillId: Int, newStance: Int): ByteArray? {
+        fun onSkill(cid: Int, summonSkillId: Int, newStance: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.SUMMON_SKILL.value)
+            mplew.writeShort(SendOpcode.SummonSkill.value)
             mplew.writeInt(cid)
             mplew.writeInt(summonSkillId)
             mplew.write(newStance)

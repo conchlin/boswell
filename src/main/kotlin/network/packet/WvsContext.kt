@@ -20,7 +20,7 @@ class WvsContext {
 
         fun onInventoryGrow(type: Int, newLimit: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.INVENTORY_GROW.value)
+            mplew.writeShort(SendOpcode.InventoryGrow.value)
             mplew.write(type)
             mplew.write(newLimit)
 

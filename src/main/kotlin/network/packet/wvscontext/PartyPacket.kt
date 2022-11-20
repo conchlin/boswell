@@ -20,7 +20,7 @@ class PartyPacket {
          */
         fun onPartyMessage(result: Int, vararg args: String): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.PARTY_OPERATION.value)
+            mplew.writeShort(SendOpcode.PartyResult.value)
             mplew.write(result)
             when (result) {
                 PartyResultType.UserHasOtherInvite.result,
@@ -38,7 +38,7 @@ class PartyPacket {
          */
         fun onPartyResult(chr: MapleCharacter, result: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.PARTY_OPERATION.value)
+            mplew.writeShort(SendOpcode.PartyResult.value)
             mplew.write(result)
             when (result) {
                 PartyResultType.Invite.result -> {
@@ -64,7 +64,7 @@ class PartyPacket {
          */
         fun onPartyResult(pt: MapleParty, mpc: MaplePartyCharacter, result: Int, channel: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.PARTY_OPERATION.value)
+            mplew.writeShort(SendOpcode.PartyResult.value)
             mplew.write(result)
             when (result) {
                 PartyResultType.Disband.result,
@@ -124,7 +124,7 @@ class PartyPacket {
          */
         fun onPartySilentUpdate(pt: MapleParty, channel: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.PARTY_OPERATION.value)
+            mplew.writeShort(SendOpcode.PartyResult.value)
             mplew.write(PartyResultType.SilentUpdate.result)
             mplew.writeInt(pt.id)
             PacketUtil.addPartyStatus(channel, pt, mplew, false)
@@ -137,7 +137,7 @@ class PartyPacket {
          */
         fun onPartyCreation(party: MaplePartyCharacter): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.PARTY_OPERATION.value)
+            mplew.writeShort(SendOpcode.PartyResult.value)
             mplew.write(PartyResultType.Create.result)
             mplew.writeInt(party.id)
             if (party.door != null) {

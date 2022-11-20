@@ -37,13 +37,13 @@ public final class CharlistRequestHandler extends AbstractMaplePacketHandler {
         
         World wserv = Server.getInstance().getWorld(world);
         if(wserv == null || wserv.isWorldCapacityFull()) {
-            c.announce(CLogin.Packet.getServerStatus(2)); // full
+            c.announce(CLogin.Packet.onCheckUserLimitResult(2)); // full
             return;
         }
         
         int channel = slea.readByte() + 1;
         if(wserv.getChannel(channel) == null) {
-            c.announce(CLogin.Packet.getServerStatus(2)); // full
+            c.announce(CLogin.Packet.onCheckUserLimitResult(2)); // full
             return;
         }
         

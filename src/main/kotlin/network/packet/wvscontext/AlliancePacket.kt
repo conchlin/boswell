@@ -22,7 +22,7 @@ class AlliancePacket {
          */
         fun onAllianceResult(alliance: MapleAlliance, result: Int, vararg args: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.ALLIANCE_OPERATION.value)
+            mplew.writeShort(SendOpcode.AllianceResult.value)
             mplew.write(result)
             when (result) {
                 AllianceResultType.ShowInfo.result -> {
@@ -96,7 +96,7 @@ class AlliancePacket {
          */
         fun onAllianceResult(alliance: MapleAlliance, result: Int, notice: String): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.ALLIANCE_OPERATION.value)
+            mplew.writeShort(SendOpcode.AllianceResult.value)
             mplew.write(result)
             when (result) {
                 AllianceResultType.Notice.result -> {
@@ -117,7 +117,7 @@ class AlliancePacket {
          */
         fun onAllianceResult(alliance: MapleAlliance, result: Int, ranks: Array<String?>):ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.ALLIANCE_OPERATION.value)
+            mplew.writeShort(SendOpcode.AllianceResult.value)
             mplew.write(result)
             when (result) {
                 AllianceResultType.AllianceRank.result -> {
@@ -139,7 +139,7 @@ class AlliancePacket {
          */
         fun onAllianceResult(user: MapleCharacter, result: Int, vararg args: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.ALLIANCE_OPERATION.value)
+            mplew.writeShort(SendOpcode.AllianceResult.value)
             mplew.write(result)
             when (result) {
                 AllianceResultType.LogInOut.result -> {
@@ -175,7 +175,7 @@ class AlliancePacket {
          */
         fun onAllianceResult(alliance: MapleAlliance, client: MapleClient, result: Int, guildId: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.ALLIANCE_OPERATION.value)
+            mplew.writeShort(SendOpcode.AllianceResult.value)
             mplew.write(result)
             when (result) {
                 AllianceResultType.AddGuild.result -> {

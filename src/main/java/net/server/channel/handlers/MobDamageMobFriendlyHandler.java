@@ -22,6 +22,7 @@
 package net.server.channel.handlers;
 
 import net.AbstractMaplePacketHandler;
+import network.packet.MobPool;
 import network.packet.WvsContext;
 import server.life.MapleMonster;
 import server.maps.MapleMap;
@@ -37,7 +38,7 @@ import scripting.event.EventInstanceManager;
 
 public final class MobDamageMobFriendlyHandler extends AbstractMaplePacketHandler {
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         int attacker = slea.readInt();
         slea.readInt();
         int damaged = slea.readInt();
@@ -98,7 +99,7 @@ public final class MobDamageMobFriendlyHandler extends AbstractMaplePacketHandle
             map.removeMapObject(monster);
         }
 
-        map.broadcastMessage(MaplePacketCreator.MobDamageMobFriendly(monster, damage, remainingHp), monster.getPosition());
+        map.broadcastMessage(MobPool.Packet.onDamaged(monster, true, damage, remainingHp));
         c.announce(WvsContext.Packet.enableActions());
     }
 }

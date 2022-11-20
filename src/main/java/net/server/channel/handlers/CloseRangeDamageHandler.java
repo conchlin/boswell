@@ -68,7 +68,7 @@ public final class CloseRangeDamageHandler extends AbstractDealDamageHandler {
             c.announce(MaplePacketCreator.getEnergy("energy", chr.getDojoEnergy()));
         }
         
-        chr.getMap().broadcastMessage(chr, UserRemote.Packet.closeRangeAttack(chr, attack.skill, attack.skilllevel,
+        chr.getMap().broadcastMessage(chr, UserRemote.Packet.onMeleeAttack(chr, attack.skill, attack.skilllevel,
                 attack.stance, attack.numAttackedAndDamage, attack.allDamage, attack.speed,
                 attack.direction, attack.display), false, true);
         int numFinisherOrbs = 0;

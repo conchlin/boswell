@@ -16,9 +16,9 @@ class DragonPacket {
          * these dragon packets are in the client but the Evan class was not released until v84
          */
 
-        fun dragonEnterField(dragon: MapleDragon): ByteArray? {
+        fun onEnterField(dragon: MapleDragon): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.SPAWN_DRAGON.value)
+            mplew.writeShort(SendOpcode.DragonEnterField.value)
             mplew.writeInt(dragon.owner.id) //objectid = owner id
             mplew.writeShort(dragon.position.x)
             mplew.writeShort(0)
@@ -31,9 +31,9 @@ class DragonPacket {
             return mplew.packet
         }
 
-        fun moveDragon(dragon: MapleDragon, p: Point?, res: List<LifeMovementFragment?>?): ByteArray? {
+        fun onMove(dragon: MapleDragon, p: Point?, res: List<LifeMovementFragment?>?): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.MOVE_DRAGON.value)
+            mplew.writeShort(SendOpcode.DragonMove.value)
             mplew.writeInt(dragon.owner.id)
             mplew.writePos(p)
             PacketUtil.serializeMovementList(mplew, res)
@@ -41,9 +41,9 @@ class DragonPacket {
             return mplew.packet
         }
 
-        fun dragonRemoveField(charid: Int): ByteArray? {
+        fun onRemoveField(charid: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.REMOVE_DRAGON.value)
+            mplew.writeShort(SendOpcode.DragonLeaveField.value)
             mplew.writeInt(charid)
 
             return mplew.packet

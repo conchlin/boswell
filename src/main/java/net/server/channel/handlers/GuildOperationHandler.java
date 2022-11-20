@@ -149,8 +149,8 @@ public final class GuildOperationHandler extends AbstractMaplePacketHandler {
                 if(allianceId > 0) Server.getInstance().getAlliance(allianceId).updateAlliancePackets(mc);
                 
                 mc.saveGuildStatus(); // update database
-                mc.getMap().broadcastMessage(mc, UserRemote.Packet.guildNameChanged(mc.getId(), mc.getGuild().getName())); // thanks Vcoc for pointing out an issue with updating guild tooltip to players in the map
-                mc.getMap().broadcastMessage(mc, UserRemote.Packet.guildMarkChanged(mc.getId(), mc.getGuild()));
+                mc.getMap().broadcastMessage(mc, UserRemote.Packet.onGuildNameChanged(mc.getId(), mc.getGuild().getName())); // thanks Vcoc for pointing out an issue with updating guild tooltip to players in the map
+                mc.getMap().broadcastMessage(mc, UserRemote.Packet.onGuildMarkChanged(mc.getId(), mc.getGuild()));
                 break;
             case 0x07:
                 cid = slea.readInt();
@@ -170,7 +170,7 @@ public final class GuildOperationHandler extends AbstractMaplePacketHandler {
                 mc.getMGC().setGuildId(0);
                 mc.getMGC().setGuildRank(5);
                 mc.saveGuildStatus();
-                mc.getMap().broadcastMessage(mc, UserRemote.Packet.guildNameChanged(mc.getId(), ""));
+                mc.getMap().broadcastMessage(mc, UserRemote.Packet.onGuildNameChanged(mc.getId(), ""));
                 break;
             case 0x08:
                 allianceId = mc.getGuild().getAllianceId();

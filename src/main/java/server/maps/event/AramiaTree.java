@@ -77,7 +77,7 @@ public class AramiaTree {
             case 0, 1, 2, 3, 4, 5 -> {
                 if (aramiaTree >= 1000 * (1 + reactor.getState())) {
                     reactor.setState((byte) (reactor.getState() + 1));
-                    map.broadcastMessage(ReactorPool.Packet.triggerReactor(reactor, reactor.getState()));
+                    map.broadcastMessage(ReactorPool.Packet.onReactorChangeState(reactor, reactor.getState()));
                 }
             }
             default -> {}

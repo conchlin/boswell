@@ -18,9 +18,9 @@ class MapleTVMan {
          * @param partner The partner shown with chr
          * @return the SEND_TV packet
          */
-        fun sendTV(chr: MapleCharacter, messages: List<String>, type: Int, partner: MapleCharacter?): ByteArray? {
+        fun onSetMessage(chr: MapleCharacter, messages: List<String>, type: Int, partner: MapleCharacter?): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.SEND_TV.value)
+            mplew.writeShort(SendOpcode.SetMessage.value)
             mplew.write(if (partner != null) 3 else 1)
             mplew.write(type) //Heart = 2  Star = 1  Normal = 0
             PacketUtil.addCharLook(mplew, chr, false)
@@ -50,16 +50,16 @@ class MapleTVMan {
          *
          * @return The Remove TV Packet
          */
-        fun removeTV(): ByteArray? {
+        fun onClearMessage(): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter(2)
-            mplew.writeShort(SendOpcode.REMOVE_TV.value)
+            mplew.writeShort(SendOpcode.ClearMessage.value)
 
             return mplew.packet
         }
 
-        fun enableTV(): ByteArray? {
+        fun onSendMessageResult(): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter(7)
-            mplew.writeShort(SendOpcode.ENABLE_TV.value)
+            mplew.writeShort(SendOpcode.SendMessageResult.value)
             mplew.writeInt(0)
             mplew.write(0)
 

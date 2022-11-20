@@ -14,9 +14,9 @@ class NpcPool {
 
         /** cNpcPool::onPacket **/
 
-        fun spawnNPC(life: MapleNPC): ByteArray? {
+        fun onEnterField(life: MapleNPC): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter(24)
-            mplew.writeShort(SendOpcode.SPAWN_NPC.value)
+            mplew.writeShort(SendOpcode.NpcEnterField.value)
             mplew.writeInt(life.objectId)
             mplew.writeInt(life.id)
             mplew.writeShort(life.position.x)
@@ -34,9 +34,9 @@ class NpcPool {
             return mplew.packet
         }
 
-        fun removeNPC(objectId: Int): ByteArray? {
+        fun onLeaveField(objectId: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.REMOVE_NPC.value)
+            mplew.writeShort(SendOpcode.NpcLeaveField.value)
             mplew.writeInt(objectId)
 
             return mplew.packet
@@ -44,7 +44,7 @@ class NpcPool {
 
         fun spawnNPCRequestController(life: MapleNPC, MiniMap: Boolean): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter(23)
-            mplew.writeShort(SendOpcode.SPAWN_NPC_REQUEST_CONTROLLER.value)
+            mplew.writeShort(SendOpcode.NpcChangeController.value)
             mplew.write(1)
             mplew.writeInt(life.objectId)
             mplew.writeInt(life.id)
@@ -65,7 +65,7 @@ class NpcPool {
 
         fun removeNPCController(objectid: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.SPAWN_NPC_REQUEST_CONTROLLER.value)
+            mplew.writeShort(SendOpcode.NpcChangeController.value)
             mplew.write(0)
             mplew.writeInt(objectid)
 
@@ -74,7 +74,7 @@ class NpcPool {
 
         fun spawnPlayerNPC(npc: MaplePlayerNPC): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.SPAWN_NPC_REQUEST_CONTROLLER.value)
+            mplew.writeShort(SendOpcode.NpcChangeController.value)
             mplew.write(1)
             mplew.writeInt(npc.objectId)
             mplew.writeInt(npc.scriptId)
@@ -89,14 +89,7 @@ class NpcPool {
             return mplew.packet
         }
 
-        /** cNpcPool::onNpcPacket **/
-
-        //npc_action is handled in NPCAnimationHandler
-
-        /**
-         * the following need to be implemented
-         * NPC_UPDATE_LIMITED_INFO(261),  //OnUpdateLimitedInfo(261)
-         */
+        //SendOpcode.NpcAction is handled in NPCAnimationHandler
 
         /**
          * use this to call a linked npc special action from npc.wz/info/link (?)
@@ -106,16 +99,16 @@ class NpcPool {
          */
         fun onSetSpecialAction(objectId: Int, action: String): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.NPC_SET_SPECIAL_ACTION.value)
+            mplew.writeShort(SendOpcode.SetSpecialAction.value)
             mplew.writeInt(objectId)
             mplew.writeAsciiString(action)
 
             return mplew.packet
         }
 
-        fun setNPCScriptable(scriptNpcDescriptions: Set<Pair<Int?, String?>>): ByteArray? { // thanks to GabrielSin
+        fun setNPCScriptable(scriptNpcDescriptions: Set<Pair<Int?, String?>>): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.SET_NPC_SCRIPTABLE.value)
+            mplew.writeShort(SendOpcode.SetNpcScript.value)
             mplew.write(scriptNpcDescriptions.size)
             for (p in scriptNpcDescriptions) {
                 mplew.writeInt(p.getLeft()!!)

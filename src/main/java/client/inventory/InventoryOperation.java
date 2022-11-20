@@ -4,18 +4,18 @@ package client.inventory;
  *
  * @author kevin
  */
-public class ModifyInventory {
+public class InventoryOperation {
 
     private int mode;
     private Item item;
     private short oldPos;
 
-    public ModifyInventory(final int mode, final Item item) {
+    public InventoryOperation(final int mode, final Item item) {
         this.mode = mode;
         this.item = item.copy();
     }
 
-    public ModifyInventory(final int mode, final Item item, final short oldPos) {
+    public InventoryOperation(final int mode, final Item item, final short oldPos) {
         this.mode = mode;
         this.item = item.copy();
         this.oldPos = oldPos;

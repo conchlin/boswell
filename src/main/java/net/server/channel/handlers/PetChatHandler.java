@@ -49,7 +49,7 @@ public final class PetChatHandler extends AbstractMaplePacketHandler {
         	c.disconnect(true, false);
         	return;
         }
-        c.getPlayer().getMap().broadcastMessage(c.getPlayer(), PetPacket.Packet.petChat(c.getPlayer().getId(), pet, act, text), true);
+        c.getPlayer().getMap().broadcastMessage(c.getPlayer(), PetPacket.Packet.onAction(c.getPlayer().getId(), pet, act, text), true);
         if (ServerConstants.USE_ENABLE_CHAT_LOG) {
             LogHelper.logChat(c, "Pet", text);
         }

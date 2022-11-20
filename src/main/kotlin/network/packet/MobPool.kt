@@ -14,8 +14,8 @@ class MobPool {
 
     companion object Packet {
 
-        fun moveMonster(
-            useskill: Int,
+        fun onMove(
+            useSkill: Int,
             action: Int,
             delay: Int,
             skillInfo: Int,
@@ -24,9 +24,9 @@ class MobPool {
             moves: List<LifeMovementFragment?>?
         ): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.MOVE_MONSTER.value)
+            mplew.writeShort(SendOpcode.MobMove.value)
             mplew.writeInt(oid)
-            mplew.write(useskill)
+            mplew.write(useSkill)
             mplew.write(delay)
             mplew.write(action)
             mplew.writeInt(skillInfo)
@@ -69,7 +69,7 @@ class MobPool {
             skillLevel: Int
         ): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter(13)
-            mplew.writeShort(SendOpcode.MOVE_MONSTER_RESPONSE.value)
+            mplew.writeShort(SendOpcode.CtrlAck.value)
             mplew.writeInt(objectid)
             mplew.writeShort(moveid.toInt())
             mplew.writeBool(useSkills)
@@ -80,9 +80,9 @@ class MobPool {
             return mplew.packet
         }
 
-        fun applyMonsterStatus(oid: Int, mse: MonsterStatusEffect): ByteArray? {
+        fun onStatSet(oid: Int, mse: MonsterStatusEffect): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.APPLY_MONSTER_STATUS.value)
+            mplew.writeShort(SendOpcode.MobStatSet.value)
             mplew.writeInt(oid)
             MaplePacketCreator.mobStat(mplew, mse)
             val skill = if (mse.playerSkill != null) mse.playerSkill else mse.mobSkill
@@ -95,9 +95,9 @@ class MobPool {
             return mplew.packet
         }
 
-        fun cancelMonsterStatus(oid: Int, stats: Map<MonsterStatus?, Int?>): ByteArray? {
+        fun onStatReset(oid: Int, stats: Map<MonsterStatus?, Int?>): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.CANCEL_MONSTER_STATUS.value)
+            mplew.writeShort(SendOpcode.MobStatReset.value)
             mplew.writeInt(oid)
             MaplePacketCreator.writeMonsterStatMask(mplew, stats)
             mplew.write(0) //m_nCalcDamageStatIndex
@@ -112,9 +112,9 @@ class MobPool {
          * This packet sends the data of all the monsters that were affected by a
          * mob skill
          */
-        fun affectedMonster(oid: Int, skillId: Int, delay: Int): ByteArray? {
+        fun onAffected(oid: Int, skillId: Int, delay: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.AFFECTED_MONSTER.value)
+            mplew.writeShort(SendOpcode.MobAffected.value)
             mplew.writeInt(oid)
             mplew.writeInt(skillId) //nSkillId
             mplew.writeShort(delay) //tDelay
@@ -122,32 +122,36 @@ class MobPool {
             return mplew.packet
         }
 
-        fun healMonster(mob: MapleMonster?, heal: Int): ByteArray? {
-            return damageMonster(mob, 0, -heal)
+        fun healMonster(mob: MapleMonster, heal: Int): ByteArray? {
+            return onDamaged(mob, false, -heal, 0)
         }
 
-        fun damageMonster(mob: MapleMonster?, type: Int, damage: Int): ByteArray? {
+        /**
+         * handles both regular and friendly fire damage done to a monster
+         * friendly fire being mob damage done to other mobs
+         *
+         * @param monster MapleMonster instance
+         * @param friendly source of damage dealt (either from mob true or from user false)
+         * @param damage int value representing damage dealt
+         * @param args either damage type for regular damage or remainingHp for friendly
+         */
+        fun onDamaged(monster: MapleMonster, friendly: Boolean, damage: Int, vararg args: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.DAMAGE_MONSTER.value)
-            mplew.writeInt(mob!!.objectId)
-            mplew.write(type)
-            mplew.writeInt(damage)
-            if (type != 2) {
-                mplew.writeInt(mob.hp)
-                mplew.writeInt(mob.maxHp)
+            mplew.writeShort(SendOpcode.MobDamaged.value)
+            mplew.writeInt(monster.objectId)
+            if (friendly) {
+                mplew.write(1) // direction ?
+                mplew.writeInt(damage)
+                mplew.writeInt(args[0]) // remainingHP
+                mplew.writeInt(monster.maxHp)
+            } else {
+                mplew.write(args[0]) // damage type
+                mplew.writeInt(damage)
+                if (args[0] != 2) { // damage type
+                    mplew.writeInt(monster.hp)
+                    mplew.writeInt(monster.maxHp)
+                }
             }
-
-            return mplew.packet
-        }
-
-        fun mobDamageMobFriendly(mob: MapleMonster, damage: Int, remainingHp: Int): ByteArray? {
-            val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.DAMAGE_MONSTER.value)
-            mplew.writeInt(mob.objectId)
-            mplew.write(1) // direction ?
-            mplew.writeInt(damage)
-            mplew.writeInt(remainingHp)
-            mplew.writeInt(mob.maxHp)
 
             return mplew.packet
         }
@@ -158,9 +162,9 @@ class MobPool {
          * @param oid The object id of the monster
          * @param skillId The skill that has been used
          */
-        fun monsterSpecialEffect(oid: Int, skillId: Int): ByteArray? {
+        fun onSpecialEffectBySkill(oid: Int, skillId: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.SPECIAL_EFFECT_BY_SKILL.value)
+            mplew.writeShort(SendOpcode.SpecialEffectBySkill.value)
             mplew.writeInt(oid)
             mplew.writeInt(skillId)
 
@@ -173,30 +177,27 @@ class MobPool {
          * @param remhppercentage
          * @return
          */
-        fun showMonsterHP(oid: Int, remhppercentage: Int): ByteArray? {
+        fun onHpIndicator(oid: Int, remhppercentage: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.SHOW_MONSTER_HP.value)
+            mplew.writeShort(SendOpcode.HPIndicator.value)
             mplew.writeInt(oid)
             mplew.write(remhppercentage)
 
             return mplew.packet
         }
 
-        fun catchMonster(
-            mobOid: Int,
-            success: Byte
-        ): ByteArray? {   // updated packet structure found thanks to Rien dev team
+        fun onCatchEffect(mobOid: Int, success: Byte): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.CATCH_MONSTER.value)
+            mplew.writeShort(SendOpcode.CatchEffect.value)
             mplew.writeInt(mobOid)
             mplew.write(success)
 
             return mplew.packet
         }
 
-        fun catchMonster(mobOid: Int, itemid: Int, success: Byte): ByteArray? {
+        fun onEffectByItem(mobOid: Int, itemid: Int, success: Byte): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.CATCH_MONSTER_WITH_ITEM.value)
+            mplew.writeShort(SendOpcode.EffectByItem.value)
             mplew.writeInt(mobOid)
             mplew.writeInt(itemid)
             mplew.write(success)

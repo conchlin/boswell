@@ -55,13 +55,13 @@ public class MapleNPC extends AbstractLoadedMapleLife {
                 return;
             }
         }
-        client.announce(NpcPool.Packet.spawnNPC(this));
+        client.announce(NpcPool.Packet.onEnterField(this));
         client.announce(NpcPool.Packet.spawnNPCRequestController(this, true));
     }
 
     @Override
     public void sendDestroyData(MapleClient client) {
-        client.announce(NpcPool.Packet.removeNPC(getObjectId()));
+        client.announce(NpcPool.Packet.onLeaveField(getObjectId()));
         client.announce(NpcPool.Packet.removeNPCController(getObjectId()));
     }
 

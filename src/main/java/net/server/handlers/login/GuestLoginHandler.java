@@ -33,7 +33,7 @@ public final class GuestLoginHandler extends AbstractMaplePacketHandler {
 
     @Override
     public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
-        c.announce(CLogin.Packet.sendGuestTOS());
+        c.announce(CLogin.Packet.onGuestIDLoginResult());
         new LoginPasswordHandler().handlePacket(slea, c);
     }
 }

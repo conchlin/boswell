@@ -43,7 +43,7 @@ import tools.data.output.MaplePacketLittleEndianWriter;
 public final class AllianceOperationHandler extends AbstractMaplePacketHandler {
 
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         MapleAlliance alliance = null;
         MapleCharacter chr = c.getPlayer();
         
@@ -224,52 +224,10 @@ public final class AllianceOperationHandler extends AbstractMaplePacketHandler {
 
     private static byte[] sendShowInfo(int allianceid, int playerid) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.ALLIANCE_OPERATION.getValue());
+        mplew.writeShort(SendOpcode.AllianceResult.getValue());
         mplew.write(0x02);
         mplew.writeInt(allianceid);
         mplew.writeInt(playerid);
-        return mplew.getPacket();
-    }
-
-    private static byte[] sendInvitation(int allianceid, int playerid, final String guildname) {
-        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.ALLIANCE_OPERATION.getValue());
-        mplew.write(0x05);
-        mplew.writeInt(allianceid);
-        mplew.writeInt(playerid);
-        mplew.writeMapleAsciiString(guildname);
-        return mplew.getPacket();
-    }
-
-    private static byte[] sendChangeGuild(int allianceid, int playerid, int guildid, int option) {
-        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.ALLIANCE_OPERATION.getValue());
-        mplew.write(0x07);
-        mplew.writeInt(allianceid);
-        mplew.writeInt(guildid);
-        mplew.writeInt(playerid);
-        mplew.write(option);
-        return mplew.getPacket();
-    }
-
-    private static byte[] sendChangeLeader(int allianceid, int playerid, int victim) {
-        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.ALLIANCE_OPERATION.getValue());
-        mplew.write(0x08);
-        mplew.writeInt(allianceid);
-        mplew.writeInt(playerid);
-        mplew.writeInt(victim);
-        return mplew.getPacket();
-    }
-
-    private static byte[] sendChangeRank(int allianceid, int playerid, int int1, byte byte1) {
-        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.ALLIANCE_OPERATION.getValue());
-        mplew.write(0x09);
-        mplew.writeInt(allianceid);
-        mplew.writeInt(playerid);
-        mplew.writeInt(int1);
-        mplew.writeInt(byte1);
         return mplew.getPacket();
     }
 }

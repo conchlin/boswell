@@ -210,7 +210,8 @@ public class MaplePet extends Item {
             enjoyed = false;
         }
 
-        owner.getMap().broadcastMessage(PetPacket.Packet.petFoodResponse(owner.getId(), slot, enjoyed, false));
+        owner.getMap().broadcastMessage(
+                PetPacket.Packet.onActionCommand(owner.getId(), slot, true, enjoyed, 0, false));
         saveToDb();
 
         Item petz = owner.getInventory(MapleInventoryType.CASH).getItem(getPosition());

@@ -8,9 +8,9 @@ class AffectedAreaPool {
 
     companion object Packet {
 
-        fun affectedAreaCreated(oid: Int, ownerCid: Int, skill: Int, level: Int, mist: AffectedArea): ByteArray? {
+        fun onAffectedAreaCreated(oid: Int, ownerCid: Int, skill: Int, level: Int, mist: AffectedArea): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.SPAWN_MIST.value)
+            mplew.writeShort(SendOpcode.AffectedAreaCreated.value)
             mplew.writeInt(oid)
             // mob mist = 0, player poison = 1, smokescreen = 2, unknown = 3, recovery = 4
             mplew.writeInt(if (mist.isMobMist) 0 else if (mist.isPoisonMist) 1 else if (mist.isRecoveryMist) 4 else 2)
@@ -27,9 +27,9 @@ class AffectedAreaPool {
             return mplew.packet
         }
 
-        fun affectedAreaRemoved(oid: Int): ByteArray? {
+        fun onAffectedAreaRemoved(oid: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.REMOVE_MIST.value)
+            mplew.writeShort(SendOpcode.AffectedAreaRemoved.value)
             mplew.writeInt(oid)
 
             return mplew.packet

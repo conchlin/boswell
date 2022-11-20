@@ -20,7 +20,7 @@ class UserLocal {
          */
         fun onSitResult(id: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.SIT_RESULT.value)
+            mplew.writeShort(SendOpcode.SitResult.value)
             if (id < 0) {
                 mplew.write(0)
             } else {
@@ -40,27 +40,9 @@ class UserLocal {
          */
         fun onEffect(effect: Byte, pathway: String, vararg args: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.USER_LOCAL_EFFECT.value)
+            mplew.writeShort(SendOpcode.LocalEffect.value)
             mplew.write(effect)
             when (effect) {
-                UserEffectType.LEVEL_UP.effect -> {
-                }
-                UserEffectType.PORTAL_SE.effect -> {
-                }
-                UserEffectType.MONSTERBOOK_PICKUP.effect -> {
-                }
-                UserEffectType.QUEST_COMPLETE.effect -> {
-                }
-                UserEffectType.EQUIP_LEVEL_UP.effect -> {
-                }
-                UserEffectType.JOB_CHANGE.effect -> {
-                }
-                UserEffectType.EXP_CARD.effect -> {
-                }
-                UserEffectType.QUEST_COMPLETE.effect -> {
-                }
-                UserEffectType.SPIRIT_STONE.effect -> {
-                }
                 UserEffectType.PET_LEVEL_UP.effect -> {
                     mplew.write(0)
                     mplew.write(args[0]) // Pet Index
@@ -91,7 +73,7 @@ class UserLocal {
 
         fun onTeleport(): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.TELEPORT.value)
+            mplew.writeShort(SendOpcode.Teleport.value)
             mplew.write(0)
             mplew.write(6)
 
@@ -121,7 +103,7 @@ class UserLocal {
             }
 
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.BALLOON_MSG.value)
+            mplew.writeShort(SendOpcode.BalloonMsg.value)
             mplew.writeMapleAsciiString(hint)
             mplew.writeShort(msgWidth)
             mplew.writeShort(msgHeight)
@@ -130,15 +112,11 @@ class UserLocal {
             return mplew.packet
         }
 
-        /**
-         * MESO_GIVE_SUCCEED
-         * MESO_GIVE_FAIL
-         **/
-
+        /** todo onQuestResult **/
 
         fun updateQuestInfo(quest: Short, npc: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.QUEST_RESULT.value)
+            mplew.writeShort(SendOpcode.QuestResult.value)
             mplew.write(8) //0x0A in v95
             mplew.writeShort(quest.toInt())
             mplew.writeInt(npc)
@@ -149,7 +127,7 @@ class UserLocal {
 
         fun addQuestTimeLimit(quest: Short, time: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.QUEST_RESULT.value)
+            mplew.writeShort(SendOpcode.QuestResult.value)
             mplew.write(6)
             mplew.writeShort(1) //Size but meh, when will there be 2 at the same time? And it won't even replace the old one :)
             mplew.writeShort(quest.toInt())
@@ -160,7 +138,7 @@ class UserLocal {
 
         fun removeQuestTimeLimit(quest: Short): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.QUEST_RESULT.value)
+            mplew.writeShort(SendOpcode.QuestResult.value)
             mplew.write(7)
             mplew.writeShort(1) //Position
             mplew.writeShort(quest.toInt())
@@ -171,13 +149,13 @@ class UserLocal {
         // not sure if there is an actual visible effect associated with these so it remains unimplemented
         fun onNotifyHpDec(): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.NOTIFY_HP_DEC_BY_FIELD.value)
+            mplew.writeShort(SendOpcode.NotifyHpDecByField.value)
             mplew.writeInt(0) // decode4
 
             return mplew.packet
         }
 
-        // MAKER_RESULT packets thanks to Arnah (Vertisy)
+        // MakerResult packets thanks to Arnah (Vertisy)
         fun makerResult(
             success: Boolean,
             itemMade: Int,
@@ -188,7 +166,7 @@ class UserLocal {
             INCBuffGems: List<Int?>
         ): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.MAKER_RESULT.value)
+            mplew.writeShort(SendOpcode.MakerResult.value)
             mplew.writeInt(if (success) 0 else 1) // 0 = success, 1 = fail
             mplew.writeInt(1) // 1 or 2 doesn't matter, same methods
             mplew.writeBool(!success)
@@ -218,7 +196,7 @@ class UserLocal {
 
         fun makerResultCrystal(itemIdGained: Int, itemIdLost: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.MAKER_RESULT.value)
+            mplew.writeShort(SendOpcode.MakerResult.value)
             mplew.writeInt(0) // Always successful!
             mplew.writeInt(3) // Monster Crystal
             mplew.writeInt(itemIdGained)
@@ -229,7 +207,7 @@ class UserLocal {
 
         fun makerResultDesynth(itemId: Int, mesos: Int, itemsGained: List<Pair<Int?, Int?>>): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.MAKER_RESULT.value)
+            mplew.writeShort(SendOpcode.MakerResult.value)
             mplew.writeInt(0) // Always successful!
             mplew.writeInt(4) // Mode Desynth
             mplew.writeInt(itemId) // Item desynthed
@@ -245,7 +223,7 @@ class UserLocal {
 
         fun makerEnableActions(): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.MAKER_RESULT.value)
+            mplew.writeShort(SendOpcode.MakerResult.value)
             mplew.writeInt(0) // Always successful!
             mplew.writeInt(0) // Monster Crystal
             mplew.writeInt(0)
@@ -259,7 +237,7 @@ class UserLocal {
          */
         fun onOpenUI(ui: Byte): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter(3)
-            mplew.writeShort(SendOpcode.OPEN_UI.value)
+            mplew.writeShort(SendOpcode.OpenUI.value)
             mplew.write(ui)
 
             return mplew.packet
@@ -271,7 +249,7 @@ class UserLocal {
          */
         fun setDirectionMode(enable: Boolean): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter(3)
-            mplew.writeShort(SendOpcode.SET_DIRECTION_MODE.value)
+            mplew.writeShort(SendOpcode.SetDirectionMode.value)
             mplew.write(if (enable) 1 else 0)
 
             return mplew.packet
@@ -279,15 +257,15 @@ class UserLocal {
 
         fun onDisableUI(enable: Boolean): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.DISABLE_UI.value)
+            mplew.writeShort(SendOpcode.DisableUI.value)
             mplew.write(if (enable) 1 else 0)
 
             return mplew.packet
         }
 
-        fun hireTutor(spawn: Boolean): ByteArray? {
+        fun onHireTutor(spawn: Boolean): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter(3)
-            mplew.writeShort(SendOpcode.HIRE_TUTOR.value)
+            mplew.writeShort(SendOpcode.HireTutor.value)
             if (spawn) {
                 mplew.write(1)
             } else {
@@ -297,9 +275,9 @@ class UserLocal {
             return mplew.packet
         }
 
-        fun tutorMessage(talk: String?): ByteArray? {
+        fun onTutorMessage(talk: String?): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.TUTOR_MSG.value)
+            mplew.writeShort(SendOpcode.TutorMsg.value)
             mplew.write(0)
             mplew.writeMapleAsciiString(talk)
             mplew.write(byteArrayOf(0xC8.toByte(), 0, 0, 0, 0xA0.toByte(), 0x0F.toByte(), 0, 0))
@@ -307,9 +285,9 @@ class UserLocal {
             return mplew.packet
         }
 
-        fun tutorHint(hint: Int): ByteArray? {
+        fun onTutorHint(hint: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter(11)
-            mplew.writeShort(SendOpcode.TUTOR_MSG.value)
+            mplew.writeShort(SendOpcode.TutorMsg.value)
             mplew.write(1)
             mplew.writeInt(hint)
             mplew.writeInt(7000)
@@ -317,9 +295,9 @@ class UserLocal {
             return mplew.packet
         }
 
-        fun showComboResponse(count: Int): ByteArray? {
+        fun onIncComboResponse(count: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter(6)
-            mplew.writeShort(SendOpcode.COMBO_RESPONSE.value)
+            mplew.writeShort(SendOpcode.IncComboResponse.value)
             mplew.writeInt(count)
 
             return mplew.packet
@@ -331,27 +309,11 @@ class UserLocal {
          */
         fun skillCooldown(sid: Int, time: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.SKILL_COOLDOWN.value)
+            mplew.writeShort(SendOpcode.SkillCooltimeSet.value)
             mplew.writeInt(sid)
             mplew.writeShort(time) //Int in v97
 
             return mplew.packet
         }
-
-        /**
-         * unused enum values
-         *
-         * MESO_GIVE_SUCCEED
-         * MESO_GIVE_FAIL
-         * CUserLocal::OnPlayEventSound
-         * CUserLocal::OnPlayMinigameSound
-         * OnRandomEmotion(226)
-         * OnResignQuestReturn(227)
-         * OnPassMateName
-         * OnRadioSchedule
-         * open_skill_guide
-         * chat_msg
-         * onSayImage
-         **/
     }
 }

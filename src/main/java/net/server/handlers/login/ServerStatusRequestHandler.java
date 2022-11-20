@@ -36,9 +36,9 @@ public final class ServerStatusRequestHandler extends AbstractMaplePacketHandler
         World wserv = Server.getInstance().getWorld(world);
         if(wserv != null) {
             int status = wserv.getWorldCapacityStatus();
-            c.announce(CLogin.Packet.getServerStatus(status));
+            c.announce(CLogin.Packet.onCheckUserLimitResult(status));
         } else {
-            c.announce(CLogin.Packet.getServerStatus(2));
+            c.announce(CLogin.Packet.onCheckUserLimitResult(2));
         }
     }
 }

@@ -625,10 +625,10 @@ public class World {
             if (mc.isLoggedinWorld()) {
                 MapleGuild guild = Server.getInstance().getGuild(guildid);
                 if (guild != null) {
-                    mc.getMap().broadcastMessage(mc, UserRemote.Packet.guildNameChanged(cid, guild.getName()));
-                    mc.getMap().broadcastMessage(mc, UserRemote.Packet.guildMarkChanged(cid, guild));
+                    mc.getMap().broadcastMessage(mc, UserRemote.Packet.onGuildNameChanged(cid, guild.getName()));
+                    mc.getMap().broadcastMessage(mc, UserRemote.Packet.onGuildMarkChanged(cid, guild));
                 } else {
-                    mc.getMap().broadcastMessage(mc, UserRemote.Packet.guildNameChanged(cid, ""));
+                    mc.getMap().broadcastMessage(mc, UserRemote.Packet.onGuildNameChanged(cid, ""));
                 }
             }
         }

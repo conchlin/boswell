@@ -218,7 +218,7 @@ public class MobSkill implements Skill {
 				for (MapleMapObject mons : objects) {
 					MapleMonster mon = (MapleMonster) mons;
 					mon.heal(hps, 0);
-					mon.getMap().broadcastMessage(player, MobPool.Packet.affectedMonster(mon.getObjectId(), skillID, 0), true);
+					mon.getMap().broadcastMessage(player, MobPool.Packet.onAffected(mon.getObjectId(), skillID, 0), true);
 				}
 			}
 			case 140 -> stats.put(MonsterStatus.WEAPON_IMMUNITY, x);

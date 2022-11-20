@@ -713,7 +713,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         }
         combocounter = (short) Math.min(30000, count);
         if (count > 0) {
-            announce(UserLocal.Packet.showComboResponse(combocounter));
+            announce(UserLocal.Packet.onIncComboResponse(combocounter));
         }
     }
 
@@ -784,7 +784,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                 getMap().broadcastGMMessage(this, UserRemote.Packet.cancelForeignBuff(id, dsstat), false);
                 getMap().broadcastSpawnPlayerMapObjectMessage(this, this, false);
                 for (MapleSummon ms : this.getSummonsValues()) {
-                    getMap().broadcastNONGMMessage(this, MaplePacketCreator.spawnSummon(ms, false), false);
+                    getMap().broadcastNONGMMessage(this, SummonedPool.Packet.onSummonCreated(ms, false), false);
                 }
                 for (MapleMonster mon : this.getControlledMonsters()) {
                     mon.setController(null);
@@ -1080,7 +1080,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         silentPartyUpdate();
 
         if (dragon != null) {
-            getMap().broadcastMessage(DragonPacket.Packet.dragonRemoveField(dragon.getObjectId()));
+            getMap().broadcastMessage(DragonPacket.Packet.onRemoveField(dragon.getObjectId()));
             dragon = null;
         }
 
@@ -2542,16 +2542,16 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     }
 
     public void forceUpdateItem(Item item) {
-        final List<ModifyInventory> mods = new LinkedList<>();
-        mods.add(new ModifyInventory(3, item));
-        mods.add(new ModifyInventory(0, item));
-        client.announce(MaplePacketCreator.modifyInventory(true, mods));
+        final List<InventoryOperation> mods = new LinkedList<>();
+        mods.add(new InventoryOperation(3, item));
+        mods.add(new InventoryOperation(0, item));
+        client.announce(MaplePacketCreator.onInventoryOperation(true, mods));
     }
     
     public void updateExpOnItem(Item item) {
-        final List<ModifyInventory> mods = new LinkedList<>();
-        mods.add(new ModifyInventory(4, item));
-        client.announce(MaplePacketCreator.modifyInventory(true, mods));
+        final List<InventoryOperation> mods = new LinkedList<>();
+        mods.add(new InventoryOperation(4, item));
+        client.announce(MaplePacketCreator.onInventoryOperation(true, mods));
     }
 
     public void gainGachaExp() {
@@ -3076,11 +3076,11 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                         if (addHp) {
                             addHP(healEffect.getHp());
                             client.announce(MaplePacketCreator.showOwnBuffEffect(DarkKnight.BEHOLDER, 2));
-                            getMap().broadcastMessage(MapleCharacter.this, SummonedPool.Packet.summonSkill(getId(), DarkKnight.BEHOLDER, 5), true);
+                            getMap().broadcastMessage(MapleCharacter.this, SummonedPool.Packet.onSkill(getId(), DarkKnight.BEHOLDER, 5), true);
                             getMap().broadcastMessage(MapleCharacter.this, MaplePacketCreator.showOwnBuffEffect(DarkKnight.BEHOLDER, 2), false);
                             for (MapleSummon sum : getSummonsValues()) {
                                 if (sum != null) {
-                                    getMap().broadcastMessage(this, SummonedPool.Packet.summonSkill(getId(), sum.getObjectId(), 5), true);
+                                    getMap().broadcastMessage(this, SummonedPool.Packet.onSkill(getId(), sum.getObjectId(), 5), true);
                                 }
                             }
                         }
@@ -3098,7 +3098,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                         client.announce(MaplePacketCreator.showOwnBuffEffect(DarkKnight.BEHOLDER, 2));
                         for (MapleSummon sum : getSummonsValues()) {
                             if (sum != null) {
-                                getMap().broadcastMessage(this, SummonedPool.Packet.summonSkill(getId(), sum.getObjectId(), (int) (Math.random() * 3) + 6), true);
+                                getMap().broadcastMessage(this, SummonedPool.Packet.onSkill(getId(), sum.getObjectId(), (int) (Math.random() * 3) + 6), true);
                             }
                         }
                         getMap().broadcastMessage(MapleCharacter.this, MaplePacketCreator.showOwnBuffEffect(DarkKnight.BEHOLDER, 2), false);
@@ -3327,7 +3327,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 
             Set<Integer> exclItems = pe.getValue();
             if (!exclItems.isEmpty()) {
-                client.announce(PetPacket.Packet.loadExceptionList(this.getId(), pe.getKey(), petIndex, new ArrayList<>(exclItems)));
+                client.announce(PetPacket.Packet.onLoadExceptionList(this.getId(), pe.getKey(), petIndex, new ArrayList<>(exclItems)));
 
                 chrLock.lock();
                 try {
@@ -3351,7 +3351,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 
             Set<Integer> exclItems = pe.getValue();
             if (!exclItems.isEmpty()) {
-                c.announce(PetPacket.Packet.loadExceptionList(this.getId(), pe.getKey(), petIndex, new ArrayList<>(exclItems)));
+                c.announce(PetPacket.Packet.onLoadExceptionList(this.getId(), pe.getKey(), petIndex, new ArrayList<>(exclItems)));
             }
         }
     }
@@ -6171,7 +6171,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                 if (partychar.getMapId() == getMapId() && partychar.getChannel() == channel) {
                     MapleCharacter other = Server.getInstance().getWorld(world).getChannel(channel).getPlayerStorage().getCharacterByName(partychar.getName());
                     if (other != null) {
-                        client.announce(UserRemote.Packet.updatePartyMemberHP(other.getId(), other.getHp(), other.getCurrentMaxHp()));
+                        client.announce(UserRemote.Packet.onReceiveHp(other.getId(), other.getHp(), other.getCurrentMaxHp()));
                     }
                 }
             }
@@ -7006,7 +7006,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     }
 
     public void sendKeymap() {
-        client.announce(FuncKeyMappedMan.Packet.getKeymap(keymap));
+        client.announce(FuncKeyMappedMan.Packet.onFuncKeyMappedItemInit(keymap));
     }
 
     public void sendMacros() {
@@ -7932,7 +7932,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         }
 
         this.getClient().getWorldServer().unregisterPetHunger(this, petIdx);
-        getMap().broadcastMessage(this, PetPacket.Packet.showPet(this, pet, true, hunger), true);
+        getMap().broadcastMessage(this, PetPacket.Packet.onPetActivated(this, pet, true, hunger), true);
 
         removePet(pet, shift_left);
         commitExcludedItems();
@@ -7961,7 +7961,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                 if (partychar.getMapId() == getMapId() && partychar.getChannel() == channel) {
                     MapleCharacter other = Server.getInstance().getWorld(world).getChannel(channel).getPlayerStorage().getCharacterByName(partychar.getName());
                     if (other != null) {
-                        other.client.announce(UserRemote.Packet.updatePartyMemberHP(getId(), this.hp, maxhp));
+                        other.client.announce(UserRemote.Packet.onReceiveHp(getId(), this.hp, maxhp));
                     }
                 }
             }

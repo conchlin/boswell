@@ -13,9 +13,9 @@ class PetPacket {
     // naming this packet for readability purposes when called in java
     companion object Packet {
 
-        fun showPet(chr: MapleCharacter, pet: MaplePet?, remove: Boolean, hunger: Boolean): ByteArray? {
+        fun onPetActivated(chr: MapleCharacter, pet: MaplePet?, remove: Boolean, hunger: Boolean): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.SPAWN_PET.value)
+            mplew.writeShort(SendOpcode.PetActivated.value)
             mplew.writeInt(chr.id)
             mplew.write(chr.getPetIndex(pet))
             if (remove) {
@@ -29,18 +29,14 @@ class PetPacket {
         }
 
         /**
-         * This is the packet for pet movement
-         *
-         * @param MapleCharacter chr
-         * @param MaplePet pet
-         * @param Point p
-         * @param List<LifeMovementFragment> moves
-         *
-         * @return MaplePacketLittleEndianWriter mplew
-        </LifeMovementFragment> */
-        fun movePet(chr: MapleCharacter, pet: MaplePet?, p: Point?, moves: List<LifeMovementFragment?>?): ByteArray? {
+         * @param chr MapleCharacter
+         * @param pet MaplePet
+         * @param p new point position of movement
+         * @param moves movement size to write
+         */
+        fun onMove(chr: MapleCharacter, pet: MaplePet?, p: Point?, moves: List<LifeMovementFragment?>?): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.MOVE_PET.value)
+            mplew.writeShort(SendOpcode.PetMove.value)
             mplew.writeInt(chr.id)
             mplew.write(chr.getPetIndex(pet))
             mplew.writePos(p)
@@ -49,9 +45,9 @@ class PetPacket {
             return mplew.packet
         }
 
-        fun petChat(cid: Int, index: Byte, act: Int, text: String?): ByteArray? {
+        fun onAction(cid: Int, index: Byte, act: Int, text: String?): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.PET_CHAT.value)
+            mplew.writeShort(SendOpcode.PetAction.value)
             mplew.writeInt(cid)
             mplew.write(index)
             mplew.write(0)
@@ -62,9 +58,9 @@ class PetPacket {
             return mplew.packet
         }
 
-        fun changePetName(chr: MapleCharacter, newname: String?): ByteArray? {
+        fun onNameChange(chr: MapleCharacter, newname: String?): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.PET_NAMECHANGE.value)
+            mplew.writeShort(SendOpcode.PetNameChange.value)
             mplew.writeInt(chr.id)
             mplew.write(0)
             mplew.writeMapleAsciiString(newname)
@@ -73,9 +69,9 @@ class PetPacket {
             return mplew.packet
         }
 
-        fun loadExceptionList(cid: Int, petId: Int, petIdx: Byte, data: List<Int?>): ByteArray {
+        fun onLoadExceptionList(cid: Int, petId: Int, petIdx: Byte, data: List<Int?>): ByteArray {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.PET_EXCEPTION_LIST.value)
+            mplew.writeShort(SendOpcode.PetLoadExceptionList.value)
             mplew.writeInt(cid)
             mplew.write(petIdx)
             mplew.writeLong(petId.toLong())
@@ -87,28 +83,33 @@ class PetPacket {
             return mplew.packet
         }
 
-        fun petFoodResponse(cid: Int, index: Byte, success: Boolean, balloonType: Boolean): ByteArray? {
+        /**
+         * @param userId
+         * @param foodAction whether it is a feeding action
+         * @param success Randomizer.nextInt(100) < petCommand.getProbability()
+         * @param animation depending on command value
+         * @param balloonType seems to be always false perhaps this is not needed
+         */
+        fun onActionCommand(userId: Int,
+                            index: Byte,
+                            foodAction: Boolean,
+                            success: Boolean,
+                            animation: Int,
+                            balloonType: Boolean): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.PET_COMMAND.value)
-            mplew.writeInt(cid)
+            mplew.writeShort(SendOpcode.PetActionCommand.value)
+            mplew.writeInt(userId)
             mplew.write(index)
-            mplew.write(1)
-            mplew.writeBool(success)
-            mplew.writeBool(balloonType)
-
-            return mplew.packet
-        }
-
-        fun commandResponse(cid: Int, index: Byte, talk: Boolean, animation: Int, balloonType: Boolean): ByteArray? {
-            val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.PET_COMMAND.value)
-            mplew.writeInt(cid)
-            mplew.write(index)
-            mplew.write(0)
-            mplew.write(animation)
-            mplew.writeBool(!talk)
-            mplew.writeBool(balloonType)
-
+            if (foodAction) {
+                mplew.write(1)
+                mplew.writeBool(success)
+                mplew.writeBool(balloonType)
+            } else {
+                mplew.write(0)
+                mplew.write(animation)
+                mplew.writeBool(success)
+                mplew.writeBool(balloonType)
+            }
             return mplew.packet
         }
 

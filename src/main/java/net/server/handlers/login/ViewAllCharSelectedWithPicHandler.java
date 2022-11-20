@@ -39,7 +39,7 @@ public class ViewAllCharSelectedWithPicHandler extends AbstractMaplePacketHandle
         String hwid = slea.readMapleAsciiString();
         
         if (!hwid.matches("[0-9A-F]{12}_[0-9A-F]{8}")) {
-            c.announce(CLogin.Packet.getAfterLoginError(LoginResultType.WrongGateway.getReason()));
+            c.announce(CLogin.Packet.onSelectCharacterByVACResult(LoginResultType.WrongGateway.getReason()));
             return;
         }
         
@@ -62,7 +62,7 @@ public class ViewAllCharSelectedWithPicHandler extends AbstractMaplePacketHandle
         c.setWorld(server.getCharacterWorld(charId));
         World wserv = c.getWorldServer();
         if(wserv == null || wserv.isWorldCapacityFull()) {
-            c.announce(CLogin.Packet.getAfterLoginError(LoginResultType.TooManyConnections.getReason()));
+            c.announce(CLogin.Packet.onSelectCharacterByVACResult(LoginResultType.TooManyConnections.getReason()));
             return;
         }
         
@@ -72,13 +72,13 @@ public class ViewAllCharSelectedWithPicHandler extends AbstractMaplePacketHandle
         if (c.checkPic(pic)) {
             String[] socket = server.getInetSocket(c.getWorld(), c.getChannel());
             if(socket == null) {
-                c.announce(CLogin.Packet.getAfterLoginError(LoginResultType.TooManyConnections.getReason()));
+                c.announce(CLogin.Packet.onSelectCharacterByVACResult(LoginResultType.TooManyConnections.getReason()));
                 return;
             }
             
             AntiMulticlientResult res = MapleSessionCoordinator.getInstance().attemptGameSession(session, c.getAccID(), hwid);
             if (res != AntiMulticlientResult.SUCCESS) {
-                c.announce(CLogin.Packet.getAfterLoginError(parseAntiMulticlientError(res)));
+                c.announce(CLogin.Packet.onSelectCharacterByVACResult(parseAntiMulticlientError(res)));
                 return;
             }
             

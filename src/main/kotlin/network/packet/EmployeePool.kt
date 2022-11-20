@@ -9,9 +9,9 @@ class EmployeePool {
     // naming this packet for readability purposes when called in java
     companion object Packet {
 
-        fun spawnHiredMerchantBox(hm: MapleHiredMerchant): ByteArray? {
+        fun onEnterField(hm: MapleHiredMerchant): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.SPAWN_HIRED_MERCHANT.value)
+            mplew.writeShort(SendOpcode.EmployeeEnterField.value)
             mplew.writeInt(hm.ownerId)
             mplew.writeInt(hm.itemId)
             mplew.writePos(hm.position)
@@ -26,24 +26,24 @@ class EmployeePool {
             return mplew.packet
         }
 
-        fun removeHiredMerchantBox(id: Int): ByteArray? {
+        fun onLeaveField(id: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.DESTROY_HIRED_MERCHANT.value)
+            mplew.writeShort(SendOpcode.EmployeeLeaveField.value)
             mplew.writeInt(id)
 
             return mplew.packet
         }
 
-        fun updateHiredMerchantBox(hm: MapleHiredMerchant): ByteArray? {
+        fun onMiniRoomBalloon(hm: MapleHiredMerchant): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.UPDATE_HIRED_MERCHANT.value)
+            mplew.writeShort(SendOpcode.EmployeeMiniRoomBalloon.value)
             mplew.writeInt(hm.ownerId)
-            updateHiredMerchantBoxInfo(mplew, hm)
+            updateMiniRoomBalloon(mplew, hm)
 
             return mplew.packet
         }
 
-        private fun updateHiredMerchantBoxInfo(mplew: MaplePacketLittleEndianWriter, hm: MapleHiredMerchant) {
+        private fun updateMiniRoomBalloon(mplew: MaplePacketLittleEndianWriter, hm: MapleHiredMerchant) {
             val roomInfo = hm.shopRoomInfo
             mplew.write(5)
             mplew.writeInt(hm.objectId)

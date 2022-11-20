@@ -22,6 +22,7 @@
 package net.server.channel.handlers;
 
 import client.MapleClient;
+import network.packet.UserRemote;
 import server.movement.LifeMovementFragment;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
@@ -50,10 +51,10 @@ public final class MovePlayerHandler extends AbstractMovementPacketHandler {
             c.getPlayer().getMap().movePlayer(c.getPlayer(), c.getPlayer().getPosition());
             if (c.getPlayer().isHidden()) {
                 c.getPlayer().getMap().broadcastGMMessage(
-                        c.getPlayer(), MaplePacketCreator.movePlayer(c.getPlayer().getId(), p, res), false);
+                        c.getPlayer(), UserRemote.Packet.onMove(c.getPlayer().getId(), p, res), false);
             } else {
                 c.getPlayer().getMap().broadcastMessage(
-                        c.getPlayer(), MaplePacketCreator.movePlayer(c.getPlayer().getId(), p, res), false);
+                        c.getPlayer(), UserRemote.Packet.onMove(c.getPlayer().getId(), p, res), false);
             }
         }
     }

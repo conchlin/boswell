@@ -33,7 +33,7 @@ import client.MapleClient;
 import client.inventory.Item;
 import client.inventory.MapleInventory;
 import client.inventory.MapleInventoryType;
-import client.inventory.ModifyInventory;
+import client.inventory.InventoryOperation;
 import client.MapleCharacter;
 import constants.ItemConstants;
 import net.AbstractMaplePacketHandler;
@@ -85,23 +85,23 @@ public final class InventoryMergeHandler extends AbstractMaplePacketHandler {
 
                 // Sometimes items such as ilbis cant be combined so you have to have a null check
                 while (it != null && it.hasNext()) {
-                    List<ModifyInventory> mods = new ArrayList<>();
+                    List<InventoryOperation> mods = new ArrayList<>();
                     short entry_slot = it.next();
                     Item entry = inventory.getItem(entry_slot);
                     int difference = max_slot - entry.getQuantity();
                     if (item.getQuantity() > difference) {
                         entry.setQuantity(max_slot);
                         item.setQuantity((short) (item.getQuantity() - difference));
-                        mods.add(new ModifyInventory(1, item));
-                        mods.add(new ModifyInventory(1, entry));
+                        mods.add(new InventoryOperation(1, item));
+                        mods.add(new InventoryOperation(1, entry));
                     } else {
                         entry.setQuantity((short) (entry.getQuantity() + item.getQuantity()));
                         MapleInventoryManipulator.removeFromSlot(c, inventoryType, x, item.getQuantity(), false);
-                        mods.add(new ModifyInventory(1, entry));
-                        c.announce(MaplePacketCreator.modifyInventory(true, mods));
+                        mods.add(new InventoryOperation(1, entry));
+                        c.announce(MaplePacketCreator.onInventoryOperation(true, mods));
                         break;
                     }
-                    c.announce(MaplePacketCreator.modifyInventory(true, mods));
+                    c.announce(MaplePacketCreator.onInventoryOperation(true, mods));
                 }
 
                 // If the item even still exists or is rechargable

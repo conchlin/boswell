@@ -21,7 +21,7 @@ class GuildPacket {
          */
         fun onGuildMessage(code: Int, vararg args: String): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.GUILD_OPERATION.value)
+            mplew.writeShort(SendOpcode.GuildResult.value)
             mplew.write(code)
             when (code) {
                 GuildResultType.NewGuild.result -> {
@@ -47,7 +47,7 @@ class GuildPacket {
          */
         fun onGuildResult(mgc: MapleGuildCharacter, result: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.GUILD_OPERATION.value)
+            mplew.writeShort(SendOpcode.GuildResult.value)
             mplew.write(result)
             when (result) {
                 GuildResultType.JoinGuild.result -> {
@@ -93,7 +93,7 @@ class GuildPacket {
          */
         fun onGuildResult(guildId: Int, result: Int, vararg args: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.GUILD_OPERATION.value)
+            mplew.writeShort(SendOpcode.GuildResult.value)
             when (result) {
                 GuildResultType.Disband.result,
                 GuildResultType.IncreaseCapacity.result -> {
@@ -129,7 +129,7 @@ class GuildPacket {
          */
         fun onGuildResult(guildId: Int, result: Int, vararg args: String): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.GUILD_OPERATION.value)
+            mplew.writeShort(SendOpcode.GuildResult.value)
             mplew.write(result)
             when (result) {
                 GuildResultType.InviteGuild.result -> {
@@ -153,7 +153,7 @@ class GuildPacket {
          */
         fun onGuildResult(guildId: Int, ranks: Array<String?>): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.GUILD_OPERATION.value)
+            mplew.writeShort(SendOpcode.GuildResult.value)
             mplew.write(GuildResultType.GuildRank.result)
             mplew.writeInt(guildId)
             for (i in 0..4) {
@@ -165,7 +165,7 @@ class GuildPacket {
         @Throws(SQLException::class)
         fun showGuildRanks(npcId: Int, rs: ResultSet): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.GUILD_OPERATION.value)
+            mplew.writeShort(SendOpcode.GuildResult.value)
             mplew.write(GuildResultType.ShowRank.result)
             mplew.writeInt(npcId)
             if (!rs.last()) { //no guilds o.o
@@ -187,7 +187,7 @@ class GuildPacket {
 
         fun showGuildInfo(c: MapleCharacter?): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.GUILD_OPERATION.value)
+            mplew.writeShort(SendOpcode.GuildResult.value)
             mplew.write(GuildResultType.GuildInfo.result)
             if (c == null) { //show empty guild (used for leaving, expelled)
                 mplew.write(0)

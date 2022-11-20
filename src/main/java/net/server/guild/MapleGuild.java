@@ -266,7 +266,7 @@ public class MapleGuild {
             MapleCharacter chr = ps.getCharacterById(mgc.getId());
             if (chr == null || !chr.isLoggedinWorld()) continue;
 
-            byte[] packet = UserRemote.Packet.guildNameChanged(chr.getId(), this.getName());
+            byte[] packet = UserRemote.Packet.onGuildNameChanged(chr.getId(), this.getName());
             chr.getMap().broadcastMessage(chr, packet);
         }
     }
@@ -278,7 +278,7 @@ public class MapleGuild {
             MapleCharacter chr = ps.getCharacterById(mgc.getId());
             if (chr == null || !chr.isLoggedinWorld()) continue;
 
-            byte[] packet = UserRemote.Packet.guildMarkChanged(chr.getId(), this);
+            byte[] packet = UserRemote.Packet.onGuildMarkChanged(chr.getId(), this);
             chr.getMap().broadcastMessage(chr, packet);
         }
     }

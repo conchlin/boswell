@@ -50,7 +50,7 @@ public class MapleSummon extends AbstractAnimatedMapleMapObject {
 
     @Override
     public void sendSpawnData(MapleClient client) {
-        client.announce(MaplePacketCreator.spawnSummon(this, false));
+        client.announce(SummonedPool.Packet.onSummonCreated(this, false));
     }
 
     @Override

@@ -51,7 +51,7 @@ public class NpcCommand extends Command {
             npc.setRx1(player.getPosition().x - 50);
             npc.setFh(player.getMap().getFootholds().findBelow(c.getPlayer().getPosition()).getId());
             player.getMap().addMapObject(npc);
-            player.getMap().broadcastMessage(NpcPool.Packet.spawnNPC(npc));
+            player.getMap().broadcastMessage(NpcPool.Packet.onEnterField(npc));
         }
     }
 }

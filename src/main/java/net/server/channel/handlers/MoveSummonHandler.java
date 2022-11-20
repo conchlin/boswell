@@ -56,7 +56,7 @@ public final class MoveSummonHandler extends AbstractMovementPacketHandler {
         
         if (summon != null) {
             updatePosition(res, summon, 0);
-            player.getMap().broadcastMessage(player, SummonedPool.Packet.moveSummon(player.getId(), oid, p, res), summon.getPosition());
+            player.getMap().broadcastMessage(player, SummonedPool.Packet.onMove(player.getId(), oid, p, res), summon.getPosition());
         }
     }
 }
