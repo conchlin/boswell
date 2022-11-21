@@ -27,10 +27,7 @@ import client.listeners.DamageListener;
 import client.listeners.MobKilledEvent;
 import client.listeners.MobKilledListener;
 import constants.*;
-import enums.AllianceResultType;
-import enums.FameResponseType;
-import enums.PartyResultType;
-import enums.UserEffectType;
+import enums.*;
 import net.database.DatabaseConnection;
 import net.database.Statements;
 import network.packet.*;
@@ -7986,7 +7983,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         if (qs.getQuest().getInfoNumber() > 0) {
             announce(MaplePacketCreator.updateQuest(qs, true));
         }
-        announce(UserLocal.Packet.updateQuestInfo(qs.getQuest().getId(), qs.getNpc()));
+        announce(UserLocal.Packet.onQuestResult(qs.getQuest().getId(), QuestResultType.UpdateInfo.getResult(), qs.getNpc()));
     }
 
     public void updateQuest(MapleQuestStatus quest) {
@@ -7998,7 +7995,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
             if (quest.getQuest().getInfoNumber() > 0) {
                 announce(MaplePacketCreator.updateQuest(quest, true));
             }
-            announce(UserLocal.Packet.updateQuestInfo(quest.getQuest().getId(), quest.getNpc()));
+            announce(UserLocal.Packet.onQuestResult(quest.getQuest().getId(), QuestResultType.UpdateInfo.getResult(), quest.getNpc()));
         } else if (quest.getStatus().equals(MapleQuestStatus.Status.COMPLETED)) {
             MapleQuest mquest = quest.getQuest();
             short questid = mquest.getId();
@@ -8022,7 +8019,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
             return;
         }
 
-        announce(MaplePacketCreator.questExpire(quest.getId()));
+        announce(UserLocal.Packet.onQuestResult(quest.getId(), QuestResultType.Expire.getResult()));
         MapleQuestStatus newStatus = new MapleQuestStatus(quest, MapleQuestStatus.Status.NOT_STARTED);
         newStatus.setForfeited(getQuest(quest).getForfeited() + 1);
         updateQuest(newStatus);
@@ -8109,7 +8106,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 
     public void questTimeLimit(final MapleQuest quest, int seconds) {
         registerQuestExpire(quest, seconds * 1000);
-        announce(UserLocal.Packet.addQuestTimeLimit(quest.getId(), seconds * 1000));
+        announce(UserLocal.Packet.onQuestResult(quest.getId(), QuestResultType.AddTime.getResult(), seconds * 1000));
     }
 
     public void questTimeLimit2(final MapleQuest quest, long expires) {

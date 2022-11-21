@@ -936,41 +936,6 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    /**
-     *
-     * @param quest
-     * @param npc
-     * @return
-     */
-    public static byte[] updateQuestInfo(short quest, int npc) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.QuestResult.getValue());
-        mplew.write(8); //0x0A in v95
-        mplew.writeShort(quest);
-        mplew.writeInt(npc);
-        mplew.writeInt(0);
-        return mplew.getPacket();
-    }
-
-    public static byte[] addQuestTimeLimit(final short quest, final int time) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.QuestResult.getValue());
-        mplew.write(6);
-        mplew.writeShort(1);//Size but meh, when will there be 2 at the same time? And it won't even replace the old one :)
-        mplew.writeShort(quest);
-        mplew.writeInt(time);
-        return mplew.getPacket();
-    }
-
-    public static byte[] removeQuestTimeLimit(final short quest) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.QuestResult.getValue());
-        mplew.write(7);
-        mplew.writeShort(1);//Position
-        mplew.writeShort(quest);
-        return mplew.getPacket();
-    }
-
     public static byte[] updateQuest(MapleQuestStatus q, boolean infoUpdate) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendOpcode.SHOW_STATUS_INFO.getValue());
@@ -2885,44 +2850,11 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    public static byte[] updateQuestFinish(short quest, int npc, short nextquest) { //Check
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.QuestResult.getValue()); //0xF2 in v95
-        mplew.write(8);//0x0A in v95
-        mplew.writeShort(quest);
-        mplew.writeInt(npc);
-        mplew.writeShort(nextquest);
-        return mplew.getPacket();
-    }
-
     public static byte[] showInfoText(String text) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendOpcode.SHOW_STATUS_INFO.getValue());
         mplew.write(9);
         mplew.writeMapleAsciiString(text);
-        return mplew.getPacket();
-    }
-
-    public static byte[] questError(short quest) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.QuestResult.getValue());
-        mplew.write(0x0A);
-        mplew.writeShort(quest);
-        return mplew.getPacket();
-    }
-
-    public static byte[] questFailure(byte type) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.QuestResult.getValue());
-        mplew.write(type);//0x0B = No meso, 0x0D = Worn by character, 0x0E = Not having the item ?
-        return mplew.getPacket();
-    }
-
-    public static byte[] questExpire(short quest) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.QuestResult.getValue());
-        mplew.write(0x0F);
-        mplew.writeShort(quest);
         return mplew.getPacket();
     }
 

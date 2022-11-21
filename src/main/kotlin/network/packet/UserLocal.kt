@@ -1,5 +1,6 @@
 package network.packet
 
+import enums.QuestResultType
 import enums.UserEffectType
 import network.opcode.SendOpcode
 import tools.Pair
@@ -112,37 +113,42 @@ class UserLocal {
             return mplew.packet
         }
 
-        /** todo onQuestResult **/
 
-        fun updateQuestInfo(quest: Short, npc: Int): ByteArray? {
+        /**
+         * Handles quest actions that affect the local user
+         *
+         * @param questId
+         * @param result see QuestResultType
+         * @param args value description commented
+         */
+        fun onQuestResult(questId: Short, result: Int, vararg args: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
             mplew.writeShort(SendOpcode.QuestResult.value)
-            mplew.write(8) //0x0A in v95
-            mplew.writeShort(quest.toInt())
-            mplew.writeInt(npc)
-            mplew.writeInt(0)
-
-            return mplew.packet
-        }
-
-        fun addQuestTimeLimit(quest: Short, time: Int): ByteArray? {
-            val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.QuestResult.value)
-            mplew.write(6)
-            mplew.writeShort(1) //Size but meh, when will there be 2 at the same time? And it won't even replace the old one :)
-            mplew.writeShort(quest.toInt())
-            mplew.writeInt(time)
-
-            return mplew.packet
-        }
-
-        fun removeQuestTimeLimit(quest: Short): ByteArray? {
-            val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.QuestResult.value)
-            mplew.write(7)
-            mplew.writeShort(1) //Position
-            mplew.writeShort(quest.toInt())
-
+            mplew.write(result)
+            when (result) {
+                QuestResultType.AddTime.result -> {
+                    mplew.writeShort(1) // size??
+                    mplew.writeShort(questId.toInt())
+                    mplew.writeInt(args[0]) // time
+                }
+                QuestResultType.RemoveTime.result -> {
+                    mplew.writeShort(1) // pos
+                    mplew.writeShort(questId.toInt())
+                }
+                QuestResultType.UpdateInfo.result -> {
+                    mplew.writeShort(questId.toInt())
+                    mplew.writeInt(args[0]) // npc id
+                    mplew.writeInt(0)
+                }
+                QuestResultType.UpdateNext.result -> {
+                    mplew.writeShort(questId.toInt())
+                    mplew.writeInt(args[0]) // npc id
+                    mplew.writeShort(args[1]) // quest id
+                }
+                QuestResultType.Expire.result -> {
+                    mplew.writeShort(questId.toInt())
+                }
+            }
             return mplew.packet
         }
 

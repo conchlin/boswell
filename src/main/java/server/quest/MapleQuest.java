@@ -34,6 +34,7 @@ import constants.ServerConstants;
 import java.util.EnumMap;
 import java.util.Set;
 
+import enums.QuestResultType;
 import enums.UserEffectType;
 import network.packet.UserLocal;
 import network.packet.UserRemote;
@@ -311,7 +312,7 @@ public class MapleQuest {
             return;
         }
         if (timeLimit > 0) {
-            c.announce(UserLocal.Packet.removeQuestTimeLimit(id));
+            c.announce(UserLocal.Packet.onQuestResult(id, QuestResultType.RemoveTime.getResult()));
         }
         MapleQuestStatus newStatus = new MapleQuestStatus(this, MapleQuestStatus.Status.NOT_STARTED);
         newStatus.setForfeited(c.getQuest(this).getForfeited() + 1);
@@ -339,7 +340,7 @@ public class MapleQuest {
 
     public boolean forceComplete(MapleCharacter c, int npc) {
         if (timeLimit > 0) {
-            c.announce(UserLocal.Packet.removeQuestTimeLimit(id));
+            c.announce(UserLocal.Packet.onQuestResult(id, QuestResultType.RemoveTime.getResult()));
         }
         
         MapleQuestStatus newStatus = new MapleQuestStatus(this, MapleQuestStatus.Status.COMPLETED, npc);
