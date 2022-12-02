@@ -127,18 +127,18 @@ enum class SendOpcode(val value: Int) {
     SET_FIELD(125),
     SET_ITC(126),
     SET_CASH_SHOP(127),  //CMapLoadable::OnPacket
-
-    /*CField::OnPacket*/
+    /*CMapLoadable::OnPacket*/
     SET_BACK_EFFECT(128),  //OnSetBackEffect
     SET_MAP_OBJECT_VISIBLE(129),  //CMapLoadable::OnSetMapObjectVisible O_O
     CLEAR_BACK_EFFECT(130),  //OnClearBackEffect
-    BLOCKED_MAP(131),  //TransferFieldRequestIgnored
-    BLOCKED_SERVER(132),  //OnTransferChannelReqIgnored
-    FORCED_MAP_EQUIP(133),  //OnFieldSpecificData
-    MULTICHAT(134),  //OnGroupMessage
+    /*CField::OnPacket*/
+    TransferFieldRequestIgnored(131),
+    TransferChannelReqIgnored(132),
+    FieldSpecificData(133),
+    GroupMessage(134),
     WHISPER(135),
-    SPOUSE_CHAT(136),
-    SUMMON_ITEM_INAVAILABLE(137),  //OnSummonItemInavailable
+    CoupleMessage(136),
+    SummonItemInavailable(137),
 
     FIELD_EFFECT(138),
     FIELD_OBSTACLE_ONOFF(139),  //OnFieldObstacleOnOff

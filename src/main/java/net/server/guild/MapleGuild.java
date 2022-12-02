@@ -36,6 +36,7 @@ import net.server.coordinator.MapleInviteCoordinator.InviteType;
 import net.server.coordinator.MapleMatchCheckerCoordinator;
 import net.database.Statements;
 import net.database.DatabaseConnection;
+import network.packet.CField;
 import network.packet.UserRemote;
 import network.packet.wvscontext.GuildPacket;
 import tools.MaplePacketCreator;
@@ -385,7 +386,7 @@ public class MapleGuild {
     public void guildChat(String name, int cid, String message) {
         membersLock.lock();
         try {
-            this.broadcast(MaplePacketCreator.multiChat(name, message, 2), cid);
+            this.broadcast(CField.Packet.onGroupMessage(name, message, 2), cid);
         } finally {
             membersLock.unlock();
         }

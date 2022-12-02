@@ -26,9 +26,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import constants.ServerConstants;
+import enums.WhisperResultType;
 import net.AbstractMaplePacketHandler;
 import net.server.world.World;
 import net.database.DatabaseConnection;
+import network.packet.CField;
 import tools.FilePrinter;
 import tools.LogHelper;
 import tools.MaplePacketCreator;
@@ -45,7 +47,7 @@ import java.sql.Connection;
 public final class WhisperHandler extends AbstractMaplePacketHandler {
     
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         byte mode = slea.readByte();
         if (mode == 6) { // whisper
             String recipient = slea.readMapleAsciiString();
@@ -61,14 +63,14 @@ public final class WhisperHandler extends AbstractMaplePacketHandler {
             	return;
             }
             if (player != null) {
-                player.getClient().announce(MaplePacketCreator.getWhisper(c.getPlayer().getName(), c.getChannel(), text));
+                player.getClient().announce(CField.Packet.onWhisper(text, c.getPlayer().getName(), WhisperResultType.WhisperSend.getResult(), c.getChannel()));
                 if (ServerConstants.USE_ENABLE_CHAT_LOG) {
                     LogHelper.logChat(c, "Whisper To " + player.getName(), text);
                 }
                 if(player.isHidden() && player.gmLevel() >= c.getPlayer().gmLevel()) {
-                    c.announce(MaplePacketCreator.getWhisperReply(recipient, (byte) 0));
+                    c.announce(CField.Packet.onWhisper(recipient, c.getPlayer().getName(), WhisperResultType.WhisperReply.getResult(), 0));
                 } else {
-                    c.announce(MaplePacketCreator.getWhisperReply(recipient, (byte) 1));
+                    c.announce(CField.Packet.onWhisper(recipient, c.getPlayer().getName(), WhisperResultType.WhisperReply.getResult(), 1));
                 }
             } else {// not found
                 World world = c.getWorldServer();
@@ -79,11 +81,11 @@ public final class WhisperHandler extends AbstractMaplePacketHandler {
                         }
                         player = world.getPlayerStorage().getCharacterByName(recipient);
                         if(player.isHidden() && player.gmLevel() >= c.getPlayer().gmLevel())
-                            c.announce(MaplePacketCreator.getWhisperReply(recipient, (byte) 0));
+                            c.announce(CField.Packet.onWhisper(recipient, c.getPlayer().getName(), WhisperResultType.WhisperReply.getResult(), 0));
                         else
-                            c.announce(MaplePacketCreator.getWhisperReply(recipient, (byte) 1));
+                            c.announce(CField.Packet.onWhisper(recipient, c.getPlayer().getName(), WhisperResultType.WhisperReply.getResult(), 1));
                     } else {
-                        c.announce(MaplePacketCreator.getWhisperReply(recipient, (byte) 0));
+                        c.announce(CField.Packet.onWhisper(recipient, c.getPlayer().getName(), WhisperResultType.WhisperReply.getResult(), 0));
                     }
             }
 			c.getPlayer().getAutobanManager().spam(7);
@@ -92,13 +94,13 @@ public final class WhisperHandler extends AbstractMaplePacketHandler {
             MapleCharacter victim = c.getWorldServer().getPlayerStorage().getCharacterByName(recipient);
             if (victim != null && c.getPlayer().gmLevel() >= victim.gmLevel()) {
                 if (victim.getCashShop().isOpened()) {  // in CashShop
-                    c.announce(MaplePacketCreator.getFindReply(victim.getName(), -1, 2));
+                    c.announce(CField.Packet.onWhisper(victim.getName(), c.getPlayer().getName(), WhisperResultType.FindReply.getResult(), -1, 2));
                 } else if (victim.isAwayFromWorld()) {  // in MTS
-                    c.announce(MaplePacketCreator.getFindReply(victim.getName(), -1, 0));
+                    c.announce(CField.Packet.onWhisper(victim.getName(), c.getPlayer().getName(), WhisperResultType.FindReply.getResult(), -1, 0));
                 } else if (victim.getClient().getChannel() != c.getChannel()) { // in another channel, issue detected thanks to MedicOP
-                    c.announce(MaplePacketCreator.getFindReply(victim.getName(), victim.getClient().getChannel() - 1, 3));
+                    c.announce(CField.Packet.onWhisper(victim.getName(), c.getPlayer().getName(), WhisperResultType.FindReply.getResult(), victim.getClient().getChannel() - 1, 3));
                 } else {
-                    c.announce(MaplePacketCreator.getFindReply(victim.getName(), victim.getMap().getId(), 1));
+                    c.announce(CField.Packet.onWhisper(victim.getName(), c.getPlayer().getName(), WhisperResultType.FindReply.getResult(), victim.getMap().getId(), 1));
                 }
             } else if (c.getPlayer().isGM()) { // not found
                 try (Connection con = DatabaseConnection.getConnection()) {
@@ -107,7 +109,7 @@ public final class WhisperHandler extends AbstractMaplePacketHandler {
                         try (ResultSet rs = ps.executeQuery()) {
                             if (rs.next()) {
                                 if (rs.getInt("gm") >= c.getPlayer().gmLevel()) {
-                                    c.announce(MaplePacketCreator.getWhisperReply(recipient, (byte) 0));
+                                    c.announce(CField.Packet.onWhisper(recipient, c.getPlayer().getName(), WhisperResultType.WhisperReply.getResult(), 0));
                                     return;
                                 }
                             }
@@ -116,15 +118,15 @@ public final class WhisperHandler extends AbstractMaplePacketHandler {
 
                     byte channel = (byte) (c.getWorldServer().find(recipient) - 1);
                     if (channel > -1) {
-                        c.announce(MaplePacketCreator.getFindReply(recipient, channel, 3));
+                        c.announce(CField.Packet.onWhisper(recipient, c.getPlayer().getName(), WhisperResultType.FindReply.getResult(), channel, 3));
                     } else {
-                        c.announce(MaplePacketCreator.getWhisperReply(recipient, (byte) 0));
+                        c.announce(CField.Packet.onWhisper(recipient, c.getPlayer().getName(), WhisperResultType.WhisperReply.getResult(), 0));
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
             } else {
-                c.announce(MaplePacketCreator.getWhisperReply(recipient, (byte) 0));
+                c.announce(CField.Packet.onWhisper(recipient, c.getPlayer().getName(), WhisperResultType.WhisperReply.getResult(), 0));
             }
         } else if (mode == 0x44) {
             //Buddy find, thanks to Atoot
@@ -133,13 +135,13 @@ public final class WhisperHandler extends AbstractMaplePacketHandler {
             MapleCharacter player = c.getWorldServer().getPlayerStorage().getCharacterByName(recipient);
             if (player != null && c.getPlayer().gmLevel() >= player.gmLevel()) {
                 if (player.getCashShop().isOpened()) {  // in CashShop
-                    c.announce(MaplePacketCreator.getBuddyFindReply(player.getName(), -1, 2));
+                    c.announce(CField.Packet.onWhisper(player.getName(), c.getPlayer().getName(), WhisperResultType.FindBuddy.getResult(), -1, 2));
                 } else if (player.isAwayFromWorld()) {  // in MTS
-                    c.announce(MaplePacketCreator.getBuddyFindReply(player.getName(), -1, 0));
+                    c.announce(CField.Packet.onWhisper(player.getName(), c.getPlayer().getName(), WhisperResultType.FindBuddy.getResult(), -1, 0));
                 } else if (player.getClient().getChannel() != c.getChannel()) { // in another channel
-                    c.announce(MaplePacketCreator.getBuddyFindReply(player.getName(), player.getClient().getChannel() - 1, 3));
+                    c.announce(CField.Packet.onWhisper(player.getName(), c.getPlayer().getName(), WhisperResultType.FindReply.getResult(), player.getClient().getChannel() -1, 3));
                 } else {
-                    c.announce(MaplePacketCreator.getBuddyFindReply(player.getName(), player.getMap().getId(), 1));
+                    c.announce(CField.Packet.onWhisper(player.getName(), c.getPlayer().getName(), WhisperResultType.FindReply.getResult(), player.getMap().getId(), 1));
                 }
             }
         }

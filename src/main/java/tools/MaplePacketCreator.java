@@ -1179,31 +1179,6 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    public static byte[] getWhisper(String sender, int channel, String text) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.WHISPER.getValue());
-        mplew.write(0x12);
-        mplew.writeMapleAsciiString(sender);
-        mplew.writeShort(channel - 1); // I guess this is the channel
-        mplew.writeMapleAsciiString(text);
-        return mplew.getPacket();
-    }
-
-    /**
-     *
-     * @param target name of the target character
-     * @param reply error code: 0x0 = cannot find char, 0x1 = success
-     * @return the MaplePacket
-     */
-    public static byte[] getWhisperReply(String target, byte reply) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.WHISPER.getValue());
-        mplew.write(0x0A); // whisper?
-        mplew.writeMapleAsciiString(target);
-        mplew.write(reply);
-        return mplew.getPacket();
-    }
-
     public static byte[] getInventoryFull() {
         return onInventoryOperation(true, Collections.<InventoryOperation>emptyList());
     }
@@ -1249,23 +1224,6 @@ public class MaplePacketCreator {
         mplew.writeInt(customHP.right);
         mplew.write(tagColor);
         mplew.write(tagBgColor);
-        return mplew.getPacket();
-    }
-
-    /**
-     * mode: 0 buddychat; 1 partychat; 2 guildchat
-     *
-     * @param name
-     * @param chattext
-     * @param mode
-     * @return
-     */
-    public static byte[] multiChat(String name, String chattext, int mode) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.MULTICHAT.getValue());
-        mplew.write(mode);
-        mplew.writeMapleAsciiString(name);
-        mplew.writeMapleAsciiString(chattext);
         return mplew.getPacket();
     }
 
@@ -1674,27 +1632,6 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    /*
-        public static byte[] sendSpouseChat(MapleCharacter partner, String msg) {
-                final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-                mplew.writeShort(SendOpcode.SPOUSE_CHAT.getValue());
-                mplew.writeMapleAsciiString(partner.getName());
-                mplew.writeMapleAsciiString(msg);
-                return mplew.getPacket();
-        }
-     */
-    public static byte[] OnCoupleMessage(String fiance, String text, boolean spouse) {
-        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.SPOUSE_CHAT.getValue());
-        mplew.write(spouse ? 5 : 4); // v2 = CInPacket::Decode1(a1) - 4;
-        if (spouse) { // if ( v2 ) {
-            mplew.writeMapleAsciiString(fiance);
-        }
-        mplew.write(spouse ? 5 : 1);
-        mplew.writeMapleAsciiString(text);
-        return mplew.getPacket();
-    }
-
     public static byte[] addMessengerPlayer(String from, MapleCharacter chr, int position, int channel) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendOpcode.MESSENGER.getValue());
@@ -1749,15 +1686,6 @@ public class MaplePacketCreator {
         mplew.write(mode);
         mplew.writeMapleAsciiString(text);
         mplew.write(mode2);
-        return mplew.getPacket();
-    }
-
-    public static byte[] showForcedEquip(int team) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.FORCED_MAP_EQUIP.getValue());
-        if (team > -1) {
-            mplew.write(team);   // 00 = red, 01 = blue
-        }
         return mplew.getPacket();
     }
 
@@ -2621,46 +2549,6 @@ public class MaplePacketCreator {
         return showCash(mc);
     }
 
-    /**
-     *
-     * @param target
-     * @param mapid
-     * @param MTSmapCSchannel 0: MTS 1: Map 2: CS 3: Different Channel
-     * @return
-     */
-    public static byte[] getFindReply(String target, int mapid, int MTSmapCSchannel) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.WHISPER.getValue());
-        mplew.write(9);
-        mplew.writeMapleAsciiString(target);
-        mplew.write(MTSmapCSchannel); // 0: mts 1: map 2: cs
-        mplew.writeInt(mapid); // -1 if mts, cs
-        if (MTSmapCSchannel == 1) {
-            mplew.write(new byte[8]);
-        }
-        return mplew.getPacket();
-    }
-
-    /**
-     *
-     * @param target
-     * @param mapid
-     * @param MTSmapCSchannel 0: MTS 1: Map 2: CS 3: Different Channel
-     * @return
-     */
-    public static byte[] getBuddyFindReply(String target, int mapid, int MTSmapCSchannel) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.WHISPER.getValue());
-        mplew.write(72);
-        mplew.writeMapleAsciiString(target);
-        mplew.write(MTSmapCSchannel); // 0: mts 1: map 2: cs
-        mplew.writeInt(mapid); // -1 if mts, cs
-        if (MTSmapCSchannel == 1) {
-            mplew.write(new byte[8]);
-        }
-        return mplew.getPacket();
-    }
-
     public static byte[] showOXQuiz(int questionSet, int questionId, boolean askQuestion) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter(6);
         mplew.writeShort(SendOpcode.OX_QUIZ.getValue());
@@ -3100,46 +2988,6 @@ public class MaplePacketCreator {
         mplew.writeShort(SendOpcode.SHOW_STATUS_INFO.getValue());
         mplew.write(9);
         mplew.writeMapleAsciiString(message);
-        return mplew.getPacket();
-    }
-
-    /**
-     * Gets a "block" packet (ie. the cash shop is unavailable, etc)
-     *
-     * Possible values for <code>type</code>:<br> 1: The portal is closed for
-     * now.<br> 2: You cannot go to that place.<br> 3: Unable to approach due to
-     * the force of the ground.<br> 4: You cannot teleport to or on this
-     * map.<br> 5: Unable to approach due to the force of the ground.<br> 6:
-     * This map can only be entered by party members.<br> 7: The Cash Shop is
-     * currently not available. Stay tuned...<br>
-     *
-     * @param type The type
-     * @return The "block" packet.
-     */
-    public static byte[] blockedMessage(int type) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.BLOCKED_MAP.getValue());
-        mplew.write(type);
-        return mplew.getPacket();
-    }
-
-    /**
-     * Gets a "block" packet (ie. the cash shop is unavailable, etc)
-     *
-     * Possible values for <code>type</code>:<br> 1: You cannot move that
-     * channel. Please try again later.<br> 2: You cannot go into the cash shop.
-     * Please try again later.<br> 3: The Item-Trading Shop is currently
-     * unavailable. Please try again later.<br> 4: You cannot go into the trade
-     * shop, due to limitation of user count.<br> 5: You do not meet the minimum
-     * level requirement to access the Trade Shop.<br>
-     *
-     * @param type The type
-     * @return The "block" packet.
-     */
-    public static byte[] blockedMessage2(int type) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.BLOCKED_SERVER.getValue());
-        mplew.write(type);
         return mplew.getPacket();
     }
 

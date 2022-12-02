@@ -28,6 +28,7 @@ import constants.ServerConstants;
 import net.AbstractMaplePacketHandler;
 import net.server.Server;
 import net.server.world.World;
+import network.packet.CField;
 import tools.FilePrinter;
 import tools.LogHelper;
 import tools.MaplePacketCreator;
@@ -35,7 +36,7 @@ import tools.data.input.SeekableLittleEndianAccessor;
 
 public final class MultiChatHandler extends AbstractMaplePacketHandler {
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         MapleCharacter player = c.getPlayer();
         if(player.getAutobanManager().getLastSpam(7) + 200 > currentServerTime()) {
                 return;
@@ -43,7 +44,7 @@ public final class MultiChatHandler extends AbstractMaplePacketHandler {
         
         int type = slea.readByte(); // 0 for buddys, 1 for partys
         int numRecipients = slea.readByte();
-        int recipients[] = new int[numRecipients];
+        int[] recipients = new int[numRecipients];
         for (int i = 0; i < numRecipients; i++) {
             recipients[i] = slea.readInt();
         }
@@ -73,7 +74,7 @@ public final class MultiChatHandler extends AbstractMaplePacketHandler {
         } else if (type == 3 && player.getGuild() != null) {
             int allianceId = player.getGuild().getAllianceId();
             if (allianceId > 0) {
-                Server.getInstance().allianceMessage(allianceId, MaplePacketCreator.multiChat(player.getName(), chattext, 3), player.getId(), -1);
+                Server.getInstance().allianceMessage(allianceId, CField.Packet.onGroupMessage(player.getName(), chattext, 3), player.getId(), -1);
                 if (ServerConstants.USE_ENABLE_CHAT_LOG) {
                     LogHelper.logChat(c, "Ally", chattext);
                 }

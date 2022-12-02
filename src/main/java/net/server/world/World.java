@@ -59,6 +59,8 @@ import java.util.concurrent.ScheduledFuture;
 
 import enums.GuildResultType;
 import enums.PartyResultType;
+import enums.WhisperResultType;
+import network.packet.CField;
 import network.packet.UserRemote;
 import network.packet.wvscontext.GuildPacket;
 import network.packet.wvscontext.PartyPacket;
@@ -944,7 +946,7 @@ public class World {
             if (!(partychar.getName().equals(namefrom))) {
                 MapleCharacter chr = getPlayerStorage().getCharacterByName(partychar.getName());
                 if (chr != null) {
-                    chr.getClient().announce(MaplePacketCreator.multiChat(namefrom, chattext, 1));
+                    chr.getClient().announce(CField.Packet.onGroupMessage(namefrom, chattext, 1));
                 }
             }
         }
@@ -956,7 +958,7 @@ public class World {
             MapleCharacter chr = playerStorage.getCharacterById(characterId);
             if (chr != null) {
                 if (chr.getBuddylist().containsVisible(cidFrom)) {
-                    chr.getClient().announce(MaplePacketCreator.multiChat(nameFrom, chattext, 0));
+                    chr.getClient().announce(CField.Packet.onGroupMessage(nameFrom, chattext, 0));
                 }
             }
         }
@@ -1122,7 +1124,8 @@ public class World {
 
     public void whisper(String sender, String target, int channel, String message) {
         if (isConnected(target)) {
-            getPlayerStorage().getCharacterByName(target).getClient().announce(MaplePacketCreator.getWhisper(sender, channel, message));
+            getPlayerStorage().getCharacterByName(target).getClient().announce(
+                    CField.Packet.onWhisper(message, sender, WhisperResultType.WhisperSend.getResult(), channel));
         }
     }
 

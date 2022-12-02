@@ -2405,12 +2405,12 @@ public class MapleMap {
         if (isStartingEventMap() && !eventStarted()) {
             chr.getMap().getPortal("join00").setPortalStatus(false);
         }
-        if (hasForcedEquip()) {
-            chr.getClient().announce(MaplePacketCreator.showForcedEquip(-1));
+        if (hasFieldSpecificData()) {
+            chr.getClient().announce(CField.Packet.onFieldSpecificData(-1));
         }
         if (specialEquip()) {
             chr.getClient().announce(MaplePacketCreator.coconutScore(0, 0));
-            chr.getClient().announce(MaplePacketCreator.showForcedEquip(chr.getTeam()));
+            chr.getClient().announce(CField.Packet.onFieldSpecificData(chr.getTeam()));
         }
         objectWLock.lock();
         try {
@@ -3653,7 +3653,7 @@ public class MapleMap {
         return onFirstUserEnter;
     }
 
-    private boolean hasForcedEquip() {
+    private boolean hasFieldSpecificData() {
         return fieldType == 81 || fieldType == 82;
     }
 

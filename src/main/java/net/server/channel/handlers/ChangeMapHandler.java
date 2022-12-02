@@ -32,6 +32,7 @@ import client.MapleClient;
 import client.inventory.MapleInventoryType;
 import client.inventory.manipulator.MapleInventoryManipulator;
 import constants.MapConstants;
+import network.packet.CField;
 import network.packet.CLogin;
 import network.packet.UserLocal;
 import network.packet.WvsContext;
@@ -156,7 +157,7 @@ public final class ChangeMapHandler extends AbstractMaplePacketHandler {
                 }
 
                 if (portal != null && !portal.getPortalStatus()) {
-                    c.announce(MaplePacketCreator.blockedMessage(1));
+                    c.announce(CField.Packet.onTransferFieldRequestIgnored(1));
                     c.announce(WvsContext.Packet.enableActions());
                     return;
                 }
