@@ -30,9 +30,9 @@ import client.inventory.MapleInventoryType;
 import client.inventory.manipulator.MapleInventoryManipulator;
 import client.inventory.manipulator.MapleKarmaManipulator;
 import constants.ItemConstants;
-import enums.TrunkErrorType;
+import enums.TrunkResultType;
 import net.AbstractMaplePacketHandler;
-import network.packet.Trunk;
+import network.packet.CTrunk;
 import network.packet.WvsContext;
 import server.MapleItemInformationProvider;
 import server.MapleStorage;
@@ -76,13 +76,13 @@ public final class StorageHandler extends AbstractMaplePacketHandler {
 					Item item = storage.getItem(slot);
 					if (item != null) {
 						if (MapleItemInformationProvider.getInstance().isPickupRestricted(item.getItemId()) && chr.haveItemWithId(item.getItemId(), true)) {
-							c.announce(Trunk.Packet.getStorageError(TrunkErrorType.OneOfAKind.getError()));
+							c.announce(CTrunk.Packet.onTrunkError(TrunkResultType.OneOfAKind.getResult()));
 							return;
 						}
 
 						int takeoutFee = storage.getTakeOutFee();
 						if (chr.getMeso() < takeoutFee) {
-							c.announce(Trunk.Packet.getStorageError(TrunkErrorType.InsufficientMesos.getError()));
+							c.announce(CTrunk.Packet.onTrunkError(TrunkResultType.InsufficientMesos.getResult()));
 							return;
 						} else {
 							chr.gainMeso(-takeoutFee, false);
@@ -97,7 +97,7 @@ public final class StorageHandler extends AbstractMaplePacketHandler {
 							MapleInventoryManipulator.addFromDrop(c, item, false);
 							storage.sendTakenOut(c, item.getInventoryType());
 						} else {
-							c.announce(Trunk.Packet.getStorageError(TrunkErrorType.FullInventory.getError()));
+							c.announce(CTrunk.Packet.onTrunkError(TrunkResultType.FullInventory.getResult()));
 						}
 					}
 				} else if (mode == 5) { // store
@@ -117,13 +117,13 @@ public final class StorageHandler extends AbstractMaplePacketHandler {
 						return;
 					}
 					if (storage.isFull()) {
-						c.announce(Trunk.Packet.getStorageError(TrunkErrorType.FullTrunk.getError()));
+						c.announce(CTrunk.Packet.onTrunkError(TrunkResultType.FullTrunk.getResult()));
 						return;
 					}
 
 					int storeFee = storage.getStoreFee();
 					if (chr.getMeso() < storeFee) {
-						c.announce(Trunk.Packet.getStorageError(TrunkErrorType.InsufficientMesos.getError()));
+						c.announce(CTrunk.Packet.onTrunkError(TrunkResultType.InsufficientMesos.getResult()));
 					} else {
 						Item item;
 

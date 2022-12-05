@@ -330,7 +330,8 @@ enum class SendOpcode(val value: Int) {
     CONFIRM_SHOP_TRANSACTION(306),
     ADMIN_SHOP_MESSAGE(307),  //lame :P
     ADMIN_SHOP(308),
-    STORAGE(309),
+    //CTrunk::OnPacket
+    Trunk(309),
     FREDRICK_MESSAGE(310),
     FREDRICK(311),
     RPS_GAME(312),

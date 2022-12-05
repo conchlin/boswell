@@ -22,17 +22,17 @@ import client.MapleClient;
 import client.inventory.Item;
 import client.inventory.ItemFactory;
 import client.inventory.MapleInventoryType;
+import enums.TrunkResultType;
 import net.database.Statements;
 import net.server.audit.locks.MonitoredLockType;
 import net.server.audit.locks.factory.MonitoredReentrantLockFactory;
-import network.packet.Trunk;
+import network.packet.CTrunk;
 import network.packet.WvsContext;
 import provider.MapleData;
 import provider.MapleDataProvider;
 import provider.MapleDataProviderFactory;
 import provider.MapleDataTool;
 import net.database.DatabaseConnection;
-import tools.MaplePacketCreator;
 import tools.Pair;
 
 import java.io.File;
@@ -220,16 +220,13 @@ public class MapleStorage {
 
         lock.lock();
         try {
-            Collections.sort(items, new Comparator<Item>() {
-                @Override
-                public int compare(Item o1, Item o2) {
-                    if (o1.getInventoryType().getType() < o2.getInventoryType().getType()) {
-                        return -1;
-                    } else if (o1.getInventoryType() == o2.getInventoryType()) {
-                        return 0;
-                    }
-                    return 1;
+            items.sort((o1, o2) -> {
+                if (o1.getInventoryType().getType() < o2.getInventoryType().getType()) {
+                    return -1;
+                } else if (o1.getInventoryType() == o2.getInventoryType()) {
+                    return 0;
                 }
+                return 1;
             });
 
             List<Item> storageItems = getItems();
@@ -238,7 +235,7 @@ public class MapleStorage {
             }
 
             currentNpcid = npcId;
-            c.announce(Trunk.Packet.getStorage(npcId, slots, storageItems, meso));
+            c.announce(CTrunk.Packet.onTrunkResult(TrunkResultType.OpenStorage.getResult(), slots, storageItems, npcId, meso));
         } finally {
             lock.unlock();
         }
@@ -247,7 +244,7 @@ public class MapleStorage {
     public void sendStored(MapleClient c, MapleInventoryType type) {
         lock.lock();
         try {
-            c.announce(Trunk.Packet.storeStorage(slots, type, typeItems.get(type)));
+            c.announce(CTrunk.Packet.onTrunkResult(TrunkResultType.DepositItem.getResult(), slots, typeItems.get(type), type.getBitfieldEncoding()));
         } finally {
             lock.unlock();
         }
@@ -256,7 +253,7 @@ public class MapleStorage {
     public void sendTakenOut(MapleClient c, MapleInventoryType type) {
         lock.lock();
         try {
-            c.announce(Trunk.Packet.takeOutStorage(slots, type, typeItems.get(type)));
+            c.announce(CTrunk.Packet.onTrunkResult(TrunkResultType.RetrieveItem.getResult(), slots, typeItems.get(type), type.getBitfieldEncoding()));
         } finally {
             lock.unlock();
         }
@@ -273,7 +270,7 @@ public class MapleStorage {
                 typeItems.put(type, new ArrayList<>(items));
             }
 
-            c.announce(Trunk.Packet.arrangeStorage(slots, items));
+            c.announce(CTrunk.Packet.onTrunkResult(TrunkResultType.Arrange.getResult(), slots, items));
         } finally {
             lock.unlock();
         }
@@ -291,7 +288,7 @@ public class MapleStorage {
     }
 
     public void sendMeso(MapleClient c) {
-        c.announce(Trunk.Packet.mesoStorage(slots, meso));
+        c.announce(CTrunk.Packet.onTrunkResult(TrunkResultType.MesoAction.getResult(), slots, meso));
     }
 
     public int getStoreFee() {  // thanks to GabrielSin
