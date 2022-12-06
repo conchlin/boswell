@@ -22,6 +22,8 @@
 package scripting.event;
 
 import client.MapleCharacter;
+import enums.FieldEffectType;
+import network.packet.CField;
 import network.packet.NpcPool;
 import server.skills.PlayerSkill;
 import constants.ItemConstants;
@@ -1224,8 +1226,8 @@ public class EventInstanceManager {
 
     public final void showWrongEffect(int mapId) {
         MapleMap map = getMapInstance(mapId);
-        map.broadcastMessage(MaplePacketCreator.showEffect("quest/party/wrong_kor"));
-        map.broadcastMessage(MaplePacketCreator.playSound("Party1/Failed"));
+        map.broadcastMessage(CField.Packet.onFieldEffect(FieldEffectType.Effect.getMode(), "quest/party/wrong_kor"));
+        map.broadcastMessage(CField.Packet.onFieldEffect(FieldEffectType.Sound.getMode(), "Party1/Failed"));
     }
 
     public final void showClearEffect() {
@@ -1251,10 +1253,10 @@ public class EventInstanceManager {
 
     public final void showClearEffect(boolean hasGate, int mapId, String mapObj, int newState) {
         MapleMap map = getMapInstance(mapId);
-        map.broadcastMessage(MaplePacketCreator.showEffect("quest/party/clear"));
-        map.broadcastMessage(MaplePacketCreator.playSound("Party1/Clear"));
+        map.broadcastMessage(CField.Packet.onFieldEffect(FieldEffectType.Effect.getMode(), "quest/party/clear"));
+        map.broadcastMessage(CField.Packet.onFieldEffect(FieldEffectType.Sound.getMode(), "Party1/Clear"));
         if (hasGate) {
-            map.broadcastMessage(MaplePacketCreator.environmentChange(mapObj, newState));
+            map.broadcastMessage(CField.Packet.onFieldEffect(newState, mapObj));
             wL.lock();
             try {
                 openedGates.put(map.getId(), new Pair<>(mapObj, newState));
@@ -1277,7 +1279,7 @@ public class EventInstanceManager {
         }
 
         if (gateData != null) {
-            chr.announce(MaplePacketCreator.environmentChange(gateData.getLeft(), gateData.getRight()));
+            chr.announce(CField.Packet.onFieldEffect(gateData.getRight(), gateData.getLeft()));
         }
     }
 

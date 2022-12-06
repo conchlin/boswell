@@ -2210,7 +2210,7 @@ public class MapleMap {
     }
 
     public void changeEnvironment(String mapObj, int newState) {
-        broadcastMessage(MaplePacketCreator.environmentChange(mapObj, newState));
+        broadcastMessage(CField.Packet.onFieldEffect(newState, mapObj));
     }
 
     public void startMapEffect(String msg, int itemId) {

@@ -27,11 +27,13 @@ import java.sql.SQLException;
 import client.inventory.manipulator.MapleInventoryManipulator;
 import constants.ServerConstants;
 import enums.AllianceResultType;
+import enums.FieldEffectType;
 import net.server.Server;
 import net.server.guild.MapleAlliance;
 import net.server.guild.MapleGuild;
 import net.server.world.MapleParty;
 import net.server.world.MaplePartyCharacter;
+import network.packet.CField;
 import network.packet.ScriptMan;
 import network.packet.StoreBank;
 import network.packet.WvsContext;
@@ -306,7 +308,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     @Override
     public void showEffect(String effect) {
-        getPlayer().getMap().broadcastMessage(MaplePacketCreator.environmentChange(effect, 3));
+        getPlayer().getMap().broadcastMessage(CField.Packet.onFieldEffect(FieldEffectType.Effect.getMode(), effect));
     }
 
     public void setHair(int hair) {

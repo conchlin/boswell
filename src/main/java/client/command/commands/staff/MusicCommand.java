@@ -27,6 +27,8 @@ import client.command.Command;
 import client.MapleClient;
 import client.MapleCharacter;
 import constants.GameConstants;
+import enums.FieldEffectType;
+import network.packet.CField;
 import network.packet.ScriptMan;
 import tools.MaplePacketCreator;
 
@@ -36,12 +38,12 @@ public class MusicCommand extends Command {
     }
 
     private static String getSongList() {
-        String songList = "Song:\r\n";
+        StringBuilder songList = new StringBuilder("Song:\r\n");
         for (String s : GameConstants.GAME_SONGS) {
-            songList += ("  " + s + "\r\n");
+            songList.append("  ").append(s).append("\r\n");
         }
         
-        return songList;
+        return songList.toString();
     }
     
     @Override
@@ -61,7 +63,7 @@ public class MusicCommand extends Command {
         String song = player.getLastCommandMessage();
         for (String s : GameConstants.GAME_SONGS) {
             if (s.equalsIgnoreCase(song)) {    // thanks Masterrulax for finding an issue here
-                player.getMap().broadcastMessage(MaplePacketCreator.musicChange(s));
+                player.getMap().broadcastMessage(CField.Packet.onFieldEffect(FieldEffectType.Music.getMode(), s));
                 player.yellowMessage("Now playing song " + s + ".");
                 return;
             }

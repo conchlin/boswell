@@ -26,12 +26,13 @@ import client.MapleBuffStat;
 import client.MapleCharacter;
 import client.MapleClient;
 import client.MapleJob;
+import enums.FieldEffectType;
+import network.packet.CField;
 import network.packet.MobPool;
 import network.packet.NpcPool;
 import server.maps.MapleMapObject;
 import server.skills.MobSkill;
 import server.skills.PlayerSkill;
-import server.skills.Skill;
 import client.listeners.DamageEvent;
 import client.listeners.DamageListener;
 import client.listeners.MobKilledEvent;
@@ -39,16 +40,12 @@ import client.listeners.MobKilledListener;
 import client.status.MonsterStatus;
 import client.status.MonsterStatusEffect;
 import constants.GameConstants;
-import constants.MapConstants;
 import constants.ServerConstants;
 import constants.skills.Crusader;
 import constants.skills.DragonKnight;
-import constants.skills.FPMage;
 import constants.skills.Hermit;
-import constants.skills.ILMage;
 import constants.skills.NightLord;
 import constants.skills.NightWalker;
-import constants.skills.Priest;
 import constants.skills.Shadower;
 import constants.skills.SuperGM;
 import constants.skills.WhiteKnight;
@@ -67,7 +64,6 @@ import java.util.Map.Entry;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -515,8 +511,8 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             final List<Integer> toSpawn = this.getRevives();
             // Dojo stuff that probably should be removed
             if (toSpawn.contains(9300216) && reviveMap.getId() > 925000000 && reviveMap.getId() < 926000000) {
-                reviveMap.broadcastMessage(MaplePacketCreator.playSound("Dojang/clear"));
-                reviveMap.broadcastMessage(MaplePacketCreator.showEffect("dojang/end/clear"));
+                reviveMap.broadcastMessage(CField.Packet.onFieldEffect(FieldEffectType.Effect.getMode(), "dojang/end/clear"));
+                reviveMap.broadcastMessage(CField.Packet.onFieldEffect(FieldEffectType.Sound.getMode(), "Dojang/clear"));
             }
 
             // Revives timed mobs and npcs (?) -> not sure why 9001108 is specifically targeted here
@@ -630,7 +626,8 @@ public class MapleMonster extends AbstractLoadedMapleLife {
     }
 
     public byte[] makeBossHPBarPacket() {
-        return MaplePacketCreator.showBossHP(getId(), getHp(), getMaxHp(), getTagColor(), getTagBgColor());
+        //return MaplePacketCreator.showBossHP(getId(), getHp(), getMaxHp(), getTagColor(), getTagBgColor());
+        return CField.Packet.onFieldEffect(FieldEffectType.BossHp.getMode(), getId(), getHp(), getMaxHp(), getTagColor(), getTagBgColor());
     }
 
     public boolean hasBossHPBar() {

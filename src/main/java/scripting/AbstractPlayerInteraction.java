@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import enums.FieldEffectType;
 import enums.UserEffectType;
 import network.packet.*;
 import server.skills.*;
@@ -594,7 +595,7 @@ public class AbstractPlayerInteraction {
     }
 
     public void changeMusic(String songName) {
-        getPlayer().getMap().broadcastMessage(MaplePacketCreator.musicChange(songName));
+        getPlayer().getMap().broadcastMessage(CField.Packet.onFieldEffect(FieldEffectType.Music.getMode(), songName));
     }
 
     public void playerMessage(int type, String message) {
@@ -927,7 +928,7 @@ public class AbstractPlayerInteraction {
     }
 
     public void showEffect(String effect){
-        c.announce(MaplePacketCreator.showEffect(effect));
+        c.announce(CField.Packet.onFieldEffect(FieldEffectType.Effect.getMode(), effect));
     }
 
     public void dojoEnergy() {
@@ -975,11 +976,11 @@ public class AbstractPlayerInteraction {
     }
 
     public void playSound(String sound) {
-        getPlayer().getMap().broadcastMessage(MaplePacketCreator.environmentChange(sound, 4));
+        getPlayer().getMap().broadcastMessage(CField.Packet.onFieldEffect(FieldEffectType.Sound.getMode(), sound));
     }
 
-    public void environmentChange(String env, int mode) {
-        getPlayer().getMap().broadcastMessage(MaplePacketCreator.environmentChange(env, mode));
+    public void fieldEffect(String env, int mode) {
+        getPlayer().getMap().broadcastMessage(CField.Packet.onFieldEffect(mode, env));
     }
 
     public String numberWithCommas(int number) {

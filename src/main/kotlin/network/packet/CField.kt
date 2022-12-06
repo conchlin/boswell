@@ -1,8 +1,10 @@
 package network.packet
 
+import enums.FieldEffectType
 import enums.WhisperResultType
 import network.opcode.SendOpcode
 import tools.data.output.MaplePacketLittleEndianWriter
+import tools.packets.PacketUtil
 
 class CField {
 
@@ -119,6 +121,49 @@ class CField {
             mplew.write(if (spouse) 5 else 1)
             mplew.writeMapleAsciiString(text)
 
+            return mplew.packet
+        }
+
+        /**
+         * onFieldEffect sends packet responsible for the various field related effects
+         *
+         * @param result see FieldEffectType.kt
+         * @param path the pathway to the effect being broadcast
+         */
+        fun onFieldEffect(result: Int, path: String): ByteArray? {
+            val mplew = MaplePacketLittleEndianWriter()
+            mplew.writeShort(SendOpcode.FieldEffect.value)
+            mplew.write(result)
+            when (result) {
+                FieldEffectType.Tremble.mode,
+                FieldEffectType.Effect.mode,
+                FieldEffectType.Sound.mode,
+                FieldEffectType.Music.mode -> {
+                    mplew.writeMapleAsciiString(path)
+                }
+            }
+            return mplew.packet
+        }
+
+        /**
+         * onFieldEffect sends packet that broadcasts the BossHP bar
+         *
+         * @param result see FieldEffectType.kt
+         * @param args the data needed to build the hp bar (see comments)
+         */
+        fun onFieldEffect(result: Int, vararg args: Int): ByteArray? {
+            val mplew = MaplePacketLittleEndianWriter()
+            mplew.writeShort(SendOpcode.FieldEffect.value)
+            mplew.write(result)
+            when (result) {
+                FieldEffectType.BossHp.mode -> {
+                    mplew.writeInt(args[0]) //object id
+                    mplew.writeInt(args[1]) //current hp
+                    mplew.writeInt(args[2]) //max hp
+                    mplew.write(args[3].toByte()) // tag color byte
+                    mplew.write(args[4].toByte()) // tag color background byte
+                }
+            }
             return mplew.packet
         }
     }

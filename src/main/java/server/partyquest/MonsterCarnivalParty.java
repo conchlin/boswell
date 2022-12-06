@@ -3,6 +3,9 @@ package server.partyquest;
 import client.MapleCharacter;
 import java.util.LinkedList;
 import java.util.List;
+
+import enums.FieldEffectType;
+import network.packet.CField;
 import server.maps.MapleMap;
 import tools.MaplePacketCreator;
 
@@ -111,7 +114,7 @@ public class MonsterCarnivalParty {
         final String effect = winner ? "quest/carnival/win" : "quest/carnival/lose";
 
         for (final MapleCharacter chr : members) {
-            chr.announce(MaplePacketCreator.showEffect(effect));
+            chr.announce(CField.Packet.onFieldEffect(FieldEffectType.Effect.getMode(), effect));
         }
     }
 

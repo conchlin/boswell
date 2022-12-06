@@ -23,10 +23,8 @@ package net.server.channel.handlers;
 
 import client.MapleCharacter;
 import client.MapleClient;
-import network.packet.MessageBoxPool;
-import network.packet.PetPacket;
-import network.packet.UserCommon;
-import network.packet.WvsContext;
+import enums.FieldEffectType;
+import network.packet.*;
 import server.skills.PlayerSkill;
 import client.creator.veteran.*;
 import client.inventory.Equip;
@@ -340,7 +338,7 @@ public final class UseCashItemHandler extends AbstractMaplePacketHandler {
             }
             remove(c, position, itemId);
         } else if (itemType == 510) {
-            player.getMap().broadcastMessage(MaplePacketCreator.musicChange("Jukebox/Congratulation"));
+            player.getMap().broadcastMessage(CField.Packet.onFieldEffect(FieldEffectType.Music.getMode(), "Jukebox/Congratulation"));
             remove(c, position, itemId);
         } else if (itemType == 512) {
             if (ii.getStateChangeItem(itemId) != 0) {

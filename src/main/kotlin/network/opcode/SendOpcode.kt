@@ -139,11 +139,10 @@ enum class SendOpcode(val value: Int) {
     WHISPER(135),
     CoupleMessage(136),
     SummonItemInavailable(137),
-
-    FIELD_EFFECT(138),
-    FIELD_OBSTACLE_ONOFF(139),  //OnFieldObstacleOnOff
-    FIELD_OBSTACLE_ONOFF_LIST(140),  //OnFieldObstacleOnOffStatus
-    FIELD_OBSTACLE_ALL_RESET(141),  //OnFieldObstacleOnOffReset
+    FieldEffect(138),
+    FieldObstacleOnOff(139),
+    FieldObstacleOnOffStatus(140),
+    FieldObstacleOnOffReset(141),
     BLOW_WEATHER(142),
     PLAY_JUKEBOX(143),
 
