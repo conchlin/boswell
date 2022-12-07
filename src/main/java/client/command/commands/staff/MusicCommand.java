@@ -28,9 +28,8 @@ import client.MapleClient;
 import client.MapleCharacter;
 import constants.GameConstants;
 import enums.FieldEffectType;
-import network.packet.CField;
+import network.packet.field.CField;
 import network.packet.ScriptMan;
-import tools.MaplePacketCreator;
 
 public class MusicCommand extends Command {
     {

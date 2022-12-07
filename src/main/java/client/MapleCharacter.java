@@ -31,6 +31,8 @@ import enums.*;
 import net.database.DatabaseConnection;
 import net.database.Statements;
 import network.packet.*;
+import network.packet.field.CField;
+import network.packet.field.MonsterCarnivalPacket;
 import network.packet.wvscontext.AlliancePacket;
 import network.packet.wvscontext.GuildPacket;
 import network.packet.wvscontext.PartyPacket;
@@ -776,7 +778,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         if (isGM() && hide != this.hidden) {
             if (!hide) {
                 this.hidden = false;
-                announce(MaplePacketCreator.getGMEffect(0x10, (byte) 0));
+                announce(CField.Packet.onAdminResult(0x10, (byte) 0));
                 List<MapleBuffStat> dsstat = Collections.singletonList(MapleBuffStat.DARKSIGHT);
                 getMap().broadcastGMMessage(this, UserRemote.Packet.cancelForeignBuff(id, dsstat), false);
                 getMap().broadcastSpawnPlayerMapObjectMessage(this, this, false);
@@ -791,7 +793,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                 }
             } else {
                 this.hidden = true;
-                announce(MaplePacketCreator.getGMEffect(0x10, (byte) 1));
+                announce(CField.Packet.onAdminResult(0x10, (byte) 1));
                 if (!login) {
                     getMap().broadcastNONGMMessage(this, UserPool.Packet.onUserLeaveField(getId()), false);
                 }
@@ -5823,7 +5825,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
             if (getCP() < losing) {
                 losing = getCP();
             }
-            getMap().broadcastMessage(MaplePacketCreator.playerDiedMessage(getName(), losing, getTeam()));
+            getMap().broadcastMessage(MonsterCarnivalPacket.Packet.onProcessForDeath(getName(), losing, getTeam()));
             gainCP(-losing);
             return;
         }
@@ -7752,7 +7754,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 
     public void showDojoClock() {
         if (map.isDojoFightMap()) {
-            client.announce(MaplePacketCreator.getClock((int) (getDojoTimeLeft() / 1000)));
+            client.announce(CField.Packet.onClock(true, (int) (getDojoTimeLeft() / 1000)));
         }
     }
 
@@ -7901,7 +7903,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     }
 
     public void startMapEffect(String msg, int itemId, int duration) {
-        final MapleMapEffect mapEffect = new MapleMapEffect(msg, itemId);
+        final BlowWeather mapEffect = new BlowWeather(msg, itemId);
         getClient().announce(mapEffect.makeStartData());
         TimerManager.getInstance().schedule(() -> getClient().announce(mapEffect.makeDestroyData()), duration);
     }
@@ -8825,10 +8827,10 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
             if (this.getCP() > this.getTotalCP()) {
                 this.setTotalCP(this.getCP());
             }
-            this.getClient().announce(MaplePacketCreator.CPUpdate(false, this.getCP(), this.getTotalCP(), getTeam()));
+            this.getClient().announce(MonsterCarnivalPacket.Packet.onPersonalCP(this.getCP(), this.getTotalCP()));
             if (this.getParty() != null && getTeam() != -1) {
-                this.getMap().broadcastMessage(MaplePacketCreator.CPUpdate(true, this.getMonsterCarnival().getCP(team), this.getMonsterCarnival().getTotalCP(team), getTeam()));
-            } else {
+                this.getMap().broadcastMessage(
+                        MonsterCarnivalPacket.Packet.onTeamCP(this.getMonsterCarnival().getCP(team), this.getMonsterCarnival().getTotalCP(team), getTeam()));
             }
         }
     }
@@ -9188,7 +9190,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
             fishing.cancel(true);
         }
 
-        //fisher.getMap().broadcastMessage(MaplePacketCreator.removeClock());
+        //fisher.getMap().broadcastMessage(CField.Packet.onDestroyClock());
     }
 
     public int getDistanceHackCounter() {

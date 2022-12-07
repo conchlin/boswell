@@ -28,7 +28,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import enums.FieldEffectType;
-import network.packet.CField;
+import network.packet.field.CField;
+import network.packet.field.CoconutPacket;
 import server.TimerManager;
 import server.maps.MapleMap;
 import tools.MaplePacketCreator;
@@ -45,7 +46,7 @@ public class MapleCoconut extends MapleEvent {
     private int countBombing = 80;
     private int countFalling = 401;
     private int countStopped = 20;
-    private List<MapleCoconuts> coconuts = new LinkedList<MapleCoconuts>();
+    private List<MapleCoconuts> coconuts = new LinkedList<>();
 
     public MapleCoconut(MapleMap map) {
         super(1, 50);
@@ -57,9 +58,9 @@ public class MapleCoconut extends MapleEvent {
         for (int i = 0; i < 506; i++) {
             coconuts.add(new MapleCoconuts(i));
         }
-        map.broadcastMessage(MaplePacketCreator.hitCoconut(true, 0, 0));
+        map.broadcastMessage(CoconutPacket.Packet.onHitCoconut(true, 0, 0));
         setCoconutsHittable(true);
-        map.broadcastMessage(MaplePacketCreator.getClock(300));
+        map.broadcastMessage(CField.Packet.onClock(true, 300));
 
         TimerManager.getInstance().schedule(() -> {
             if (map.getId() == 109080000) {
@@ -94,7 +95,7 @@ public class MapleCoconut extends MapleEvent {
     }
 
     public void bonusTime() {
-        map.broadcastMessage(MaplePacketCreator.getClock(120));
+        map.broadcastMessage(CField.Packet.onClock(true, 120));
         TimerManager.getInstance().schedule(() -> {
             if (getMapleScore() == getStoryScore()) {
                 for (MapleCharacter chr : map.getCharacters()) {

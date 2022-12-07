@@ -27,6 +27,8 @@ import java.util.Map.Entry;
 import java.util.concurrent.ScheduledFuture;
 import client.MapleCharacter;
 import constants.GameConstants;
+import network.packet.field.AriantArenaPacket;
+import network.packet.field.CField;
 import server.TimerManager;
 import server.expeditions.MapleExpedition;
 import server.expeditions.MapleExpeditionType;
@@ -75,29 +77,14 @@ public class AriantColiseum {
         }
         
         for (MapleCharacter mc : players) {
-            mc.announce(MaplePacketCreator.updateAriantPQRanking(score));
+            mc.announce(AriantArenaPacket.Packet.onUserScore(score));
         }
         
-        setAriantScoreBoard(TimerManager.getInstance().schedule(new Runnable() {
-            @Override
-            public void run() {
-                showArenaResults();
-            }
-        }, pqTimerBoard));
+        setAriantScoreBoard(TimerManager.getInstance().schedule(this::showArenaResults, pqTimerBoard));
         
-        setArenaFinish(TimerManager.getInstance().schedule(new Runnable() {
-            @Override
-            public void run() {
-                enterKingsRoom();
-            }
-        }, pqTimer));
+        setArenaFinish(TimerManager.getInstance().schedule(this::enterKingsRoom, pqTimer));
         
-        setArenaUpdate(TimerManager.getInstance().register(new Runnable() {
-            @Override
-            public void run() {
-                broadcastAriantScoreUpdate();
-            }
-        }, 500, 500));
+        setArenaUpdate(TimerManager.getInstance().register(this::broadcastAriantScoreUpdate, 500, 500));
     }
     
     private void setArenaUpdate(ScheduledFuture<?> ariantUpdate) {
@@ -158,7 +145,7 @@ public class AriantColiseum {
     private void broadcastAriantScoreUpdate() {
         if (scoreDirty) {
             for (MapleCharacter chr : score.keySet()) {
-                chr.announce(MaplePacketCreator.updateAriantPQRanking(score));
+                chr.announce(AriantArenaPacket.Packet.onUserScore(score));
             }
             scoreDirty = false;
         }
@@ -207,7 +194,7 @@ public class AriantColiseum {
         eventClear = true;
         
         if (map != null) {
-            map.broadcastMessage(MaplePacketCreator.showAriantScoreBoard());
+            map.broadcastMessage(CField.Packet.onShowArenaResult());
             map.killAllMonsters();
             
             distributeAriantPoints();
@@ -289,13 +276,10 @@ public class AriantColiseum {
                 chr.changeMap(980010000, 0);
             }
             
-            map.getWorldServer().registerTimedMapObject(new Runnable() {
-                @Override
-                public void run() {
-                    score.clear();
-                    exped = null;
-                    map = null;
-                }
+            map.getWorldServer().registerTimedMapObject(() -> {
+                score.clear();
+                exped = null;
+                map = null;
             }, 5 * 60 * 1000);
         }
     }

@@ -5,9 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import enums.FieldEffectType;
-import network.packet.CField;
+import network.packet.field.CField;
 import server.maps.MapleMap;
-import tools.MaplePacketCreator;
 
 /**
  * @author Rob

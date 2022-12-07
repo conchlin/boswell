@@ -28,10 +28,9 @@ import constants.ServerConstants;
 import net.AbstractMaplePacketHandler;
 import net.server.Server;
 import net.server.world.World;
-import network.packet.CField;
+import network.packet.field.CField;
 import tools.FilePrinter;
 import tools.LogHelper;
-import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 public final class MultiChatHandler extends AbstractMaplePacketHandler {

@@ -60,7 +60,7 @@ import java.util.concurrent.ScheduledFuture;
 import enums.GuildResultType;
 import enums.PartyResultType;
 import enums.WhisperResultType;
-import network.packet.CField;
+import network.packet.field.CField;
 import network.packet.UserRemote;
 import network.packet.wvscontext.GuildPacket;
 import network.packet.wvscontext.PartyPacket;

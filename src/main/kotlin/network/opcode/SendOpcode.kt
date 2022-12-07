@@ -143,32 +143,26 @@ enum class SendOpcode(val value: Int) {
     FieldObstacleOnOff(139),
     FieldObstacleOnOffStatus(140),
     FieldObstacleOnOffReset(141),
-    BLOW_WEATHER(142),
-    PLAY_JUKEBOX(143),
-
-    ADMIN_RESULT(144),
-    OX_QUIZ(145),  //QUIZ
-    GMEVENT_INSTRUCTIONS(146),  //onDesc
-    CLOCK(147),
-
+    BlowWeather(142),
+    PlayJukebox(143),
+    AdminResult(144),
+    Quiz(145),
+    Desc(146),
+    Clock(147),
     //Field_ContiMove::OnPacket
     CONTI_MOVE(148),
     CONTI_STATE(149),
-
-
-    SET_QUEST_CLEAR(150),
-    SET_QUEST_TIME(151),
-    WARN_MESSAGE(152),  // onWarnMessage
-    SET_OBJECT_STATE(153),
-    STOP_CLOCK(154),
-    ARIANT_ARENA_SHOW_RESULT(155),
-    STALK_RESULT(156),  //CField_Massacre
-
+    /*CField::OnPacket*/
+    SetQuestClear(150),
+    SetQuestTime(151),
+    WarnMessage(152),
+    SetObjectState(153),
+    DestroyClock(154),
+    ShowArenaResult(155),
+    StalkResult(156),
     //CField_MassacreResult::OnPacket
-    PYRAMID_GAUGE(157),  //OnMassacreIncGauge
-    PYRAMID_SCORE(158),  //OnMassacreResult
-
-
+    MassacreIncGauge(157),
+    MassacreResult(158),
     // CUserPool::OnPacket
     UserEnterField(160),
     UserLeaveField(161),
@@ -291,37 +285,33 @@ enum class SendOpcode(val value: Int) {
     ReactorChangeState(277),
     ReactorEnterField(279),
     ReactorLeaveField(280),
-
     //CField_Snowball
-    SNOWBALL_STATE(281),
-    HIT_SNOWBALL(282),
-    SNOWBALL_MESSAGE(283),
-    LEFT_KNOCK_BACK(284),  //OnSnowBallTouch
-
+    SnowBallState(281),
+    SnowBallHit(282),
+    SnowBallMsg(283),
+    SnowBallTouch(284),
     //CField_Coconut
-    COCONUT_HIT(285),
-    COCONUT_SCORE(286),
-
+    CoconutHit(285),
+    CoconutScore(286),
     //CField_GuildBoss
-    GUILD_BOSS_HEALER_MOVE(287),
-    GUILD_BOSS_PULLEY_STATE_CHANGE(288),
-
+    HealerMove(287),
+    PulleyStateChange(288),
     //CField_MonsterCarnival::OnPacket
-    MONSTER_CARNIVAL_START(289),  //OnEnter
-    MONSTER_CARNIVAL_OBTAINED_CP(290),  //OnPersonalCP
-    MONSTER_CARNIVAL_PARTY_CP(291),
-    MONSTER_CARNIVAL_SUMMON(292),  //OnRequestResult?
-    MONSTER_CARNIVAL_MESSAGE(293),  //OnRequestResult?
-    MONSTER_CARNIVAL_DIED(294),  //OnProcessForDeath
-    MONSTER_CARNIVAL_LEAVE(295),  //OnShowMemberOutMsg
-    SHOW_GAME_RESULT(296),
-
-    //CField_Battlefield::OnPacket
-    ARIANT_ARENA_USER_SCORE(297),
-    SCORE_UPDATE(299),  //OnScoreUpdate
-    TEAM_CHANGED(300),  //OnTeamChanged
-    WITCH_TOWER_SCORE_UPDATE(301),  // ????
-
+    CarnivalEnter(289),
+    CarnivalPersonalCP(290),
+    CarnivalTeamCP(291),
+    CarnivalSummon(292),
+    CarnivalRequestResult(293),
+    CarnivalProcessForDeath(294),
+    ShowMemberOutMsg(295),
+    CarnivalShowGameResult(296),
+    //CField_AriantArena::OnPacket
+    ArenaUserScore(297),
+    //CField_BattleField::OnPacket
+    BattleScoreUpdate(299),
+    TeamChanged(300),
+    //CField_WitchTower::OnPacket
+    TowerScoreUpdate(301),
     HORNTAIL_CAVE(302),  //CField::OnHontailTimer
     ZAKUM_SHRINE(303),  //CField::OnZakumTimer
     ScriptMessage(304),

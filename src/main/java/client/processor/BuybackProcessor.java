@@ -23,7 +23,7 @@ import client.MapleClient;
 import client.MapleCharacter;
 import enums.FieldEffectType;
 import enums.UserEffectType;
-import network.packet.CField;
+import network.packet.field.CField;
 import network.packet.UserLocal;
 import network.packet.UserRemote;
 import server.maps.MapleMap;

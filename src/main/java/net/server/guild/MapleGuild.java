@@ -23,7 +23,6 @@ package net.server.guild;
 
 import client.MapleCharacter;
 import client.MapleClient;
-import constants.ServerConstants;
 import enums.GuildResultType;
 import net.server.PlayerStorage;
 import net.server.Server;
@@ -36,7 +35,7 @@ import net.server.coordinator.MapleInviteCoordinator.InviteType;
 import net.server.coordinator.MapleMatchCheckerCoordinator;
 import net.database.Statements;
 import net.database.DatabaseConnection;
-import network.packet.CField;
+import network.packet.field.CField;
 import network.packet.UserRemote;
 import network.packet.wvscontext.GuildPacket;
 import tools.MaplePacketCreator;

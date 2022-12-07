@@ -25,9 +25,8 @@ import client.MapleCharacter;
 import client.MapleClient;
 import constants.ServerConstants;
 import net.AbstractMaplePacketHandler;
-import network.packet.CField;
+import network.packet.field.CField;
 import tools.LogHelper;
-import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 public final class SpouseChatHandler extends AbstractMaplePacketHandler {

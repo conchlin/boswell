@@ -3,17 +3,15 @@ package server.partyquest;
 import java.util.concurrent.ScheduledFuture;
 import client.MapleCharacter;
 import constants.LanguageConstants;
-import constants.ServerConstants;
 import enums.FieldEffectType;
 import net.server.Server;
 import net.server.channel.Channel;
 import net.server.world.MapleParty;
 import net.server.world.MaplePartyCharacter;
-import network.packet.CField;
+import network.packet.field.CField;
 import server.TimerManager;
 import server.maps.MapleMap;
 import server.maps.MapleReactor;
-import tools.MaplePacketCreator;
 
 /**
  * @author Drago/Dragohe4rt
@@ -348,7 +346,7 @@ public class MonsterCarnival {
         }
         startTime = System.currentTimeMillis() + 3 * 60 * 1000;
 
-        map.broadcastMessage(MaplePacketCreator.getClock(3 * 60));
+        map.broadcastMessage(CField.Packet.onClock(true, 3 * 60));
 
         timer = TimerManager.getInstance().schedule(this::timeUp, map.getTimeExpand() * 1000L);
         effectTimer = TimerManager.getInstance().schedule(this::complete, map.getTimeExpand() * 1000L - 10 * 1000);

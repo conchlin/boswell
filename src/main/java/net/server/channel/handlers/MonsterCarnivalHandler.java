@@ -30,6 +30,7 @@ import net.AbstractMaplePacketHandler;
 import net.server.world.MapleParty;
 import net.server.world.MaplePartyCharacter;
 import network.packet.WvsContext;
+import network.packet.field.MonsterCarnivalPacket;
 import server.life.MapleLifeFactory;
 import server.life.MapleMonster;
 import server.partyquest.MapleCarnivalFactory;
@@ -57,7 +58,7 @@ public final class MonsterCarnivalHandler extends AbstractMaplePacketHandler {
                     if (tab == 0) { 
                         final List<Pair<Integer, Integer>> mobs = c.getPlayer().getMap().getMobsToSpawn();
                         if (num >= mobs.size() || c.getPlayer().getCP() < mobs.get(num).right) {
-                            c.announce(MaplePacketCreator.CPQMessage((byte) 1));
+                            c.announce(MonsterCarnivalPacket.Packet.onRequestResult((byte) 1));
                             c.announce(WvsContext.Packet.enableActions());
                             return;
                         }
@@ -66,7 +67,7 @@ public final class MonsterCarnivalHandler extends AbstractMaplePacketHandler {
                         MonsterCarnival mcpq = c.getPlayer().getMonsterCarnival();
                         if (mcpq != null) {
                             if (!mcpq.canSummonR() && c.getPlayer().getTeam() == 0 || !mcpq.canSummonB() && c.getPlayer().getTeam() == 1) {
-                                c.announce(MaplePacketCreator.CPQMessage((byte) 2));
+                                c.announce(MonsterCarnivalPacket.Packet.onRequestResult((byte) 2));
                                 c.announce(WvsContext.Packet.enableActions());
                                 return;
                             }
@@ -95,7 +96,7 @@ public final class MonsterCarnivalHandler extends AbstractMaplePacketHandler {
                         }
                         final MCSkill skill = MapleCarnivalFactory.getInstance().getSkill(skillid.get(num)); //ugh wtf
                         if (skill == null || c.getPlayer().getCP() < skill.cpLoss) {
-                            c.announce(MaplePacketCreator.CPQMessage((byte) 1));
+                            c.announce(MonsterCarnivalPacket.Packet.onRequestResult((byte) 1));
                             c.announce(WvsContext.Packet.enableActions());
                             return;
                         }
@@ -132,7 +133,7 @@ public final class MonsterCarnivalHandler extends AbstractMaplePacketHandler {
                     } else if (tab == 2) { //protectors
                         final MCSkill skill = MapleCarnivalFactory.getInstance().getGuardian(num);
                         if (skill == null || c.getPlayer().getCP() < skill.cpLoss) {
-                            c.announce(MaplePacketCreator.CPQMessage((byte) 1));
+                            c.announce(MonsterCarnivalPacket.Packet.onRequestResult((byte) 1));
                             c.announce(WvsContext.Packet.enableActions());
                             return;
                         }
@@ -140,7 +141,7 @@ public final class MonsterCarnivalHandler extends AbstractMaplePacketHandler {
                         MonsterCarnival mcpq = c.getPlayer().getMonsterCarnival();
                         if (mcpq != null) {
                             if (!mcpq.canGuardianR() && c.getPlayer().getTeam() == 0 || !mcpq.canGuardianB() && c.getPlayer().getTeam() == 1) {
-                                c.announce(MaplePacketCreator.CPQMessage((byte) 2));
+                                c.announce(MonsterCarnivalPacket.Packet.onRequestResult((byte) 2));
                                 c.announce(WvsContext.Packet.enableActions());
                                 return;
                             }
@@ -148,9 +149,9 @@ public final class MonsterCarnivalHandler extends AbstractMaplePacketHandler {
                             int success = c.getPlayer().getMap().spawnGuardian(c.getPlayer().getTeam(), num);
                             if (success != 1) {
                                 if (success == 0) {
-                                    c.announce(MaplePacketCreator.CPQMessage((byte) 4));
+                                    c.announce(MonsterCarnivalPacket.Packet.onRequestResult((byte) 4));
                                 } else {
-                                    c.announce(MaplePacketCreator.CPQMessage((byte) 3));
+                                    c.announce(MonsterCarnivalPacket.Packet.onRequestResult((byte) 3));
                                 }
                                 c.announce(WvsContext.Packet.enableActions());
                                 return;
@@ -160,7 +161,7 @@ public final class MonsterCarnivalHandler extends AbstractMaplePacketHandler {
                         }
                     }
                     c.getPlayer().gainCP(-neededCP);
-                    c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.playerSummoned(c.getPlayer().getName(), tab, num));
+                    c.getPlayer().getMap().broadcastMessage(MonsterCarnivalPacket.Packet.onSummon(c.getPlayer().getName(), tab, num));
                 }catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -27,7 +27,7 @@ import client.MapleCharacter;
 import client.MapleClient;
 import client.MapleJob;
 import enums.FieldEffectType;
-import network.packet.CField;
+import network.packet.field.CField;
 import network.packet.MobPool;
 import network.packet.NpcPool;
 import server.maps.MapleMapObject;

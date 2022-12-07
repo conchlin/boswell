@@ -19,6 +19,7 @@
 */
 package server.maps;
 
+import network.packet.field.CField;
 import server.TimerManager;
 import client.MapleCharacter;
 
@@ -26,7 +27,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.locks.Lock;
-import tools.MaplePacketCreator;
+
 import net.server.audit.locks.MonitoredLockType;
 import net.server.audit.locks.factory.MonitoredReentrantLockFactory;
 
@@ -58,7 +59,7 @@ public class MapleMiniDungeon {
     
     public boolean registerPlayer(MapleCharacter chr) {
         int time = (int)((expireTime - System.currentTimeMillis()) / 1000);
-        if(time > 0) chr.getClient().announce(MaplePacketCreator.getClock(time));
+        if(time > 0) chr.getClient().announce(CField.Packet.onClock(true, time));
         
         lock.lock();
         try {
@@ -73,7 +74,7 @@ public class MapleMiniDungeon {
     }
     
     public boolean unregisterPlayer(MapleCharacter chr) {
-        chr.getClient().announce(MaplePacketCreator.removeClock());
+        chr.getClient().announce(CField.Packet.onDestroyClock());
         
         lock.lock();
         try {

@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.AbstractMaplePacketHandler;
+import network.packet.field.CField;
 import network.packet.WvsContext;
 import server.MapleItemInformationProvider;
 import server.life.MapleLifeFactory;
@@ -95,11 +96,11 @@ public final class AdminCommandHandler extends AbstractMaplePacketHandler {
                         target.block(type, duration, description);
                         target.sendPolice(duration, reason, 6000);
                     }
-                    c.announce(MaplePacketCreator.getGMEffect(4, (byte) 0));
+                    c.announce(CField.Packet.onAdminResult(4, (byte) 0));
                 } else if (MapleCharacter.ban(victim, reason, false)) {
-                    c.announce(MaplePacketCreator.getGMEffect(4, (byte) 0));
+                    c.announce(CField.Packet.onAdminResult(4, (byte) 0));
                 } else {
-                    c.announce(MaplePacketCreator.getGMEffect(6, (byte) 1));
+                    c.announce(CField.Packet.onAdminResult(6, (byte) 1));
                 }
                 break;
             case 0x10: // /h, information by vana (and tele mode f1) ... hide ofcourse
@@ -162,9 +163,9 @@ public final class AdminCommandHandler extends AbstractMaplePacketHandler {
                 target = c.getChannelServer().getPlayerStorage().getCharacterByName(victim);
                 if (target != null) {
                     target.getClient().announce(MaplePacketCreator.serverNotice(1, message));
-                    c.announce(MaplePacketCreator.getGMEffect(0x1E, (byte) 1));
+                    c.announce(CField.Packet.onAdminResult(0x1E, (byte) 1));
                 } else {
-                    c.announce(MaplePacketCreator.getGMEffect(0x1E, (byte) 0));
+                    c.announce(CField.Packet.onAdminResult(0x1E, (byte) 0));
                 }
                 break;
             case 0x24:// /Artifact Ranking

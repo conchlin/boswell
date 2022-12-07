@@ -33,7 +33,7 @@ import net.server.guild.MapleAlliance;
 import net.server.guild.MapleGuild;
 import net.server.world.MapleParty;
 import net.server.world.MaplePartyCharacter;
-import network.packet.CField;
+import network.packet.field.CField;
 import network.packet.ScriptMan;
 import network.packet.StoreBank;
 import network.packet.WvsContext;
@@ -979,7 +979,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     }
 
     public void mapClock(int time) {
-        getPlayer().getMap().broadcastMessage(MaplePacketCreator.getClock(time));
+        getPlayer().getMap().broadcastMessage(CField.Packet.onClock(true, time));
     }
 
     private boolean sendCPQChallenge(String cpqType, int leaderid) {

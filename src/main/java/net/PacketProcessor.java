@@ -226,7 +226,7 @@ public final class PacketProcessor {
             registerHandler(RecvOpcode.PARTY_SEARCH_START, new PartySearchStartHandler());
             registerHandler(RecvOpcode.PARTY_SEARCH_UPDATE, new PartySearchUpdateHandler());
             registerHandler(RecvOpcode.ITEM_SORT2, new InventorySortHandler());
-            registerHandler(RecvOpcode.LEFT_KNOCKBACK, new LeftKnockbackHandler());
+            registerHandler(RecvOpcode.LEFT_KNOCKBACK, new SnowballTouchHandler());
             registerHandler(RecvOpcode.SNOWBALL, new SnowballHandler());
             registerHandler(RecvOpcode.COCONUT, new CoconutHandler());
             registerHandler(RecvOpcode.ARAN_COMBO_COUNTER, new AranComboHandler());

@@ -24,6 +24,8 @@ package server.events.gm;
 
 import client.MapleCharacter;
 import java.util.concurrent.ScheduledFuture;
+
+import network.packet.field.CField;
 import server.TimerManager;
 import tools.MaplePacketCreator;
 
@@ -40,18 +42,15 @@ public class MapleFitness {
        
        public MapleFitness(final MapleCharacter chr) {
            this.chr = chr;
-           this.schedule = TimerManager.getInstance().schedule(new Runnable() {
-            @Override
-            public void run() {
-            if (chr.getMapId() >= 109040000 && chr.getMapId() <= 109040004)
-                chr.changeMap(chr.getMap().getReturnMap());
-            }
+           this.schedule = TimerManager.getInstance().schedule(() -> {
+           if (chr.getMapId() >= 109040000 && chr.getMapId() <= 109040004)
+               chr.changeMap(chr.getMap().getReturnMap());
            }, 900000);
        }
        
        public void startFitness() {
            chr.getMap().startEvent();
-           chr.getClient().announce(MaplePacketCreator.getClock(900));
+           chr.getClient().announce(CField.Packet.onClock(true, 900));
            this.timeStarted = System.currentTimeMillis();
            this.time = 900000;  
            checkAndMessage();         

@@ -31,8 +31,7 @@ import client.MapleCharacter;
 import client.MapleClient;
 import client.inventory.MapleInventoryType;
 import client.inventory.manipulator.MapleInventoryManipulator;
-import constants.MapConstants;
-import network.packet.CField;
+import network.packet.field.CField;
 import network.packet.CLogin;
 import network.packet.UserLocal;
 import network.packet.WvsContext;
@@ -40,7 +39,6 @@ import server.MaplePortal;
 import server.MapleTrade;
 import server.maps.MapleMap;
 import tools.FilePrinter;
-import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 public final class ChangeMapHandler extends AbstractMaplePacketHandler {

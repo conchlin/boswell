@@ -32,6 +32,7 @@ import java.util.List;
 import enums.FieldEffectType;
 import enums.UserEffectType;
 import network.packet.*;
+import network.packet.field.CField;
 import server.skills.*;
 import net.server.Server;
 import net.server.channel.Channel;
@@ -611,11 +612,11 @@ public class AbstractPlayerInteraction {
     }
 
     public void mapEffect(String path) {
-        c.announce(MaplePacketCreator.mapEffect(path));
+        c.announce(CField.Packet.onFieldEffect(FieldEffectType.Effect.getMode(), path));
     }
 
     public void mapSound(String path) {
-        c.announce(MaplePacketCreator.mapSound(path));
+        c.announce(CField.Packet.onFieldEffect(FieldEffectType.Sound.getMode(), path));
     }
 
     public void displayAranIntro() {
@@ -806,9 +807,9 @@ public class AbstractPlayerInteraction {
         c.announce(WvsContext.Packet.enableActions());
     }
 
-    public void disableMinimap() {
+    /*public void disableMinimap() {
         c.announce(MaplePacketCreator.disableMinimap());
-    }
+    }*/
 
     public boolean isAllReactorState(final int reactorId, final int state) {
         return c.getPlayer().getMap().isAllReactorState(reactorId, state);

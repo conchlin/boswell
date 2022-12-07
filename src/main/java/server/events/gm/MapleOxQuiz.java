@@ -22,6 +22,7 @@
 package server.events.gm;
 
 import client.MapleCharacter;
+import network.packet.field.CField;
 import tools.Randomizer;
 import java.io.File;
 import java.util.ArrayList;
@@ -68,40 +69,42 @@ public final class MapleOxQuiz {
             }
         }
         final int number = gm;
-        map.broadcastMessage(MaplePacketCreator.showOXQuiz(round, question, true));
-        TimerManager.getInstance().schedule(new Runnable() {
-            @Override
-            public void run() {
-                map.broadcastMessage(MaplePacketCreator.showOXQuiz(round, question, true));
-				List<MapleCharacter> chars = new ArrayList<>(map.getCharacters());
-				
-                for (MapleCharacter chr : chars) {
-                    if (chr != null) // make sure they aren't null... maybe something can happen in 12 seconds.
-                    {
-                        if (!isCorrectAnswer(chr, getOXAnswer(round, question)) && !chr.isGM()) {
-                            chr.changeMap(chr.getMap().getReturnMap());
-                        } else {
-                            chr.gainExp(expGain, true, true);
-                        }
+        map.broadcastMessage(CField.Packet.onQuiz(round, question, true));
+        TimerManager.getInstance().schedule(() -> {
+            map.broadcastMessage(CField.Packet.onQuiz(round, question, true));
+            List<MapleCharacter> chars = new ArrayList<>(map.getCharacters());
+
+            for (MapleCharacter chr : chars) {
+                if (chr != null) // make sure they aren't null... maybe something can happen in 12 seconds.
+                {
+                    if (!isCorrectAnswer(chr, getOXAnswer(round, question)) && !chr.isGM()) {
+                        chr.changeMap(chr.getMap().getReturnMap());
+                    } else {
+                        chr.gainExp(expGain, true, true);
                     }
                 }
-                //do question
-                if ((round == 1 && question == 29) || ((round == 2 || round == 3) && question == 17) || ((round == 4 || round == 8) && question == 12) || (round == 5 && question == 26) || (round == 9 && question == 44) || ((round == 6 || round == 7) && question == 16)) {
-                    question = 100;
-                } else {
-                    question++;
-                }
-                //send question
-                if (map.getCharacters().size() - number <= 2) {
-                    map.broadcastMessage(MaplePacketCreator.serverNotice(6, "The event has ended"));
-                    map.getPortal("join00").setPortalStatus(true);
-                    map.setOx(null);
-                    map.setOxQuiz(false);
-                    //prizes here
-                    return;
-                }
-                sendQuestion();
             }
+            //do question
+            if ((round == 1 && question == 29)
+                    || ((round == 2 || round == 3) && question == 17)
+                    || ((round == 4 || round == 8) && question == 12)
+                    || (round == 5 && question == 26)
+                    || (round == 9 && question == 44)
+                    || ((round == 6 || round == 7) && question == 16)) {
+                question = 100;
+            } else {
+                question++;
+            }
+            //send question
+            if (map.getCharacters().size() - number <= 2) {
+                map.broadcastMessage(MaplePacketCreator.serverNotice(6, "The event has ended"));
+                map.getPortal("join00").setPortalStatus(true);
+                map.setOx(null);
+                map.setOxQuiz(false);
+                //prizes here
+                return;
+            }
+            sendQuestion();
         }, 30000); // Time to answer = 30 seconds ( Ox Quiz packet shows a 30 second timer.
     }
 

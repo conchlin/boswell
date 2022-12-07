@@ -25,6 +25,7 @@ import client.MapleCharacter;
 import client.MapleClient;
 import enums.FieldEffectType;
 import network.packet.*;
+import network.packet.field.CField;
 import server.skills.PlayerSkill;
 import client.creator.veteran.*;
 import client.inventory.Equip;

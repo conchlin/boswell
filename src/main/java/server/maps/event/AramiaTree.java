@@ -4,6 +4,7 @@ import client.MapleCharacter;
 import client.MapleClient;
 import client.inventory.Item;
 import net.server.Server;
+import network.packet.field.CField;
 import network.packet.ReactorPool;
 import server.TimerManager;
 import server.maps.MapleMap;
@@ -12,7 +13,6 @@ import tools.MaplePacketCreator;
 
 import java.awt.*;
 import java.util.*;
-import java.util.List;
 
 /**
  *
@@ -130,7 +130,7 @@ public class AramiaTree {
                     c.getWorld(), MaplePacketCreator.serverNotice(
                             6, "[Event] All the Sunshine has turned the leaves to gold and they have fallen to the ground!"));
             for (MapleCharacter victim : c.getPlayer().getMap().getCharacters()) {
-                victim.announce(MaplePacketCreator.getClock(90));
+                victim.announce(CField.Packet.onClock(true, 90));
             }
 
             TimerManager.getInstance().schedule(() -> {

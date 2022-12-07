@@ -22,24 +22,23 @@
 package server.maps;
 
 import client.MapleClient;
-import tools.MaplePacketCreator;
+import network.packet.field.CField;
 
-public class MapleMapEffect {
+public class BlowWeather {
     private String msg;
     private int itemId;
-    private boolean active = true;
 
-    public MapleMapEffect(String msg, int itemId) {
+    public BlowWeather(String msg, int itemId) {
         this.msg = msg;
         this.itemId = itemId;
     }
 
     public final byte[] makeDestroyData() {
-        return MaplePacketCreator.removeMapEffect();
+        return CField.Packet.onBlowWeather(0, msg, false);
     }
 
     public final byte[] makeStartData() {
-        return MaplePacketCreator.startMapEffect(msg, itemId, active);
+        return CField.Packet.onBlowWeather(itemId, msg, true);
     }
 
     public void sendStartData(MapleClient client) {

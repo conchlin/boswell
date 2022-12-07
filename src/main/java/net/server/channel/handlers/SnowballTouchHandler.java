@@ -25,6 +25,7 @@ package net.server.channel.handlers;
 import client.MapleClient;
 import net.AbstractMaplePacketHandler;
 import network.packet.WvsContext;
+import network.packet.field.SnowballPacket;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
@@ -32,9 +33,9 @@ import tools.data.input.SeekableLittleEndianAccessor;
  *
  * @author kevintjuh93
  */
-public class LeftKnockbackHandler extends AbstractMaplePacketHandler {
+public class SnowballTouchHandler extends AbstractMaplePacketHandler {
         public void handlePacket(SeekableLittleEndianAccessor slea, final MapleClient c) {
-            c.announce(MaplePacketCreator.leftKnockBack());
+            c.announce(SnowballPacket.Packet.onTouch());
             c.announce(WvsContext.Packet.enableActions());
         }
 }

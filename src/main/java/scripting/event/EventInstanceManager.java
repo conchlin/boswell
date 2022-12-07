@@ -23,7 +23,7 @@ package scripting.event;
 
 import client.MapleCharacter;
 import enums.FieldEffectType;
-import network.packet.CField;
+import network.packet.field.CField;
 import network.packet.NpcPool;
 import server.skills.PlayerSkill;
 import constants.ItemConstants;
@@ -49,7 +49,6 @@ import server.maps.MapleMap;
 import server.maps.MapleMapFactory;
 import server.maps.MapleReactor;
 import server.skills.SkillFactory;
-import tools.MaplePacketCreator;
 import tools.Pair;
 
 import javax.script.ScriptException;
@@ -290,19 +289,16 @@ public class EventInstanceManager {
         eventTime = time;
 
         for (MapleCharacter chr : getPlayers()) {
-            chr.announce(MaplePacketCreator.getClock((int) (time / 1000)));
+            chr.announce(CField.Packet.onClock(true, (int) (time / 1000)));
         }
 
-        event_schedule = TimerManager.getInstance().schedule(new Runnable() {
-            @Override
-            public void run() {
-                dismissEventTimer();
+        event_schedule = TimerManager.getInstance().schedule(() -> {
+            dismissEventTimer();
 
-                try {
-                    invokeScriptFunction("scheduledTimeout", EventInstanceManager.this);
-                } catch (ScriptException | NoSuchMethodException ex) {
-                    Logger.getLogger(EventManager.class.getName()).log(Level.SEVERE, "Event '" + em.getName() + "' does not implement scheduledTimeout function.", ex);
-                }
+            try {
+                invokeScriptFunction("scheduledTimeout", EventInstanceManager.this);
+            } catch (ScriptException | NoSuchMethodException ex) {
+                Logger.getLogger(EventManager.class.getName()).log(Level.SEVERE, "Event '" + em.getName() + "' does not implement scheduledTimeout function.", ex);
             }
         }, time);
     }
@@ -333,7 +329,7 @@ public class EventInstanceManager {
 
     private void dismissEventTimer() {
         for (MapleCharacter chr : getPlayers()) {
-            chr.getClient().announce(MaplePacketCreator.removeClock());
+            chr.getClient().announce(CField.Packet.onDestroyClock());
         }
 
         event_schedule = null;

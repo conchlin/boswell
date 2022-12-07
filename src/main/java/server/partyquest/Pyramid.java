@@ -25,6 +25,7 @@ package server.partyquest;
 import client.MapleCharacter;
 import java.util.concurrent.ScheduledFuture;
 import net.server.world.MapleParty;
+import network.packet.field.MassacrePacket;
 import server.MapleItemInformationProvider;
 import server.TimerManager;
 import tools.MaplePacketCreator;
@@ -79,13 +80,10 @@ public class Pyramid extends PartyQuest {
         if (gaugeSchedule == null) {
             gauge = 100;
             count = 0;
-            gaugeSchedule = TimerManager.getInstance().register(new Runnable() {
-                @Override
-                public void run() {
-                    gauge -= decrease;
-                    if (gauge <= 0) warp(926010001);
+            gaugeSchedule = TimerManager.getInstance().register(() -> {
+                gauge -= decrease;
+                if (gauge <= 0) warp(926010001);
 
-                }
             }, 1000);
         }
     }
@@ -125,13 +123,10 @@ public class Pyramid extends PartyQuest {
         else
             value = 120;
 
-        timer = TimerManager.getInstance().schedule(new Runnable() {
-                @Override
-                public void run() {
-                    stage++;
-                    warp(map + (stage * 100));//Should work :D
-                }
-            }, value * 1000);//, 4000
+        timer = TimerManager.getInstance().schedule(() -> {
+            stage++;
+            warp(map + (stage * 100));//Should work :D
+        }, value * 1000);//, 4000
         broadcastInfo("party", getParticipants().size() > 1 ? 1 : 0);
         broadcastInfo("hit", kill);
         broadcastInfo("miss", miss);
@@ -157,7 +152,7 @@ public class Pyramid extends PartyQuest {
     public void broadcastInfo(String info, int amount) {
         for (MapleCharacter chr : getParticipants()) {
             chr.announce(MaplePacketCreator.getEnergy("massacre_" + info, amount));
-            chr.announce(MaplePacketCreator.pyramidGauge(count));
+            chr.announce(MassacrePacket.Packet.onMassacreIncGauge(count));
         }
     }
 
@@ -234,7 +229,7 @@ public class Pyramid extends PartyQuest {
 
             exp += ((kill * 2) + (cool * 10));
         }
-        chr.announce(MaplePacketCreator.pyramidScore(rank, exp));
+        chr.announce(MassacrePacket.Packet.onMassacreResult(rank, exp));
         chr.gainExp(exp, true, true);
     }
 }

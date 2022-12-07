@@ -23,6 +23,8 @@ package server.events.gm;
 
 import client.MapleCharacter;
 import java.util.concurrent.ScheduledFuture;
+
+import network.packet.field.CField;
 import server.TimerManager;
 import tools.MaplePacketCreator;
 
@@ -38,19 +40,16 @@ public class MapleOla {
 
        public MapleOla(final MapleCharacter chr) {
            this.chr = chr;
-           this.schedule = TimerManager.getInstance().schedule(new Runnable() {
-            @Override
-            public void run() {
-            if (chr.getMapId() >= 109030001 && chr.getMapId() <= 109030303)
-             chr.changeMap(chr.getMap().getReturnMap());
-             resetTimes();
-            }
+           this.schedule = TimerManager.getInstance().schedule(() -> {
+           if (chr.getMapId() >= 109030001 && chr.getMapId() <= 109030303)
+            chr.changeMap(chr.getMap().getReturnMap());
+            resetTimes();
            }, 360000);
        }
 
        public void startOla() { // TODO: Messages
            chr.getMap().startEvent();
-           chr.getClient().announce(MaplePacketCreator.getClock(360));
+           chr.getClient().announce(CField.Packet.onClock(true, 360));
            this.timeStarted = System.currentTimeMillis();
            this.time = 360000;
 
