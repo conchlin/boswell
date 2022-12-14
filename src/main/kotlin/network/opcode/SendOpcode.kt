@@ -337,21 +337,20 @@ enum class SendOpcode(val value: Int) {
     WEDDING_PROGRESS(320),  //byte step, int groomid, int brideid
     WEDDING_CEREMONY_END(321),
 
-    PARCEL(322),  //CCashShop:onPacket
-
-    CHARGE_PARAM_RESULT(323),
-    QUERY_CASH_RESULT(324),
-    CASHSHOP_OPERATION(325),  //OnCashItemResult
-    CASHSHOP_PURCHASE_EXP_CHANGED(326),  // found thanks to Arnah (Vertisy)
-    CASHSHOP_GIFT_INFO_RESULT(327),
-    CASHSHOP_CHECK_NAME_CHANGE(328),  //OnCheckDuplicatedIDResult
-    CASHSHOP_CHECK_NAME_CHANGE_POSSIBLE_RESULT(329),  //OnCheckNameChangePossibleResult
-    CASHSHOP_CHECK_TRANSFER_WORLD_POSSIBLE_RESULT(331),  //OnCheckTransferWorldPossibleResult
-    CASHSHOP_GACHAPON_STAMP_RESULT(332),  //OnCashShopGachaponStampResult
-    CASHSHOP_CASH_ITEM_GACHAPON_RESULT(333),
-    //ONE_A_DAY(395), //v95
-    //NOTICE_FREE_CASH_ITEM(396), //v95
-
+    PARCEL(322),
+    //CCashShop:onPacket
+    CashShopChargeParamResult(323),
+    QueryCashResult(324),
+    CashItemResult(325),
+    PurchaseExpChange(326),
+    GiftMateInfoResult(327),
+    CashShopCheckDuplicatedIDResult(328),
+    CheckNameChangePossibleResult(329),
+    CheckTransferWorldPossibleResult(331),
+    CashShopGachaponStampResult(332),
+    CashItemGachaponResult(333),
+    //OneADay(395), //v95
+    //NoticeFreeCashItem(396), //v95
     //CFuncKeyMappedMan:OnPacket
     FuncKeyMappedItemInit(335),
     PetConsumeItemInit(336),

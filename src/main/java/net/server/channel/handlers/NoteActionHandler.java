@@ -25,8 +25,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import enums.CashItemResultType;
 import net.AbstractMaplePacketHandler;
 import net.database.DatabaseConnection;
+import network.packet.CCashShop;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 import client.MapleClient;
@@ -34,15 +36,15 @@ import java.sql.Connection;
 
 public final class NoteActionHandler extends AbstractMaplePacketHandler {
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         int action = slea.readByte();
         if (action == 0 && c.getPlayer().getCashShop().getAvailableNotes() > 0) {
             String charname = slea.readMapleAsciiString();
             String message = slea.readMapleAsciiString();
             try {
                 if (c.getPlayer().getCashShop().isOpened())
-                    c.announce(MaplePacketCreator.showCashInventory(c));
-                
+                    c.announce(CCashShop.Packet.onCashItemResult(CashItemResultType.LoadInventory.getResult(), c.getPlayer()));
+
                     c.getPlayer().sendNote(charname, message, (byte) 1);
                     c.getPlayer().getCashShop().decreaseNotes();
             } catch (SQLException e) {

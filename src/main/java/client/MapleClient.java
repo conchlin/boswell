@@ -47,6 +47,7 @@ import com.google.gson.JsonObject;
 import enums.PartyResultType;
 import net.database.DatabaseConnection;
 import net.database.Statements;
+import network.packet.CCashShop;
 import network.packet.CLogin;
 import network.packet.UserLocal;
 import network.packet.WvsContext;
@@ -1346,7 +1347,7 @@ public class MapleClient {
     }
 
     public void enableCSActions() {
-        announce(MaplePacketCreator.enableCSUse(player));
+        announce(CCashShop.Packet.onQueryCashResult(player));
     }
 
     public String getNibbleHWID() {

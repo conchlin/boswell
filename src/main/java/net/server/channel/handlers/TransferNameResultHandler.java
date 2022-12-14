@@ -23,7 +23,7 @@ package net.server.channel.handlers;
 import client.MapleCharacter;
 import client.MapleClient;
 import net.AbstractMaplePacketHandler;
-import tools.MaplePacketCreator;
+import network.packet.CCashShop;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 /**
@@ -33,8 +33,8 @@ import tools.data.input.SeekableLittleEndianAccessor;
 public final class TransferNameResultHandler extends AbstractMaplePacketHandler {
     
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         String name = slea.readMapleAsciiString();
-        c.announce(MaplePacketCreator.sendNameTransferCheck(MapleCharacter.canCreateChar(name)));
+        c.announce(CCashShop.Packet.onCheckDuplicatedIDResult(MapleCharacter.canCreateChar(name)));
     }
 }

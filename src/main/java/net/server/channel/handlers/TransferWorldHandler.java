@@ -22,8 +22,8 @@ package net.server.channel.handlers;
 
 import client.MapleClient;
 import net.AbstractMaplePacketHandler;
+import network.packet.CCashShop;
 import network.packet.WvsContext;
-import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 /**
@@ -37,11 +37,11 @@ public final class TransferWorldHandler extends AbstractMaplePacketHandler {
         slea.readInt(); //cid
         int birthday = slea.readInt();
         if (!CashOperationHandler.checkBirthday(c, birthday)) {
-            c.announce(MaplePacketCreator.showCashShopMessage((byte) 0xC4));
+            c.announce(CCashShop.Packet.onCashItemResultMessage((byte) 0xC4));
             c.announce(WvsContext.Packet.enableActions());
             return;
         }
         
-        c.announce(MaplePacketCreator.sendWorldTransferRules(9));
+        c.announce(CCashShop.Packet.onCheckTransferWorldPossibleResult(9));
     }
 }

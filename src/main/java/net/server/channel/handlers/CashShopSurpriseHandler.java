@@ -22,9 +22,9 @@ package net.server.channel.handlers;
 import client.MapleClient;
 import client.inventory.Item;
 import net.AbstractMaplePacketHandler;
+import network.packet.CCashShop;
 import server.cashshop.CashShop;
 import tools.data.input.SeekableLittleEndianAccessor;
-import tools.MaplePacketCreator;
 import tools.Pair;
 
 /**
@@ -42,10 +42,10 @@ public class CashShopSurpriseHandler extends AbstractMaplePacketHandler {
             if(cssResult != null) {
                 //Item cssItem = cssResult.getLeft(), cssBox = cssResult.getRight();
                 //c.announce(MaplePacketCreator.onCashGachaponOpenSuccess(c.getAccID(), cssBox.getSN(), cssBox.getQuantity(), cssItem, cssItem.getItemId(), cssItem.getQuantity(), true));
-                c.announce(MaplePacketCreator.showCashShopMessage((byte) 0xA4));
+                c.announce(CCashShop.Packet.onCashItemResultMessage((byte) 0xA4));
             } else {
                 //c.announce(MaplePacketCreator.onCashItemGachaponOpenFailed());
-                c.announce(MaplePacketCreator.showCashShopMessage((byte) 0x00));
+                c.announce(CCashShop.Packet.onCashItemResultMessage((byte) 0x00));
             }
         }
     }

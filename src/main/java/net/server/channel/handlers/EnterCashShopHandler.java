@@ -23,9 +23,12 @@ package net.server.channel.handlers;
 
 import client.MapleCharacter;
 import client.MapleClient;
+import enums.CashItemResultType;
 import net.AbstractMaplePacketHandler;
 import net.server.Server;
+import network.packet.CCashShop;
 import network.packet.WvsContext;
+import server.cashshop.CashItem;
 import server.maps.MapleMiniDungeonInfo;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
@@ -81,10 +84,10 @@ public class EnterCashShopHandler extends AbstractMaplePacketHandler {
             mc.cancelQuestExpirationTask();
             
             c.announce(MaplePacketCreator.openCashShop(c, false));
-            c.announce(MaplePacketCreator.showCashInventory(c));
-            c.announce(MaplePacketCreator.showGifts(mc.getCashShop().loadGifts()));
-            c.announce(MaplePacketCreator.showWishList(mc, false));
-            c.announce(MaplePacketCreator.showCash(mc));
+            c.announce(CCashShop.Packet.onCashItemResult(CashItemResultType.LoadInventory.getResult(), mc));
+            c.announce(CCashShop.Packet.onCashItemResult(CashItemResultType.LoadGifts.getResult(), mc.getCashShop().loadGifts()));
+            c.announce(CCashShop.Packet.onCashItemResult(CashItemResultType.LoadWishList.getResult(), mc));
+            c.announce(CCashShop.Packet.onQueryCashResult(mc));
 
             c.getChannelServer().removePlayer(mc);
             mc.getMap().removePlayer(mc);

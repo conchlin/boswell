@@ -182,7 +182,7 @@ public final class CouponCodeHandler extends AbstractMaplePacketHandler {
                 Pair<Integer, List<Pair<Integer, Pair<Integer, Integer>>>> codeRes = getNXCodeResult(c.getPlayer(), code.toUpperCase());
                 int type = codeRes.getLeft();
                 if (type < 0) {
-                    c.announce(MaplePacketCreator.showCashShopMessage((byte) parseCouponResult(type)));
+                    c.announce(CCashShop.Packet.onCashItemResultMessage((byte) parseCouponResult(type)));
                 } else {
                     List<Item> couponPackage = new LinkedList<>();
 
