@@ -29,9 +29,9 @@ public class MapleGach {
         SHOWA_SPA_FEMALE(9100107, 70, 30, 10, new ShowaSpaFemale()),
         NEW_LEAF_CITY(9100109, 40, 30, 10, new NewLeafCity()),
         NAUTILUS_HARBOR(9100117, 40, 30, 10, new NautilusHarbor()),
-        SINGAPORE(9100111, 40, 30, 10, new Singapore()),
+        SINGAPORE(9100111, 40, 30, 10, new Singapore());
         //EVENT_MAP(EventGach.eventNPC, 40, 30, 10, new EventGach()), // unused
-        ARAMIA(9999999, 40, 25, 15, new Aramia()); // summer event
+        //ARAMIA(9200000, 40, 25, 15, new Aramia()); // summer event
 
         private GachTiers gachapon;
         private int npcId;
@@ -53,8 +53,9 @@ public class MapleGach {
          * @return seasonal gach or not
          */
         public boolean isSeasonalEventGach(int npcId) {
-            // all events handled through nina
-            return npcId == 9999999;
+            // removed reference of custom NPC Nina and replaced with cody
+            // so that it will be more compatible with the base v83 files
+            return npcId == 9200000;
         }
 
         private int getTier() {

@@ -30,6 +30,6 @@ public class FeaturesCommand extends Command {
 
     @Override
     public void execute(MapleClient c, String[] params) {
-        c.getAbstractPlayerInteraction().openNpc(9999999, "features");
+        c.getAbstractPlayerInteraction().openNpc(9200000, "features");
     }
 }

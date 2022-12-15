@@ -30,13 +30,14 @@ var nostalMobs = [[8142100, "+20%"], [8141300, "+20%"], // based on info in Nost
                 [8200012, "+10%"], [9420540, "-20%"],
                 [9400639, "-20%"], [9400638, "-20%"],
                 [9400640, "-50%"]];
-var endGameWeps = /* warrior weps */[1302086, 1302175, 1302081, 1402047, 1402113, 1402113, 1402046, 1312038, 1312096, 1312037,
-                1412034, /* add 2h axe von leon wep here,*/ 1412033, 1322061, 1322136, 1322060, 1422038, /* add 2h bw von leon wep here,*/
-                1422037, 1432049, 1432101, 1432047, 1442067, 1442138, 1442063, 
-                /* bowman weps */1452059, 1452131, 1452057, 1462051, 1462120, 1462050,
-                /* thief weps */1472071, 1472143, 1472068, 1332076, 1332152, 1332074, 1332075, 1332073,
-                /* mage weps */1372045, 1372102, 1372044, 1382059, 1382126, 1382057,
-                /* pirate weps*/1482024, 1482104, 1482023, 1492025, 1492103, 1492023];
+//var endGameWeps = /* warrior weps */[1302086, 1302175, 1302081, 1402047, 1402113, 1402113, 1402046, 1312038, 1312096, 1312037,
+//                1412034, /* add 2h axe von leon wep here,*/ 1412033, 1322061, 1322136, 1322060, 1422038, /* add 2h bw von leon wep here,*/
+//                1422037, 1432049, 1432101, 1432047, 1442067, 1442138, 1442063, 
+//                /* bowman weps */1452059, 1452131, 1452057, 1462051, 1462120, 1462050,
+//                /* thief weps */1472071, 1472143, 1472068, 1332076, 1332152, 1332074, 1332075, 1332073,
+//                /* mage weps */1372045, 1372102, 1372044, 1382059, 1382126, 1382057,
+//                /* pirate weps*/1482024, 1482104, 1482023, 1492025, 1492103, 1492023];
+                
 var features = new Array(
     ["Party Quests", "We offer a range of PQs here at Boswell. We've made the decision to make them open-ended " 
                     + "to help players gain access to each PQs exclusive item. The level ranges for these Pqs are: \r\n\r\n"
@@ -67,7 +68,7 @@ var features = new Array(
                     + "an alternative in the form of our #eHP World Tour#n. By defeating bosses you gain permanent HP! \r\n\r\n" 
                     + "#eFor a list of all bosses involved you can check your player profile on the website or use the @achievements command!#n"],
     ["Fishing", "TBD"],
-    ["Revamped End-game", populateEndGame()],
+    //["Revamped End-game", populateEndGame()],
     ["Custom Website", "Our website is completely unique to us and has been built from the ground up. It is a wonderful tool " 
                         + "to stay up-to-date on server ongoings. It also has many features and information that updates in " 
                         + "real-time, such as:\r\n\r\n" 
@@ -123,7 +124,8 @@ function populateMobChanges() {
     return text;
 }
 
-function populateEndGame() {
+// removing the below method because von leon weapons will crash default v83 files (bc they don't exist in them)
+/*function populateEndGame() {
     var text = "#eNew Areas:#n Ulu City and Lion Heart Castle\r\n\r\n" 
                 + "#eEndgame Weapon sets:#n Changes have been made it the weapon sets that Boswell now has to offer. The weapon sets " 
                 + "that are available are the Reverse, Lion Heart, and Timeless sets. Timless has been boosted to be the new level 130 " 
@@ -154,4 +156,4 @@ function populateEndGame() {
                 }
 
     return text;
-}
+}*/
