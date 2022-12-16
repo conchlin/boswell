@@ -1,5 +1,5 @@
 importPackage(Packages.client);
-importPackage(Packages.tools);
+importPackage(Packages.network.packet.field);
 importPackage(Packages.server.life);
 
 var Orbis_btf;
@@ -83,8 +83,9 @@ function approach() {
         em.setProperty("haveBalrog","true");
         Boat_to_Orbis.broadcastEnemyShip(true);
         Boat_to_Ellinia.broadcastEnemyShip(true);
-        Boat_to_Orbis.broadcastMessage(MaplePacketCreator.musicChange("Bgm04/ArabPirate"));
-        Boat_to_Ellinia.broadcastMessage(MaplePacketCreator.musicChange("Bgm04/ArabPirate"));
+        //onFieldEffect needs to have the 6 passed for result type to designate a music change
+        Boat_to_Orbis.broadcastMessage(CField.Packet.onFieldEffect(6, "Bgm04/ArabPirate"));
+        Boat_to_Ellinia.broadcastMessage(CField.Packet.onFieldEffect(6, "Bgm04/ArabPirate"));
         
         em.schedule("invasion", invasionDelay);
     }

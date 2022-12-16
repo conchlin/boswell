@@ -22,7 +22,7 @@
 	HeavenMS developer info.
  */
 
-importPackage(Packages.tools);
+importPackage(Packages.network.packet.field);
 
 var status;
 
@@ -295,7 +295,8 @@ function writeAllFeatures() {
 }
 
 function start() {
-        cm.getPlayer().announce(MaplePacketCreator.musicChange(anthemSong));
+        //onFieldEffect needs to have the 6 passed for result type to designate a music change
+        cm.getPlayer().announce(CField.Packet.onFieldEffect(6, anthemSong));
         status = -1;
         writeAllFeatures();
         action(1, 0, 0);
@@ -303,11 +304,11 @@ function start() {
 
 function action(mode, type, selection) {
         if (mode == -1) {
-                cm.getPlayer().announce(MaplePacketCreator.musicChange(ambientSong));
+                cm.getPlayer().announce(CField.Packet.onFieldEffect(6, ambientSong));
                 cm.dispose();
         } else {
                 if (mode == 0 && type > 0) {
-                        cm.getPlayer().announce(MaplePacketCreator.musicChange(ambientSong));
+                        cm.getPlayer().announce(CField.Packet.onFieldEffect(6, ambientSong));
                         cm.dispose();
                         return;
                 }
@@ -341,7 +342,7 @@ function action(mode, type, selection) {
 
                         cm.sendPrev(sendStr);
                 } else {
-                        cm.getPlayer().announce(MaplePacketCreator.musicChange(ambientSong));
+                        cm.getPlayer().announce(CField.Packet.onFieldEffect(6, ambientSong));
                         cm.dispose();
                 }
         }
