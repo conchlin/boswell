@@ -18,7 +18,7 @@
 	Hidden Street - Eliza’s Garden (200010303)
  */
 
-importPackage(Packages.tools);
+importPackage(Packages.network.packet.field);
 
 var status;
 var harpNote = 'C';
@@ -44,7 +44,8 @@ function action(mode, type, selection) {
             status--;
 
         if (status == 0) {
-            cm.getMap().broadcastMessage(MaplePacketCreator.playSound("orbis/" + harpSounds[cm.getNpc() - 2012027]));
+            // 4 is passed to play a sound
+            cm.getMap().broadcastMessage(CField.Packet.onFieldEffect(4, "orbis/" + harpSounds[cm.getNpc() - 2012027]));
 
             if (cm.isQuestStarted(3114)) {
                 var idx = -1 * cm.getQuestProgressInt(3114);  // infoEx without infoNumber, must use one progress only, critical hit!
@@ -55,8 +56,9 @@ function action(mode, type, selection) {
                     if (harpNote != nextNote) {
                         cm.setQuestProgress(3114, 0);
 
-                        cm.getPlayer().announce(MaplePacketCreator.showEffect("quest/party/wrong_kor"));
-                        cm.getPlayer().announce(MaplePacketCreator.playSound("Party1/Failed"));
+                        // 3 is passed to play an effect - 4 for a sound
+                        cm.getPlayer().announce(CField.Packet.onFieldEffect(3, "quest/party/wrong_kor"));
+                        cm.getPlayer().announce(CField.Packet.onFieldEffect(4, "Party1/Failed"));
 
                         cm.message("You've missed the note... Start over again.");
                     } else {
@@ -67,8 +69,8 @@ function action(mode, type, selection) {
 
                             if (idx == 45) {     // finished lullaby
                                 cm.message("Twinkle, twinkle, little star, how I wonder what you are.");
-                                cm.getPlayer().announce(MaplePacketCreator.showEffect("quest/party/clear"));
-                                cm.getPlayer().announce(MaplePacketCreator.playSound("Party1/Clear"));
+                                cm.getPlayer().announce(CField.Packet.onFieldEffect(3, "quest/party/clear"));
+                                cm.getPlayer().announce(CField.Packet.onFieldEffect(4, "Party1/Clear"));
                                 cm.setQuestProgress(3114, 42);
                                 cm.dispose();
                                 return;

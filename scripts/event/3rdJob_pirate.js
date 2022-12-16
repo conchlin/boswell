@@ -21,7 +21,7 @@
  * @Author Ronan
  * 3rd Job Event - Pirate
 **/
-importPackage(Packages.tools);
+importPackage(Packages.network.packet.field);
 
 var entryMap = 108010500;
 var exitMap = 105070200;
@@ -47,7 +47,7 @@ function playerEntry(eim, player) {
     player.changeMap(entryMap, 0);
     em.setProperty("noEntry","true");
     
-    player.getClient().announce(MaplePacketCreator.getClock(eventTime * 60));
+    player.getClient().announce(CField.Packet.onClock(true, eventTime * 60));
     eim.startEventTimer(eventTime * 60000);
 }
 

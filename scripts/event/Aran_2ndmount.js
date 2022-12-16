@@ -21,7 +21,7 @@
  * @Author Ronan
  * Event - Scadur's Mount Quest
 **/
-importPackage(Packages.tools);
+importPackage(Packages.network.packet.field);
 
 var entryMap = 921110000;
 var exitMap = 211050000;
@@ -61,7 +61,7 @@ function playerEntry(eim, player) {
     player.changeMap(entryMap, 2);
     em.setProperty("noEntry","true");
     
-    player.getClient().announce(MaplePacketCreator.getClock(eventTime * 60));
+    player.getClient().announce(CField.Packet.onClock(true, eventTime * 60));
     eim.startEventTimer(eventTime * 60000);
 }
 

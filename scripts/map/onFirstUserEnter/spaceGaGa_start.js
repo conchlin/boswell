@@ -23,17 +23,19 @@
  *@Author:     kevintjuh93
 */
 
-importPackage(Packages.tools); 
+importPackage(Packages.network.packet.field)
+
 var player;
 
 function start(ms) { 
 	player = ms.getPlayer();
         player.resetEnteredScript(); 
-        ms.getClient().announce(MaplePacketCreator.showEffect("event/space/start")); 
+        // 3 is passed as param for onFieldEffect to indicate 'effect'
+        ms.getClient().announce(CField.Packet.onFieldEffect(3, "event/space/start")); 
         player.startMapEffect("Please rescue Gaga within the time limit.", 5120027); 
 	var map = player.getMap();
 	if (map.getTimeLeft() > 0) {
-		ms.getClient().announce(MaplePacketCreator.getClock(map.getTimeLeft()));
+		ms.getClient().announce(CField.Packet.onClock(true, map.getTimeLeft()));
 	} else {
 		map.addMapTimer(180);
 	}

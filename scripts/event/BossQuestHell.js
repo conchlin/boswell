@@ -168,7 +168,7 @@ function allMonstersDead(eim) {
 	}
 	else {
 		map.broadcastMessage(Packages.tools.MaplePacketCreator.serverNotice(6, "[Boss Quest] Your team now has " + points + " points! The next boss will spawn in 5 seconds."));
-		map.broadcastMessage(Packages.tools.MaplePacketCreator.getClock(5));
+		map.broadcastMessage(Packages.network.packet.field.CField.Packet.onClock(true, 5 * 60));
 		eim.schedule("monsterSpawn", 5000);
 	}
 }
@@ -198,7 +198,7 @@ function beginQuest(eim) {
 	var map = eim.getMapInstance(980000604);
 	map.broadcastMessage(Packages.tools.MaplePacketCreator.serverNotice(6, "[Boss Quest] The creatures of the darkness are coming in 10 seconds. Prepare for the worst!"));
 	eim.schedule("monsterSpawn", 10000);
-	map.broadcastMessage(Packages.tools.MaplePacketCreator.getClock(10));
+	map.broadcastMessage(Packages.network.packet.field.CField.Packet.onClock(true, 10 * 60));
 }
 
 function cancelSchedule() {

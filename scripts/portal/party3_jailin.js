@@ -1,4 +1,4 @@
-importPackage(Packages.tools);
+importPackage(Packages.network.packet.field);
 
 function enter(pi) {
         var map = pi.getMap();
@@ -29,15 +29,15 @@ function enter(pi) {
             }
             
             if(countMiss > 0) {
-                map.broadcastMessage(MaplePacketCreator.showEffect("quest/party/wrong_kor"));
-                map.broadcastMessage(MaplePacketCreator.playSound("Party1/Failed"));
+                map.broadcastMessage(CField.Packet.onFieldEffect(3, "quest/party/wrong_kor"));
+                map.broadcastMessage(CField.Packet.onFieldEffect(4, "Party1/Failed"));
                 
                 pi.playerMessage(5, "The right combination of levers is needed to pass. " + countMiss + " lever(s) are misplaced.");
                 return false;
             }
             
-            map.broadcastMessage(MaplePacketCreator.showEffect("quest/party/clear"));
-            map.broadcastMessage(MaplePacketCreator.playSound("Party1/Clear"));
+            map.broadcastMessage(CField.Packet.onFieldEffect(3, "quest/party/clear"));
+            map.broadcastMessage(CField.Packet.onFieldEffect(4, "Party1/Clear"));
             pi.getEventInstance().setProperty("jail" + jailn, "0");
         }
         
