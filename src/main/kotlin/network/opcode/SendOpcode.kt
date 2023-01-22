@@ -88,20 +88,18 @@ enum class SendOpcode(val value: Int) {
     PARTY_VALUE(91),
     FIELD_SET_VARIABLE(92),
     BONUS_EXP_CHANGED(93),  //pendant of spirit etc (guess, not sure about the opcode in v83)
-
     //Family
-    FAMILY_CHART_RESULT(94),
-    FAMILY_INFO_RESULT(95),
-    FAMILY_RESULT(96),
-    FAMILY_JOIN_REQUEST(97),
-    FAMILY_JOIN_REQUEST_RESULT(98),
-    FAMILY_JOIN_ACCEPTED(99),
-    FAMILY_PRIVILEGE_LIST(100),
-    FAMILY_FAMOUS_POINT_INC_RESULT(101),
-    FAMILY_NOTIFY_LOGIN_OR_LOGOUT(102),  //? is logged in. LOLWUT
-    FAMILY_SET_PRIVILEGE(103),
-    FAMILY_SUMMON_REQUEST(104),
-
+    FamilyChartResult(94),
+    FamilyInfoResult(95),
+    FamilyResult(96), // message
+    FamilyJoinRequest(97),
+    FamilyJoinRequestResult(98),
+    FamilyJoinAccepted(99), // todo check this it seems wrong
+    FamilyPrivilegeList(100),
+    FamilyFamousPointIncResult(101),
+    FamilyNotifyLoginOrLogout(102),
+    FamilySetPriviledge(103),
+    FamilySummonRequest(104),
 
     NOTIFY_LEVELUP(105),
     NOTIFY_MARRIAGE(106),

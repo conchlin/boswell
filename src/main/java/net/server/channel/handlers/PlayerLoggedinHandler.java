@@ -45,6 +45,7 @@ import network.packet.FuncKeyMappedMan;
 import network.packet.NpcPool;
 import network.packet.WvsContext;
 import network.packet.wvscontext.AlliancePacket;
+import network.packet.wvscontext.FamilyPacket;
 import network.packet.wvscontext.GuildPacket;
 import server.skills.SkillFactory;
 import net.database.DatabaseConnection;
@@ -266,7 +267,7 @@ public final class PlayerLoggedinHandler extends AbstractMaplePacketHandler {
                 }
                 c.announce(MaplePacketCreator.updateBuddylist(bl.getBuddies()));
 
-                c.announce(MaplePacketCreator.loadFamily(player));
+                c.announce(FamilyPacket.Packet.onPrivilegeList());
                 if (player.getFamilyId() > 0) {
                     MapleFamily f = wserv.getFamily(player.getFamilyId());
                     if (f == null) {
@@ -274,7 +275,7 @@ public final class PlayerLoggedinHandler extends AbstractMaplePacketHandler {
                         wserv.addFamily(player.getFamilyId(), f);
                     }
                     player.setFamily(f);
-                    c.announce(MaplePacketCreator.getFamilyInfo(f.getMember(player.getId())));
+                    c.announce(FamilyPacket.Packet.onInfoResult(f.getMember(player.getId())));
                 }
                 if (player.getGuildId() > 0) {
                     MapleGuild playerGuild = server.getGuild(player.getGuildId(), player.getWorld(), player);

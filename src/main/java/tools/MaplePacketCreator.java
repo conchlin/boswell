@@ -36,7 +36,6 @@ import net.server.Server;
 import net.server.channel.handlers.PlayerInteractionHandler;
 import net.server.guild.MapleAlliance;
 import net.server.guild.MapleGuild;
-import server.cashshop.CashItem;
 import server.cashshop.CashItemFactory;
 import server.cashshop.SpecialCashItem;
 import server.cashshop.CategoryDiscount;
@@ -2333,86 +2332,6 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    public static byte[] loadFamily(MapleCharacter player) {
-        String[] title = {"Family Reunion", "Summon Family", "My Drop Rate 1.5x (15 min)", "My EXP 1.5x (15 min)", "Family Bonding (30 min)", "My Drop Rate 2x (15 min)", "My EXP 2x (15 min)", "My Drop Rate 2x (30 min)", "My EXP 2x (30 min)", "My Party Drop Rate 2x (30 min)", "My Party EXP 2x (30 min)"};
-        String[] description = {"[Target] Me\n[Effect] Teleport directly to the Family member of your choice.", "[Target] 1 Family member\n[Effect] Summon a Family member of choice to the map you're in.", "[Target] Me\n[Time] 15 min.\n[Effect] Monster drop rate will be increased #c1.5x#.\n*  If the Drop Rate event is in progress, this will be nullified.", "[Target] Me\n[Time] 15 min.\n[Effect] EXP earned from hunting will be increased #c1.5x#.\n* If the EXP event is in progress, this will be nullified.", "[Target] At least 6 Family members online that are below me in the Pedigree\n[Time] 30 min.\n[Effect] Monster drop rate and EXP earned will be increased #c2x#. \n* If the EXP event is in progress, this will be nullified.", "[Target] Me\n[Time] 15 min.\n[Effect] Monster drop rate will be increased #c2x#.\n* If the Drop Rate event is in progress, this will be nullified.", "[Target] Me\n[Time] 15 min.\n[Effect] EXP earned from hunting will be increased #c2x#.\n* If the EXP event is in progress, this will be nullified.", "[Target] Me\n[Time] 30 min.\n[Effect] Monster drop rate will be increased #c2x#.\n* If the Drop Rate event is in progress, this will be nullified.", "[Target] Me\n[Time] 30 min.\n[Effect] EXP earned from hunting will be increased #c2x#. \n* If the EXP event is in progress, this will be nullified.", "[Target] My party\n[Time] 30 min.\n[Effect] Monster drop rate will be increased #c2x#.\n* If the Drop Rate event is in progress, this will be nullified.", "[Target] My party\n[Time] 30 min.\n[Effect] EXP earned from hunting will be increased #c2x#.\n* If the EXP event is in progress, this will be nullified."};
-        int[] repCost = {3, 5, 7, 8, 10, 12, 15, 20, 25, 40, 50};
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.FAMILY_PRIVILEGE_LIST.getValue());
-        mplew.writeInt(11);
-        for (int i = 0; i < 11; i++) {
-            mplew.write(i > 4 ? (i % 2) + 1 : i);
-            mplew.writeInt(repCost[i] * 100);
-            mplew.writeInt(1);
-            mplew.writeMapleAsciiString(title[i]);
-            mplew.writeMapleAsciiString(description[i]);
-        }
-        return mplew.getPacket();
-    }
-
-    /**
-     * Family Result Message
-     *
-     * Possible values for <code>type</code>:<br>
-     * 67: You do not belong to the same family.<br>
-     * 69: The character you wish to add as\r\na Junior must be in the same
-     * map.<br>
-     * 70: This character is already a Junior of another character.<br>
-     * 71: The Junior you wish to add\r\nmust be at a lower rank.<br>
-     * 72: The gap between you and your\r\njunior must be within 20 levels.<br>
-     * 73: Another character has requested to add this character.\r\nPlease try
-     * again later.<br>
-     * 74: Another character has requested a summon.\r\nPlease try again
-     * later.<br>
-     * 75: The summons has failed. Your current location or state does not allow
-     * a summons.<br>
-     * 76: The family cannot extend more than 1000 generations from above and
-     * below.<br>
-     * 77: The Junior you wish to add\r\nmust be over Level 10.<br>
-     * 78: You cannot add a Junior \r\nthat has requested to change worlds.<br>
-     * 79: You cannot add a Junior \r\nsince you've requested to change
-     * worlds.<br>
-     * 80: Separation is not possible due to insufficient Mesos.\r\nYou will
-     * need %d Mesos to\r\nseparate with a Senior.<br>
-     * 81: Separation is not possible due to insufficient Mesos.\r\nYou will
-     * need %d Mesos to\r\nseparate with a Junior.<br>
-     * 82: The Entitlement does not apply because your level does not match the
-     * corresponding area.<br>
-     *
-     * @param type The type
-     * @return Family Result packet
-     */
-    public static byte[] sendFamilyMessage(int type, int mesos) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter(6);
-        mplew.writeShort(SendOpcode.FAMILY_RESULT.getValue());
-        mplew.writeInt(type);
-        mplew.writeInt(mesos);
-        return mplew.getPacket();
-    }
-
-    public static byte[] getFamilyInfo(MapleFamilyEntry f) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.FAMILY_INFO_RESULT.getValue());
-        mplew.writeInt(f.getReputation()); // cur rep left
-        mplew.writeInt(f.getTotalReputation()); // tot rep left
-        mplew.writeInt(f.getTodaysRep()); // todays rep
-        mplew.writeShort(f.getJuniors()); // juniors added
-        mplew.writeShort(f.getTotalJuniors()); // juniors allowed
-        mplew.writeShort(0); //Unknown
-        mplew.writeInt(f.getId()); // id?
-        mplew.writeMapleAsciiString(f.getFamilyName());
-        mplew.writeInt(0);
-        mplew.writeShort(0);
-        return mplew.getPacket();
-    }
-
-    public static byte[] showPedigree(int chrid, Map<Integer, MapleFamilyEntry> members) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.FAMILY_CHART_RESULT.getValue());
-        //Hmmm xD
-        return mplew.getPacket();
-    }
-
     public static byte[] updateAreaInfo(int area, String info) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendOpcode.SHOW_STATUS_INFO.getValue());
@@ -2535,41 +2454,9 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    public static byte[] sendFamilyInvite(int playerId, String inviter) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.FAMILY_JOIN_REQUEST.getValue());
-        mplew.writeInt(playerId);
-        mplew.writeMapleAsciiString(inviter);
-        return mplew.getPacket();
-    }
-
     public static byte[] sendMesoLimit() {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendOpcode.TRADE_MONEY_LIMIT.getValue()); //Players under level 15 can only trade 1m per day
-        return mplew.getPacket();
-    }
-
-    public static byte[] sendFamilyJoinResponse(boolean accepted, String added) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.FAMILY_JOIN_REQUEST_RESULT.getValue());
-        mplew.write(accepted ? 1 : 0);
-        mplew.writeMapleAsciiString(added);
-        return mplew.getPacket();
-    }
-
-    public static byte[] getSeniorMessage(String name) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.FAMILY_JOIN_ACCEPTED.getValue());
-        mplew.writeMapleAsciiString(name);
-        mplew.writeInt(0);
-        return mplew.getPacket();
-    }
-
-    public static byte[] sendGainRep(int gain, int mode) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.FAMILY_FAMOUS_POINT_INC_RESULT.getValue());
-        mplew.writeInt(gain);
-        mplew.writeShort(0);
         return mplew.getPacket();
     }
 
