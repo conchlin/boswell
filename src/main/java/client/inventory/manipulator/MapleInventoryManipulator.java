@@ -91,7 +91,7 @@ public class MapleInventoryManipulator {
                             quantity -= (newQ - oldQ);
                             eItem.setQuantity(newQ);
                             eItem.setExpiration(expiration);
-                            c.announce(MaplePacketCreator.onInventoryOperation(true,
+                            c.announce(WvsContext.Packet.onInventoryOperation(true,
                                     Collections.singletonList(new InventoryOperation(1, eItem))));
                         }
                     }
@@ -106,14 +106,14 @@ public class MapleInventoryManipulator {
                         nItem.setExpiration(expiration);
                         short newSlot = c.getPlayer().getInventory(type).addItem(nItem);
                         if (newSlot == -1) {
-                            c.announce(MaplePacketCreator.getInventoryFull());
+                            c.announce(WvsContext.Packet.onInventoryOperation(true, Collections.emptyList()));
                             c.announce(MaplePacketCreator.getShowInventoryFull());
                             return false;
                         }
                         if (owner != null) {
                             nItem.setOwner(owner);
                         }
-                        c.announce(MaplePacketCreator.onInventoryOperation(true,
+                        c.announce(WvsContext.Packet.onInventoryOperation(true,
                                 Collections.singletonList(new InventoryOperation(0, nItem))));
                         if(sandboxItem) c.getPlayer().setHasSandboxItem();
                         if ((ItemConstants.isRechargeable(itemId)) && quantity == 0) {
@@ -130,11 +130,11 @@ public class MapleInventoryManipulator {
                 nItem.setExpiration(expiration);
                 short newSlot = c.getPlayer().getInventory(type).addItem(nItem);
                 if (newSlot == -1) {
-                    c.announce(MaplePacketCreator.getInventoryFull());
+                    c.announce(WvsContext.Packet.onInventoryOperation(true, Collections.emptyList()));
                     c.announce(MaplePacketCreator.getShowInventoryFull());
                     return false;
                 }
-                c.announce(MaplePacketCreator.onInventoryOperation(true,
+                c.announce(WvsContext.Packet.onInventoryOperation(true,
                         Collections.singletonList(new InventoryOperation(0, nItem))));
                 if(MapleInventoryManipulator.isSandboxItem(nItem)) c.getPlayer().setHasSandboxItem();
             }
@@ -147,11 +147,11 @@ public class MapleInventoryManipulator {
             }
             short newSlot = c.getPlayer().getInventory(type).addItem(nEquip);
             if (newSlot == -1) {
-                c.announce(MaplePacketCreator.getInventoryFull());
+                c.announce(WvsContext.Packet.onInventoryOperation(true, Collections.emptyList()));
                 c.announce(MaplePacketCreator.getShowInventoryFull());
                 return false;
             }
-            c.announce(MaplePacketCreator.onInventoryOperation(true,
+            c.announce(WvsContext.Packet.onInventoryOperation(true,
                     Collections.singletonList(new InventoryOperation(0, nEquip))));
             if(MapleInventoryManipulator.isSandboxItem(nEquip)) c.getPlayer().setHasSandboxItem();
         } else {
@@ -177,7 +177,7 @@ public class MapleInventoryManipulator {
         MapleInventoryType type = ItemConstants.getInventoryType(item.getItemId());
 
         if (ii.isPickupRestricted(item.getItemId()) && c.getPlayer().haveItemWithId(item.getItemId(), true)) {
-            c.announce(MaplePacketCreator.getInventoryFull());
+            c.announce(WvsContext.Packet.onInventoryOperation(true, Collections.emptyList()));
             c.announce(MaplePacketCreator.showItemUnavailable());
             return false;
         }
@@ -199,7 +199,7 @@ public class MapleInventoryManipulator {
                             quantity -= (newQ - oldQ);
                             eItem.setQuantity(newQ);
                             item.setPosition(eItem.getPosition());
-                            c.announce(MaplePacketCreator.onInventoryOperation(true,
+                            c.announce(WvsContext.Packet.onInventoryOperation(true,
                                     Collections.singletonList(new InventoryOperation(1, eItem))));
                         }
                     }
@@ -213,14 +213,14 @@ public class MapleInventoryManipulator {
                     nItem.setFlag(item.getFlag());
                     short newSlot = c.getPlayer().getInventory(type).addItem(nItem);
                     if (newSlot == -1) {
-                        c.announce(MaplePacketCreator.getInventoryFull());
+                        c.announce(WvsContext.Packet.onInventoryOperation(true, Collections.emptyList()));
                         c.announce(MaplePacketCreator.getShowInventoryFull());
                         item.setQuantity((short) (quantity + newQ));
                         return false;
                     }
                     nItem.setPosition(newSlot);
                     item.setPosition(newSlot);
-                    c.announce(MaplePacketCreator.onInventoryOperation(true,
+                    c.announce(WvsContext.Packet.onInventoryOperation(true,
                             Collections.singletonList(new InventoryOperation(0, nItem))));
                     if (MapleInventoryManipulator.isSandboxItem(nItem)) c.getPlayer().setHasSandboxItem();
                 }
@@ -228,23 +228,23 @@ public class MapleInventoryManipulator {
                 Item nItem = new Item(item.getItemId(), (short) 0, quantity);
                 short newSlot = c.getPlayer().getInventory(type).addItem(nItem);
                 if (newSlot == -1) {
-                    c.announce(MaplePacketCreator.getInventoryFull());
+                    c.announce(WvsContext.Packet.onInventoryOperation(true, Collections.emptyList()));
                     c.announce(MaplePacketCreator.getShowInventoryFull());
                     return false;
                 }
                 nItem.setPosition(newSlot);
                 item.setPosition(newSlot);
-                c.announce(MaplePacketCreator.onInventoryOperation(true, Collections.singletonList(new InventoryOperation(0, nItem))));
+                c.announce(WvsContext.Packet.onInventoryOperation(true, Collections.singletonList(new InventoryOperation(0, nItem))));
                 if (MapleInventoryManipulator.isSandboxItem(nItem)) c.getPlayer().setHasSandboxItem();
             }
         } else if (quantity == 1) {
             short newSlot = c.getPlayer().getInventory(type).addItem(item);
             if (newSlot == -1) {
-                c.announce(MaplePacketCreator.getInventoryFull());
+                c.announce(WvsContext.Packet.onInventoryOperation(true, Collections.emptyList()));
                 c.announce(MaplePacketCreator.getShowInventoryFull());
                 return false;
             }
-            c.announce(MaplePacketCreator.onInventoryOperation(true,
+            c.announce(WvsContext.Packet.onInventoryOperation(true,
                     Collections.singletonList(new InventoryOperation(0, item))));
         } else {
             return false;
@@ -417,9 +417,9 @@ public class MapleInventoryManipulator {
     
     private static void announceModifyInventory(MapleClient c, Item item, boolean fromDrop, boolean allowZero) {
         if (item.getQuantity() == 0 && !allowZero) {
-            c.announce(MaplePacketCreator.onInventoryOperation(fromDrop, Collections.singletonList(new InventoryOperation(3, item))));
+            c.announce(WvsContext.Packet.onInventoryOperation(fromDrop, Collections.singletonList(new InventoryOperation(3, item))));
         } else {
-            c.announce(MaplePacketCreator.onInventoryOperation(fromDrop, Collections.singletonList(new InventoryOperation(1, item))));
+            c.announce(WvsContext.Packet.onInventoryOperation(fromDrop, Collections.singletonList(new InventoryOperation(1, item))));
         }
     }
 
@@ -486,7 +486,7 @@ public class MapleInventoryManipulator {
         } else {
             mods.add(new InventoryOperation(2, source, src));
         }
-        c.announce(MaplePacketCreator.onInventoryOperation(true, mods));
+        c.announce(WvsContext.Packet.onInventoryOperation(true, mods));
     }
 
     /**
@@ -519,7 +519,7 @@ public class MapleInventoryManipulator {
             Item top = eqpdInv.getItem((short) -5);
             if (top != null && ItemConstants.isOverall(top.getItemId())) {
                 if (eqpInv.isFull()) {
-                    c.announce(MaplePacketCreator.getInventoryFull());
+                    c.announce(WvsContext.Packet.onInventoryOperation(true, Collections.emptyList()));
                     c.announce(MaplePacketCreator.getShowInventoryFull());
                     return;
                 }
@@ -529,7 +529,7 @@ public class MapleInventoryManipulator {
             final Item bottom = eqpdInv.getItem((short) -6);
             if (bottom != null && ItemConstants.isOverall(source.getItemId())) {
                 if (eqpInv.isFull()) {
-                    c.announce(MaplePacketCreator.getInventoryFull());
+                    c.announce(WvsContext.Packet.onInventoryOperation(true, Collections.emptyList()));
                     c.announce(MaplePacketCreator.getShowInventoryFull());
                     return;
                 }
@@ -539,7 +539,7 @@ public class MapleInventoryManipulator {
             Item weapon = eqpdInv.getItem((short) -11);
             if (weapon != null && ii.isTwoHanded(weapon.getItemId())) {
                 if (eqpInv.isFull()) {
-                    c.announce(MaplePacketCreator.getInventoryFull());
+                    c.announce(WvsContext.Packet.onInventoryOperation(true, Collections.emptyList()));
                     c.announce(MaplePacketCreator.getShowInventoryFull());
                     return;
                 }
@@ -549,7 +549,7 @@ public class MapleInventoryManipulator {
             Item shield = eqpdInv.getItem((short) -10);
             if (shield != null && ii.isTwoHanded(source.getItemId())) {
                 if (eqpInv.isFull()) {
-                    c.announce(MaplePacketCreator.getInventoryFull());
+                    c.announce(WvsContext.Packet.onInventoryOperation(true, Collections.emptyList()));
                     c.announce(MaplePacketCreator.getShowInventoryFull());
                     return;
                 }
@@ -610,7 +610,7 @@ public class MapleInventoryManipulator {
         }
         
         mods.add(new InventoryOperation(2, source, src));
-        c.announce(MaplePacketCreator.onInventoryOperation(true, mods));
+        c.announce(WvsContext.Packet.onInventoryOperation(true, mods));
         chr.equipChanged();
     }
 
@@ -628,7 +628,7 @@ public class MapleInventoryManipulator {
             return;
         }
         if (target != null && src <= 0) {
-            c.announce(MaplePacketCreator.getInventoryFull());
+            c.announce(WvsContext.Packet.onInventoryOperation(true, Collections.emptyList()));
             return;
         }
         
@@ -652,7 +652,7 @@ public class MapleInventoryManipulator {
             target.setPosition(src);
             eqpdInv.addItemFromDB(target);
         }
-        c.announce(MaplePacketCreator.onInventoryOperation(true, Collections.singletonList(new InventoryOperation(2, source, src))));
+        c.announce(WvsContext.Packet.onInventoryOperation(true, Collections.singletonList(new InventoryOperation(2, source, src))));
         chr.equipChanged();
     }
 
@@ -683,7 +683,7 @@ public class MapleInventoryManipulator {
             Item target = source.copy();
             target.setQuantity(quantity);
             source.setQuantity((short) (source.getQuantity() - quantity));
-            c.announce(MaplePacketCreator.onInventoryOperation(true, Collections.singletonList(new InventoryOperation(1, source))));
+            c.announce(WvsContext.Packet.onInventoryOperation(true, Collections.singletonList(new InventoryOperation(1, source))));
             
             if(ItemConstants.isNewYearCardEtc(itemId)) {
                 if(itemId == 4300000) {
@@ -719,7 +719,7 @@ public class MapleInventoryManipulator {
                 inv.removeSlot(src);
             }
             
-            c.announce(MaplePacketCreator.onInventoryOperation(true, Collections.singletonList(new InventoryOperation(3, source))));
+            c.announce(WvsContext.Packet.onInventoryOperation(true, Collections.singletonList(new InventoryOperation(3, source))));
             if (src < 0) {
                 chr.equipChanged();
             } else if(ItemConstants.isNewYearCardEtc(itemId)) {

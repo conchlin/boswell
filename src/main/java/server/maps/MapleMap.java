@@ -2448,9 +2448,13 @@ public class MapleMap {
         if (mapEffect != null) {
             mapEffect.sendStartData(chr.getClient());
         }
-        chr.getClient().announce(WvsContext.Packet.resetForcedStats());
+        chr.getClient().announce(WvsContext.Packet.onForcedStatReset());
         if (mapid == 914000200 || mapid == 914000210 || mapid == 914000220) {
-            chr.getClient().announce(WvsContext.Packet.aranGodlyStats());
+            // these forced stats give Aran characters the strength to complete their tutorial sequence
+            byte[] aranStats = {0x1F, 0x0F, 0, 0, (byte) 0xE7, 3, (byte) 0xE7,
+                    3, (byte) 0xE7, 3, (byte) 0xE7, 3, (byte) 0xFF, 0,
+                    (byte) 0xE7, 3, (byte) 0xE7, 3, 0x78, (byte) 0x8C};
+            chr.getClient().announce(WvsContext.Packet.onForcedStatSet(aranStats));
         }
         if (chr.getEventInstance() != null && chr.getEventInstance().isTimerStarted()) {
             chr.getClient().announce(CField.Packet.onClock(true, (int) (chr.getEventInstance().getTimeLeft() / 1000)));

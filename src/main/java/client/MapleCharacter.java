@@ -885,15 +885,15 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 
     public int canGiveFame(MapleCharacter from) {
         if (this.isGM()) {
-            return FameResponseType.GiveSuccess.getValue();
+            return PopularityResponseType.GiveSuccess.getValue();
         } else if (lastfametime >= System.currentTimeMillis() - 3600000 * 24) {
-            return FameResponseType.AlreadyUsedDay.getValue();
+            return PopularityResponseType.AlreadyUsedDay.getValue();
         } else if (lastmonthfameids.contains(from.getId())) {
-            return FameResponseType.AlreadyUsedMonth.getValue();
+            return PopularityResponseType.AlreadyUsedMonth.getValue();
         } else if (this.getLevel() < 15) {
-            return FameResponseType.UnderLevel15.getValue();
+            return PopularityResponseType.UnderLevel15.getValue();
         } else {
-            return FameResponseType.GiveSuccess.getValue();
+            return PopularityResponseType.GiveSuccess.getValue();
         }
     }
 
@@ -1541,11 +1541,11 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         if (newLevel > -1) {
             skills.put(skill, new SkillEntry(newLevel, newMasterlevel, expiration));
             if (!GameConstants.isHiddenSkills(skill.getId())) {
-                this.client.announce(MaplePacketCreator.updateSkill(skill.getId(), newLevel, newMasterlevel, expiration));
+                this.client.announce(WvsContext.Packet.onChangeSkillRecordResult(skill.getId(), newLevel, newMasterlevel, expiration));
             }
         } else {
             skills.remove(skill);
-            this.client.announce(MaplePacketCreator.updateSkill(skill.getId(), newLevel, newMasterlevel, -1)); //Shouldn't use expiration anymore :)
+            this.client.announce(WvsContext.Packet.onChangeSkillRecordResult(skill.getId(), newLevel, newMasterlevel, -1));
             try (Connection con = DatabaseConnection.getConnection()) {
                 Statements.Delete.from("skills").where("skillid", skill.getId()).where("characterid", id).execute(con);
             } catch (SQLException ex) {
@@ -1806,7 +1806,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 
                     this.getMap().pickItemDrop(pickupPacket, mapitem);
                 } else if (!hasSpaceInventory) {
-                    client.announce(MaplePacketCreator.getInventoryFull());
+                    client.announce(WvsContext.Packet.onInventoryOperation(true, Collections.emptyList()));
                     client.announce(MaplePacketCreator.getShowInventoryFull());
                 }
             } finally {
@@ -2544,13 +2544,13 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         final List<InventoryOperation> mods = new LinkedList<>();
         mods.add(new InventoryOperation(3, item));
         mods.add(new InventoryOperation(0, item));
-        client.announce(MaplePacketCreator.onInventoryOperation(true, mods));
+        client.announce(WvsContext.Packet.onInventoryOperation(true, mods));
     }
     
     public void updateExpOnItem(Item item) {
         final List<InventoryOperation> mods = new LinkedList<>();
         mods.add(new InventoryOperation(4, item));
-        client.announce(MaplePacketCreator.onInventoryOperation(true, mods));
+        client.announce(WvsContext.Packet.onInventoryOperation(true, mods));
     }
 
     public void gainGachaExp() {
@@ -2662,8 +2662,8 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
             updateSingleStat(MapleStat.FAME, thisFame);
 
             if (fromPlayer != null) {
-                fromPlayer.announce(WvsContext.Packet.onFameResponse(FameResponseType.GiveSuccess.getValue(), getName(), mode, thisFame));
-                announce(WvsContext.Packet.onFameResponse(FameResponseType.ReceiveSuccess.getValue(), fromPlayer.getName(), mode));
+                fromPlayer.announce(WvsContext.Packet.onGivePopularityResult(PopularityResponseType.GiveSuccess.getValue(), getName(), mode, thisFame));
+                announce(WvsContext.Packet.onGivePopularityResult(PopularityResponseType.ReceiveSuccess.getValue(), fromPlayer.getName(), mode));
             } else {
                 announce(MaplePacketCreator.getShowFameGain(delta));
             }

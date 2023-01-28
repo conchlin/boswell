@@ -24,7 +24,7 @@ package net.server.channel.handlers;
 import client.MapleCharacter;
 import client.autoban.AutobanFactory;
 import client.MapleClient;
-import enums.FameResponseType;
+import enums.PopularityResponseType;
 import net.AbstractMaplePacketHandler;
 import network.packet.WvsContext;
 import server.achievements.WorldTour;
@@ -53,7 +53,7 @@ public final class GiveFameHandler extends AbstractMaplePacketHandler {
         target.finishWorldTour(WorldTour.AchievementType.FAME, target.getFame());
         target.finishWorldTour(famechange == 1 ? WorldTour.AchievementType.FAMEGAIN : WorldTour.AchievementType.FAMELOSS, famechange);
 
-        if (status == FameResponseType.GiveSuccess.getValue()) {
+        if (status == PopularityResponseType.GiveSuccess.getValue()) {
             if (target.gainFame(famechange, player, mode)) {
                 if (!player.isGM()) {
                     player.hasGivenFame(target);
@@ -62,7 +62,7 @@ public final class GiveFameHandler extends AbstractMaplePacketHandler {
                 player.message("Could not process the request, since this character currently has the minimum/maximum level of fame.");
             }
         } else {
-            c.announce(WvsContext.Packet.onFameResponse(status, ""));
+            c.announce(WvsContext.Packet.onGivePopularityResult(status, ""));
         }
     }
 }

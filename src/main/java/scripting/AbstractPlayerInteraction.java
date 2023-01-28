@@ -865,7 +865,7 @@ public class AbstractPlayerInteraction {
         final Item newItem = MapleItemInformationProvider.getInstance().getEquipById(itemid);
         newItem.setPosition(slot);
         c.getPlayer().getInventory(MapleInventoryType.EQUIPPED).addItemFromDB(newItem);
-        c.announce(MaplePacketCreator.onInventoryOperation(false, Collections.singletonList(new InventoryOperation(0, newItem))));
+        c.announce(WvsContext.Packet.onInventoryOperation(false, Collections.singletonList(new InventoryOperation(0, newItem))));
     }
 
     public void spawnNpc(int npcId, Point pos, MapleMap map) {

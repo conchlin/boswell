@@ -1,6 +1,6 @@
 package enums
 
-enum class FameResponseType(val value: Int) {
+enum class PopularityResponseType(val value: Int) {
     GiveSuccess(0),
     UserNotExist(1),
     UnderLevel15(2),

@@ -704,47 +704,6 @@ public class MaplePacketCreator {
         mplew.write(code);
         return mplew.getPacket();
     }
-    
-    public static byte[] onInventoryOperation(boolean updateTick, final List<InventoryOperation> mods) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.InventoryOperation.getValue());
-        mplew.writeBool(updateTick);
-        mplew.write(mods.size());
-        int addMovement = -1;
-        for (InventoryOperation mod : mods) {
-            mplew.write(mod.getMode());
-            mplew.write(mod.getInventoryType());
-            mplew.writeShort(mod.getMode() == 2 ? mod.getOldPosition() : mod.getPosition());
-            switch (mod.getMode()) {
-                case 0 -> {//add item
-                    PacketUtil.addItemInfoZeroPos(mplew, mod.getItem());
-                }
-                case 1 -> {//update quantity
-                    mplew.writeShort(mod.getQuantity());
-                }
-                case 2 -> {//move
-                    mplew.writeShort(mod.getPosition());
-                    if (mod.getPosition() < 0 || mod.getOldPosition() < 0) {
-                        addMovement = mod.getOldPosition() < 0 ? 1 : 2;
-                    }
-                }
-                case 3 -> {//remove
-                    if (mod.getPosition() < 0) {
-                        addMovement = 2;
-                    }
-                }
-                case 4 -> { //itemexp
-                    Equip equip = (Equip) mod.getItem();
-                    mplew.writeInt(equip.getItemExp());
-                }
-            }
-            mod.clear();
-        }
-        if (addMovement > -1) {
-            mplew.write(addMovement);
-        }
-        return mplew.getPacket();
-    }
 
     public static byte[] catchMessage(int message) { // not done, I guess
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
@@ -1135,23 +1094,6 @@ public class MaplePacketCreator {
         mplew.write(skilllevel);
         mplew.write(Berserk ? 1 : 0);
         return mplew.getPacket();
-    }
-
-    public static byte[] updateSkill(int skillid, int level, int masterlevel, long expiration) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.UPDATE_SKILLS.getValue());
-        mplew.write(1);
-        mplew.writeShort(1);
-        mplew.writeInt(skillid);
-        mplew.writeInt(level);
-        mplew.writeInt(masterlevel);
-        mplew.writeLong(PacketUtil.getTime(expiration));
-        mplew.write(4);
-        return mplew.getPacket();
-    }
-
-    public static byte[] getInventoryFull() {
-        return onInventoryOperation(true, Collections.<InventoryOperation>emptyList());
     }
 
     public static byte[] getShowInventoryFull() {

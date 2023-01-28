@@ -30,11 +30,11 @@ enum class SendOpcode(val value: Int) {
     STAT_CHANGED(31),
     GIVE_BUFF(32),  //OnTemporaryStatSet
     CANCEL_BUFF(33),  //OnTemporaryStatReset
-    FORCED_STAT_SET(34),
-    FORCED_STAT_RESET(35),
-    UPDATE_SKILLS(36),  //OnChangeSkillRecordResult
+    ForcedStatSet(34),
+    ForcedStatReset(35),
+    ChangeSkillRecordResult(36),
     SKILL_USE_RESULT(37),
-    FAME_RESPONSE(38),  //OnGivePopularityResult
+    GivePopularityResult(38),
     SHOW_STATUS_INFO(39),  //OnMessage
     OPEN_FULL_CLIENT_DOWNLOAD_LINK(40),
     MEMO_RESULT(41),

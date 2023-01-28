@@ -45,6 +45,7 @@ import constants.ServerConstants;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -524,7 +525,7 @@ public final class UseCashItemHandler extends AbstractMaplePacketHandler {
 
             Equip toScroll = (Equip) eitem;
             if (toScroll.getUpgradeSlots() < 1) {
-                c.announce(MaplePacketCreator.getInventoryFull());
+                c.announce(WvsContext.Packet.onInventoryOperation(true, Collections.emptyList()));
                 return;
             }
 
@@ -552,7 +553,7 @@ public final class UseCashItemHandler extends AbstractMaplePacketHandler {
                 final List<InventoryOperation> mods = new ArrayList<>();
                 mods.add(new InventoryOperation(3, scrolled));
                 mods.add(new InventoryOperation(0, scrolled));
-                client.announce(MaplePacketCreator.onInventoryOperation(true, mods));
+                client.announce(WvsContext.Packet.onInventoryOperation(true, mods));
 
                 ScrollResult scrollResult = scrolled.getLevel() > curlevel ? ScrollResult.SUCCESS : ScrollResult.FAIL;
                 player.getMap().broadcastMessage(UserCommon.Packet.onShowItemUpgradeEffect(player.getId(), scrollResult, false, false));

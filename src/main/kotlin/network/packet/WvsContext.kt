@@ -1,13 +1,16 @@
 package network.packet
 
 import client.*
+import client.inventory.Equip
+import client.inventory.InventoryOperation
 import constants.GameConstants
 import constants.skills.Buccaneer
 import constants.skills.ThunderBreaker
-import enums.FameResponseType
+import enums.PopularityResponseType
 import network.opcode.SendOpcode
 import tools.Pair
 import tools.data.output.MaplePacketLittleEndianWriter
+import tools.packets.PacketUtil
 import java.sql.ResultSet
 import java.sql.SQLException
 import java.util.*
@@ -16,13 +19,66 @@ class WvsContext {
 
     companion object Packet {
 
-        val EmptyStatUpdate = emptyList<Pair<MapleStat, Int>>()
+        private val EmptyStatUpdate = emptyList<Pair<MapleStat, Int>>()
 
-        fun onInventoryGrow(type: Int, newLimit: Int): ByteArray? {
+        /**
+         *  packet responsible for the various inventory actions
+         *
+         *  @param announce is inventory action broadcast to user (silent if false)
+         *  @param mods list of modifications to be applied to inventory
+         */
+        fun onInventoryOperation(announce: Boolean, mods: List<InventoryOperation>): ByteArray? {
+            val mplew = MaplePacketLittleEndianWriter()
+            mplew.writeShort(SendOpcode.InventoryOperation.value)
+            mplew.writeBool(announce)
+            mplew.write(mods.size)
+            var addMovement = -1
+            for (mod in mods) {
+                mplew.write(mod.mode)
+                mplew.write(mod.inventoryType)
+                mplew.writeShort((if (mod.mode == 2) mod.oldPosition else mod.position).toInt())
+                when (mod.mode) {
+                    0 -> { //add item
+                        PacketUtil.addItemInfoZeroPos(mplew, mod.item)
+                    }
+                    1 -> { //update quantity
+                        mplew.writeShort(mod.quantity.toInt())
+                    }
+                    2 -> { //move
+                        mplew.writeShort(mod.position.toInt())
+                        if (mod.position < 0 || mod.oldPosition < 0) {
+                            addMovement = if (mod.oldPosition < 0) 1 else 2
+                        }
+                    }
+                    3 -> { //remove
+                        if (mod.position < 0) {
+                            addMovement = 2
+                        }
+                    }
+                    4 -> { //itemexp
+                        val equip = mod.item as Equip
+                        mplew.writeInt(equip.itemExp)
+                    }
+                }
+                mod.clear()
+            }
+            if (addMovement > -1) {
+                mplew.write(addMovement)
+            }
+            return mplew.packet
+        }
+
+        /**
+         * packet responsible for modifying the inventory size
+         *
+         * @param type differentiates between inventory types
+         * @param newSize new inventory size of specified inventory type
+         */
+        fun onInventoryGrow(type: Int, newSize: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
             mplew.writeShort(SendOpcode.InventoryGrow.value)
             mplew.write(type)
-            mplew.write(newLimit)
+            mplew.write(newSize)
 
             return mplew.packet
         }
@@ -222,60 +278,71 @@ class WvsContext {
             return mplew.packet
         }
 
-        fun aranGodlyStats(): ByteArray? {
+        /**
+         * packet responsible for applying certain bytes to a character
+         * the only instance of this in v83 is the Aran tutorial
+         *
+         * @param statArray array of bytes to apply to character
+         */
+        fun onForcedStatSet(statArray: ByteArray): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.FORCED_STAT_SET.value)
-            mplew.write(
-                byteArrayOf(
-                    0x1F.toByte(),
-                    0x0F.toByte(),
-                    0,
-                    0,
-                    0xE7.toByte(),
-                    3,
-                    0xE7.toByte(),
-                    3,
-                    0xE7.toByte(),
-                    3,
-                    0xE7.toByte(),
-                    3,
-                    0xFF.toByte(),
-                    0,
-                    0xE7.toByte(),
-                    3,
-                    0xE7.toByte(),
-                    3,
-                    0x78.toByte(),
-                    0x8C.toByte()
-                )
-            )
-            return mplew.packet
-        }
-
-        fun resetForcedStats(): ByteArray? {
-            val mplew = MaplePacketLittleEndianWriter(2)
-            mplew.writeShort(SendOpcode.FORCED_STAT_RESET.value)
+            mplew.writeShort(SendOpcode.ForcedStatSet.value)
+            mplew.write(statArray)
 
             return mplew.packet
         }
 
         /**
-         * Packet that handles the receiving and giving of fame
-         *
-         * response: use FameResponseType as input
+         * packet responsible for resetting and forced stat scenarios
          */
-        fun onFameResponse(response: Int, name: String?, vararg args: Int): ByteArray? {
+        fun onForcedStatReset(): ByteArray? {
+            val mplew = MaplePacketLittleEndianWriter(2)
+            mplew.writeShort(SendOpcode.ForcedStatReset.value)
+
+            return mplew.packet
+        }
+
+        /**
+         * packet responsible for any changes that are made to player skills
+         *
+         * @param skillId
+         * @param currentLevel of skill id being affected
+         * @param maxLevel of skill id being affected
+         * @param duration of skill id being affected
+         */
+        fun onChangeSkillRecordResult(skillId: Int, currentLevel: Int, maxLevel: Int, duration: Long): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.FAME_RESPONSE.value)
+            mplew.writeShort(SendOpcode.ChangeSkillRecordResult.value)
+            mplew.write(1)
+            mplew.writeShort(1)
+            mplew.writeInt(skillId)
+            mplew.writeInt(currentLevel)
+            mplew.writeInt(maxLevel)
+            mplew.writeLong(PacketUtil.getTime(duration))
+            mplew.write(4)
+
+            return mplew.packet
+        }
+
+        /**
+         * Packet that handles the receiving and giving of popularity
+         *
+         * @param response use PopularityResponseType as input
+         * @param name username
+         * @param args mode and amount
+         */
+        fun onGivePopularityResult(response: Int, name: String?, vararg args: Int): ByteArray? {
+            val mplew = MaplePacketLittleEndianWriter()
+            mplew.writeShort(SendOpcode.GivePopularityResult.value)
             mplew.write(response)
             when (response) {
-                FameResponseType.GiveSuccess.value -> {
+                PopularityResponseType.GiveSuccess.value -> {
                     mplew.writeMapleAsciiString(name)
                     mplew.write(args[0]) // mode
                     mplew.writeShort(args[1]) // new fame amount
                     mplew.writeShort(0)
                 }
-                FameResponseType.ReceiveSuccess.value -> {
+                PopularityResponseType.ReceiveSuccess.value -> {
                     mplew.writeMapleAsciiString(name)
                     mplew.write(args[0]) // mode
                 }

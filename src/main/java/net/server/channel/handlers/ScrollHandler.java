@@ -24,6 +24,7 @@ package net.server.channel.handlers;
 import client.MapleClient;
 import client.MapleCharacter;
 import network.packet.UserCommon;
+import network.packet.WvsContext;
 import server.skills.PlayerSkill;
 import client.inventory.Equip;
 import client.inventory.Equip.ScrollResult;
@@ -33,13 +34,13 @@ import client.inventory.MapleInventoryType;
 import client.inventory.InventoryOperation;
 import constants.ItemConstants;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import net.AbstractMaplePacketHandler;
 import client.inventory.manipulator.MapleInventoryManipulator;
 import server.MapleItemInformationProvider;
 import server.skills.SkillFactory;
-import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 /**
@@ -49,7 +50,7 @@ import tools.data.input.SeekableLittleEndianAccessor;
 public final class ScrollHandler extends AbstractMaplePacketHandler {
 
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         if (c.tryacquireClient()) {
             try {
                 slea.readInt(); // whatever...
@@ -175,7 +176,7 @@ public final class ScrollHandler extends AbstractMaplePacketHandler {
                     mods.add(new InventoryOperation(3, scrolled));
                     mods.add(new InventoryOperation(0, scrolled));
                 }
-                c.announce(MaplePacketCreator.onInventoryOperation(true, mods));
+                c.announce(WvsContext.Packet.onInventoryOperation(true, mods));
                 chr.getMap().broadcastMessage(UserCommon.Packet.onShowItemUpgradeEffect(chr.getId(), scrollSuccess, legendarySpirit, whiteScroll));
                 if (dst < 0 && (scrollSuccess == Equip.ScrollResult.SUCCESS || scrollSuccess == Equip.ScrollResult.CURSE)) {
                     chr.equipChanged();
@@ -200,7 +201,7 @@ public final class ScrollHandler extends AbstractMaplePacketHandler {
         if (legendarySpirit) {
             c.announce(UserCommon.Packet.onShowItemUpgradeEffect(c.getPlayer().getId(), Equip.ScrollResult.FAIL, false, false));
         } else {
-            c.announce(MaplePacketCreator.getInventoryFull());
+            c.announce(WvsContext.Packet.onInventoryOperation(true, Collections.emptyList()));
         }
     }
 }

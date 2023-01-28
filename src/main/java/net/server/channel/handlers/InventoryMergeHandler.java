@@ -98,10 +98,10 @@ public final class InventoryMergeHandler extends AbstractMaplePacketHandler {
                         entry.setQuantity((short) (entry.getQuantity() + item.getQuantity()));
                         MapleInventoryManipulator.removeFromSlot(c, inventoryType, x, item.getQuantity(), false);
                         mods.add(new InventoryOperation(1, entry));
-                        c.announce(MaplePacketCreator.onInventoryOperation(true, mods));
+                        c.announce(WvsContext.Packet.onInventoryOperation(true, mods));
                         break;
                     }
-                    c.announce(MaplePacketCreator.onInventoryOperation(true, mods));
+                    c.announce(WvsContext.Packet.onInventoryOperation(true, mods));
                 }
 
                 // If the item even still exists or is rechargable
