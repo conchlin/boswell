@@ -1,7 +1,7 @@
 package network.opcode
 
 enum class SendOpcode(val value: Int) {
-    //CLogin::OnPacket
+    /*CLogin::OnPacket*/
     CheckPasswordResult(0),
     GuestIDLoginResult(1),
     AccountInfoResult(2),
@@ -33,52 +33,50 @@ enum class SendOpcode(val value: Int) {
     ForcedStatSet(34),
     ForcedStatReset(35),
     ChangeSkillRecordResult(36),
-    SKILL_USE_RESULT(37),
+    SkillUseResult(37),
     GivePopularityResult(38),
-    SHOW_STATUS_INFO(39),  //OnMessage
-    OPEN_FULL_CLIENT_DOWNLOAD_LINK(40),
+    WvsMessage(39),
+    OpenFullClientDownloadLink(40),
     MEMO_RESULT(41),
-    MAP_TRANSFER_RESULT(42),
-    WEDDING_PHOTO(43),  //ANTI_MACRO_RESULT(0x2B),
+    MapTransferResult(42),
+    WEDDING_PHOTO(43),
+    //ANTI_MACRO_RESULT(0x2B),
     CLAIM_RESULT(45),  // unnamed in idb
     CLAIM_AVAILABLE_TIME(46),  // unnamed in idb
     CLAIM_STATUS_CHANGED(47),  // unnamed in idb
-    SET_TAMING_MOB_INFO(48),  // unnamed in idb
+    SetTamingMobInfo(48),  // unnamed in idb
     QUEST_CLEAR(49),  // unnamed in idb
     ENTRUSTED_SHOP_CHECK_RESULT(50),  //OnEntrustedShopCheckResult
-    SKILL_LEARN_ITEM_RESULT(51),  // unnamed in idb
-    GATHER_ITEM_RESULT(52),
-    SORT_ITEM_RESULT(53),
-    SUE_CHARACTER_RESULT(55),
-    TRADE_MONEY_LIMIT(57),
-    SET_GENDER(58),
-    GUILD_BBS_PACKET(59),
+    SkillLearnItemResult(51),  // unnamed in idb
+    GatherItemResult(52),
+    SortItemResult(53),
+    SueCharacterResult(55),
+    TradeMoneyLimit(57),
+    SetGender(58),
+    GuildBBSPacket(59),
     CHAR_INFO(61),
     PartyResult(62),
     BUDDYLIST(63),//OnFriendResult
     GuildResult(65),
     AllianceResult(66),
-    SPAWN_PORTAL(67),  //OnTownPortal
+    TownPortal(67),
     SERVERMESSAGE(68),  //OnBroadcastMsg
-    INCUBATOR_RESULT(69),
+    IncubatorResult(69),
     SHOP_SCANNER_RESULT(70),
     SHOP_LINK_RESULT(71),
-
     MARRIAGE_REQUEST(72),
     MARRIAGE_RESULT(73),
     WEDDING_GIFT_RESULT(74),
     NOTIFY_MARRIED_PARTNER_MAP_TRANSFER(75),
-
     CASH_PET_FOOD_RESULT(76),
     SET_WEEK_EVENT_MESSAGE(77),
     SET_POTION_DISCOUNT_RATE(78),
-
     BRIDLE_MOB_CATCH_FAIL(79),
     IMITATED_NPC_RESULT(80),
     IMITATED_NPC_DATA(81),  //CNpcPool::OnNpcImitateData
     LIMITED_NPC_DISABLE_INFO(82),  //CNpcPool::OnUpdateLimitedDisableInfo
-    MONSTER_BOOK_SET_CARD(83),
-    MONSTER_BOOK_SET_COVER(84),
+    MonsterBookSetCard(83),
+    MonsterBookSetCover(84),
     HOUR_CHANGED(85),
     MINIMAP_ON_OFF(86),
     CONSULT_AUTHKEY_UPDATE(87),
@@ -88,7 +86,6 @@ enum class SendOpcode(val value: Int) {
     PARTY_VALUE(91),
     FIELD_SET_VARIABLE(92),
     BONUS_EXP_CHANGED(93),  //pendant of spirit etc (guess, not sure about the opcode in v83)
-    //Family
     FamilyChartResult(94),
     FamilyInfoResult(95),
     FamilyResult(96), // message
@@ -100,7 +97,6 @@ enum class SendOpcode(val value: Int) {
     FamilyNotifyLoginOrLogout(102),
     FamilySetPriviledge(103),
     FamilySummonRequest(104),
-
     NOTIFY_LEVELUP(105),
     NOTIFY_MARRIAGE(106),
     NOTIFY_JOB_CHANGE(107),
@@ -111,7 +107,8 @@ enum class SendOpcode(val value: Int) {
     CLEAR_AVATAR_MEGAPHONE(112),
     CANCEL_NAME_CHANGE_RESULT(113),
     CANCEL_TRANSFER_WORLD_RESULT(115),
-    DESTROY_SHOP_RESULT(115), FAKE_GM_NOTICE(116),  //bad asses
+    DESTROY_SHOP_RESULT(115),
+    FAKE_GM_NOTICE(116),
     SUCCESS_IN_USE_GACHAPON_BOX(117),
     NEW_YEAR_CARD_RES(118),
     RANDOM_MORPH_RES(119),
@@ -120,7 +117,6 @@ enum class SendOpcode(val value: Int) {
     SCRIPT_PROGRESS_MESSAGE(122),
     DATA_CRC_CHECK_FAILED(123),
     MACRO_SYS_DATA_INIT(124),
-
     /*CStage::OnPacket*/
     SET_FIELD(125),
     SET_ITC(126),
@@ -147,7 +143,7 @@ enum class SendOpcode(val value: Int) {
     Quiz(145),
     Desc(146),
     Clock(147),
-    //Field_ContiMove::OnPacket
+    /*Field_ContiMove::OnPacket*/
     CONTI_MOVE(148),
     CONTI_STATE(149),
     /*CField::OnPacket*/
@@ -158,10 +154,9 @@ enum class SendOpcode(val value: Int) {
     DestroyClock(154),
     ShowArenaResult(155),
     StalkResult(156),
-    //CField_MassacreResult::OnPacket
     MassacreIncGauge(157),
     MassacreResult(158),
-    // CUserPool::OnPacket
+    /*CUserPool::OnPacket*/
     UserEnterField(160),
     UserLeaveField(161),
     UserChat(162),
@@ -170,7 +165,7 @@ enum class SendOpcode(val value: Int) {
     MiniRoomBalloon(165),
     SetConsumeItemEffect(166),
     ShowItemUpgradeEffect(167),
-    //CUser::OnPetPacket
+    /*CUser::OnPetPacket*/
     PetActivated(168),
     PetMove(170),
     PetAction(171),

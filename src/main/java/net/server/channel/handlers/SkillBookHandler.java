@@ -97,7 +97,7 @@ public final class SkillBookHandler extends AbstractMaplePacketHandler {
             }
             
             // thanks Vcoc for noting skill book result not showing for all in area
-            player.getMap().broadcastMessage(WvsContext.Packet.skillBookResult(player, skill, maxlevel, canuse, success));
+            player.getMap().broadcastMessage(WvsContext.Packet.onSkillLearnItemResult(player, skill, maxlevel, canuse, success));
         }
     }
 }

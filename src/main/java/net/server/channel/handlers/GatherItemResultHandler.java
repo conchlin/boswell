@@ -40,13 +40,12 @@ import net.AbstractMaplePacketHandler;
 import client.inventory.manipulator.MapleInventoryManipulator;
 import network.packet.WvsContext;
 import server.MapleItemInformationProvider;
-import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
-public final class InventoryMergeHandler extends AbstractMaplePacketHandler {
+public final class GatherItemResultHandler extends AbstractMaplePacketHandler {
 
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         MapleCharacter chr = c.getPlayer();
         chr.getAutobanManager().setTimestamp(2, slea.readInt(), 3);
         MapleInventoryType inventoryType = MapleInventoryType.getByType(slea.readByte());
@@ -124,7 +123,7 @@ public final class InventoryMergeHandler extends AbstractMaplePacketHandler {
 
 
 
-        c.getSession().write(MaplePacketCreator.finishedGather(inventoryType.getType()));
+        c.getSession().write(WvsContext.Packet.onGatherItemResult(inventoryType.getType()));
         c.getSession().write(WvsContext.Packet.enableActions());
     }
 }

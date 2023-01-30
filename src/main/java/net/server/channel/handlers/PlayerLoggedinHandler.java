@@ -343,7 +343,7 @@ public final class PlayerLoggedinHandler extends AbstractMaplePacketHandler {
                     c.announce(MaplePacketCreator.requestBuddylistAdd(pendingBuddyRequest.getId(), c.getPlayer().getId(), pendingBuddyRequest.getName()));
                 }
 
-                c.announce(MaplePacketCreator.updateGender(player));
+                c.announce(WvsContext.Packet.onSetGender(player));
                 player.checkMessenger();
                 c.announce(WvsContext.Packet.enableReport());
                 player.changeSkillLevel(SkillFactory.getSkill(10000000 * player.getJobType() + 12), (byte) (player.getLinkedLevel() / 10), 20, -1);

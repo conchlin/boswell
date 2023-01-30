@@ -24,7 +24,6 @@ package net.server.channel.handlers;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 
 import client.MapleClient;
 import client.inventory.Item;
@@ -34,18 +33,16 @@ import client.MapleCharacter;
 import net.AbstractMaplePacketHandler;
 import client.inventory.manipulator.MapleInventoryManipulator;
 import network.packet.WvsContext;
-import tools.LogHelper;
-import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 /**
  *
  * @author BubblesDev
  */
-public final class InventorySortHandler extends AbstractMaplePacketHandler {
+public final class SortItemResultHandler extends AbstractMaplePacketHandler {
 
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         MapleCharacter chr = c.getPlayer();
         chr.getAutobanManager().setTimestamp(4, slea.readInt(), 3);
         byte inventoryType = slea.readByte();
@@ -81,7 +78,7 @@ public final class InventorySortHandler extends AbstractMaplePacketHandler {
             e.printStackTrace();
         }
 
-        c.announce(MaplePacketCreator.finishedSort2(inventoryType));
+        c.announce(WvsContext.Packet.onSortItemResult(inventoryType));
         c.announce(WvsContext.Packet.enableActions());
     }
 

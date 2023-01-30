@@ -235,7 +235,7 @@ class GuildPacket {
         fun onGuildBBSPacket(thread: Int, result: Int, vararg args: ResultSet): ByteArray {
             var t = thread // mutable
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.GUILD_BBS_PACKET.value)
+            mplew.writeShort(SendOpcode.GuildBBSPacket.value)
             mplew.write(result)
             when (result) {
                 GuildResultType.LoadBBS.result -> {
@@ -271,23 +271,18 @@ class GuildPacket {
                     mplew.writeMapleAsciiString(args[0].getString("name"))
                     mplew.writeMapleAsciiString(args[0].getString("startpost"))
                     mplew.writeInt(args[0].getInt("icon"))
-                    if (args[1] != null) {
-                        val replyCount: Int = args[0].getInt("replycount")
-                        mplew.writeInt(replyCount)
-                        var i: Int
-                        i = 0
-                        while (i < replyCount && args[1].next()) {
-                            mplew.writeInt(args[1].getInt("replyid"))
-                            mplew.writeInt(args[1].getInt("postercid"))
-                            mplew.writeLong(PacketUtil.getTime(args[1].getLong("timestamp")))
-                            mplew.writeMapleAsciiString(args[1].getString("content"))
-                            i++
-                        }
-                        if (i != replyCount || args[1].next()) {
-                            throw RuntimeException(args[0].getInt("threadid").toString())
-                        }
-                    } else {
-                        mplew.writeInt(0)
+                    val replyCount: Int = args[0].getInt("replycount")
+                    mplew.writeInt(replyCount)
+                    var i: Int = 0
+                    while (i < replyCount && args[1].next()) {
+                        mplew.writeInt(args[1].getInt("replyid"))
+                        mplew.writeInt(args[1].getInt("postercid"))
+                        mplew.writeLong(PacketUtil.getTime(args[1].getLong("timestamp")))
+                        mplew.writeMapleAsciiString(args[1].getString("content"))
+                        i++
+                    }
+                    if (i != replyCount || args[1].next()) {
+                        throw RuntimeException(args[0].getInt("threadid").toString())
                     }
                 }
             }

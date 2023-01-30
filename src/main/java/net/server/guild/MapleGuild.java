@@ -24,6 +24,7 @@ package net.server.guild;
 import client.MapleCharacter;
 import client.MapleClient;
 import enums.GuildResultType;
+import enums.WvsMessageType;
 import net.server.PlayerStorage;
 import net.server.Server;
 import net.server.audit.locks.MonitoredLockType;
@@ -35,6 +36,7 @@ import net.server.coordinator.MapleInviteCoordinator.InviteType;
 import net.server.coordinator.MapleMatchCheckerCoordinator;
 import net.database.Statements;
 import net.database.DatabaseConnection;
+import network.packet.WvsContext;
 import network.packet.field.CField;
 import network.packet.UserRemote;
 import network.packet.wvscontext.GuildPacket;
@@ -658,7 +660,7 @@ public class MapleGuild {
         this.gp += amount;
         this.writeToDB(false);
         this.guildMessage(GuildPacket.Packet.onGuildResult(this.id, GuildResultType.GuildPoint.getResult(), this.gp));
-        this.guildMessage(MaplePacketCreator.getGPMessage(amount));
+        this.guildMessage(WvsContext.Packet.onMessage(WvsMessageType.GuildPoint.getType(), amount));
     }
 
     public void removeGP(int amount) {

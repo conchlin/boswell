@@ -2495,7 +2495,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                         } else if (expiration != -1 && expiration < currenttime) {
                             /*if (!ItemConstants.isPet(item.getItemId())) {*/
                             if (item.getPet() == null) {
-                                client.announce(MaplePacketCreator.itemExpired(item.getItemId()));
+                                client.announce(WvsContext.Packet.onMessage(WvsMessageType.Expiration.getType(), item.getItemId()));
                                 unequipPet(item.getPet(), false);
                                 toberemove.add(item);
                                 if (ItemConstants.isRateCoupon(item.getItemId())) {
@@ -2665,7 +2665,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                 fromPlayer.announce(WvsContext.Packet.onGivePopularityResult(PopularityResponseType.GiveSuccess.getValue(), getName(), mode, thisFame));
                 announce(WvsContext.Packet.onGivePopularityResult(PopularityResponseType.ReceiveSuccess.getValue(), fromPlayer.getName(), mode));
             } else {
-                announce(MaplePacketCreator.getShowFameGain(delta));
+                announce(WvsContext.Packet.onMessage(WvsMessageType.Popularity.getType(), delta));
             }
 
             return true;
@@ -7886,7 +7886,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         if (maplemount != null) {
             int tiredness = maplemount.incrementAndGetTiredness();
 
-            this.getMap().broadcastMessage(WvsContext.Packet.updateMount(this.getId(), maplemount, false));
+            this.getMap().broadcastMessage(WvsContext.Packet.onSetTamingMobInfo(this.getId(), maplemount, false));
             if (tiredness > 99) {
                 maplemount.setTiredness(99);
                 this.dispelSkill(this.getJobType() * 10000000 + 1004);

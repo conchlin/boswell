@@ -7,10 +7,12 @@ import constants.GameConstants
 import constants.skills.Buccaneer
 import constants.skills.ThunderBreaker
 import enums.PopularityResponseType
+import enums.WvsMessageType
 import network.opcode.SendOpcode
 import tools.Pair
 import tools.data.output.MaplePacketLittleEndianWriter
 import tools.packets.PacketUtil
+import java.awt.Point
 import java.sql.ResultSet
 import java.sql.SQLException
 import java.util.*
@@ -41,20 +43,24 @@ class WvsContext {
                     0 -> { //add item
                         PacketUtil.addItemInfoZeroPos(mplew, mod.item)
                     }
+
                     1 -> { //update quantity
                         mplew.writeShort(mod.quantity.toInt())
                     }
+
                     2 -> { //move
                         mplew.writeShort(mod.position.toInt())
                         if (mod.position < 0 || mod.oldPosition < 0) {
                             addMovement = if (mod.oldPosition < 0) 1 else 2
                         }
                     }
+
                     3 -> { //remove
                         if (mod.position < 0) {
                             addMovement = 2
                         }
                     }
+
                     4 -> { //itemexp
                         val equip = mod.item as Equip
                         mplew.writeInt(equip.itemExp)
@@ -129,6 +135,7 @@ class WvsContext {
                     } else {
                         mplew.writeShort(statupdate.getRight().toShort().toInt())
                     }
+
                     else -> if (statupdate.getLeft().value <= 0x4) {
                         mplew.writeInt(statupdate.getRight())
                     } else if (statupdate.getLeft().value < 0x20) {
@@ -342,9 +349,36 @@ class WvsContext {
                     mplew.writeShort(args[1]) // new fame amount
                     mplew.writeShort(0)
                 }
+
                 PopularityResponseType.ReceiveSuccess.value -> {
                     mplew.writeMapleAsciiString(name)
                     mplew.write(args[0]) // mode
+                }
+            }
+
+            return mplew.packet
+        }
+
+        /**
+         * packet responsible for all messaging pertaining to the WvsContext
+         * (see WvsMessageType for more info)
+         *
+         * @param type WvsMessageType
+         * @param args  Expiration - itemId
+         *              Popularity - gain
+         *              GuildPoint - GP change
+         *              Item - itemId
+         */
+        fun onMessage(type: Int, vararg args: Int): ByteArray? {
+            val mplew = MaplePacketLittleEndianWriter()
+            mplew.writeShort(SendOpcode.WvsMessage.value)
+            mplew.write(type)
+            when (type) {
+                WvsMessageType.Expiration.type,
+                WvsMessageType.Popularity.type,
+                WvsMessageType.GuildPoint.type,
+                WvsMessageType.Item.type -> {
+                    mplew.writeInt(args[0])
                 }
             }
 
@@ -379,28 +413,36 @@ class WvsContext {
             mplew.write(count)
             for (i in 0 until count) {
                 mplew.writeInt(notes.getInt("id"))
-                mplew.writeMapleAsciiString(notes.getString("from") + " ") //Stupid nexon forgot space lol
+                mplew.writeMapleAsciiString(notes.getString("from") + " ")
                 mplew.writeMapleAsciiString(notes.getString("message"))
-                //mplew.writeLong(MaplePacketCreator.getTime(notes.getLong("timestamp"))) todo add time/expiration stuff here
+                mplew.writeLong(PacketUtil.getTime(notes.getLong("timestamp")))
                 mplew.write(notes.getByte("fame")) //FAME :D
                 notes.next()
             }
             return mplew.packet
         }
 
-        fun trockRefreshMapList(chr: MapleCharacter, delete: Boolean, vip: Boolean): ByteArray? {
+
+        /**
+         * packet responsible for map travel when using (vip) teleport rocks
+         *
+         * @param user MapleCharacter instance
+         * @param delete do we save the map?
+         * @param vip vip or regular teleport rock
+         */
+        fun onMapTransferResult(user: MapleCharacter, delete: Boolean, vip: Boolean): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.MAP_TRANSFER_RESULT.value)
+            mplew.writeShort(SendOpcode.MapTransferResult.value)
             mplew.write(if (delete) 2 else 3)
             if (vip) {
                 mplew.write(1)
-                val map = chr.vipTrockMaps
+                val map = user.vipTrockMaps
                 for (i in 0..9) {
                     mplew.writeInt(map[i])
                 }
             } else {
                 mplew.write(0)
-                val map = chr.trockMaps
+                val map = user.trockMaps
                 for (i in 0..4) {
                     mplew.writeInt(map[i])
                 }
@@ -417,14 +459,14 @@ class WvsContext {
             return mplew.packet
         }
 
-        fun updateMount(charid: Int, mount: MapleMount, levelup: Boolean): ByteArray? {
+        fun onSetTamingMobInfo(charId: Int, mount: MapleMount, levelUp: Boolean): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.SET_TAMING_MOB_INFO.value)
-            mplew.writeInt(charid)
+            mplew.writeShort(SendOpcode.SetTamingMobInfo.value)
+            mplew.writeInt(charId)
             mplew.writeInt(mount.level)
             mplew.writeInt(mount.exp)
             mplew.writeInt(mount.tiredness)
-            mplew.write(if (levelup) 1.toByte() else 0.toByte())
+            mplew.write(if (levelUp) 1.toByte() else 0.toByte())
 
             return mplew.packet
         }
@@ -463,22 +505,126 @@ class WvsContext {
             return mplew.packet
         }
 
-        fun skillBookResult(
-            chr: MapleCharacter,
-            skillid: Int,
-            maxlevel: Int,
-            canuse: Boolean,
+        fun onSkillLearnItemResult(
+            user: MapleCharacter,
+            skillId: Int,
+            maxLevel: Int,
+            canUse: Boolean,
             success: Boolean
         ): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.SKILL_LEARN_ITEM_RESULT.value)
-            mplew.writeInt(chr.id)
+            mplew.writeShort(SendOpcode.SkillLearnItemResult.value)
+            mplew.writeInt(user.id)
             mplew.write(1)
-            mplew.writeInt(skillid)
-            mplew.writeInt(maxlevel)
-            mplew.write(if (canuse) 1 else 0)
+            mplew.writeInt(skillId)
+            mplew.writeInt(maxLevel)
+            mplew.write(if (canUse) 1 else 0)
             mplew.write(if (success) 1 else 0)
 
+            return mplew.packet
+        }
+
+        fun onGatherItemResult(inv: Int): ByteArray? {
+            val mplew = MaplePacketLittleEndianWriter(4)
+            mplew.writeShort(SendOpcode.GatherItemResult.value)
+            mplew.write(0)
+            mplew.write(inv)
+            return mplew.packet
+        }
+
+        fun onSortItemResult(inv: Int): ByteArray? {
+            val mplew = MaplePacketLittleEndianWriter(4)
+            mplew.writeShort(SendOpcode.SortItemResult.value)
+            mplew.write(0)
+            mplew.write(inv)
+            return mplew.packet
+        }
+
+        /**
+         * packet responsible for user reports
+         *
+         * Possible values for `mode`:
+         * 0: You have successfully reported the user.
+         * 1: Unable to locate the user.
+         * 2: You may only report users 10 times a day.
+         * 3: You have been reported to the GM's by a user.
+         * 4: Your request did not go through for unknown reasons. Please try again later.
+         *
+         * @param mode
+         */
+        fun onSueCharacterResult(mode: Byte): ByteArray? {
+            val mplew = MaplePacketLittleEndianWriter()
+            mplew.writeShort(SendOpcode.SueCharacterResult.value)
+            mplew.write(mode)
+            return mplew.packet
+        }
+
+        fun onTradeMoneyLimit(): ByteArray? {
+            val mplew = MaplePacketLittleEndianWriter()
+            mplew.writeShort(SendOpcode.TradeMoneyLimit.value)
+            return mplew.packet
+        }
+
+        fun onSetGender(chr: MapleCharacter): ByteArray? {
+            val mplew = MaplePacketLittleEndianWriter(3)
+            mplew.writeShort(SendOpcode.SetGender.value)
+            mplew.write(chr.gender)
+            return mplew.packet
+        }
+
+        /**
+         * packet responsible for creating or destroying a town portal (mystic door)
+         * @param townId The ID of the town the portal goes to.
+         * @param targetId The ID of the target.
+         * @param pos Where to put the portal.
+         * @param remove destroy it
+         */
+        fun onTownPortal(townId: Int, targetId: Int, pos: Point?, remove: Boolean): ByteArray? {
+            val mplew = MaplePacketLittleEndianWriter(14)
+            mplew.writeShort(SendOpcode.TownPortal.value)
+            if (remove) {
+                mplew.writeInt(999999999)
+                mplew.writeInt(999999999)
+            } else {
+                mplew.writeInt(townId)
+                mplew.writeInt(targetId)
+                mplew.writePos(pos)
+            }
+            return mplew.packet
+        }
+
+        fun onIncubatorResult(): ByteArray? { //lol
+            val mplew = MaplePacketLittleEndianWriter(8)
+            mplew.writeShort(SendOpcode.IncubatorResult.value)
+            mplew.skip(6)
+            return mplew.packet
+        }
+
+        /**
+         * packet responsible for adding cards to monster book
+         *
+         * @param complete is set full
+         * @param cardId
+         * @param cardAmount current amount (?/5)
+         */
+        fun onSetCard(complete: Boolean, cardId: Int, cardAmount: Int): ByteArray? {
+            val mplew = MaplePacketLittleEndianWriter(11)
+            mplew.writeShort(SendOpcode.MonsterBookSetCard.value)
+            mplew.write(if (complete) 0 else 1)
+            mplew.writeInt(cardId)
+            mplew.writeInt(cardAmount)
+            return mplew.packet
+        }
+
+        /**
+         * packet responsible for modifying the monster book cover
+         *
+         * @param cardId monster card
+         */
+        fun onSetCover(cardId: Int): ByteArray? {
+            val mplew = MaplePacketLittleEndianWriter(6)
+            mplew.writeShort(SendOpcode.MonsterBookSetCover.value)
+            mplew.writeInt(cardId)
             return mplew.packet
         }
     }

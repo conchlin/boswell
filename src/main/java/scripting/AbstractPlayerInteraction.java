@@ -31,6 +31,7 @@ import java.util.List;
 
 import enums.FieldEffectType;
 import enums.UserEffectType;
+import enums.WvsMessageType;
 import network.packet.*;
 import network.packet.field.CField;
 import server.skills.*;
@@ -826,7 +827,7 @@ public class AbstractPlayerInteraction {
 
     public void useItem(int id) {
         MapleItemInformationProvider.getInstance().getItemEffect(id).applyTo(c.getPlayer());
-        c.announce(MaplePacketCreator.getItemMessage(id));//Useful shet :3
+        c.announce(WvsContext.Packet.onMessage(WvsMessageType.Item.getType(), id));
     }
 
     public void cancelItem(final int id) {

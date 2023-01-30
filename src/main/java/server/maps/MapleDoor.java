@@ -62,7 +62,7 @@ public class MapleDoor extends AbstractMapleMapObject {
     // only required to destroy portal really
     public void destroyDoor() {
         owner.getClient().announce(TownPortalPool.Packet.onTownPortalRemoved(owner.getId()));
-        owner.getClient().announce(MaplePacketCreator.removePortal());
+        owner.getClient().announce(WvsContext.Packet.onTownPortal(getTown().getId(), getTarget().getId(), getPosition(), true));
 
         owner.silentPartyUpdate();
     }
@@ -229,7 +229,7 @@ public class MapleDoor extends AbstractMapleMapObject {
             c.announce(TownPortalPool.Packet.onTownPortalCreated(owner.getId(), getPosition(), false));
 
             if (c.getPlayer().getId() == owner.getId()) {
-                c.announce(MaplePacketCreator.spawnPortal(getTown(), getTarget(), getPosition()));
+                c.announce(WvsContext.Packet.onTownPortal(getTown(), getTarget(), getPosition(), false));
             }
         }
 

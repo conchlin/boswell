@@ -27,7 +27,7 @@ import net.server.audit.locks.factory.MonitoredReentrantLockFactory;
 import net.database.Statements;
 import network.packet.UserLocal;
 import network.packet.UserRemote;
-import tools.MaplePacketCreator;
+import network.packet.WvsContext;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -95,10 +95,10 @@ public final class MonsterBook {
         if (qty < 5) {
             calculateLevel();   // current leveling system only accounts unique cards...
 
-            c.announce(MaplePacketCreator.addCard(false, cardid, qty + 1));
+            c.announce(WvsContext.Packet.onSetCard(false, cardid, qty + 1));
             c.announce(UserLocal.Packet.onEffect(UserEffectType.MONSTERBOOK_PICKUP.getEffect(), ""));
         } else {
-            c.announce(MaplePacketCreator.addCard(true, cardid, 5));
+            c.announce(WvsContext.Packet.onSetCard(true, cardid, 5));
         }
     }
 
