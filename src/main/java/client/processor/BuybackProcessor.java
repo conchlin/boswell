@@ -23,11 +23,11 @@ import client.MapleClient;
 import client.MapleCharacter;
 import enums.FieldEffectType;
 import enums.UserEffectType;
+import network.packet.wvscontext.WvsContext;
 import network.packet.field.CField;
 import network.packet.UserLocal;
 import network.packet.UserRemote;
 import server.maps.MapleMap;
-import tools.MaplePacketCreator;
 
 /**
  *
@@ -61,7 +61,7 @@ public class BuybackProcessor {
             
             MapleMap map = chr.getMap();
             map.broadcastMessage(CField.Packet.onFieldEffect(FieldEffectType.Sound.getMode(), "Buyback/" + jobString));
-            map.broadcastMessage(MaplePacketCreator.earnTitleMessage(chr.getName() + " just bought back into the game!"));
+            map.broadcastMessage(WvsContext.Packet.onScriptProgressMessage(chr.getName() + " just bought back into the game!"));
 
             chr.announce(UserLocal.Packet.onEffect(UserEffectType.BUYBACK.getEffect(), ""));
             map.broadcastMessage(chr, UserRemote.Packet.onRemoteUserEffect(chr.getId(), UserEffectType.BUYBACK.getEffect()), false);

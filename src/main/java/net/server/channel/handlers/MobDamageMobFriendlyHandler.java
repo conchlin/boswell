@@ -23,7 +23,7 @@ package net.server.channel.handlers;
 
 import net.AbstractMaplePacketHandler;
 import network.packet.MobPool;
-import network.packet.WvsContext;
+import network.packet.wvscontext.WvsContext;
 import server.life.MapleMonster;
 import server.maps.MapleMap;
 import tools.MaplePacketCreator;

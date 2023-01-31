@@ -24,15 +24,13 @@ package net.server.channel.handlers;
 import client.inventory.ItemFactory;
 import client.MapleCharacter;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.List;
 
 import client.MapleClient;
 import constants.GameConstants;
 import net.AbstractMaplePacketHandler;
-import network.packet.WvsContext;
+import network.packet.wvscontext.WvsContext;
 import server.maps.MapleMapObjectType;
-import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 /**

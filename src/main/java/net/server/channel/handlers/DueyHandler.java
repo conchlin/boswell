@@ -26,8 +26,7 @@ import client.processor.DueyProcessor;
 import constants.ServerConstants;
 
 import net.AbstractMaplePacketHandler;
-import network.packet.WvsContext;
-import tools.MaplePacketCreator;
+import network.packet.wvscontext.WvsContext;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 public final class DueyHandler extends AbstractMaplePacketHandler {

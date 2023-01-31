@@ -76,6 +76,7 @@ import network.packet.field.CField;
 import network.packet.field.CoconutPacket;
 import network.packet.field.MonsterCarnivalPacket;
 import network.packet.field.SnowballPacket;
+import network.packet.wvscontext.WvsContext;
 import scripting.map.MapScriptManager;
 import server.MapleItemInformationProvider;
 import server.MaplePortal;
@@ -2486,7 +2487,7 @@ public class MapleMap {
         if (NostalgicMap.isNostalgicMap(mapid)) {
             for (Object boostedMob : NostalgicMap.getNostalgicMobs(mapid)) {
                 double percent = (NostalgicMap.getNostalgicRate((int) boostedMob) - 1) * 100;
-                chr.getClient().announce(MaplePacketCreator.earnTitleMessage("You've entered a nostalgia affected area. " +
+                chr.getClient().announce(WvsContext.Packet.onScriptProgressMessage("You've entered a nostalgia affected area. " +
                         MapleMonsterInformationProvider.getInstance().getMobNameFromId((int) boostedMob) +
                         "s have an added " + (int) percent + "% exp."));
             }

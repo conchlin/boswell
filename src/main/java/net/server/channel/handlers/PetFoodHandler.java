@@ -31,8 +31,7 @@ import client.autoban.AutobanManager;
 import client.inventory.Item;
 import client.inventory.manipulator.MapleInventoryManipulator;
 import net.server.Server;
-import network.packet.WvsContext;
-import tools.MaplePacketCreator;
+import network.packet.wvscontext.WvsContext;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 public final class PetFoodHandler extends AbstractMaplePacketHandler {

@@ -25,8 +25,7 @@ package client.command.commands.staff;
 
 import client.command.Command;
 import client.MapleClient;
-import network.packet.WvsContext;
-import tools.MaplePacketCreator;
+import network.packet.wvscontext.WvsContext;
 
 public class UnBugCommand extends Command {
     {

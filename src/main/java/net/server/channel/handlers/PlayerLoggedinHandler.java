@@ -43,7 +43,7 @@ import net.server.world.World;
 import network.packet.CLogin;
 import network.packet.FuncKeyMappedMan;
 import network.packet.NpcPool;
-import network.packet.WvsContext;
+import network.packet.wvscontext.WvsContext;
 import network.packet.wvscontext.AlliancePacket;
 import network.packet.wvscontext.FamilyPacket;
 import network.packet.wvscontext.GuildPacket;
@@ -358,7 +358,7 @@ public final class PlayerLoggedinHandler extends AbstractMaplePacketHandler {
                     player.reloadQuestExpirations();
 
                     if (player.isGM()){
-                        Server.getInstance().broadcastGMMessage(c.getWorld(), MaplePacketCreator.earnTitleMessage((player.gmLevel() < 2 ? "GM " : "Admin ") + player.getName() + " has logged in"));
+                        Server.getInstance().broadcastGMMessage(c.getWorld(), WvsContext.Packet.onScriptProgressMessage((player.gmLevel() < 2 ? "GM " : "Admin ") + player.getName() + " has logged in"));
                     }
 
                     // instant warp to cheater channel if a cheater tries logging into another channel

@@ -105,20 +105,6 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    public static byte[] sendPolice() {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.FAKE_GM_NOTICE.getValue());
-        mplew.write(0);//doesn't even matter what value
-        return mplew.getPacket();
-    }
-
-    public static byte[] sendPolice(String text) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.DATA_CRC_CHECK_FAILED.getValue());
-        mplew.writeMapleAsciiString(text);
-        return mplew.getPacket();
-    }
-
     /**
      * Gets character info for a character.
      *
@@ -257,42 +243,6 @@ public class MaplePacketCreator {
         } else if (type == 7) { // npc 
             mplew.writeInt(npc);
         }
-        return mplew.getPacket();
-    }
-
-    /**
-     * Sends a Avatar Super Megaphone packet.
-     *
-     * @param chr The character name.
-     * @param medal The medal text.
-     * @param channel Which channel.
-     * @param itemId Which item used.
-     * @param message The message sent.
-     * @param ear Whether or not the ear is shown for whisper.
-     * @return
-     */
-    public static byte[] getAvatarMega(MapleCharacter chr, String medal, int channel, int itemId, List<String> message, boolean ear) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.SET_AVATAR_MEGAPHONE.getValue());
-        mplew.writeInt(itemId);
-        mplew.writeMapleAsciiString(medal + chr.getName());
-        for (String s : message) {
-            mplew.writeMapleAsciiString(s);
-        }
-        mplew.writeInt(channel - 1); // channel
-        mplew.writeBool(ear);
-        PacketUtil.addCharLook(mplew, chr, true);
-        return mplew.getPacket();
-    }
-
-    /*
-         * Sends a packet to remove the tiger megaphone
-         * @return
-     */
-    public static byte[] byeAvatarMega() {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.CLEAR_AVATAR_MEGAPHONE.getValue());
-        mplew.write(1);
         return mplew.getPacket();
     }
 
@@ -1438,29 +1388,6 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    public static byte[] getMacros(SkillMacro[] macros) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.MACRO_SYS_DATA_INIT.getValue());
-        int count = 0;
-        for (int i = 0; i < 5; i++) {
-            if (macros[i] != null) {
-                count++;
-            }
-        }
-        mplew.write(count);
-        for (int i = 0; i < 5; i++) {
-            SkillMacro macro = macros[i];
-            if (macro != null) {
-                mplew.writeMapleAsciiString(macro.getName());
-                mplew.write(macro.getShout());
-                mplew.writeInt(macro.getSkill1());
-                mplew.writeInt(macro.getSkill2());
-                mplew.writeInt(macro.getSkill3());
-            }
-        }
-        return mplew.getPacket();
-    }
-
     public static byte[] crogBoatPacket(boolean type) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendOpcode.CONTI_MOVE.getValue());
@@ -2387,64 +2314,6 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    /**
-     * Sends a "levelup" packet to the guild or family.
-     *
-     * Possible values for <code>type</code>:<br> 0: <Family> ? has reached Lv.
-     * ?.<br> - The Reps you have received from ? will be reduced in half. 1:
-     * <Family> ? has reached Lv. ?.<br> 2: <Guild> ? has reached Lv. ?.<br>
-     *
-     * @param type The type
-     * @return The "levelup" packet.
-     */
-    public static byte[] levelUpMessage(int type, int level, String charname) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.NOTIFY_LEVELUP.getValue());
-        mplew.write(type);
-        mplew.writeInt(level);
-        mplew.writeMapleAsciiString(charname);
-
-        return mplew.getPacket();
-    }
-
-    /**
-     * Sends a "married" packet to the guild or family.
-     *
-     * Possible values for <code>type</code>:<br> 0: <Guild ? is now married.
-     * Please congratulate them.<br> 1: <Family ? is now married. Please
-     * congratulate them.<br>
-     *
-     * @param type The type
-     * @return The "married" packet.
-     */
-    public static byte[] marriageMessage(int type, String charname) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.NOTIFY_MARRIAGE.getValue());
-        mplew.write(type);  // 0: guild, 1: family
-        mplew.writeMapleAsciiString("> " + charname); //To fix the stupid packet lol
-
-        return mplew.getPacket();
-    }
-
-    /**
-     * Sends a "job advance" packet to the guild or family.
-     *
-     * Possible values for <code>type</code>:<br> 0: <Guild ? has advanced to
-     * a(an) ?.<br> 1: <Family ? has advanced to a(an) ?.<br>
-     *
-     * @param type The type
-     * @return The "job advance" packet.
-     */
-    public static byte[] jobMessage(int type, int job, String charname) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.NOTIFY_JOB_CHANGE.getValue());
-        mplew.write(type);
-        mplew.writeInt(job); //Why fking int?
-        mplew.writeMapleAsciiString("> " + charname); //To fix the stupid packet lol
-
-        return mplew.getPacket();
-    }
-
     public static byte[] getEnergy(String info, int amount) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendOpcode.SESSION_VALUE.getValue());
@@ -2644,13 +2513,6 @@ public class MaplePacketCreator {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter(3);
         mplew.writeShort(SendOpcode.VEGA_SCROLL.getValue());
         mplew.write(op);
-        return mplew.getPacket();
-    }
-
-    public static byte[] earnTitleMessage(String msg) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.SCRIPT_PROGRESS_MESSAGE.getValue());
-        mplew.writeMapleAsciiString(msg);
         return mplew.getPacket();
     }
 

@@ -36,6 +36,7 @@ import network.packet.field.MonsterCarnivalPacket;
 import network.packet.wvscontext.AlliancePacket;
 import network.packet.wvscontext.GuildPacket;
 import network.packet.wvscontext.PartyPacket;
+import network.packet.wvscontext.WvsContext;
 import server.cashshop.CashShop;
 import client.autoban.AutobanFactory;
 import client.autoban.AutobanManager;
@@ -1084,7 +1085,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         }
 
         if (this.guildid > 0) {
-            getGuild().broadcast(MaplePacketCreator.jobMessage(0, job.getId(), name), this.getId());
+            getGuild().broadcast(WvsContext.Packet.onNotifyJobChange(0, job.getId(), name), this.getId());
         }
         setMasteries(this.job.getId());
         guildUpdate();
@@ -4910,7 +4911,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         silentPartyUpdate();
 
         if (this.guildid > 0) {
-            getGuild().broadcast(MaplePacketCreator.levelUpMessage(2, level, name), this.getId());
+            getGuild().broadcast(WvsContext.Packet.onNotifyLevelUp(2, level, name), this.getId());
         }
 
         // achievements
@@ -6979,7 +6980,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     }
 
     public void sendPolice(int greason, String reason, int duration) {
-        announce(MaplePacketCreator.sendPolice(String.format("You have been blocked by the#b %s Police for %s.#k", "Boswell", reason)));
+        announce(WvsContext.Packet.onDataCRCCheckFailed(String.format("You have been blocked by the#b %s Police for %s.#k", "Boswell", reason)));
         this.isbanned = true;
         TimerManager.getInstance().schedule(() -> client.disconnect(false, false), duration);
     }
@@ -7010,7 +7011,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 
     public void sendMacros() {
         // Always send the macro packet to fix a client side bug when switching characters.
-        client.announce(MaplePacketCreator.getMacros(skillMacros));
+        client.announce(WvsContext.Packet.onMacroSysDataInit(skillMacros));
     }
 
     public void sendNote(String to, String msg, byte fame) throws SQLException {
@@ -7781,7 +7782,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
             strLines.add("");
             strLines.add(this.getClient().getChannelServer().getServerMessage().isEmpty() ? 0 : 1, "Get off my lawn!!");
 
-            this.announce(MaplePacketCreator.getAvatarMega(mapOwner, medal, this.getClient().getChannel(), 5390006, strLines, true));
+            this.announce(WvsContext.Packet.onSetAvatarMegaphone(mapOwner, medal, this.getClient().getChannel(), 5390006, strLines, true));
         }
     }
 
@@ -8443,12 +8444,12 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     public void broadcastMarriageMessage() {
         MapleGuild guild = this.getGuild();
         if (guild != null) {
-            guild.broadcast(MaplePacketCreator.marriageMessage(0, name));
+            guild.broadcast(WvsContext.Packet.onNotifyWedding(0, name));
         }
 
         MapleFamily family = this.getFamily();
         if (family != null) {
-            family.broadcast(MaplePacketCreator.marriageMessage(1, name));
+            family.broadcast(WvsContext.Packet.onNotifyWedding(1, name));
         }
     }
     

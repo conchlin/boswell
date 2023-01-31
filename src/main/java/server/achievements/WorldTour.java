@@ -301,7 +301,7 @@ public class WorldTour {
         }
 
         if (achievement_name.length() > 0) {
-            //player.getClient().getSession().write(MaplePacketCreator.earnTitleMessage(achievement_name + achievement_action));
+            //player.getClient().getSession().write(WvsContext.Packet.onScriptProgressMessage(achievement_name + achievement_action));
             player.showHint(achievement_name + achievement_action);
             player.getClient().announce(MaplePacketCreator.serverNotice(5, achievement_name + achievement_action));
         }

@@ -25,9 +25,8 @@ package client.command.commands.player;
 
 import client.command.Command;
 import client.MapleClient;
-import network.packet.WvsContext;
+import network.packet.wvscontext.WvsContext;
 import scripting.npc.NPCScriptManager;
-import tools.MaplePacketCreator;
 
 public class DisposeCommand extends Command {
     {

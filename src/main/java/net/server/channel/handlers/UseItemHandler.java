@@ -24,17 +24,15 @@ package net.server.channel.handlers;
 import client.MapleBuffStat;
 import client.MapleCharacter;
 import client.MapleClient;
-import client.MapleDisease;
 import client.inventory.Item;
 import client.inventory.MapleInventoryType;
 import constants.ItemConstants;
 import constants.ServerConstants;
 import net.AbstractMaplePacketHandler;
 import client.inventory.manipulator.MapleInventoryManipulator;
-import network.packet.WvsContext;
+import network.packet.wvscontext.WvsContext;
 import server.MapleItemInformationProvider;
 import server.MapleStatEffect;
-import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 /**

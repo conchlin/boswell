@@ -5,9 +5,8 @@ import client.MapleClient;
 import constants.GameConstants;
 import constants.MapConstants;
 import net.AbstractMaplePacketHandler;
-import network.packet.WvsContext;
+import network.packet.wvscontext.WvsContext;
 import server.maps.MapleMiniDungeonInfo;
-import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 /*

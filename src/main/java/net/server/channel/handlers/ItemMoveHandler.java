@@ -25,8 +25,7 @@ import client.MapleClient;
 import client.inventory.MapleInventoryType;
 import net.AbstractMaplePacketHandler;
 import client.inventory.manipulator.MapleInventoryManipulator;
-import network.packet.WvsContext;
-import tools.MaplePacketCreator;
+import network.packet.wvscontext.WvsContext;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 /**

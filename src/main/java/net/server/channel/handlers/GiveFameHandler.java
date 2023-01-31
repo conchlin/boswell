@@ -26,7 +26,7 @@ import client.autoban.AutobanFactory;
 import client.MapleClient;
 import enums.PopularityResponseType;
 import net.AbstractMaplePacketHandler;
-import network.packet.WvsContext;
+import network.packet.wvscontext.WvsContext;
 import server.achievements.WorldTour;
 import tools.FilePrinter;
 import tools.data.input.SeekableLittleEndianAccessor;

@@ -36,7 +36,7 @@ import net.server.world.MaplePartyCharacter;
 import network.packet.field.CField;
 import network.packet.ScriptMan;
 import network.packet.StoreBank;
-import network.packet.WvsContext;
+import network.packet.wvscontext.WvsContext;
 import network.packet.wvscontext.AlliancePacket;
 import provider.MapleData;
 import provider.MapleDataProviderFactory;

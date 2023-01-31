@@ -23,7 +23,7 @@ package net.server.channel.handlers;
 
 import client.MapleCharacter;
 import client.MapleClient;
-import network.packet.WvsContext;
+import network.packet.wvscontext.WvsContext;
 import server.skills.PlayerSkill;
 import client.inventory.Item;
 import client.inventory.MapleInventory;

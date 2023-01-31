@@ -26,6 +26,7 @@ import client.MapleClient;
 import enums.FieldEffectType;
 import network.packet.*;
 import network.packet.field.CField;
+import network.packet.wvscontext.WvsContext;
 import server.skills.PlayerSkill;
 import client.creator.veteran.*;
 import client.inventory.Equip;
@@ -422,8 +423,8 @@ public final class UseCashItemHandler extends AbstractMaplePacketHandler {
 
             final int world = c.getWorld();
             try {
-                Server.getInstance().broadcastMessage(world, MaplePacketCreator.getAvatarMega(player, medal, c.getChannel(), itemId, strLines, (slea.readByte() != 0)));
-                TimerManager.getInstance().schedule(() -> Server.getInstance().broadcastMessage(world, MaplePacketCreator.byeAvatarMega()), 1000 * 10);
+                Server.getInstance().broadcastMessage(world, WvsContext.Packet.onSetAvatarMegaphone(player, medal, c.getChannel(), itemId, strLines, (slea.readByte() != 0)));
+                TimerManager.getInstance().schedule(() -> Server.getInstance().broadcastMessage(world, WvsContext.Packet.onClearAvatarMegaphone()), 1000 * 10);
                 remove(c, position, itemId);
             } catch (NullPointerException ex) {
                 ex.printStackTrace();

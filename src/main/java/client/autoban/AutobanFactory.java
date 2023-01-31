@@ -24,9 +24,9 @@ package client.autoban;
 
 import client.MapleCharacter;
 import net.server.Server;
+import network.packet.wvscontext.WvsContext;
 import tools.FilePrinter;
 import tools.MapleLogger;
-import tools.MaplePacketCreator;
 
 /**
  * @author kevintjuh93
@@ -93,7 +93,7 @@ public enum AutobanFactory {
             return;
         }
 		if (!chr.isCheater()) {
-            Server.getInstance().broadcastGMMessage((chr != null ? chr.getWorld() : 0), MaplePacketCreator.earnTitleMessage((chr != null ? MapleCharacter.makeMapleReadable(chr.getName()) : "") + " caused " + this.name() + " " + reason));
+            Server.getInstance().broadcastGMMessage((chr != null ? chr.getWorld() : 0), WvsContext.Packet.onScriptProgressMessage((chr != null ? MapleCharacter.makeMapleReadable(chr.getName()) : "") + " caused " + this.name() + " " + reason));
             FilePrinter.print(FilePrinter.AUTOBAN_WARNING, (chr != null ? MapleCharacter.makeMapleReadable(chr.getName()) : "") + " caused " + this.name() + " " + reason);
         }
     }

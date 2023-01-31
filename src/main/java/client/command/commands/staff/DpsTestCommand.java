@@ -3,11 +3,11 @@ package client.command.commands.staff;
 import client.MapleCharacter;
 import client.MapleClient;
 import client.command.Command;
+import network.packet.wvscontext.WvsContext;
 import network.packet.field.CField;
 import server.TimerManager;
 import server.life.MapleLifeFactory;
 import server.life.MapleMonster;
-import tools.MaplePacketCreator;
 
 /**
  *
@@ -28,7 +28,7 @@ public class DpsTestCommand extends Command {
         mon.setHp(monHp);
         //mon.setStartingHp(monHp);
         player.getClient().announce(CField.Packet.onClock(true, 10)); // 10 seconds to prepare to test dmg
-        player.getClient().getSession().write(MaplePacketCreator.earnTitleMessage("tracking starts at 0:00"));
+        player.getClient().getSession().write(WvsContext.Packet.onScriptProgressMessage("tracking starts at 0:00"));
         
         TimerManager.getInstance().schedule(() -> {
                 player.getClient().announce(CField.Packet.onClock(true, 240)); // 4 minutes to test dmg 

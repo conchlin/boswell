@@ -26,7 +26,7 @@ import java.util.List;
 
 import net.AbstractMaplePacketHandler;
 import network.packet.field.CField;
-import network.packet.WvsContext;
+import network.packet.wvscontext.WvsContext;
 import server.MapleItemInformationProvider;
 import server.life.MapleLifeFactory;
 import server.life.MapleMonster;

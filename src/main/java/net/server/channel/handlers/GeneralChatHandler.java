@@ -28,10 +28,9 @@ import client.command.CommandsExecutor;
 import constants.ServerConstants;
 import net.AbstractMaplePacketHandler;
 import network.packet.UserCommon;
-import network.packet.WvsContext;
+import network.packet.wvscontext.WvsContext;
 import tools.FilePrinter;
 import tools.LogHelper;
-import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 public final class GeneralChatHandler extends AbstractMaplePacketHandler {    

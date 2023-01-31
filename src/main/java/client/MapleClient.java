@@ -50,7 +50,7 @@ import net.database.Statements;
 import network.packet.CCashShop;
 import network.packet.CLogin;
 import network.packet.UserLocal;
-import network.packet.WvsContext;
+import network.packet.wvscontext.WvsContext;
 import network.packet.wvscontext.GuildPacket;
 import tools.*;
 

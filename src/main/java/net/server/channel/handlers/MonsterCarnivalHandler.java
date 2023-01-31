@@ -29,14 +29,13 @@ import java.util.List;
 import net.AbstractMaplePacketHandler;
 import net.server.world.MapleParty;
 import net.server.world.MaplePartyCharacter;
-import network.packet.WvsContext;
+import network.packet.wvscontext.WvsContext;
 import network.packet.field.MonsterCarnivalPacket;
 import server.life.MapleLifeFactory;
 import server.life.MapleMonster;
 import server.partyquest.MapleCarnivalFactory;
 import server.partyquest.MapleCarnivalFactory.MCSkill;
 import server.partyquest.MonsterCarnival;
-import tools.MaplePacketCreator;
 import tools.Pair;
 import tools.data.input.SeekableLittleEndianAccessor;
 

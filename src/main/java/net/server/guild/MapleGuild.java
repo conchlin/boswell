@@ -36,11 +36,10 @@ import net.server.coordinator.MapleInviteCoordinator.InviteType;
 import net.server.coordinator.MapleMatchCheckerCoordinator;
 import net.database.Statements;
 import net.database.DatabaseConnection;
-import network.packet.WvsContext;
+import network.packet.wvscontext.WvsContext;
 import network.packet.field.CField;
 import network.packet.UserRemote;
 import network.packet.wvscontext.GuildPacket;
-import tools.MaplePacketCreator;
 import tools.Pair;
 
 import java.sql.Connection;

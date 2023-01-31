@@ -24,13 +24,12 @@ package net.server.channel.handlers;
 import client.MapleClient;
 import client.inventory.Item;
 import client.inventory.MapleInventoryType;
-import network.packet.WvsContext;
+import network.packet.wvscontext.WvsContext;
 import tools.Randomizer;
 import net.AbstractMaplePacketHandler;
 import client.inventory.manipulator.MapleInventoryManipulator;
 import server.MapleItemInformationProvider;
 import server.life.MapleLifeFactory;
-import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 /**

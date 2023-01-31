@@ -25,8 +25,7 @@ package net.server.channel.handlers;
 import client.MapleClient;
 import client.autoban.AutobanFactory;
 import net.AbstractMaplePacketHandler;
-import network.packet.WvsContext;
-import tools.MaplePacketCreator;
+import network.packet.wvscontext.WvsContext;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 /**

@@ -33,7 +33,7 @@ import constants.ItemConstants;
 import enums.TrunkResultType;
 import net.AbstractMaplePacketHandler;
 import network.packet.CTrunk;
-import network.packet.WvsContext;
+import network.packet.wvscontext.WvsContext;
 import server.MapleItemInformationProvider;
 import server.MapleStorage;
 import tools.FilePrinter;

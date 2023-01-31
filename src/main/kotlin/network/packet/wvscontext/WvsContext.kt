@@ -1,4 +1,4 @@
-package network.packet
+package network.packet.wvscontext
 
 import client.*
 import client.inventory.Equip
@@ -9,6 +9,7 @@ import constants.skills.ThunderBreaker
 import enums.PopularityResponseType
 import enums.WvsMessageType
 import network.opcode.SendOpcode
+import server.skills.SkillMacro
 import tools.Pair
 import tools.data.output.MaplePacketLittleEndianWriter
 import tools.packets.PacketUtil
@@ -625,6 +626,150 @@ class WvsContext {
             val mplew = MaplePacketLittleEndianWriter(6)
             mplew.writeShort(SendOpcode.MonsterBookSetCover.value)
             mplew.writeInt(cardId)
+            return mplew.packet
+        }
+
+        /**
+         *  packet responsible for level up notifications to the guild or family
+         *
+         * Possible values for <code>type</code>:
+         * <br> 0: <Family> ? has reached Lv. ?.<br> - The Reps you have received from ? will be reduced in half.
+         * 1: <Family> ? has reached Lv. ?.<br>
+         * 2: <Guild> ? has reached Lv. ?.<br>
+         *
+         * @param type
+         * @param level
+         * @param userName
+         */
+        fun onNotifyLevelUp(type: Int, level: Int, userName: String?): ByteArray? {
+            val mplew = MaplePacketLittleEndianWriter()
+            mplew.writeShort(SendOpcode.NotifyLevelUp.value)
+            mplew.write(type)
+            mplew.writeInt(level)
+            mplew.writeMapleAsciiString(userName)
+            return mplew.packet
+        }
+
+        /**
+         * packet responsible for notifying marriage to the guild or family
+         */
+        fun onNotifyWedding(type: Int, userName: String): ByteArray? {
+            val mplew = MaplePacketLittleEndianWriter()
+            mplew.writeShort(SendOpcode.NotifyWedding.value)
+            mplew.write(type) // 0: guild, 1: family
+            mplew.writeMapleAsciiString("> $userName")
+            return mplew.packet
+        }
+
+        /**
+         * packet responsible for notifying job change to the guild or family
+         */
+        fun onNotifyJobChange(type: Int, job: Int, userName: String): ByteArray? {
+            val mplew = MaplePacketLittleEndianWriter()
+            mplew.writeShort(SendOpcode.NotifyJobChange.value)
+            mplew.write(type) // 0: guild, 1: family
+            mplew.writeInt(job)
+            mplew.writeMapleAsciiString("> $userName")
+            return mplew.packet
+        }
+
+        /**
+         * packet responsible for broadcasting an avatar megaphone to the server
+         *
+         * @param user
+         * @param medal id of medal user has equipped
+         * @param channel channel #
+         * @param itemId which mega is being broadcast
+         * @param message the lines of text
+         * @param ear is ear shown
+         */
+        fun onSetAvatarMegaphone(
+            user: MapleCharacter,
+            medal: String,
+            channel: Int,
+            itemId: Int,
+            message: List<String?>,
+            ear: Boolean
+        ): ByteArray? {
+            val mplew = MaplePacketLittleEndianWriter()
+            mplew.writeShort(SendOpcode.SetAvatarMegaphone.value)
+            mplew.writeInt(itemId)
+            mplew.writeMapleAsciiString(medal + user.name)
+            for (s in message) {
+                mplew.writeMapleAsciiString(s)
+            }
+            mplew.writeInt(channel - 1) // channel
+            mplew.writeBool(ear)
+            PacketUtil.addCharLook(mplew, user, true)
+            return mplew.packet
+        }
+
+        /**
+         * packet responsible for removing avatar mega from screen
+         */
+        fun onClearAvatarMegaphone(): ByteArray? {
+            val mplew = MaplePacketLittleEndianWriter()
+            mplew.writeShort(SendOpcode.ClearAvatarMegaphone.value)
+            mplew.write(1)
+            return mplew.packet
+        }
+
+        fun onFakeGMNotice(): ByteArray? {
+            val mplew = MaplePacketLittleEndianWriter()
+            mplew.writeShort(SendOpcode.FakeGMNotice.value)
+            mplew.write(0) //doesn't even matter what value
+            return mplew.packet
+        }
+
+        /**
+         * packet responsible for broadcasting the yellow messages on the users screen
+         *
+         * @param msg
+         */
+        fun onScriptProgressMessage(msg: String?): ByteArray? {
+            val mplew = MaplePacketLittleEndianWriter()
+            mplew.writeShort(SendOpcode.ScriptProgressMessage.value)
+            mplew.writeMapleAsciiString(msg)
+            return mplew.packet
+        }
+
+        /**
+         * packet responsible for showing player the GM police popup window when being banned
+         *
+         * @param text ban message
+         */
+        fun onDataCRCCheckFailed(text: String?): ByteArray? {
+            val mplew = MaplePacketLittleEndianWriter()
+            mplew.writeShort(SendOpcode.DataCRCCheckFailed.value)
+            mplew.writeMapleAsciiString(text)
+            return mplew.packet
+        }
+
+        /**
+         * packet responsible for loading macro skills of characters
+         *
+         * @param macros
+         */
+        fun onMacroSysDataInit(macros: Array<SkillMacro?>): ByteArray? {
+            val mplew = MaplePacketLittleEndianWriter()
+            mplew.writeShort(SendOpcode.MacroSysDataInit.value)
+            var count = 0
+            for (i in 0..4) {
+                if (macros[i] != null) {
+                    count++
+                }
+            }
+            mplew.write(count)
+            for (i in 0..4) {
+                val macro = macros[i]
+                if (macro != null) {
+                    mplew.writeMapleAsciiString(macro.name)
+                    mplew.write(macro.shout)
+                    mplew.writeInt(macro.skill1)
+                    mplew.writeInt(macro.skill2)
+                    mplew.writeInt(macro.skill3)
+                }
+            }
             return mplew.packet
         }
     }

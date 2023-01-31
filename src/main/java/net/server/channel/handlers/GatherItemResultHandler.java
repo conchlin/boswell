@@ -38,7 +38,7 @@ import client.MapleCharacter;
 import constants.ItemConstants;
 import net.AbstractMaplePacketHandler;
 import client.inventory.manipulator.MapleInventoryManipulator;
-import network.packet.WvsContext;
+import network.packet.wvscontext.WvsContext;
 import server.MapleItemInformationProvider;
 import tools.data.input.SeekableLittleEndianAccessor;
 

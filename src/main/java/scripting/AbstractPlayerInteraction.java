@@ -34,6 +34,7 @@ import enums.UserEffectType;
 import enums.WvsMessageType;
 import network.packet.*;
 import network.packet.field.CField;
+import network.packet.wvscontext.WvsContext;
 import server.skills.*;
 import net.server.Server;
 import net.server.channel.Channel;
@@ -955,7 +956,7 @@ public class AbstractPlayerInteraction {
     }
 
     public void earnTitle(String msg) {
-        c.announce(MaplePacketCreator.earnTitleMessage(msg));
+        c.announce(WvsContext.Packet.onScriptProgressMessage(msg));
     }
 
     public void showInfoText(String msg) {

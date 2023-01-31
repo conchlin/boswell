@@ -34,7 +34,7 @@ import client.inventory.manipulator.MapleInventoryManipulator;
 import network.packet.field.CField;
 import network.packet.CLogin;
 import network.packet.UserLocal;
-import network.packet.WvsContext;
+import network.packet.wvscontext.WvsContext;
 import server.MaplePortal;
 import server.MapleTrade;
 import server.maps.MapleMap;

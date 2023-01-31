@@ -24,9 +24,8 @@ package net.server.channel.handlers;
 
 import client.MapleClient;
 import net.AbstractMaplePacketHandler;
-import network.packet.WvsContext;
+import network.packet.wvscontext.WvsContext;
 import network.packet.field.SnowballPacket;
-import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 /**

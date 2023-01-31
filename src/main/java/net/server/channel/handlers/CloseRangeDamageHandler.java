@@ -29,7 +29,7 @@ import client.*;
 import client.MapleCharacter.CancelCooldownAction;
 import network.packet.UserLocal;
 import network.packet.UserRemote;
-import network.packet.WvsContext;
+import network.packet.wvscontext.WvsContext;
 import server.MapleStatEffect;
 import server.TimerManager;
 import server.skills.PlayerSkill;

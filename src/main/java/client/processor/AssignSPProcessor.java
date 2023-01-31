@@ -25,16 +25,14 @@ package client.processor;
 
 import client.MapleCharacter;
 import client.MapleClient;
-import network.packet.WvsContext;
+import network.packet.wvscontext.WvsContext;
 import server.skills.PlayerSkill;
-import server.skills.Skill;
 import client.autoban.AutobanFactory;
 import constants.GameConstants;
 import constants.skills.Aran;
 import server.ThreadManager;
 import server.skills.SkillFactory;
 import tools.FilePrinter;
-import tools.MaplePacketCreator;
 
 /**
  *

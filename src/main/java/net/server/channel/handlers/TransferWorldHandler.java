@@ -23,7 +23,7 @@ package net.server.channel.handlers;
 import client.MapleClient;
 import net.AbstractMaplePacketHandler;
 import network.packet.CCashShop;
-import network.packet.WvsContext;
+import network.packet.wvscontext.WvsContext;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 /**

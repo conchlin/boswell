@@ -25,7 +25,7 @@ import client.MapleClient;
 import client.MapleQuestStatus;
 import enums.UserEffectType;
 import network.packet.UserLocal;
-import network.packet.WvsContext;
+import network.packet.wvscontext.WvsContext;
 import scripting.AbstractPlayerInteraction;
 import server.quest.MapleQuest;
 import tools.MaplePacketCreator;
@@ -104,11 +104,11 @@ public class MapScriptMethods extends AbstractPlayerInteraction {
             smp.append("You have earned the <").append(questName).append(">").append(rewardstring);
             getPlayer().announce(WvsContext.Packet.getShowQuestCompletion(quest.getId()));
         } else {
-            getPlayer().announce(MaplePacketCreator.earnTitleMessage(status + "/" + infoex + " regions explored."));
+            getPlayer().announce(WvsContext.Packet.onScriptProgressMessage(status + "/" + infoex + " regions explored."));
             etm.append("Trying for the ").append(questName).append(" title.");
             smp.append("You made progress on the ").append(questName).append(" title. ").append(status).append("/").append(infoex);
         }
-        getPlayer().announce(MaplePacketCreator.earnTitleMessage(etm.toString()));
+        getPlayer().announce(WvsContext.Packet.onScriptProgressMessage(etm.toString()));
         showInfoText(smp.toString());
     }
 
@@ -125,8 +125,8 @@ public class MapScriptMethods extends AbstractPlayerInteraction {
         }
         String status = Integer.toString(q.getMedalProgress());
         getPlayer().announce(MaplePacketCreator.updateQuest(q, true));
-        getPlayer().announce(MaplePacketCreator.earnTitleMessage(status + "/5 Completed"));
-        getPlayer().announce(MaplePacketCreator.earnTitleMessage("The One Who's Touched the Sky title in progress."));
+        getPlayer().announce(WvsContext.Packet.onScriptProgressMessage(status + "/5 Completed"));
+        getPlayer().announce(WvsContext.Packet.onScriptProgressMessage("The One Who's Touched the Sky title in progress."));
         if (Integer.toString(q.getMedalProgress()).equals(quest.getInfoEx())) {
             showInfoText("The One Who's Touched the Sky" + rewardstring);
             getPlayer().announce(WvsContext.Packet.getShowQuestCompletion(quest.getId()));

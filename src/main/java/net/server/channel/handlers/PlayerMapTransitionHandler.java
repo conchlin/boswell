@@ -27,10 +27,7 @@ import client.MapleClient;
 import java.util.Collections;
 import java.util.List;
 import net.AbstractMaplePacketHandler;
-import network.packet.WvsContext;
-import server.life.MapleMonster;
-import server.maps.MapleMapObject;
-import tools.MaplePacketCreator;
+import network.packet.wvscontext.WvsContext;
 import tools.Pair;
 import tools.data.input.SeekableLittleEndianAccessor;
 

@@ -30,9 +30,8 @@ import net.server.Server;
 import net.server.guild.MapleGuild;
 import net.server.guild.MapleGuildCharacter;
 import net.server.guild.MapleAlliance;
-import network.packet.WvsContext;
+import network.packet.wvscontext.WvsContext;
 import network.packet.wvscontext.AlliancePacket;
-import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 import tools.data.output.MaplePacketLittleEndianWriter;
 

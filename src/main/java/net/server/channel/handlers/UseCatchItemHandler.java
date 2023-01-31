@@ -30,7 +30,7 @@ import net.AbstractMaplePacketHandler;
 import net.server.Server;
 import client.inventory.manipulator.MapleInventoryManipulator;
 import network.packet.MobPool;
-import network.packet.WvsContext;
+import network.packet.wvscontext.WvsContext;
 import server.MapleItemInformationProvider;
 import server.life.MapleMonster;
 import tools.MaplePacketCreator;

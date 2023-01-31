@@ -25,13 +25,12 @@ import client.MapleClient;
 import client.processor.DueyProcessor;
 import constants.ServerConstants;
 import net.AbstractMaplePacketHandler;
-import network.packet.WvsContext;
+import network.packet.wvscontext.WvsContext;
 import scripting.npc.NPCScriptManager;
 import server.life.MapleNPC;
 import server.maps.MapleMapObject;
 import server.life.MaplePlayerNPC;
 import tools.FilePrinter;
-import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 public final class NPCTalkHandler extends AbstractMaplePacketHandler {

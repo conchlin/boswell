@@ -37,12 +37,11 @@ import client.processor.DueyProcessor;
 import net.AbstractMaplePacketHandler;
 import net.server.world.World;
 import net.server.channel.Channel;
-import network.packet.WvsContext;
+import network.packet.wvscontext.WvsContext;
 import server.MapleItemInformationProvider;
 import scripting.event.EventInstanceManager;
 import net.database.DatabaseConnection;
 import tools.Pair;
-import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 import tools.packets.Wedding;
 

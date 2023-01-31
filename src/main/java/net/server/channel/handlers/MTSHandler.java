@@ -33,7 +33,7 @@ import java.util.Map;
 import net.AbstractMaplePacketHandler;
 import net.server.Server;
 import net.server.channel.Channel;
-import network.packet.WvsContext;
+import network.packet.wvscontext.WvsContext;
 import server.MTSItemInfo;
 import client.inventory.manipulator.MapleInventoryManipulator;
 import server.MapleItemInformationProvider;

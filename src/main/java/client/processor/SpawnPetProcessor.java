@@ -25,14 +25,13 @@ import client.MapleClient;
 import client.inventory.MapleInventoryType;
 import client.inventory.MaplePet;
 import network.packet.PetPacket;
-import network.packet.WvsContext;
+import network.packet.wvscontext.WvsContext;
 import provider.MapleDataTool;
 import client.inventory.manipulator.MapleInventoryManipulator;
 import java.io.File;
 import provider.MapleDataProvider;
 import provider.MapleDataProviderFactory;
 import server.skills.SkillFactory;
-import tools.MaplePacketCreator;
 
 /**
  *

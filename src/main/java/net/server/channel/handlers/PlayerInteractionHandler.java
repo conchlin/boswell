@@ -35,7 +35,7 @@ import constants.ServerConstants;
 import net.AbstractMaplePacketHandler;
 import network.packet.EmployeePool;
 import network.packet.UserCommon;
-import network.packet.WvsContext;
+import network.packet.wvscontext.WvsContext;
 import server.MapleItemInformationProvider;
 import server.MapleTrade;
 import constants.GameConstants;

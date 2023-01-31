@@ -26,10 +26,9 @@ import client.inventory.Item;
 import client.inventory.MapleInventoryType;
 import net.AbstractMaplePacketHandler;
 import client.inventory.manipulator.MapleInventoryManipulator;
-import network.packet.WvsContext;
+import network.packet.wvscontext.WvsContext;
 import server.MapleItemInformationProvider;
 import server.MapleStatEffect;
-import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 public final class PetAutoPotHandler extends AbstractMaplePacketHandler {

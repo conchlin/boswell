@@ -2,11 +2,10 @@ package net.server.channel.handlers;
 
 import client.MapleClient;
 import net.AbstractMaplePacketHandler;
-import network.packet.WvsContext;
+import network.packet.wvscontext.WvsContext;
 import server.MaplePortal;
 import server.MapleTrade;
 import server.MapleTrade.TradeResult;
-import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 public final class ChangeMapSpecialHandler extends AbstractMaplePacketHandler {

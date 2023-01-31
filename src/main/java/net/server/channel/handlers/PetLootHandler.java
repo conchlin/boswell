@@ -27,10 +27,9 @@ import client.MapleCharacter;
 import client.MapleClient;
 import client.inventory.MaplePet;
 import net.AbstractMaplePacketHandler;
-import network.packet.WvsContext;
+import network.packet.wvscontext.WvsContext;
 import server.maps.MapleMapItem;
 import server.maps.MapleMapObject;
-import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 import constants.ServerConstants;
 
