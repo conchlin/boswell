@@ -27,7 +27,7 @@ import net.database.Statements;
 import net.server.audit.locks.MonitoredLockType;
 import net.server.audit.locks.factory.MonitoredReentrantLockFactory;
 import network.packet.CTrunk;
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import provider.MapleData;
 import provider.MapleDataProvider;
 import provider.MapleDataProviderFactory;

@@ -28,7 +28,7 @@ import client.command.CommandsExecutor;
 import constants.ServerConstants;
 import net.AbstractMaplePacketHandler;
 import network.packet.UserCommon;
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import tools.FilePrinter;
 import tools.LogHelper;
 import tools.data.input.SeekableLittleEndianAccessor;

@@ -22,7 +22,7 @@ package net.server.channel.handlers;
 
 import client.MapleClient;
 import net.AbstractMaplePacketHandler;
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import scripting.event.EventInstanceManager;
 import tools.data.input.SeekableLittleEndianAccessor;
 import tools.packets.Wedding;

@@ -25,7 +25,7 @@ import client.MapleClient;
 import client.processor.DueyProcessor;
 import constants.ServerConstants;
 import net.AbstractMaplePacketHandler;
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import scripting.npc.NPCScriptManager;
 import server.life.MapleNPC;
 import server.maps.MapleMapObject;

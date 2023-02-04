@@ -24,7 +24,7 @@ package net.server.channel.handlers;
 import client.MapleClient;
 import client.MapleCharacter;
 import network.packet.UserCommon;
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import server.skills.PlayerSkill;
 import client.inventory.Equip;
 import client.inventory.Equip.ScrollResult;

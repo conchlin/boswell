@@ -42,7 +42,7 @@ import java.util.concurrent.locks.Lock;
 import net.server.audit.locks.factory.MonitoredReentrantLockFactory;
 import net.server.Server;
 import network.packet.EmployeePool;
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import server.MapleItemInformationProvider;
 import net.database.DatabaseConnection;
 import tools.MaplePacketCreator;

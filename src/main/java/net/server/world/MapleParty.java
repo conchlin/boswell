@@ -23,7 +23,7 @@ package net.server.world;
 
 import client.MapleCharacter;
 import client.MapleClient;
-import constants.ServerConstants;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -40,7 +40,7 @@ import net.server.audit.locks.MonitoredLockType;
 import net.server.audit.locks.factory.MonitoredReentrantLockFactory;
 import net.server.coordinator.MapleMatchCheckerCoordinator;
 import net.server.coordinator.matchchecker.MatchCheckerListenerFactory.MatchCheckerType;
-import network.packet.wvscontext.PartyPacket;
+import network.packet.context.PartyPacket;
 import scripting.event.EventInstanceManager;
 import server.maps.MapleDoor;
 import server.maps.MapleMap;

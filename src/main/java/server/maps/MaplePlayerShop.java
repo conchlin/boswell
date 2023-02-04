@@ -38,7 +38,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import network.opcode.SendOpcode;
 import network.packet.UserCommon;
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import tools.MaplePacketCreator;
 import tools.Pair;
 import tools.data.output.MaplePacketLittleEndianWriter;

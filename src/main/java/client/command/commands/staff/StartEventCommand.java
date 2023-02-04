@@ -27,7 +27,7 @@ import client.command.Command;
 import client.MapleClient;
 import client.MapleCharacter;
 import net.server.Server;
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import server.events.gm.MapleEvent;
 import tools.MaplePacketCreator;
 

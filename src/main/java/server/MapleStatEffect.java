@@ -36,7 +36,7 @@ import java.util.concurrent.ScheduledFuture;
 import net.server.Server;
 import network.packet.UserPool;
 import network.packet.UserRemote;
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import provider.MapleData;
 import provider.MapleDataTool;
 import server.life.MapleMonster;

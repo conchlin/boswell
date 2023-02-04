@@ -28,7 +28,7 @@ import java.sql.SQLException;
 import net.AbstractMaplePacketHandler;
 import net.server.Server;
 import net.database.DatabaseConnection;
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 import client.MapleCharacter;

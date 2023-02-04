@@ -76,7 +76,7 @@ import network.packet.field.CField;
 import network.packet.field.CoconutPacket;
 import network.packet.field.MonsterCarnivalPacket;
 import network.packet.field.SnowballPacket;
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import scripting.map.MapScriptManager;
 import server.MapleItemInformationProvider;
 import server.MaplePortal;

@@ -2,7 +2,7 @@ package net.server.channel.handlers;
 
 import client.MapleClient;
 import net.AbstractMaplePacketHandler;
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import server.MaplePortal;
 import server.MapleTrade;
 import server.MapleTrade.TradeResult;

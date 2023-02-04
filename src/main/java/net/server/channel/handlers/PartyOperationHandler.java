@@ -26,7 +26,7 @@ import net.AbstractMaplePacketHandler;
 import net.server.world.MapleParty;
 import net.server.world.MaplePartyCharacter;
 import net.server.world.World;
-import network.packet.wvscontext.PartyPacket;
+import network.packet.context.PartyPacket;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 import client.MapleCharacter;

@@ -25,7 +25,7 @@ package client.processor;
 
 import client.MapleCharacter;
 import client.MapleClient;
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import server.skills.PlayerSkill;
 import client.autoban.AutobanFactory;
 import constants.GameConstants;

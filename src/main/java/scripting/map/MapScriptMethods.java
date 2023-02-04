@@ -25,7 +25,7 @@ import client.MapleClient;
 import client.MapleQuestStatus;
 import enums.UserEffectType;
 import network.packet.UserLocal;
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import scripting.AbstractPlayerInteraction;
 import server.quest.MapleQuest;
 import tools.MaplePacketCreator;

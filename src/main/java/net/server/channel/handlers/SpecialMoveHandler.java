@@ -28,7 +28,7 @@ import net.AbstractMaplePacketHandler;
 import network.packet.MobPool;
 import network.packet.UserLocal;
 import network.packet.UserRemote;
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import server.MapleStatEffect;
 import server.TimerManager;
 import server.life.MapleMonster;

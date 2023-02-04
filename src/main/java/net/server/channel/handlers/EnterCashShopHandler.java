@@ -27,7 +27,7 @@ import enums.CashItemResultType;
 import net.AbstractMaplePacketHandler;
 import net.server.Server;
 import network.packet.CCashShop;
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import server.maps.MapleMiniDungeonInfo;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;

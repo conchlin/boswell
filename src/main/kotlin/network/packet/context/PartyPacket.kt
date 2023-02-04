@@ -1,4 +1,4 @@
-package network.packet.wvscontext
+package network.packet.context
 
 import client.MapleCharacter
 import enums.PartyResultType

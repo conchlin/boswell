@@ -29,7 +29,7 @@ import java.util.List;
 import net.AbstractMaplePacketHandler;
 import net.server.world.MapleParty;
 import net.server.world.MaplePartyCharacter;
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import network.packet.field.MonsterCarnivalPacket;
 import server.life.MapleLifeFactory;
 import server.life.MapleMonster;

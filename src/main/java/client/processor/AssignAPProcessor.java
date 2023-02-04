@@ -27,7 +27,7 @@ import client.MapleCharacter;
 import client.MapleClient;
 import client.MapleJob;
 import client.MapleStat;
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import server.skills.PlayerSkill;
 import client.autoban.AutobanFactory;
 import client.inventory.Item;

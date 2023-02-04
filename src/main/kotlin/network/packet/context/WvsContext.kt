@@ -1,4 +1,4 @@
-package network.packet.wvscontext
+package network.packet.context
 
 import client.*
 import client.inventory.Equip

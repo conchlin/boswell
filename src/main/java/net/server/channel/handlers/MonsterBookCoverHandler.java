@@ -23,7 +23,7 @@ package net.server.channel.handlers;
 
 import client.MapleClient;
 import net.AbstractMaplePacketHandler;
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 public final class MonsterBookCoverHandler extends AbstractMaplePacketHandler {

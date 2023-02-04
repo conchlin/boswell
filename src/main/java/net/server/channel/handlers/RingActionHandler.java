@@ -37,7 +37,7 @@ import client.processor.DueyProcessor;
 import net.AbstractMaplePacketHandler;
 import net.server.world.World;
 import net.server.channel.Channel;
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import server.MapleItemInformationProvider;
 import scripting.event.EventInstanceManager;
 import net.database.DatabaseConnection;

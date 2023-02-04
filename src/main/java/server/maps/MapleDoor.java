@@ -29,7 +29,7 @@ import client.MapleClient;
 import client.MapleCharacter;
 import net.server.world.MaplePartyCharacter;
 import network.packet.TownPortalPool;
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import server.MaplePortal;
 import server.MapleStatEffect;
 

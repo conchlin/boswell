@@ -27,7 +27,7 @@ import net.server.audit.locks.factory.MonitoredReentrantLockFactory;
 import net.database.Statements;
 import network.packet.UserLocal;
 import network.packet.UserRemote;
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

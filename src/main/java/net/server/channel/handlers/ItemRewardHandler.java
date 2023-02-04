@@ -29,7 +29,7 @@ import java.util.List;
 import net.AbstractMaplePacketHandler;
 import net.server.Server;
 import client.inventory.manipulator.MapleInventoryManipulator;
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import server.MapleItemInformationProvider;
 import server.MapleItemInformationProvider.RewardItem;
 import tools.MaplePacketCreator;

@@ -30,7 +30,7 @@ import constants.ItemConstants;
 import constants.ServerConstants;
 import net.AbstractMaplePacketHandler;
 import client.inventory.manipulator.MapleInventoryManipulator;
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import server.MapleItemInformationProvider;
 import server.MapleStatEffect;
 import tools.data.input.SeekableLittleEndianAccessor;

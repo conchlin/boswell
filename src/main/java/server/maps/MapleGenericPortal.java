@@ -27,7 +27,7 @@ import client.autoban.AutobanFactory;
 import constants.GameConstants;
 import java.awt.Point;
 
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import scripting.portal.PortalScriptManager;
 import server.MaplePortal;
 import net.server.audit.locks.MonitoredLockType;

@@ -24,7 +24,7 @@ package client.autoban;
 
 import client.MapleCharacter;
 import net.server.Server;
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import tools.FilePrinter;
 import tools.MapleLogger;
 

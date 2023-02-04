@@ -39,8 +39,7 @@ import net.server.world.MapleParty;
 import net.server.world.MaplePartyCharacter;
 import net.database.Statements;
 import net.database.DatabaseConnection;
-import network.packet.wvscontext.AlliancePacket;
-import tools.MaplePacketCreator;
+import network.packet.context.AlliancePacket;
 import tools.Pair;
 
 /**

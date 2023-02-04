@@ -37,7 +37,7 @@ import java.util.Map;
 import enums.CashItemResultType;
 import net.AbstractMaplePacketHandler;
 import network.packet.CCashShop;
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import server.cashshop.CashShop;
 import server.cashshop.CashItem;
 import server.cashshop.CashItemFactory;

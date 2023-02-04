@@ -28,7 +28,7 @@ import net.AbstractMaplePacketHandler;
 import net.server.coordinator.MapleInviteCoordinator;
 import net.server.coordinator.MapleInviteCoordinator.InviteResult;
 import net.server.coordinator.MapleInviteCoordinator.InviteType;
-import network.packet.wvscontext.PartyPacket;
+import network.packet.context.PartyPacket;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 public final class DenyPartyRequestHandler extends AbstractMaplePacketHandler {

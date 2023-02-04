@@ -29,7 +29,7 @@ import java.util.List;
 import client.MapleClient;
 import constants.GameConstants;
 import net.AbstractMaplePacketHandler;
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import server.maps.MapleMapObjectType;
 import tools.data.input.SeekableLittleEndianAccessor;
 

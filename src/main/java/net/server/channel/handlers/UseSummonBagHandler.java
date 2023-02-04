@@ -24,7 +24,7 @@ package net.server.channel.handlers;
 import client.MapleClient;
 import client.inventory.Item;
 import client.inventory.MapleInventoryType;
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import tools.Randomizer;
 import net.AbstractMaplePacketHandler;
 import client.inventory.manipulator.MapleInventoryManipulator;

@@ -25,7 +25,7 @@ import client.MapleClient;
 import client.inventory.MapleInventoryType;
 import client.inventory.MaplePet;
 import network.packet.PetPacket;
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import provider.MapleDataTool;
 import client.inventory.manipulator.MapleInventoryManipulator;
 import java.io.File;

@@ -21,8 +21,7 @@
 */
 package net.server.guild;
 
-import network.packet.wvscontext.GuildPacket;
-import tools.MaplePacketCreator;
+import network.packet.context.GuildPacket;
 
 public enum MapleGuildResponse {
     NOT_IN_CHANNEL(0x2a),

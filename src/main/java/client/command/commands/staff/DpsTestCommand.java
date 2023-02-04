@@ -3,7 +3,7 @@ package client.command.commands.staff;
 import client.MapleCharacter;
 import client.MapleClient;
 import client.command.Command;
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import network.packet.field.CField;
 import server.TimerManager;
 import server.life.MapleLifeFactory;

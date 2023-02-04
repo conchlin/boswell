@@ -27,7 +27,7 @@ import client.MapleClient;
 import java.util.Collections;
 import java.util.List;
 import net.AbstractMaplePacketHandler;
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import tools.Pair;
 import tools.data.input.SeekableLittleEndianAccessor;
 

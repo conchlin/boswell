@@ -1246,7 +1246,7 @@ public class MaplePacketCreator {
 
     public static byte[] updateBuddylist(Collection<BuddylistEntry> buddylist) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.BUDDYLIST.getValue());
+        mplew.writeShort(SendOpcode.FriendResult.getValue());
         mplew.write(7);
         mplew.write(buddylist.size());
         for (BuddylistEntry buddy : buddylist) {
@@ -1267,14 +1267,14 @@ public class MaplePacketCreator {
 
     public static byte[] buddylistMessage(byte message) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.BUDDYLIST.getValue());
+        mplew.writeShort(SendOpcode.FriendResult.getValue());
         mplew.write(message);
         return mplew.getPacket();
     }
 
     public static byte[] requestBuddylistAdd(int cidFrom, int cid, String nameFrom) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.BUDDYLIST.getValue());
+        mplew.writeShort(SendOpcode.FriendResult.getValue());
         mplew.write(9);
         mplew.writeInt(cidFrom);
         mplew.writeMapleAsciiString(nameFrom);
@@ -1291,7 +1291,7 @@ public class MaplePacketCreator {
 
     public static byte[] updateBuddyChannel(int characterid, int channel) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.BUDDYLIST.getValue());
+        mplew.writeShort(SendOpcode.FriendResult.getValue());
         mplew.write(0x14);
         mplew.writeInt(characterid);
         mplew.write(0);
@@ -1301,7 +1301,7 @@ public class MaplePacketCreator {
 
     public static byte[] updateBuddyCapacity(int capacity) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.BUDDYLIST.getValue());
+        mplew.writeShort(SendOpcode.FriendResult.getValue());
         mplew.write(0x15);
         mplew.write(capacity);
         return mplew.getPacket();

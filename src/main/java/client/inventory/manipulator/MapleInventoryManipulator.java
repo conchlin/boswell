@@ -41,7 +41,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import network.packet.UserRemote;
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import server.MapleItemInformationProvider;
 import server.maps.MapleMap;
 

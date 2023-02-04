@@ -29,8 +29,7 @@ import net.server.world.MapleParty;
 import net.server.coordinator.MapleInviteCoordinator.InviteType;
 import net.server.coordinator.partysearch.PartySearchEchelon;
 import net.server.coordinator.partysearch.PartySearchStorage;
-import network.packet.wvscontext.PartyPacket;
-import tools.MaplePacketCreator;
+import network.packet.context.PartyPacket;
 import tools.Pair;
 
 import java.util.Collections;

@@ -50,8 +50,8 @@ import net.database.Statements;
 import network.packet.CCashShop;
 import network.packet.CLogin;
 import network.packet.UserLocal;
-import network.packet.wvscontext.WvsContext;
-import network.packet.wvscontext.GuildPacket;
+import network.packet.context.WvsContext;
+import network.packet.context.GuildPacket;
 import tools.*;
 
 import javax.script.ScriptEngine;

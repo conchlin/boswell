@@ -56,7 +56,7 @@ enum class SendOpcode(val value: Int) {
     GuildBBSPacket(59),
     CHAR_INFO(61),
     PartyResult(62),
-    BUDDYLIST(63),//OnFriendResult
+    FriendResult(63),
     GuildResult(65),
     AllianceResult(66),
     TownPortal(67),

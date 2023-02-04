@@ -24,7 +24,7 @@ package net.server.channel.handlers;
 import client.MapleCharacter;
 import client.MapleClient;
 import net.AbstractMaplePacketHandler;
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import server.maps.FieldLimit;
 import tools.data.input.SeekableLittleEndianAccessor;
 

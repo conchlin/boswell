@@ -17,7 +17,7 @@ import client.inventory.manipulator.MapleKarmaManipulator;
 import constants.ItemConstants;
 import constants.ServerConstants;
 import net.AbstractMaplePacketHandler;
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import server.MapleMarriage;
 import tools.data.input.SeekableLittleEndianAccessor;
 import tools.packets.Wedding;

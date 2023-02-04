@@ -33,7 +33,7 @@ import javax.script.Invocable;
 import javax.script.ScriptException;
 import net.server.world.MaplePartyCharacter;
 
-import network.packet.wvscontext.WvsContext;
+import network.packet.context.WvsContext;
 import scripting.AbstractScriptManager;
 import server.MapleItemInformationProvider.ScriptedItem;
 import tools.FilePrinter;

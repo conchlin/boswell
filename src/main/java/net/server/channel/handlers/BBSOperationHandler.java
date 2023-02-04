@@ -32,8 +32,7 @@ import enums.GuildResultType;
 import net.AbstractMaplePacketHandler;
 import net.database.Statements;
 import net.database.DatabaseConnection;
-import network.packet.wvscontext.GuildPacket;
-import tools.MaplePacketCreator;
+import network.packet.context.GuildPacket;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 public final class BBSOperationHandler extends AbstractMaplePacketHandler {

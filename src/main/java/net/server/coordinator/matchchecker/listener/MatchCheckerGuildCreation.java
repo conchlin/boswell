@@ -29,8 +29,7 @@ import net.server.guild.MapleGuildCharacter;
 import java.util.Set;
 import net.server.Server;
 import net.server.world.MapleParty;
-import network.packet.wvscontext.GuildPacket;
-import tools.MaplePacketCreator;
+import network.packet.context.GuildPacket;
 
 /**
  *
