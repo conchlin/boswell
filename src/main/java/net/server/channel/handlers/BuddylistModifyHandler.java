@@ -33,9 +33,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import enums.FriendResultType;
 import net.AbstractMaplePacketHandler;
 import net.server.world.World;
 import net.database.DatabaseConnection;
+import network.packet.context.FriendPacket;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
@@ -56,7 +59,7 @@ public class BuddylistModifyHandler extends AbstractMaplePacketHandler {
     private void nextPendingRequest(MapleClient c) {
         CharacterNameAndId pendingBuddyRequest = c.getPlayer().getBuddylist().pollPendingRequest();
         if (pendingBuddyRequest != null) {
-            c.announce(MaplePacketCreator.requestBuddylistAdd(pendingBuddyRequest.getId(), c.getPlayer().getId(), pendingBuddyRequest.getName()));
+            c.announce(FriendPacket.Packet.onFriendResult(FriendResultType.AddFriend.getType(), pendingBuddyRequest.getId(), c.getPlayer().getId(), pendingBuddyRequest.getName()));
         }
     }
 
@@ -151,7 +154,7 @@ public class BuddylistModifyHandler extends AbstractMaplePacketHandler {
                                 }
                             }
                             buddylist.put(new BuddylistEntry(charWithId.getName(), group, otherCid, displayChannel, true));
-                            c.announce(MaplePacketCreator.updateBuddylist(buddylist.getBuddies()));
+                            c.announce(FriendPacket.Packet.onFriendResult(FriendResultType.UpdateList.getType(), buddylist.getBuddies()));
                         }
                     } else {
                         c.announce(MaplePacketCreator.serverNotice(1, "A character called \"" + addName + "\" does not exist"));
@@ -161,7 +164,7 @@ public class BuddylistModifyHandler extends AbstractMaplePacketHandler {
                 }
             } else {
                 ble.changeGroup(group);
-                c.announce(MaplePacketCreator.updateBuddylist(buddylist.getBuddies()));
+                c.announce(FriendPacket.Packet.onFriendResult(FriendResultType.UpdateList.getType(), buddylist.getBuddies()));
             }
         } else if (mode == 2) { // accept buddy
             int otherCid = slea.readInt();
@@ -186,7 +189,7 @@ public class BuddylistModifyHandler extends AbstractMaplePacketHandler {
                     }
                     if (otherName != null) {
                         buddylist.put(new BuddylistEntry(otherName, "Default Group", otherCid, channel, true));
-                        c.announce(MaplePacketCreator.updateBuddylist(buddylist.getBuddies()));
+                        c.announce(FriendPacket.Packet.onFriendResult(FriendResultType.UpdateList.getType(), buddylist.getBuddies()));
                         notifyRemoteChannel(c, channel, otherCid, ADDED);
                     }
                 } catch (SQLException e) {

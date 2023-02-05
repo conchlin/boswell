@@ -57,9 +57,11 @@ import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.concurrent.ScheduledFuture;
 
+import enums.FriendResultType;
 import enums.GuildResultType;
 import enums.PartyResultType;
 import enums.WhisperResultType;
+import network.packet.context.FriendPacket;
 import network.packet.field.CField;
 import network.packet.UserRemote;
 import network.packet.context.GuildPacket;
@@ -1150,18 +1152,18 @@ public class World {
         if (addChar != null) {
             BuddyList buddylist = addChar.getBuddylist();
             switch (operation) {
-                case ADDED:
+                case ADDED -> {
                     if (buddylist.contains(cidFrom)) {
                         buddylist.put(new BuddylistEntry(name, "Default Group", cidFrom, channel, true));
-                        addChar.getClient().announce(MaplePacketCreator.updateBuddyChannel(cidFrom, (byte) (channel - 1)));
+                        addChar.getClient().announce(FriendPacket.Packet.onFriendResult(FriendResultType.ChannelChange.getType(), cidFrom, (byte) (channel - 1)));
                     }
-                    break;
-                case DELETED:
+                }
+                case DELETED -> {
                     if (buddylist.contains(cidFrom)) {
                         buddylist.put(new BuddylistEntry(name, "Default Group", cidFrom, (byte) -1, buddylist.get(cidFrom).isVisible()));
-                        addChar.getClient().announce(MaplePacketCreator.updateBuddyChannel(cidFrom, (byte) -1));
+                        addChar.getClient().announce(FriendPacket.Packet.onFriendResult(FriendResultType.ChannelChange.getType(), cidFrom, (byte) -1));
                     }
-                    break;
+                }
             }
         }
     }
@@ -1190,7 +1192,7 @@ public class World {
                         mcChannel = (byte) (channel - 1);
                     }
                     chr.getBuddylist().put(ble);
-                    chr.getClient().announce(MaplePacketCreator.updateBuddyChannel(ble.getCharacterId(), mcChannel));
+                    chr.getClient().announce(FriendPacket.Packet.onFriendResult(FriendResultType.ChannelChange.getType(), ble.getCharacterId(), mcChannel));
                 }
             }
         }

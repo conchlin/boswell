@@ -31,8 +31,11 @@ import java.util.Deque;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
+
+import enums.FriendResultType;
 import net.server.PlayerStorage;
 import net.database.DatabaseConnection;
+import network.packet.context.FriendPacket;
 import tools.MaplePacketCreator;
 
 public class BuddyList {
@@ -170,7 +173,7 @@ public class BuddyList {
     public void addBuddyRequest(MapleClient c, int cidFrom, String nameFrom, int channelFrom) {
         put(new BuddylistEntry(nameFrom, "Default Group", cidFrom, channelFrom, false));
         if (pendingRequests.isEmpty()) {
-            c.announce(MaplePacketCreator.requestBuddylistAdd(cidFrom, c.getPlayer().getId(), nameFrom));
+            c.announce(FriendPacket.Packet.onFriendResult(FriendResultType.AddFriend.getType(), cidFrom, c.getPlayer().getId(), nameFrom));
         } else {
             pendingRequests.push(new CharacterNameAndId(cidFrom, nameFrom));
         }

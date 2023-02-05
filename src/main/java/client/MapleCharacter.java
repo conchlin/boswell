@@ -31,12 +31,9 @@ import enums.*;
 import net.database.DatabaseConnection;
 import net.database.Statements;
 import network.packet.*;
+import network.packet.context.*;
 import network.packet.field.CField;
 import network.packet.field.MonsterCarnivalPacket;
-import network.packet.context.AlliancePacket;
-import network.packet.context.GuildPacket;
-import network.packet.context.PartyPacket;
-import network.packet.context.WvsContext;
 import server.cashshop.CashShop;
 import client.autoban.AutobanFactory;
 import client.autoban.AutobanManager;
@@ -1924,7 +1921,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     private void nextPendingRequest(MapleClient c) {
         CharacterNameAndId pendingBuddyRequest = c.getPlayer().getBuddylist().pollPendingRequest();
         if (pendingBuddyRequest != null) {
-            c.announce(MaplePacketCreator.requestBuddylistAdd(pendingBuddyRequest.getId(), c.getPlayer().getId(), pendingBuddyRequest.getName()));
+            c.announce(FriendPacket.Packet.onFriendResult(FriendResultType.AddFriend.getType(), pendingBuddyRequest.getId(), c.getPlayer().getId(), pendingBuddyRequest.getName()));
         }
     }
 
@@ -1942,7 +1939,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
             notifyRemoteChannel(client, getWorldServer().find(otherCid), otherCid, BuddyList.BuddyOperation.DELETED);
         }
         bl.remove(otherCid);
-        client.announce(MaplePacketCreator.updateBuddylist(getBuddylist().getBuddies()));
+        client.announce(FriendPacket.Packet.onFriendResult(FriendResultType.UpdateList.getType(), getBuddylist().getBuddies()));
         nextPendingRequest(client);
     }
 
@@ -7046,7 +7043,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 
     public void setBuddyCapacity(int capacity) {
         buddylist.setCapacity(capacity);
-        client.announce(MaplePacketCreator.updateBuddyCapacity(capacity));
+        client.announce(FriendPacket.Packet.onFriendResult(FriendResultType.CapacityChange.getType(), capacity));
     }
 
     public void setBuffedValue(MapleBuffStat effect, int value) {

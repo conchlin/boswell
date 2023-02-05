@@ -29,6 +29,7 @@ import java.util.List;
 
 import com.google.gson.JsonObject;
 import enums.AllianceResultType;
+import enums.FriendResultType;
 import enums.LoginResultType;
 import enums.PartyResultType;
 import net.AbstractMaplePacketHandler;
@@ -43,10 +44,7 @@ import net.server.world.World;
 import network.packet.CLogin;
 import network.packet.FuncKeyMappedMan;
 import network.packet.NpcPool;
-import network.packet.context.WvsContext;
-import network.packet.context.AlliancePacket;
-import network.packet.context.FamilyPacket;
-import network.packet.context.GuildPacket;
+import network.packet.context.*;
 import server.skills.SkillFactory;
 import net.database.DatabaseConnection;
 import tools.MaplePacketCreator;
@@ -265,7 +263,7 @@ public final class PlayerLoggedinHandler extends AbstractMaplePacketHandler {
                     ble.setChannel(onlineBuddy.getChannel());
                     bl.put(ble);
                 }
-                c.announce(MaplePacketCreator.updateBuddylist(bl.getBuddies()));
+                c.announce(FriendPacket.Packet.onFriendResult(FriendResultType.UpdateList.getType(), bl.getBuddies()));
 
                 c.announce(FamilyPacket.Packet.onPrivilegeList());
                 if (player.getFamilyId() > 0) {
@@ -336,11 +334,11 @@ public final class PlayerLoggedinHandler extends AbstractMaplePacketHandler {
                     eqpInv.unlockInventory();
                 }
 
-                c.announce(MaplePacketCreator.updateBuddylist(player.getBuddylist().getBuddies()));
+                c.announce(FriendPacket.Packet.onFriendResult(FriendResultType.UpdateList.getType(), player.getBuddylist().getBuddies()));
 
                 CharacterNameAndId pendingBuddyRequest = c.getPlayer().getBuddylist().pollPendingRequest();
                 if (pendingBuddyRequest != null) {
-                    c.announce(MaplePacketCreator.requestBuddylistAdd(pendingBuddyRequest.getId(), c.getPlayer().getId(), pendingBuddyRequest.getName()));
+                    c.announce(FriendPacket.Packet.onFriendResult(FriendResultType.AddFriend.getType(), pendingBuddyRequest.getId(), c.getPlayer().getId(), pendingBuddyRequest.getName()));
                 }
 
                 c.announce(WvsContext.Packet.onSetGender(player));

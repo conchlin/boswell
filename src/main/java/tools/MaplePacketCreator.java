@@ -1244,69 +1244,6 @@ public class MaplePacketCreator {
         }
     }
 
-    public static byte[] updateBuddylist(Collection<BuddylistEntry> buddylist) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.FriendResult.getValue());
-        mplew.write(7);
-        mplew.write(buddylist.size());
-        for (BuddylistEntry buddy : buddylist) {
-            if (buddy.isVisible()) {
-                mplew.writeInt(buddy.getCharacterId()); // cid
-                mplew.writeAsciiString(PacketUtil.getRightPaddedStr(buddy.getName(), '\0', 13));
-                mplew.write(0); // opposite status
-                mplew.writeInt(buddy.getChannel() - 1);
-                mplew.writeAsciiString(PacketUtil.getRightPaddedStr(buddy.getGroup(), '\0', 13));
-                mplew.writeInt(0);//mapid?
-            }
-        }
-        for (int x = 0; x < buddylist.size(); x++) {
-            mplew.writeInt(0);//mapid?
-        }
-        return mplew.getPacket();
-    }
-
-    public static byte[] buddylistMessage(byte message) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.FriendResult.getValue());
-        mplew.write(message);
-        return mplew.getPacket();
-    }
-
-    public static byte[] requestBuddylistAdd(int cidFrom, int cid, String nameFrom) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.FriendResult.getValue());
-        mplew.write(9);
-        mplew.writeInt(cidFrom);
-        mplew.writeMapleAsciiString(nameFrom);
-        mplew.writeInt(cidFrom);
-        mplew.writeAsciiString(PacketUtil.getRightPaddedStr(nameFrom, '\0', 11));
-        mplew.write(0x09);
-        mplew.write(0xf0);
-        mplew.write(0x01);
-        mplew.writeInt(0x0f);
-        mplew.writeNullTerminatedAsciiString("Default Group");
-        mplew.writeInt(cid);
-        return mplew.getPacket();
-    }
-
-    public static byte[] updateBuddyChannel(int characterid, int channel) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.FriendResult.getValue());
-        mplew.write(0x14);
-        mplew.writeInt(characterid);
-        mplew.write(0);
-        mplew.writeInt(channel);
-        return mplew.getPacket();
-    }
-
-    public static byte[] updateBuddyCapacity(int capacity) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.FriendResult.getValue());
-        mplew.write(0x15);
-        mplew.write(capacity);
-        return mplew.getPacket();
-    }
-
     public static byte[] environmentMoveList(Set<Entry<String, Integer>> envList) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendOpcode.FieldObstacleOnOffStatus.getValue());
