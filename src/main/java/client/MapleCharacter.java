@@ -1282,7 +1282,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 
         eventChangedMap(target.getId());    // player can be dropped from an event here, hence the new warping target.
         MapleMap to = getWarpMap(target.getId());
-        changeMapInternal(to, pto.getPosition(), MaplePacketCreator.getWarpToMap(to, pto.getId(), this));
+        changeMapInternal(to, pto.getPosition(), CStage.Packet.onSetField(this, to.getId(), pto.getId(), false));
         canWarpMap = false;
 
         canWarpCounter--;
@@ -1298,7 +1298,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 
         eventChangedMap(target.getId());
         MapleMap to = getWarpMap(target.getId());
-        changeMapInternal(to, pos, MaplePacketCreator.getWarpToMap(to, 0x80, pos, this));
+        changeMapInternal(to, pos, CStage.Packet.onSetField(this, to.getId(), 0x80, true, pos));
         canWarpMap = false;
 
         canWarpCounter--;
@@ -1330,7 +1330,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         }
 
         MapleMap to = target; // warps directly to the target intead of the target's map id, this allows GMs to patrol players inside instances.
-        changeMapInternal(to, pto.getPosition(), MaplePacketCreator.getWarpToMap(to, pto.getId(), this));
+        changeMapInternal(to, pto.getPosition(), CStage.Packet.onSetField(this, to.getId(), pto.getId(), false));
         canWarpMap = false;
 
         canWarpCounter--;

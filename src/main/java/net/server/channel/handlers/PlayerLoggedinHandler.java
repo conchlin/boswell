@@ -42,6 +42,7 @@ import net.server.guild.MapleGuild;
 import net.server.world.MaplePartyCharacter;
 import net.server.world.World;
 import network.packet.CLogin;
+import network.packet.CStage;
 import network.packet.FuncKeyMappedMan;
 import network.packet.NpcPool;
 import network.packet.context.*;
@@ -94,12 +95,12 @@ public final class PlayerLoggedinHandler extends AbstractMaplePacketHandler {
     }
     
     @Override
-    public final boolean validateState(MapleClient c) {
+    public boolean validateState(MapleClient c) {
         return !c.isLoggedIn();
     }
 
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         final int cid = slea.readInt();
         final Server server = Server.getInstance();
         
@@ -238,7 +239,7 @@ public final class PlayerLoggedinHandler extends AbstractMaplePacketHandler {
                     player.silentApplyDiseases(diseases);
                 }*/
 
-                c.announce(MaplePacketCreator.getCharInfo(player));
+                c.announce(CStage.Packet.onSetField(player)); // character info packet
                 if (!player.isHidden()) {
                     player.toggleHide(true); // auto-hide for GMs
                 }

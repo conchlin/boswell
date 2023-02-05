@@ -27,6 +27,7 @@ import enums.CashItemResultType;
 import net.AbstractMaplePacketHandler;
 import net.server.Server;
 import network.packet.CCashShop;
+import network.packet.CStage;
 import network.packet.context.WvsContext;
 import server.maps.MapleMiniDungeonInfo;
 import tools.MaplePacketCreator;
@@ -82,7 +83,7 @@ public class EnterCashShopHandler extends AbstractMaplePacketHandler {
             mc.forfeitExpirableQuests();
             mc.cancelQuestExpirationTask();
             
-            c.announce(MaplePacketCreator.openCashShop(c, false));
+            c.announce(CStage.Packet.onSetCashShop(c, false));
             c.announce(CCashShop.Packet.onCashItemResult(CashItemResultType.LoadInventory.getResult(), mc));
             c.announce(CCashShop.Packet.onCashItemResult(CashItemResultType.LoadGifts.getResult(), mc.getCashShop().loadGifts()));
             c.announce(CCashShop.Packet.onCashItemResult(CashItemResultType.LoadWishList.getResult(), mc));

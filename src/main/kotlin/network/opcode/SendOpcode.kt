@@ -118,9 +118,9 @@ enum class SendOpcode(val value: Int) {
     DataCRCCheckFailed(123),
     MacroSysDataInit(124),
     /*CStage::OnPacket*/
-    SET_FIELD(125),
-    SET_ITC(126),
-    SET_CASH_SHOP(127),  //CMapLoadable::OnPacket
+    SetField(125),
+    SetITC(126),
+    SetCashShop(127),
     /*CMapLoadable::OnPacket*/
     SET_BACK_EFFECT(128),  //OnSetBackEffect
     SET_MAP_OBJECT_VISIBLE(129),  //CMapLoadable::OnSetMapObjectVisible O_O
