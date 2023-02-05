@@ -27,6 +27,8 @@
 **/
 
 importPackage(Packages.client);
+importPackage(Packages.network.packet.context);
+importPackage(Packages.enums);
 
 function init() {
     scheduleNew();
@@ -51,7 +53,7 @@ function start() {
     }
 	
     thicketAroundTheBeach3.spawnMonsterOnGroundBelow(mano, new Packages.java.awt.Point(279, -496));
-    thicketAroundTheBeach3.broadcastMessage(Packages.tools.MaplePacketCreator.serverNotice(6, "A cool breeze was felt when Mano appeared."));
+    thicketAroundTheBeach3.broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(), "A cool breeze was felt when Mano appeared."));
     var respawn = em.randomSpawnTime(3 * 60 *60 * 1000);
     em.schedule("start", respawn);
 }

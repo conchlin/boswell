@@ -23,7 +23,9 @@
 package net.server.channel.handlers;
 
 import client.MapleClient;
+import enums.BroadcastMessageType;
 import net.AbstractMaplePacketHandler;
+import network.packet.context.BroadcastMsgPacket;
 import network.packet.field.CoconutPacket;
 import server.events.gm.MapleCoconut;
 import server.events.gm.MapleCoconuts;
@@ -71,10 +73,12 @@ public final class CoconutHandler extends AbstractMaplePacketHandler {
 				event.fallCoconut();
 				if (c.getPlayer().getTeam() == 0) {
 					event.addMapleScore();
-					map.broadcastMessage(MaplePacketCreator.serverNotice(5, c.getPlayer().getName() + " of Team Maple knocks down a coconut."));
+					map.broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.PinkText.getType(),
+							c.getPlayer().getName() + " of Team Maple knocks down a coconut."));
 				} else {
 					event.addStoryScore();
-					map.broadcastMessage(MaplePacketCreator.serverNotice(5, c.getPlayer().getName() + " of Team Story knocks down a coconut."));
+					map.broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.PinkText.getType(),
+							c.getPlayer().getName() + " of Team Story knocks down a coconut."));
 				}
 				map.broadcastMessage(CoconutPacket.Packet.onCoconutScore(event.getMapleScore(), event.getStoryScore()));
 			}

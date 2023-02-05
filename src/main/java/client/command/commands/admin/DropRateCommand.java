@@ -26,7 +26,8 @@ package client.command.commands.admin;
 import client.command.Command;
 import client.MapleClient;
 import client.MapleCharacter;
-import tools.MaplePacketCreator;
+import enums.BroadcastMessageType;
+import network.packet.context.BroadcastMsgPacket;
 
 public class DropRateCommand extends Command {
     {
@@ -43,7 +44,8 @@ public class DropRateCommand extends Command {
 
         int droprate = Math.max(Integer.parseInt(params[0]), 1);
         c.getWorldServer().setDropRate(droprate);
-        c.getWorldServer().broadcastPacket(MaplePacketCreator.serverNotice(6, "[Rate] Drop Rate has been changed to " + droprate + "x."));
+        c.getWorldServer().broadcastPacket(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(),
+                "[Rate] Drop Rate has been changed to " + droprate + "x."));
 
     }
 }

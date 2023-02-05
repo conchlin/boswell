@@ -27,6 +27,8 @@
 **/
 
 importPackage(Packages.client);
+importPackage(Packages.network.packet.context);
+importPackage(Packages.enums);
 
 function init() {
     scheduleNew();
@@ -55,7 +57,7 @@ function start() {
     var posY = 1030;
     posX =  Math.floor((Math.random() * 770) - 770);
     whirlpoolOfTime.spawnMonsterOnGroundBelow(timer1, new Packages.java.awt.Point(posX, posY));
-    whirlpoolOfTime.broadcastMessage(Packages.tools.MaplePacketCreator.serverNotice(6, "Tick-Tock Tick-Tock! Timer makes it's presence known."));
+    whirlpoolOfTime.broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(), "Tick-Tock Tick-Tock! Timer makes it's presence known."));
     var respawn = em.randomSpawnTime(3 * 60 *60 * 1000);
     em.schedule("start", respawn);
 }

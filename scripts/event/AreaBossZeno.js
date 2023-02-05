@@ -26,6 +26,9 @@
 -- Edited by --------------------------------------------------------------------------------------
 	ThreeStep - based on xQuasar's King Clang spawner
 **/
+importPackage(Packages.network.packet.context);
+importPackage(Packages.enums);
+
 function init() {
     scheduleNew();
 }
@@ -50,7 +53,7 @@ function start() {
 	}
 	
     graysPrairie.spawnMonsterOnGroundBelow(zeno, new Packages.java.awt.Point(-4224, 776));
-    graysPrairie.broadcastMessage(Packages.tools.MaplePacketCreator.serverNotice(6, "Zeno has appeared with a heavy sound of machinery."));
+    graysPrairie.broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(), "Zeno has appeared with a heavy sound of machinery."));
     var respawn = em.randomSpawnTime(3 * 60 *60 * 1000);
     em.schedule("start", respawn);
 }

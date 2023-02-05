@@ -72,6 +72,7 @@ import net.server.Server;
 import net.server.channel.Channel;
 import net.server.world.World;
 import network.packet.*;
+import network.packet.context.BroadcastMsgPacket;
 import network.packet.field.CField;
 import network.packet.field.CoconutPacket;
 import network.packet.field.MonsterCarnivalPacket;
@@ -2793,7 +2794,7 @@ public class MapleMap {
     }
 
     public void broadcastStringMessage(int type, String message) {
-        broadcastMessage(MaplePacketCreator.serverNotice(type, message));
+        broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(type, message));
     }
 
     private static boolean isNonRangedType(MapleMapObjectType type) {

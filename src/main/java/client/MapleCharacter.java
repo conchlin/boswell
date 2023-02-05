@@ -1118,7 +1118,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     }
 
     public void broadcastAcquaintances(int type, String message) {
-        broadcastAcquaintances(MaplePacketCreator.serverNotice(type, message));
+        broadcastAcquaintances(BroadcastMsgPacket.Packet.onBroadcastMsg(type, message));
     }
 
     public void broadcastAcquaintances(byte[] packet) {
@@ -2339,7 +2339,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     }
 
     public void dropMessage(int type, String message) {
-        client.announce(MaplePacketCreator.serverNotice(type, message));
+        client.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(type, message));
     }
 
     public void enteredScript(String script, int mapid) {
@@ -4870,7 +4870,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                     }
 
                     final String names = (getMedalText() + name);
-                    getWorldServer().broadcastPacket(MaplePacketCreator.serverNotice(6, String.format(LEVEL_200, names, maxClassLevel, names)));
+                    getWorldServer().broadcastPacket(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(), String.format(LEVEL_200, names, maxClassLevel, names)));
                 }
             }
 
@@ -8268,7 +8268,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         this.cheating(reason);
         //announce(MaplePacketCreator.sendPolice(String.format("You have been blocked by the#b %s Police for HACK reason.#k", "MapleAvenue")));
         //TimerManager.getInstance().schedule(() -> client.disconnect(false, false), 8000);
-        Server.getInstance().broadcastGMMessage(this.getWorld(), MaplePacketCreator.serverNotice(6, MapleCharacter.makeMapleReadable(this.name) + " is a cheater for " + reason));
+        Server.getInstance().broadcastGMMessage(this.getWorld(), BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(), MapleCharacter.makeMapleReadable(this.name) + " is a cheater for " + reason));
     }
 
     public void block(int reason, int days, String desc) {

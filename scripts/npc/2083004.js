@@ -26,6 +26,8 @@
 importPackage(Packages.server.expeditions);
 importPackage(Packages.tools);
 importPackage(Packages.scripting.event);
+importPackage(Packages.network.packet.context);
+importPackage(Packages.enums);
 
 var status = 0;
 var expedition;
@@ -153,7 +155,7 @@ function action(mode, type, selection) {
                 cm.sendOk("Good luck! All of Leafre is counting on you.");
                 status = 4;
             } else if (selection == 3) {
-                player.getMap().broadcastMessage(MaplePacketCreator.serverNotice(6, expedition.getLeader().getName() + " has ended the expedition."));
+                player.getMap().broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType, expedition.getLeader().getName() + " has ended the expedition."));
                 cm.endExpedition(expedition);
                 cm.sendOk("The expedition has now ended. Sometimes the best strategy is to run away.");
                 cm.dispose();

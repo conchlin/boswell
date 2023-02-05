@@ -34,10 +34,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import enums.BroadcastMessageType;
 import enums.FriendResultType;
 import net.AbstractMaplePacketHandler;
 import net.server.world.World;
 import net.database.DatabaseConnection;
+import network.packet.context.BroadcastMsgPacket;
 import network.packet.context.FriendPacket;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
@@ -92,9 +94,11 @@ public class BuddylistModifyHandler extends AbstractMaplePacketHandler {
             }
             BuddylistEntry ble = buddylist.get(addName);
             if (ble != null && !ble.isVisible() && group.equals(ble.getGroup())) {
-                c.announce(MaplePacketCreator.serverNotice(1, "You already have \"" + ble.getName() + "\" on your Buddylist"));
+                c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(),
+                        "You already have \"" + ble.getName() + "\" on your Buddylist"));
             } else if (buddylist.isFull() && ble == null) {
-                c.announce(MaplePacketCreator.serverNotice(1, "Your buddylist is already full"));
+                c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(),
+                        "Your buddylist is already full"));
             } else if (ble == null) {
                 try {
                     World world = c.getWorldServer();
@@ -136,7 +140,8 @@ public class BuddylistModifyHandler extends AbstractMaplePacketHandler {
                             }
                         }
                         if (buddyAddResult == BuddyAddResult.BUDDYLIST_FULL) {
-                            c.announce(MaplePacketCreator.serverNotice(1, "\"" + addName + "\"'s Buddylist is full"));
+                            c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(),
+                                    "\"" + addName + "\"'s Buddylist is full"));
                         } else {
                             int displayChannel;
                             displayChannel = -1;
@@ -157,7 +162,8 @@ public class BuddylistModifyHandler extends AbstractMaplePacketHandler {
                             c.announce(FriendPacket.Packet.onFriendResult(FriendResultType.UpdateList.getType(), buddylist.getBuddies()));
                         }
                     } else {
-                        c.announce(MaplePacketCreator.serverNotice(1, "A character called \"" + addName + "\" does not exist"));
+                        c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(),
+                                "A character called \"" + addName + "\" does not exist"));
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();

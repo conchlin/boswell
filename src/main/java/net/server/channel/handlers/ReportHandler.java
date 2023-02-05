@@ -25,9 +25,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import enums.BroadcastMessageType;
 import net.AbstractMaplePacketHandler;
 import net.server.Server;
 import net.database.DatabaseConnection;
+import network.packet.context.BroadcastMsgPacket;
 import network.packet.context.WvsContext;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
@@ -57,7 +59,9 @@ public final class ReportHandler extends AbstractMaplePacketHandler {
                 c.announce(WvsContext.Packet.onSueCharacterResult((byte) 2));
                 return;
             }
-            Server.getInstance().broadcastGMMessage(c.getWorld(), MaplePacketCreator.serverNotice(6, victim + " was reported for: " + description));
+            Server.getInstance().broadcastGMMessage(c.getWorld(),
+                    BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(),
+                            victim + " was reported for: " + description));
             addReport(c.getPlayer().getId(), MapleCharacter.getIdByName(victim), 0, description, null);
         } else if (type == 1) {
             String chatlog = slea.readMapleAsciiString();
@@ -73,10 +77,14 @@ public final class ReportHandler extends AbstractMaplePacketHandler {
                     return;
                 }
             }
-            Server.getInstance().broadcastGMMessage(c.getWorld(), MaplePacketCreator.serverNotice(6, victim + " was reported for: " + description));
+            Server.getInstance().broadcastGMMessage(c.getWorld(),
+                    BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(),
+                            victim + " was reported for: " + description));
             addReport(c.getPlayer().getId(), MapleCharacter.getIdByName(victim), reason, description, chatlog);
         } else {
-            Server.getInstance().broadcastGMMessage(c.getWorld(), MaplePacketCreator.serverNotice(6, c.getPlayer().getName() + " is probably packet editing. Got unknown report type, which is impossible."));
+            Server.getInstance().broadcastGMMessage(c.getWorld(),
+                    BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(),
+                            c.getPlayer().getName() + " is probably packet editing. Got unknown report type, which is impossible."));
         }
     }
 

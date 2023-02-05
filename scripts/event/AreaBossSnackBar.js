@@ -26,6 +26,9 @@
 	Ronan - based on xQuasar's King Clang spawner
 
 **/
+importPackage(Packages.network.packet.context);
+importPackage(Packages.enums);
+
 function init() {
     scheduleNew();
 }
@@ -53,7 +56,7 @@ function start() {
         var rndPos = setPos[Math.floor(Math.random() * setPos.length)];
         
         snackBarMap.spawnMonsterOnGroundBelow(snackBar, new Packages.java.awt.Point(rndPos[0], rndPos[1]));
-        snackBarMap.broadcastMessage(Packages.tools.MaplePacketCreator.serverNotice(6, "Slowly, a suspicious food stand opens up on a strangely remote place."));
+        snackBarMap.broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(), "Slowly, a suspicious food stand opens up on a strangely remote place."));
         var respawn = em.randomSpawnTime(3 * 60 *60 * 1000);
 	    em.schedule("start", respawn);
 }

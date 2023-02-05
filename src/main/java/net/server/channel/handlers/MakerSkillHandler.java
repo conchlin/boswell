@@ -32,10 +32,12 @@ import constants.GameConstants;
 
 import java.util.*;
 
+import enums.BroadcastMessageType;
 import enums.UserEffectType;
 import net.AbstractMaplePacketHandler;
 import network.packet.UserLocal;
 import network.packet.UserRemote;
+import network.packet.context.BroadcastMsgPacket;
 import server.MakerItemFactory;
 import server.MakerItemFactory.MakerItemCreateEntry;
 import server.MapleItemInformationProvider;
@@ -53,7 +55,7 @@ public final class MakerSkillHandler extends AbstractMaplePacketHandler {
     private static MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
 
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         int type = slea.readInt();
         int toCreate = slea.readInt();
         int toDisassemble = -1, pos = -1;
@@ -67,7 +69,8 @@ public final class MakerSkillHandler extends AbstractMaplePacketHandler {
             int fromLeftover = toCreate;
             toCreate = ii.getMakerCrystalFromLeftover(toCreate);
             if (toCreate == -1) {
-                c.announce(MaplePacketCreator.serverNotice(1, ii.getName(fromLeftover) + " is unavailable for Monster Crystal conversion."));
+                c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(),
+                        ii.getName(fromLeftover) + " is unavailable for Monster Crystal conversion."));
                 c.announce(UserLocal.Packet.makerEnableActions());
                 return;
             }
@@ -85,12 +88,14 @@ public final class MakerSkillHandler extends AbstractMaplePacketHandler {
                 if (p != null) {
                     recipe = MakerItemFactory.generateDisassemblyCrystalEntry(toDisassemble, p.getLeft(), p.getRight());
                 } else {
-                    c.announce(MaplePacketCreator.serverNotice(1, ii.getName(toCreate) + " is unavailable for Monster Crystal disassembly."));
+                    c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(),
+                            ii.getName(toCreate) + " is unavailable for Monster Crystal disassembly."));
                     c.announce(UserLocal.Packet.makerEnableActions());
                     return;
                 }
             } else {
-                c.announce(MaplePacketCreator.serverNotice(1, "An unknown error occurred when trying to apply that item for disassembly."));
+                c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(),
+                        "An unknown error occurred when trying to apply that item for disassembly."));
                 c.announce(UserLocal.Packet.makerEnableActions());
                 return;
             }
@@ -138,7 +143,8 @@ public final class MakerSkillHandler extends AbstractMaplePacketHandler {
 
                 if (!reagentids.isEmpty()) {
                     if (!removeOddMakerReagents(toCreate, reagentids)) {
-                        c.announce(MaplePacketCreator.serverNotice(1, "You can only use WATK and MATK Strengthening Gems on weapon items."));
+                        c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(),
+                                "You can only use WATK and MATK Strengthening Gems on weapon items."));
                         c.announce(UserLocal.Packet.makerEnableActions());
                         return;
                     }
@@ -153,27 +159,33 @@ public final class MakerSkillHandler extends AbstractMaplePacketHandler {
         switch (createStatus) {
             case -1 -> {// non-available for Maker itemid has been tried to forge
                 FilePrinter.printError(FilePrinter.EXPLOITS, "Player " + c.getPlayer().getName() + " tried to craft itemid " + toCreate + " using the Maker skill.");
-                c.announce(MaplePacketCreator.serverNotice(1, "The requested item could not be crafted on this operation."));
+                c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(),
+                        "The requested item could not be crafted on this operation."));
                 c.announce(UserLocal.Packet.makerEnableActions());
             }
             case 1 -> { // no items
-                c.announce(MaplePacketCreator.serverNotice(1, "You don't have all required items in your inventory to make " + ii.getName(toCreate) + "."));
+                c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(),
+                        "You don't have all required items in your inventory to make " + ii.getName(toCreate) + "."));
                 c.announce(UserLocal.Packet.makerEnableActions());
             }
             case 2 -> { // no meso
-                c.announce(MaplePacketCreator.serverNotice(1, "You don't have enough mesos (" + GameConstants.numberWithCommas(recipe.getCost()) + ") to complete this operation."));
+                c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(),
+                        "You don't have enough mesos (" + GameConstants.numberWithCommas(recipe.getCost()) + ") to complete this operation."));
                 c.announce(UserLocal.Packet.makerEnableActions());
             }
             case 3 -> { // no req level
-                c.announce(MaplePacketCreator.serverNotice(1, "You don't have enough level to complete this operation."));
+                c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(),
+                        "You don't have enough level to complete this operation."));
                 c.announce(UserLocal.Packet.makerEnableActions());
             }
             case 4 -> { // no req skill level
-                c.announce(MaplePacketCreator.serverNotice(1, "You don't have enough Maker level to complete this operation."));
+                c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(),
+                        "You don't have enough Maker level to complete this operation."));
                 c.announce(UserLocal.Packet.makerEnableActions());
             }
             case 5 -> { // inventory full
-                c.announce(MaplePacketCreator.serverNotice(1, "Your inventory is full."));
+                c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(),
+                        "Your inventory is full."));
                 c.announce(UserLocal.Packet.makerEnableActions());
             }
             default -> {

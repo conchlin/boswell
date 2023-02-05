@@ -23,11 +23,13 @@ package net.server.channel.handlers;
 
 import client.MapleCharacter;
 import client.MapleClient;
+import enums.BroadcastMessageType;
 import enums.CashItemResultType;
 import net.AbstractMaplePacketHandler;
 import net.server.Server;
 import network.packet.CCashShop;
 import network.packet.CStage;
+import network.packet.context.BroadcastMsgPacket;
 import network.packet.context.WvsContext;
 import server.maps.MapleMiniDungeonInfo;
 import tools.MaplePacketCreator;
@@ -49,13 +51,15 @@ public class EnterCashShopHandler extends AbstractMaplePacketHandler {
             }
             
             if(mc.getEventInstance() != null) {
-                c.announce(MaplePacketCreator.serverNotice(5, "Entering Cash Shop or MTS are disabled when registered on an event."));
+                c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.PinkText.getType(),
+                        "Entering Cash Shop or MTS are disabled when registered on an event."));
                 c.announce(WvsContext.Packet.enableActions());
                 return;
             }
             
             if(MapleMiniDungeonInfo.isDungeonMap(mc.getMapId())) {
-                c.announce(MaplePacketCreator.serverNotice(5, "Changing channels or entering Cash Shop or MTS are disabled when inside a Mini-Dungeon."));
+                c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.PinkText.getType(),
+                        "Changing channels or entering Cash Shop or MTS are disabled when inside a Mini-Dungeon."));
                 c.announce(WvsContext.Packet.enableActions());
                 return;
             }

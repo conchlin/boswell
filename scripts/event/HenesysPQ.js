@@ -23,6 +23,9 @@
  * @event: Henesys PQ
 */
 
+importPackage(Packages.network.packet.context);
+importPackage(Packages.enums);
+
 var isPq = true;
 var minPlayers = 3, maxPlayers = 6;
 var minLevel = 10, maxLevel = 250;
@@ -244,7 +247,7 @@ function friendlyItemDrop(eim, mob) {
                 var cakes = eim.getIntProperty("bunnyCake") + 1;
                 eim.setIntProperty("bunnyCake", cakes);
 
-                mob.getMap().broadcastMessage(Packages.tools.MaplePacketCreator.serverNotice(6, "The Moon Bunny made rice cake number " + cakes + "."));
+                mob.getMap().broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(), "The Moon Bunny made rice cake number " + cakes + "."));
         }
 }
 
@@ -252,7 +255,7 @@ function friendlyDamaged(eim, mob) {
  //       if (mob.getId() == 9300061) {
    //             var bunnyDamage = eim.getIntProperty("bunnyDamaged") + 1;
      //           if (bunnyDamage > 5) {
-       //                 broadcastMessage(Packages.tools.MaplePacketCreator.serverNotice(6, "The Moon Bunny is feeling sick. Please protect it so it can make delicious rice cakes."));
+       //                 broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(), "The Moon Bunny is feeling sick. Please protect it so it can make delicious rice cakes."));
          //               eim.setIntProperty("bunnyDamaged", 0);
            //     }
      //   }

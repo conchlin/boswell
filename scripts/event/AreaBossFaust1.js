@@ -28,6 +28,8 @@
 **/
 
 importPackage(Packages.client);
+importPackage(Packages.network.packet.context);
+importPackage(Packages.enums);
 
 function init() {
     scheduleNew();
@@ -53,7 +55,7 @@ function start() {
 	}
 	
     theForestOfEvil1.spawnMonsterOnGroundBelow(faust1, new Packages.java.awt.Point(456, 278));
-    theForestOfEvil1.broadcastMessage(Packages.tools.MaplePacketCreator.serverNotice(6, "Faust appeared amidst the blue fog."));
+    theForestOfEvil1.broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(), "Faust appeared amidst the blue fog."));
 	var respawn = em.randomSpawnTime(3 * 60 *60 * 1000);
 	em.schedule("start", respawn);
 }

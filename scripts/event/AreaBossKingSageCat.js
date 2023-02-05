@@ -28,6 +28,8 @@
 **/
 
 importPackage(Packages.client);
+importPackage(Packages.network.packet.context);
+importPackage(Packages.enums);
 
 function init() {
     scheduleNew();
@@ -55,7 +57,7 @@ function start() {
     var posY = 540;
     posX =  Math.floor((Math.random() * 1300) - 500);
     goblinForest2.spawnMonsterOnGroundBelow(kingSageCat, new Packages.java.awt.Point(posX, posY));
-    goblinForest2.broadcastMessage(Packages.tools.MaplePacketCreator.serverNotice(6, "The ghostly air around here has become stronger. The unpleasant sound of a cat crying can be heard."));
+    goblinForest2.broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(), "The ghostly air around here has become stronger. The unpleasant sound of a cat crying can be heard."));
     var respawn = em.randomSpawnTime(3 * 60 *60 * 1000);
     em.schedule("start", respawn);
 }

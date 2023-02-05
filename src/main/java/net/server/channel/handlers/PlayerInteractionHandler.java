@@ -32,9 +32,11 @@ import client.inventory.manipulator.MapleKarmaManipulator;
 import constants.ItemConstants;
 import constants.ServerConstants;
 
+import enums.BroadcastMessageType;
 import net.AbstractMaplePacketHandler;
 import network.packet.EmployeePool;
 import network.packet.UserCommon;
+import network.packet.context.BroadcastMsgPacket;
 import network.packet.context.WvsContext;
 import server.MapleItemInformationProvider;
 import server.MapleTrade;
@@ -284,7 +286,8 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
                 if (!chr.isCheater() && !other.isCheater()) {
                     MapleTrade.inviteTrade(chr, other);
                 } else {
-                    c.announce(MaplePacketCreator.serverNotice(5, "You are not allowed to invite this player to a trade. Please contact a moderator for assistance."));
+                    c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.PinkText.getType(),
+                            "You are not allowed to invite this player to a trade. Please contact a moderator for assistance."));
                 }
             } else if (mode == Action.DECLINE.getCode()) {
                 MapleTrade.declineTrade(chr);
@@ -366,7 +369,7 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
                     slea.readShort();
                     int birthday = slea.readInt();
                     if (!CashOperationHandler.checkBirthday(c, birthday)) { // birthday check here found thanks to lucasziron
-                        c.announce(MaplePacketCreator.serverNotice(1, "Please check again the birthday date."));
+                        c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(), "Please check again the birthday date."));
                         return;
                     }
                     
@@ -494,23 +497,23 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
                 }
                 
                 if (item == null) {
-                    c.announce(MaplePacketCreator.serverNotice(1, "Invalid item description."));
+                    c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(), "Invalid item description."));
                     c.announce(WvsContext.Packet.enableActions());
                     return;
                 }
                 
                 if(ii.isCash(item.getItemId())) {
-                    c.announce(MaplePacketCreator.serverNotice(1, "Cash items are not allowed to be traded."));
+                    c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(), "Cash items are not allowed to be traded."));
                     return;
                 }
                 
                 if (ItemConstants.isPet(item.getItemId())) {
-                    c.announce(MaplePacketCreator.serverNotice(1, "Pets are not allowed to be traded."));
+                    c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(), "Pets are not allowed to be traded."));
                     return;
                 }
                 
                 if (quantity < 1 || quantity > item.getQuantity()) {
-                    c.announce(MaplePacketCreator.serverNotice(1, "You don't have enough quantity of the item."));
+                    c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(), "You don't have enough quantity of the item."));
                     c.announce(WvsContext.Packet.enableActions());
                     return;
                 }
@@ -520,7 +523,7 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
                     if ((quantity <= item.getQuantity() && quantity >= 0) || ItemConstants.isRechargeable(item.getItemId())) {
                         if (ii.isDropRestricted(item.getItemId())) { // ensure that undroppable items do not make it to the trade window
                             if (!MapleKarmaManipulator.hasKarmaFlag(item)) {
-                                c.announce(MaplePacketCreator.serverNotice(1, "That item is untradeable."));
+                                c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(), "That item is untradeable."));
                                 c.announce(WvsContext.Packet.enableActions());
                                 return;
                             }
@@ -531,7 +534,7 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
                         try {
                             Item checkItem = chr.getInventory(ivType).getItem(pos);
                             if (checkItem != item || checkItem.getPosition() != item.getPosition()) {
-                                c.announce(MaplePacketCreator.serverNotice(1, "Invalid item description."));
+                                c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(), "Invalid item description."));
                                 c.announce(WvsContext.Packet.enableActions());
                                 return;
                             }
@@ -574,7 +577,7 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
                 Item ivItem = chr.getInventory(ivType).getItem(slot);
 
                 if (ivItem == null || ivItem.isUntradeable()) {
-                    c.announce(MaplePacketCreator.serverNotice(1, "Could not perform shop operation with that item."));
+                    c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(), "Could not perform shop operation with that item."));
                     c.announce(WvsContext.Packet.enableActions());
                     return;
                 }
@@ -585,7 +588,7 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
                     perBundle = 1;
                     bundles = 1;
                 } else if (ivItem.getQuantity() < (bundles * perBundle)) {     // thanks GabrielSin for finding a dupe here
-                    c.announce(MaplePacketCreator.serverNotice(1, "Could not perform shop operation with that item."));
+                    c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(), "Could not perform shop operation with that item."));
                     c.announce(WvsContext.Packet.enableActions());
                     return;
                 }
@@ -598,12 +601,12 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
                 }
 
                 if(MapleItemInformationProvider.getInstance().isCash(ivItem.getItemId())) {
-                    c.announce(MaplePacketCreator.serverNotice(1, "Cash items are not allowed to be sold on the Player Store."));
+                    c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(), "Cash items are not allowed to be sold on the Player Store."));
                     return;
                 }
                 
                 if (ItemConstants.isPet(ivItem.getItemId())) {
-                    c.announce(MaplePacketCreator.serverNotice(1, "Pets are not allowed to be sold on the Player Store."));
+                    c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(), "Pets are not allowed to be sold on the Player Store."));
                     return;
                 }
 
@@ -617,7 +620,7 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
                 MapleHiredMerchant merchant = chr.getHiredMerchant();
                 if (shop != null && shop.isOwner(chr)) {
                     if (shop.isOpen() || !shop.addItem(shopItem)) { // thanks Vcoc for pointing an exploit with unlimited shop slots
-                        c.announce(MaplePacketCreator.serverNotice(1, "You can't sell it anymore."));
+                        c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(), "You can't sell it anymore."));
                         return;
                     }
                     
@@ -630,12 +633,12 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
                     c.announce(MaplePacketCreator.getPlayerShopItemUpdate(shop));
                 } else if (merchant != null && merchant.isOwner(chr)) {
                     if (ivType.equals(MapleInventoryType.CASH) && merchant.isPublished()) {
-                        c.announce(MaplePacketCreator.serverNotice(1, "Cash items are only allowed to be sold when first opening the store."));
+                        c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(), "Cash items are only allowed to be sold when first opening the store."));
                         return;
                     }
                     
                     if (merchant.isOpen() || !merchant.addItem(shopItem)) { // thanks Vcoc for pointing an exploit with unlimited shop slots
-                        c.announce(MaplePacketCreator.serverNotice(1, "You can't sell it anymore."));
+                        c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(), "You can't sell it anymore."));
                         return;
                     }
                     
@@ -657,7 +660,7 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
                         ex.printStackTrace();
                     }
                 } else {
-                    c.announce(MaplePacketCreator.serverNotice(1, "You can't sell without owning a shop."));
+                    c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(), "You can't sell without owning a shop."));
                 }
             } else if (mode == Action.REMOVE_ITEM.getCode()) {
                 if (chr.getTrade() != null) {
@@ -669,7 +672,7 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
                 MaplePlayerShop shop = chr.getPlayerShop();
                 if (shop != null && shop.isOwner(chr)) {
                     if (shop.isOpen()) {
-                        c.announce(MaplePacketCreator.serverNotice(1, "You can't take it with the store open."));
+                        c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(), "You can't take it with the store open."));
                         return;
                     }
 
@@ -736,7 +739,7 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
                 MapleHiredMerchant merchant = chr.getHiredMerchant();
                 if (merchant != null && merchant.isOwner(chr)) {
                     if (merchant.isOpen()) {
-                        c.announce(MaplePacketCreator.serverNotice(1, "You can't take it with the store open."));
+                        c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(), "You can't take it with the store open."));
                         return;
                     }
 

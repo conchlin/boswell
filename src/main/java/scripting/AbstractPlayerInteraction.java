@@ -33,6 +33,7 @@ import enums.FieldEffectType;
 import enums.UserEffectType;
 import enums.WvsMessageType;
 import network.packet.*;
+import network.packet.context.BroadcastMsgPacket;
 import network.packet.field.CField;
 import network.packet.context.WvsContext;
 import server.skills.*;
@@ -602,7 +603,7 @@ public class AbstractPlayerInteraction {
     }
 
     public void playerMessage(int type, String message) {
-        c.announce(MaplePacketCreator.serverNotice(type, message));
+        c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(type, message));
     }
 
     public void message(String message) {
@@ -610,7 +611,7 @@ public class AbstractPlayerInteraction {
     }
 
     public void mapMessage(int type, String message) {
-        getPlayer().getMap().broadcastMessage(MaplePacketCreator.serverNotice(type, message));
+        getPlayer().getMap().broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(type, message));
     }
 
     public void mapEffect(String path) {
@@ -646,7 +647,7 @@ public class AbstractPlayerInteraction {
 
     public void guildMessage(int type, String message) {
         if (getGuild() != null) {
-            getGuild().guildMessage(MaplePacketCreator.serverNotice(type, message));
+            getGuild().guildMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(type, message));
         }
     }
 

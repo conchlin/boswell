@@ -3,6 +3,8 @@
 
 importPackage(Packages.world);
 importPackage(Packages.client);
+importPackage(Packages.network.packet.context);
+importPackage(Packages.enums);
 
 var exitMap;
 var instanceId;
@@ -111,7 +113,7 @@ function playerExit(eim, player) {
 		dispose = true;
 	}
 	eim.saveBossQuestPoints(parseInt(eim.getProperty("points")), player);
-	player.getClient().getSession().write(Packages.tools.MaplePacketCreator.serverNotice(6, "[Boss Quest] Your points have been awarded. Spend them as you wish. Better luck next time!"));
+	player.getClient().getSession().write(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(), "[Boss Quest] Your points have been awarded. Spend them as you wish. Better luck next time!"));
 	eim.unregisterPlayer(player);
 	player.changeMap(exitMap, exitMap.getPortal(0));
 	if (dispose) {
@@ -159,12 +161,12 @@ function allMonstersDead(eim) {
 	var map = eim.getMapInstance(980000604);
 
 	if (monster_number > 39) {
-		map.broadcastMessage(Packages.tools.MaplePacketCreator.serverNotice(6, "[Boss Quest] Congratulations! Your team has defeated all of the bosses with " + points + " points!"));
-		map.broadcastMessage(Packages.tools.MaplePacketCreator.serverNotice(6, "[Boss Quest] Your points have been awarded, spend them as you wish."));
+		map.broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(), "[Boss Quest] Congratulations! Your team has defeated all of the bosses with " + points + " points!"));
+		map.broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(), "[Boss Quest] Your points have been awarded, spend them as you wish."));
 		//disbandParty();
 	}
 	else {
-		map.broadcastMessage(Packages.tools.MaplePacketCreator.serverNotice(6, "[Boss Quest] Your team now has " + points + " points! The next boss will spawn in 5 seconds."));
+		map.broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(), "[Boss Quest] Your team now has " + points + " points! The next boss will spawn in 5 seconds."));
 		map.broadcastMessage(Packages.network.packet.field.CField.Packet.onClock(true, 5 * 60));
 		eim.schedule("monsterSpawn", 5000);
 	}
@@ -193,7 +195,7 @@ function monsterSpawn(eim) {
 
 function beginQuest(eim) {
 	var map = eim.getMapInstance(980000604);
-	map.broadcastMessage(Packages.tools.MaplePacketCreator.serverNotice(6, "[Boss Quest] The creatures of the darkness are coming in 10 seconds. Prepare for the worst!"));
+	map.broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(), "[Boss Quest] The creatures of the darkness are coming in 10 seconds. Prepare for the worst!"));
 	eim.schedule("monsterSpawn", 10000);
 	map.broadcastMessage(Packages.network.packet.field.CField.Packet.onClock(true, 10 * 60));
 }

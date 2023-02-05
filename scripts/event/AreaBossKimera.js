@@ -28,6 +28,8 @@
 **/
 
 importPackage(Packages.client);
+importPackage(Packages.network.packet.context);
+importPackage(Packages.enums);
 
 function init() {
     scheduleNew();
@@ -56,7 +58,7 @@ function start() {
     var posY = 180;
     posX =  (Math.floor(Math.random() * 900) - 900);
     labSecretBasementPath.spawnMonsterOnGroundBelow(chimera, new Packages.java.awt.Point(posX, posY));
-    labSecretBasementPath.broadcastMessage(Packages.tools.MaplePacketCreator.serverNotice(6, "Kimera has appeared out of the darkness of the underground with a glitter in her eyes."));
+    labSecretBasementPath.broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(), "Kimera has appeared out of the darkness of the underground with a glitter in her eyes."));
     var respawn = em.randomSpawnTime(3 * 60 *60 * 1000);
     em.schedule("start", respawn);
 }

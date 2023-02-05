@@ -26,7 +26,9 @@ package client.command.commands.staff;
 import client.command.Command;
 import client.MapleClient;
 import client.MapleCharacter;
+import enums.BroadcastMessageType;
 import net.server.Server;
+import network.packet.context.BroadcastMsgPacket;
 import network.packet.context.WvsContext;
 import server.events.gm.MapleEvent;
 import tools.MaplePacketCreator;
@@ -50,10 +52,11 @@ public class StartEventCommand extends Command {
                         + players
                         + " players to join. Type @joinevent to participate."));
         Server.getInstance().broadcastMessage(c.getWorld(),
-                MaplePacketCreator.serverNotice(6, "[Event] An event has started on "
-                        + player.getMap().getMapName()
-                        + " and will allow "
-                        + players
-                        + " players to join. Type @joinevent to participate."));
+                BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(),
+                        "[Event] An event has started on "
+                                + player.getMap().getMapName()
+                                + " and will allow "
+                                + players
+                                + " players to join. Type @joinevent to participate."));
     }
 }

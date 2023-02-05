@@ -36,8 +36,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
+
+import enums.BroadcastMessageType;
 import network.opcode.SendOpcode;
 import network.packet.UserCommon;
+import network.packet.context.BroadcastMsgPacket;
 import network.packet.context.WvsContext;
 import tools.MaplePacketCreator;
 import tools.Pair;
@@ -232,7 +235,8 @@ public class MaplePlayerShop extends AbstractMapleMapObject {
                     iitem.setQuantity((short) (shopItem.getItem().getQuantity() * shopItem.getBundles()));
                     
                     if (!MapleInventory.checkSpot(chr, iitem)) {
-                        chr.announce(MaplePacketCreator.serverNotice(1, "Have a slot available on your inventory to claim back the item."));
+                        chr.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(),
+                                "Have a slot available on your inventory to claim back the item."));
                         chr.announce(WvsContext.Packet.enableActions());
                         return;
                     }

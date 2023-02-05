@@ -26,7 +26,9 @@ package client.command.commands.staff;
 import client.command.Command;
 import client.MapleClient;
 import client.MapleCharacter;
+import enums.BroadcastMessageType;
 import net.server.Server;
+import network.packet.context.BroadcastMsgPacket;
 import network.packet.field.CField;
 import server.TimerManager;
 import net.database.DatabaseConnection;
@@ -77,10 +79,12 @@ public class BanCommand extends Command {
             c.announce(CField.Packet.onAdminResult(4, (byte) 0));
             final MapleCharacter rip = target;
             TimerManager.getInstance().schedule(() -> rip.getClient().disconnect(false, false), 5000); //5 Seconds
-            Server.getInstance().broadcastMessage(c.getWorld(), MaplePacketCreator.serverNotice(6, "[RIP]: " + ign + " has been banned."));
+            Server.getInstance().broadcastMessage(c.getWorld(), BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(),
+                    "[RIP]: " + ign + " has been banned."));
         } else if (MapleCharacter.ban(ign, reason, false)) {
             c.announce(CField.Packet.onAdminResult(4, (byte) 0));
-            Server.getInstance().broadcastMessage(c.getWorld(), MaplePacketCreator.serverNotice(6, "[RIP]: " + ign + " has been banned."));
+            Server.getInstance().broadcastMessage(c.getWorld(), BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(),
+                    "[RIP]: " + ign + " has been banned."));
         } else {
             c.announce(CField.Packet.onAdminResult(6, (byte) 1));
         }

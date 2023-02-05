@@ -23,8 +23,10 @@ package net.server.channel.handlers;
 
 import client.MapleCharacter;
 import client.MapleClient;
+import enums.BroadcastMessageType;
 import enums.FieldEffectType;
 import network.packet.*;
+import network.packet.context.BroadcastMsgPacket;
 import network.packet.field.CField;
 import network.packet.context.WvsContext;
 import server.skills.PlayerSkill;
@@ -239,18 +241,23 @@ public final class UseCashItemHandler extends AbstractMaplePacketHandler {
         } else if (itemType == 507) {
             boolean whisper;
             switch ((itemId / 1000) % 10) {
-                case 1: // Megaphone
+                case 1 -> { // Megaphone
                     if (player.getLevel() > 9) {
-                        player.getClient().getChannelServer().broadcastPacket(MaplePacketCreator.serverNotice(2, medal + player.getName() + " : " + slea.readMapleAsciiString()));
+                        player.getClient().getChannelServer().broadcastPacket(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Megaphone.getType(),
+                                medal + player.getName() + " : " + slea.readMapleAsciiString()));
                     } else {
                         player.dropMessage(1, "You may not use this until you're level 10.");
                         return;
                     }
-                    break;
-                case 2: // Super megaphone
-                    Server.getInstance().broadcastMessage(c.getWorld(), MaplePacketCreator.serverNotice(3, c.getChannel(), medal + player.getName() + " : " + slea.readMapleAsciiString(), (slea.readByte() != 0)));
-                    break;
-                case 5: // Maple TV
+                }
+                case 2 -> { // Super megaphone
+                    int ear = (slea.readByte() != 0) ? 1 : 0; // bool
+                    Server.getInstance().broadcastMessage(c.getWorld(),
+                            BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.SuperMegaphone.getType(),
+                                    medal + player.getName() + " : " + slea.readMapleAsciiString(),
+                                    false, c.getChannel(), ear));
+                }
+                case 5 -> { // Maple TV
                     int tvType = itemId % 10;
                     boolean megassenger = false;
                     boolean ear = false;
@@ -279,18 +286,19 @@ public final class UseCashItemHandler extends AbstractMaplePacketHandler {
                         messages.add(message);
                     }
                     slea.readInt();
-
                     if (!MapleTVEffect.broadcastMapleTVIfNotActive(player, victim, messages, tvType)) {
                         player.dropMessage(1, "MapleTV is already in use.");
                         return;
                     }
-
                     if (megassenger) {
-                        Server.getInstance().broadcastMessage(c.getWorld(), MaplePacketCreator.serverNotice(3, c.getChannel(), medal + player.getName() + " : " + builder.toString(), ear));
+                        int earInt = (ear) ? 1: 0;
+                        Server.getInstance().broadcastMessage(c.getWorld(),
+                                BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.SuperMegaphone.getType(),
+                                        medal + player.getName() + " : " + builder,
+                                        false, c.getChannel(), earInt));
                     }
-
-                    break;
-                case 6: //item megaphone
+                }
+                case 6 -> { //item megaphone
                     String msg = medal + player.getName() + " : " + slea.readMapleAsciiString();
                     whisper = slea.readByte() == 1;
                     Item item = null;
@@ -306,8 +314,8 @@ public final class UseCashItemHandler extends AbstractMaplePacketHandler {
                     } catch (NullPointerException ex) {
                         ex.printStackTrace();
                     }
-                    break;
-                case 7: //triple megaphone
+                }
+                case 7 -> { //triple megaphone
                     int lines = slea.readByte();
                     if (lines < 1 || lines > 3) //hack
                     {
@@ -319,7 +327,7 @@ public final class UseCashItemHandler extends AbstractMaplePacketHandler {
                     }
                     whisper = slea.readByte() == 1;
                     Server.getInstance().broadcastMessage(c.getWorld(), MaplePacketCreator.getMultiMegaphone(msg2, c.getChannel(), whisper));
-                    break;
+                }
             }
             remove(c, position, itemId);
         } else if (itemType == 508) {   // graduation banner, thanks to tmskdl12. Also, thanks ratency for first pointing lack of Kite handling

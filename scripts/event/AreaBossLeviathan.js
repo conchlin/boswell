@@ -28,6 +28,8 @@
 **/
 
 importPackage(Packages.client);
+importPackage(Packages.network.packet.context);
+importPackage(Packages.enums);
 
 function init() {
     scheduleNew();
@@ -55,7 +57,7 @@ function start() {
     var posY = 1125;
     posX =  Math.floor((Math.random() * 600) - 300);
     leviathansCanyon.spawnMonsterOnGroundBelow(leviathan, new Packages.java.awt.Point(posX, posY));
-    leviathansCanyon.broadcastMessage(Packages.tools.MaplePacketCreator.serverNotice(6, "Leviathan emerges from the canyon and the cold icy wind blows."));
+    leviathansCanyon.broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(), "Leviathan emerges from the canyon and the cold icy wind blows."));
     var respawn = em.randomSpawnTime(3 * 60 *60 * 1000);
     em.schedule("start", respawn);
 }

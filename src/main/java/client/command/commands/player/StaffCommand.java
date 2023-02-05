@@ -25,6 +25,8 @@ package client.command.commands.player;
 
 import client.MapleClient;
 import client.command.Command;
+import enums.BroadcastMessageType;
+import network.packet.context.BroadcastMsgPacket;
 import tools.MaplePacketCreator;
 
 public class StaffCommand extends Command {
@@ -34,15 +36,15 @@ public class StaffCommand extends Command {
 
     @Override
     public void execute(MapleClient c, String[] params) {
-        c.announce(MaplePacketCreator.serverNotice(5, "Boswell Staff:"));
-        c.announce(MaplePacketCreator.serverNotice(5, "Contempt - Admin"));
-        c.announce(MaplePacketCreator.serverNotice(5, "Saffron - Admin/Developer"));
-        c.announce(MaplePacketCreator.serverNotice(5, "michu - Developer"));
-        c.announce(MaplePacketCreator.serverNotice(5, "w - Developer"));
-        c.announce(MaplePacketCreator.serverNotice(5, "Ponzu - Developer"));
-        c.announce(MaplePacketCreator.serverNotice(5, "Elon - Game Master"));
-        c.announce(MaplePacketCreator.serverNotice(5, "Frida - Game Master"));
-        c.announce(MaplePacketCreator.serverNotice(5, "Alex - Game Master"));
+        c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.PinkText.getType(), "Boswell Staff:"));
+        c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.PinkText.getType(), "Contempt - Admin"));
+        c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.PinkText.getType(), "Saffron - Admin/Developer"));
+        c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.PinkText.getType(), "michu - Developer"));
+        c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.PinkText.getType(), "w - Developer"));
+        c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.PinkText.getType(), "Ponzu - Developer"));
+        c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.PinkText.getType(), "Elon - Game Master"));
+        c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.PinkText.getType(), "Frida - Game Master"));
+        c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.PinkText.getType(), "Alex - Game Master"));
 
     }
 }

@@ -26,7 +26,9 @@ package client.command.commands.staff;
 import client.command.Command;
 import client.MapleClient;
 import client.MapleCharacter;
+import enums.BroadcastMessageType;
 import net.server.Server;
+import network.packet.context.BroadcastMsgPacket;
 import tools.MaplePacketCreator;
 
 public class NoticeAnonCommand extends Command {
@@ -37,6 +39,7 @@ public class NoticeAnonCommand extends Command {
     @Override
     public void execute(MapleClient c, String[] params) {
         MapleCharacter player = c.getPlayer();
-        Server.getInstance().broadcastMessage(c.getWorld(), MaplePacketCreator.serverNotice(6, "[Notice] " + player.getLastCommandMessage()));
+        Server.getInstance().broadcastMessage(c.getWorld(), BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(),
+                "[Notice] " + player.getLastCommandMessage()));
     }
 }

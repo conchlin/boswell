@@ -28,6 +28,8 @@
 **/
 importPackage(Packages.server.life);
 importPackage(Packages.tools);
+importPackage(Packages.network.packet.context);
+importPackage(Packages.enums);
 
 function init() {
     scheduleNew();
@@ -50,7 +52,7 @@ function start() {
 		return;
 	}
     dangeroudCroko1.spawnMonsterOnGroundBelow(MapleLifeFactory.getMonster(6220000), new Packages.java.awt.Point(90, 119));
-    dangeroudCroko1.broadcastMessage(MaplePacketCreator.serverNotice(6, "The huge crocodile Dyle has come out from the swamp."));
+    dangeroudCroko1.broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType, "The huge crocodile Dyle has come out from the swamp."));
 	var respawn = em.randomSpawnTime(3 * 60 *60 * 1000);
 		setupTask = em.schedule("start", respawn);
 }

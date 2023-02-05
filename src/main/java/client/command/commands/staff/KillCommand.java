@@ -26,7 +26,9 @@ package client.command.commands.staff;
 import client.command.Command;
 import client.MapleClient;
 import client.MapleCharacter;
+import enums.BroadcastMessageType;
 import net.server.Server;
+import network.packet.context.BroadcastMsgPacket;
 import tools.MaplePacketCreator;
 
 public class KillCommand extends Command {
@@ -45,7 +47,8 @@ public class KillCommand extends Command {
         MapleCharacter victim = c.getWorldServer().getPlayerStorage().getCharacterByName(params[0]);
         if (victim != null) {
             victim.updateHpMp(0);
-            Server.getInstance().broadcastGMMessage(c.getWorld(), MaplePacketCreator.serverNotice(5, player.getName() + " used !kill on " + victim.getName()));
+            Server.getInstance().broadcastGMMessage(c.getWorld(), BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.PinkText.getType(),
+                    player.getName() + " used !kill on " + victim.getName()));
         } else {
             player.message("Player '" + params[0] + "' could not be found.");
         }

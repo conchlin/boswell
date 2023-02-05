@@ -26,6 +26,9 @@
 	Ronan - based on xQuasar's King Clang spawner
 
 **/
+importPackage(Packages.network.packet.context);
+importPackage(Packages.enums);
+
 function init() {
     scheduleNew();
 }
@@ -50,7 +53,7 @@ function start() {
 	}
 	
     herbGarden.spawnMonsterOnGroundBelow(gcent, new Packages.java.awt.Point(560, 50));
-    herbGarden.broadcastMessage(Packages.tools.MaplePacketCreator.serverNotice(6, "From the mists surrounding the herb garden, the gargantuous Giant Centipede appears."));
+    herbGarden.broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(), "From the mists surrounding the herb garden, the gargantuous Giant Centipede appears."));
 	var respawn = em.randomSpawnTime(3 * 60 *60 * 1000);
 		em.schedule("start", respawn);
 }

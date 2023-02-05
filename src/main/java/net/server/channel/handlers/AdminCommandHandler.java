@@ -24,7 +24,9 @@ package net.server.channel.handlers;
 import java.util.Arrays;
 import java.util.List;
 
+import enums.BroadcastMessageType;
 import net.AbstractMaplePacketHandler;
+import network.packet.context.BroadcastMsgPacket;
 import network.packet.field.CField;
 import network.packet.context.WvsContext;
 import server.MapleItemInformationProvider;
@@ -162,7 +164,7 @@ public final class AdminCommandHandler extends AbstractMaplePacketHandler {
                 String message = slea.readMapleAsciiString();
                 target = c.getChannelServer().getPlayerStorage().getCharacterByName(victim);
                 if (target != null) {
-                    target.getClient().announce(MaplePacketCreator.serverNotice(1, message));
+                    target.getClient().announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(), message));
                     c.announce(CField.Packet.onAdminResult(0x1E, (byte) 1));
                 } else {
                     c.announce(CField.Packet.onAdminResult(0x1E, (byte) 0));

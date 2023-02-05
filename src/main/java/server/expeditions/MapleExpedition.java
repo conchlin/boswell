@@ -33,8 +33,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledFuture;
 
+import enums.BroadcastMessageType;
 import net.server.PlayerStorage;
 import net.server.Server;
+import network.packet.context.BroadcastMsgPacket;
 import network.packet.field.CField;
 import server.TimerManager;
 import server.life.MapleMonster;
@@ -126,9 +128,9 @@ public class MapleExpedition {
         registering = true;
         leader.announce(CField.Packet.onClock(true, type.getRegistrationTime() * 60));
         if (!silent) {
-            startMap.broadcastMessage(leader, MaplePacketCreator.serverNotice(
+            startMap.broadcastMessage(leader, BroadcastMsgPacket.Packet.onBroadcastMsg(
                     6, "[Expedition] " + leader.getName() + " has been declared the expedition captain. Please register for the expedition."), false);
-            leader.announce(MaplePacketCreator.serverNotice(
+            leader.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(
                     6, "[Expedition] You have become the expedition captain. Gather enough people for your team then talk to the NPC to start."));
         }
         scheduleRegistrationEnd();
@@ -142,7 +144,7 @@ public class MapleExpedition {
             if (registering) {
                 exped.removeChannelExpedition(startMap.getChannelServer());
                 if (!silent) {
-                    startMap.broadcastMessage(MaplePacketCreator.serverNotice(
+                    startMap.broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(
                             6, "[Expedition] The time limit has been reached. Expedition has been disbanded."));
                 }
                 dispose(false);
@@ -170,10 +172,11 @@ public class MapleExpedition {
         registerExpeditionAttempt();
         broadcastExped(CField.Packet.onDestroyClock());
         if (!silent)
-            broadcastExped(MaplePacketCreator.serverNotice(6, "[Expedition] The expedition has started! Good luck, brave heroes!"));
+            broadcastExped(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(),
+                    "[Expedition] The expedition has started! Good luck, brave heroes!"));
         startTime = System.currentTimeMillis();
-        Server.getInstance().broadcastGMMessage(startMap.getWorld(), MaplePacketCreator.serverNotice(
-                6, "[Expedition] " + type.toString() + " Expedition started with leader: " + leader.getName()));
+        Server.getInstance().broadcastGMMessage(startMap.getWorld(), BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(),
+                "[Expedition] " + type.toString() + " Expedition started with leader: " + leader.getName()));
     }
 
     public String addMember(MapleCharacter player) {

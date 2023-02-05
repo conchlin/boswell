@@ -26,6 +26,9 @@
 	Ronan - based on xQuasar's King Clang spawner
 
 **/
+importPackage(Packages.network.packet.context);
+importPackage(Packages.enums);
+
 function init() {
     scheduleNew();
 }
@@ -50,7 +53,7 @@ function start() {
 	}
 	
     mapObj.spawnMonsterOnGroundBelow(mobObj, new Packages.java.awt.Point(560, 50));
-    mapObj.broadcastMessage(Packages.tools.MaplePacketCreator.serverNotice(6, "From amongst the ruins shrouded by the mists, Bamboo Warrior appears."));
+    mapObj.broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(), "From amongst the ruins shrouded by the mists, Bamboo Warrior appears."));
 	var respawn = em.randomSpawnTime(3 * 60 *60 * 1000);
 	em.schedule("start", respawn);
 }

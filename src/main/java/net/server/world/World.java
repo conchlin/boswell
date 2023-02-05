@@ -61,6 +61,7 @@ import enums.FriendResultType;
 import enums.GuildResultType;
 import enums.PartyResultType;
 import enums.WhisperResultType;
+import network.packet.context.BroadcastMsgPacket;
 import network.packet.context.FriendPacket;
 import network.packet.field.CField;
 import network.packet.UserRemote;
@@ -1666,7 +1667,7 @@ public class World {
                 MapleCharacter chr = players.getCharacterById(chrid);
 
                 if(chr != null && chr.isLoggedinWorld()) {
-                    chr.announce(MaplePacketCreator.serverMessage(chr.getClient().getChannelServer().getServerMessage()));
+                    chr.announce(BroadcastMsgPacket.Packet.onBroadcastBanner(chr.getClient().getChannelServer().getServerMessage()));
                 }
             }
         }

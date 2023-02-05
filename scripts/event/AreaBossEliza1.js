@@ -28,6 +28,8 @@
 **/
 
 importPackage(Packages.client);
+importPackage(Packages.network.packet.context);
+importPackage(Packages.enums);
 
 var setupTask;
 
@@ -55,7 +57,7 @@ function start() {
 	}
 	
     stairwayToTheSky2.spawnMonsterOnGroundBelow(eliza, new Packages.java.awt.Point(208, 83));
-    stairwayToTheSky2.broadcastMessage(Packages.tools.MaplePacketCreator.serverNotice(6, "Eliza has appeared with a black whirlwind."));
+    stairwayToTheSky2.broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(), "Eliza has appeared with a black whirlwind."));
 	var respawn = em.randomSpawnTime(3 * 60 *60 * 1000);
 	em.schedule("start", respawn);
 }

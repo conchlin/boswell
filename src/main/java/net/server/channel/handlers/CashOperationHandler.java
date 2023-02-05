@@ -34,9 +34,11 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
+import enums.BroadcastMessageType;
 import enums.CashItemResultType;
 import net.AbstractMaplePacketHandler;
 import network.packet.CCashShop;
+import network.packet.context.BroadcastMsgPacket;
 import network.packet.context.WvsContext;
 import server.cashshop.CashShop;
 import server.cashshop.CashItem;
@@ -252,11 +254,13 @@ public final class CashOperationHandler extends AbstractMaplePacketHandler {
                         c.enableCSActions();
                         return;
                     } else if (c.getPlayer().getPetIndex(item.getPetId()) > -1) {
-                        chr.getClient().announce(MaplePacketCreator.serverNotice(1, "You cannot put the pet you currently equip into the Cash Shop inventory."));
+                        chr.getClient().announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(),
+                                "You cannot put the pet you currently equip into the Cash Shop inventory."));
                         c.enableCSActions();
                         return;
                     } else if (ItemConstants.isWeddingRing(item.getItemId()) || ItemConstants.isWeddingToken(item.getItemId())) {
-                        chr.getClient().announce(MaplePacketCreator.serverNotice(1, "You cannot put relationship items into the Cash Shop inventory."));
+                        chr.getClient().announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(),
+                                "You cannot put relationship items into the Cash Shop inventory."));
                         c.enableCSActions();
                         return;
                     }
@@ -273,7 +277,7 @@ public final class CashOperationHandler extends AbstractMaplePacketHandler {
                         CashItem itemRing = CashItemFactory.getItem(SN);
                         MapleCharacter partner = c.getChannelServer().getPlayerStorage().getCharacterByName(recipientName);
                         if (partner == null) {
-                            chr.getClient().announce(MaplePacketCreator.serverNotice(1, "The partner you specified cannot be found.\r\nPlease make sure your partner is online and in the same channel."));
+                            chr.getClient().announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(), "The partner you specified cannot be found.\r\nPlease make sure your partner is online and in the same channel."));
                         } else {
 
                           /*  if (partner.getGender() == chr.getGender()) {

@@ -21,8 +21,10 @@
  */
 package net.server.channel.handlers;
 
+import enums.BroadcastMessageType;
 import net.AbstractMaplePacketHandler;
 import network.packet.MobPool;
+import network.packet.context.BroadcastMsgPacket;
 import network.packet.context.WvsContext;
 import server.life.MapleMonster;
 import server.maps.MapleMap;
@@ -55,31 +57,29 @@ public final class MobDamageMobFriendlyHandler extends AbstractMaplePacketHandle
 
         if (monster.getHp() - damage < 1) {     // friendly dies
             switch (monster.getId()) {
-                case 9300102: // mount
-                    map.broadcastMessage(MaplePacketCreator.serverNotice(6, "The Watch Hog has been injured by the aliens. Better luck next time..."));
-                    break;
-                case 9300061://moon bunny
-                    map.broadcastMessage(MaplePacketCreator.serverNotice(6, "The Moon Bunny went home because he was sick."));
-                    break;
-                case 9300093://tylus
-                    map.broadcastMessage(MaplePacketCreator.serverNotice(6, "Tylus has fallen by the overwhelming forces of the ambush."));
-                    break;
-                case 9300137://juliet
-                    map.broadcastMessage(MaplePacketCreator.serverNotice(6, "Juliet has fainted in the middle of the combat."));
-                    break;
-                case 9300138://romeo
-                    map.broadcastMessage(MaplePacketCreator.serverNotice(6, "Romeo has fainted in the middle of the combat."));
-                    break;
-                case 9400322:
-                case 9400327:
-                case 9400332://snowman
-                    map.broadcastMessage(MaplePacketCreator.serverNotice(6, "The Snowman has melted on the heat of the battle."));
-                    break;
-                case 9300162://delli
-                    map.broadcastMessage(MaplePacketCreator.serverNotice(6, "Delli vanished after the ambush, sheets still laying on the ground..."));
-                    break;
-                default:
-                    break;
+                case 9300102 -> // mount
+                        map.broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(),
+                                "The Watch Hog has been injured by the aliens. Better luck next time..."));
+                case 9300061 ->//moon bunny
+                        map.broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(),
+                                "The Moon Bunny went home because he was sick."));
+                case 9300093 ->//tylus
+                        map.broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(),
+                                "Tylus has fallen by the overwhelming forces of the ambush."));
+                case 9300137 ->//juliet
+                        map.broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(),
+                                "Juliet has fainted in the middle of the combat."));
+                case 9300138 ->//romeo
+                        map.broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(),
+                                "Romeo has fainted in the middle of the combat."));
+                case 9400322, 9400327, 9400332 ->//snowman
+                        map.broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(),
+                                "The Snowman has melted on the heat of the battle."));
+                case 9300162 ->//delli
+                        map.broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(),
+                                "Delli vanished after the ambush, sheets still laying on the ground..."));
+                default -> {
+                }
             }
 
             map.killFriendlies(monster);

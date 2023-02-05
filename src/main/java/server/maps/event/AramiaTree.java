@@ -4,6 +4,7 @@ import client.MapleCharacter;
 import client.MapleClient;
 import client.inventory.Item;
 import net.server.Server;
+import network.packet.context.BroadcastMsgPacket;
 import network.packet.field.CField;
 import network.packet.ReactorPool;
 import server.TimerManager;
@@ -118,7 +119,7 @@ public class AramiaTree {
             addCount(1);
             if (getInterval() < getCount()) {
                 Server.getInstance().broadcastMessage(
-                        c.getWorld(), MaplePacketCreator.serverNotice(
+                        c.getWorld(), BroadcastMsgPacket.Packet.onBroadcastMsg(
                                 6, "[Event] Aramia's Tree has reached " + getCount() * 20 + "%"));
             }
 
@@ -127,7 +128,7 @@ public class AramiaTree {
 
         if (getCount() == 5) { // aramiaTree == 10000
             Server.getInstance().broadcastMessage(
-                    c.getWorld(), MaplePacketCreator.serverNotice(
+                    c.getWorld(), BroadcastMsgPacket.Packet.onBroadcastMsg(
                             6, "[Event] All the Sunshine has turned the leaves to gold and they have fallen to the ground!"));
             for (MapleCharacter victim : c.getPlayer().getMap().getCharacters()) {
                 victim.announce(CField.Packet.onClock(true, 90));

@@ -26,8 +26,9 @@
 	ThreeStep - based on xQuasar's King Clang spawner
 
 **/
-
 importPackage(Packages.client);
+importPackage(Packages.network.packet.context);
+importPackage(Packages.enums);
 
 function init() {
     scheduleNew();
@@ -56,7 +57,7 @@ function start() {
     var posY = 390;
     posX =  Math.floor((Math.random() * 700) - 800);
     territoryOfWanderingBear.spawnMonsterOnGroundBelow(taeRoon, new Packages.java.awt.Point(posX, posY));
-    territoryOfWanderingBear.broadcastMessage(Packages.tools.MaplePacketCreator.serverNotice(6, "Tae Roon has appeared with a soft whistling sound."));
+    territoryOfWanderingBear.broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(), "Tae Roon has appeared with a soft whistling sound."));
     var respawn = em.randomSpawnTime(3 * 60 *60 * 1000);
     em.schedule("start", respawn);
 }

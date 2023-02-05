@@ -29,6 +29,8 @@
 **/
 
 importPackage(Packages.client);
+importPackage(Packages.network.packet.context);
+importPackage(Packages.enums);
 
 function init() {
     scheduleNew();
@@ -57,7 +59,7 @@ function start() {
     var posY = 520;
     posX =  Math.floor((Math.random() * 2300) - 1500);
     theSeaweedTower.spawnMonsterOnGroundBelow(seruf, new Packages.java.awt.Point(posX, posY));
-    theSeaweedTower.broadcastMessage(Packages.tools.MaplePacketCreator.serverNotice(6, "A strange shell has appeared from a grove of seaweed"));
+    theSeaweedTower.broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(), "A strange shell has appeared from a grove of seaweed"));
     var respawn = em.randomSpawnTime(3 * 60 *60 * 1000);
     em.schedule("start", respawn);
 }

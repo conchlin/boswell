@@ -26,9 +26,12 @@ import client.inventory.Item;
 import client.inventory.MapleInventoryType;
 import constants.ItemConstants;
 import java.util.List;
+
+import enums.BroadcastMessageType;
 import net.AbstractMaplePacketHandler;
 import net.server.Server;
 import client.inventory.manipulator.MapleInventoryManipulator;
+import network.packet.context.BroadcastMsgPacket;
 import network.packet.context.WvsContext;
 import server.MapleItemInformationProvider;
 import server.MapleItemInformationProvider.RewardItem;
@@ -72,7 +75,7 @@ public final class ItemRewardHandler extends AbstractMaplePacketHandler {
                     String msg = reward.worldmsg;
                     msg.replaceAll("/name", c.getPlayer().getName());
                     msg.replaceAll("/item", ii.getName(reward.itemid));
-                    Server.getInstance().broadcastMessage(c.getWorld(), MaplePacketCreator.serverNotice(6, msg));
+                    Server.getInstance().broadcastMessage(c.getWorld(), BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(), msg));
                 }
                 break;
             }

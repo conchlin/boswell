@@ -60,7 +60,7 @@ enum class SendOpcode(val value: Int) {
     GuildResult(65),
     AllianceResult(66),
     TownPortal(67),
-    SERVERMESSAGE(68),  //OnBroadcastMsg
+    BroadcastMsg(68),
     IncubatorResult(69),
     SHOP_SCANNER_RESULT(70),
     SHOP_LINK_RESULT(71),

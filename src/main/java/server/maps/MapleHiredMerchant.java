@@ -39,9 +39,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
+
+import enums.BroadcastMessageType;
 import net.server.audit.locks.factory.MonitoredReentrantLockFactory;
 import net.server.Server;
 import network.packet.EmployeePool;
+import network.packet.context.BroadcastMsgPacket;
 import network.packet.context.WvsContext;
 import server.MapleItemInformationProvider;
 import net.database.DatabaseConnection;
@@ -221,7 +224,8 @@ public class MapleHiredMerchant extends AbstractMapleMapObject {
                     iitem.setQuantity((short) (shopItem.getItem().getQuantity() * shopItem.getBundles()));
 
                     if (!MapleInventory.checkSpot(chr, iitem)) {
-                        chr.announce(MaplePacketCreator.serverNotice(1, "Have a slot available on your inventory to claim back the item."));
+                        chr.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(),
+                                "Have a slot available on your inventory to claim back the item."));
                         chr.announce(WvsContext.Packet.enableActions());
                         return;
                     }

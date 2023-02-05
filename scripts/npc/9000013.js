@@ -4,6 +4,8 @@
 */
 
 importPackage(Packages.tools);
+importPackage(Packages.network.packet.context);
+importPackage(Packages.enums);
 
 var status = 0;
 var minPlayers = 1;
@@ -242,7 +244,7 @@ function action(mode, type, selection) {
 				case 225:
 					if (cm.getChar().getBossPoints() > 50000) {
 					cm.teachSkill(1005, 1, 1);
-					cm.getPlayer().getClient().getSession().write(MaplePacketCreator.serverNotice(5, "You have learned Echo of Hero with level 1 and with max level 1."));
+					cm.getPlayer().getClient().getSession().write(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.PinkText.getType(), "You have learned Echo of Hero with level 1 and with max level 1."));
 					cm.getChar().setBossPoints(cm.getChar().getBossPoints() - 50000);}
 					else { notenoughpoints(50000); }
 					break;

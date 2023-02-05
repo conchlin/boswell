@@ -22,6 +22,7 @@
 package net.server.channel.handlers;
 
 import enums.AllianceResultType;
+import enums.BroadcastMessageType;
 import enums.GuildResultType;
 import net.server.guild.MapleGuildResponse;
 import net.server.guild.MapleGuild;
@@ -30,6 +31,7 @@ import client.MapleClient;
 import net.AbstractMaplePacketHandler;
 import network.packet.UserRemote;
 import network.packet.context.AlliancePacket;
+import network.packet.context.BroadcastMsgPacket;
 import network.packet.context.GuildPacket;
 import tools.data.input.SeekableLittleEndianAccessor;
 import tools.MaplePacketCreator;
@@ -215,7 +217,8 @@ public final class GuildOperationHandler extends AbstractMaplePacketHandler {
                     return;
                 }
                 if (mc.getMeso() < 5000000) {
-                    c.announce(MaplePacketCreator.serverNotice(1, "You do not have " + GameConstants.numberWithCommas(5000000) + " mesos to change the Guild emblem."));
+                    c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(),
+                            "You do not have " + GameConstants.numberWithCommas(5000000) + " mesos to change the Guild emblem."));
                     return;
                 }
                 short bg = slea.readShort();

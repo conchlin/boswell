@@ -33,6 +33,7 @@ import java.util.Map.Entry;
 import java.util.Map;
 import java.util.Comparator;
 
+import enums.BroadcastMessageType;
 import enums.PartyResultType;
 import net.server.audit.LockCollector;
 import net.server.audit.locks.MonitoredReentrantLock;
@@ -40,6 +41,7 @@ import net.server.audit.locks.MonitoredLockType;
 import net.server.audit.locks.factory.MonitoredReentrantLockFactory;
 import net.server.coordinator.MapleMatchCheckerCoordinator;
 import net.server.coordinator.matchchecker.MatchCheckerListenerFactory.MatchCheckerType;
+import network.packet.context.BroadcastMsgPacket;
 import network.packet.context.PartyPacket;
 import scripting.event.EventInstanceManager;
 import server.maps.MapleDoor;
@@ -387,11 +389,13 @@ public class MapleParty {
                     }
                 }
             } else {
-                player.announce(MaplePacketCreator.serverNotice(5, "You couldn't join the party since it had already been disbanded."));
+                player.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.PinkText.getType(),
+                        "You couldn't join the party since it had already been disbanded."));
             }
         } else {
             if (!silentCheck) {
-                player.announce(MaplePacketCreator.serverNotice(5, "You can't join the party as you are already in one."));
+                player.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.PinkText.getType(),
+                        "You can't join the party as you are already in one."));
             }
         }
         

@@ -26,7 +26,8 @@ package client.command.commands.admin;
 import client.command.Command;
 import client.MapleClient;
 import client.MapleCharacter;
-import tools.MaplePacketCreator;
+import enums.BroadcastMessageType;
+import network.packet.context.BroadcastMsgPacket;
 
 public class ExpRateCommand extends Command {
     {
@@ -43,6 +44,7 @@ public class ExpRateCommand extends Command {
 
         int exprate = Math.max(Integer.parseInt(params[0]), 1);
         c.getWorldServer().setExpRate(exprate);
-        c.getWorldServer().broadcastPacket(MaplePacketCreator.serverNotice(6, "[Rate] Exp Rate has been changed to " + exprate + "x."));
+        c.getWorldServer().broadcastPacket(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(),
+                "[Rate] Exp Rate has been changed to " + exprate + "x."));
     }
 }

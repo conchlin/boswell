@@ -26,6 +26,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import enums.BroadcastMessageType;
+import network.packet.context.BroadcastMsgPacket;
 import tools.LogHelper;
 import tools.MaplePacketCreator;
 import client.MapleCharacter;
@@ -35,7 +37,6 @@ import client.inventory.MapleInventoryType;
 import client.inventory.manipulator.MapleInventoryManipulator;
 import client.inventory.manipulator.MapleKarmaManipulator;
 import constants.GameConstants;
-import constants.ServerConstants;
 import net.server.coordinator.MapleInviteCoordinator;
 import net.server.coordinator.MapleInviteCoordinator.InviteResult;
 import net.server.coordinator.MapleInviteCoordinator.InviteType;
@@ -330,7 +331,8 @@ public class MapleTrade {
             if (local.getChr().getLevel() < 15) {
                 if (local.getChr().getMesosTraded() + local.exchangeMeso > 1000000) {
                     cancelTrade(local.getChr(), TradeResult.NO_RESPONSE);
-                    local.getChr().getClient().announce(MaplePacketCreator.serverNotice(1, "Characters under level 15 may not trade more than 1 million mesos per day."));
+                    local.getChr().getClient().announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(),
+                            "Characters under level 15 may not trade more than 1 million mesos per day."));
                     return;
                 } else {
                     local.getChr().addMesosTraded(local.exchangeMeso);
@@ -338,7 +340,8 @@ public class MapleTrade {
             } else if (partner.getChr().getLevel() < 15) {
                 if (partner.getChr().getMesosTraded() + partner.exchangeMeso > 1000000) {
                     cancelTrade(partner.getChr(), TradeResult.NO_RESPONSE);
-                    partner.getChr().getClient().announce(MaplePacketCreator.serverNotice(1, "Characters under level 15 may not trade more than 1 million mesos per day."));
+                    partner.getChr().getClient().announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(),
+                            "Characters under level 15 may not trade more than 1 million mesos per day."));
                     return;
                 } else {
                     partner.getChr().addMesosTraded(partner.exchangeMeso);

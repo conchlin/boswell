@@ -28,6 +28,8 @@
 **/
 
 importPackage(Packages.client);
+importPackage(Packages.network.packet.context);
+importPackage(Packages.enums);
 
 function init() {
     scheduleNew();
@@ -56,7 +58,7 @@ function start() {
     var posY = 1280;
     posX = Math.floor((Math.random() * 800) + 400);
     eastRockyMountain5.spawnMonsterOnGroundBelow(stumpy, new Packages.java.awt.Point(posX, posY));
-    eastRockyMountain5.broadcastMessage(Packages.tools.MaplePacketCreator.serverNotice(6, "Stumpy has appeared with a stumping sound that rings the Stone Mountain."));
+    eastRockyMountain5.broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(), "Stumpy has appeared with a stumping sound that rings the Stone Mountain."));
     var respawn = em.randomSpawnTime(3 * 60 *60 * 1000);
     em.schedule("start", respawn);
 }

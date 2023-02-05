@@ -27,8 +27,10 @@ import java.util.List;
 
 import client.*;
 import client.MapleCharacter.CancelCooldownAction;
+import enums.BroadcastMessageType;
 import network.packet.UserLocal;
 import network.packet.UserRemote;
+import network.packet.context.BroadcastMsgPacket;
 import network.packet.context.WvsContext;
 import server.MapleStatEffect;
 import server.TimerManager;
@@ -157,7 +159,8 @@ public final class CloseRangeDamageHandler extends AbstractDealDamageHandler {
             
             chr.setDojoEnergy(0);
             c.announce(MaplePacketCreator.getEnergy("energy", chr.getDojoEnergy()));
-            c.announce(MaplePacketCreator.serverNotice(5, "As you used the secret skill, your energy bar has been reset."));
+            c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.PinkText.getType(),
+                    "As you used the secret skill, your energy bar has been reset."));
         } else if (attack.skill > 0) {
             PlayerSkill skill = SkillFactory.getSkill(attack.skill);
             MapleStatEffect effect_ = skill.getEffect(chr.getSkillLevel(skill));

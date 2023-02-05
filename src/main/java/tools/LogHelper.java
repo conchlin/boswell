@@ -5,7 +5,9 @@ import java.util.Calendar;
 import java.util.Date;
 
 import client.MapleClient;
+import enums.BroadcastMessageType;
 import net.server.Server;
+import network.packet.context.BroadcastMsgPacket;
 import server.MapleItemInformationProvider;
 import server.MapleTrade;
 import server.expeditions.MapleExpedition;
@@ -17,38 +19,41 @@ public class LogHelper {
 	public static void logTrade(MapleTrade trade1, MapleTrade trade2) {
 		String name1 = trade1.getChr().getName();
 		String name2 = trade2.getChr().getName();
-		String log = "TRADE BETWEEN " + name1 + " AND " + name2 + "\r\n";
+		StringBuilder log = new StringBuilder("TRADE BETWEEN " + name1 + " AND " + name2 + "\r\n");
 		//Trade 1 to trade 2
-		log += trade1.getExchangeMesos() + " mesos from " + name1 + " to " + name2 + " \r\n";
+		log.append(trade1.getExchangeMesos()).append(" mesos from ").append(name1).append(" to ").append(name2).append(" \r\n");
 		for (Item item : trade1.getItems()){
 			String itemName = MapleItemInformationProvider.getInstance().getName(item.getItemId()) + "(" + item.getItemId() + ")";
-			log += item.getQuantity() + " " + itemName + " from "  + name1 + " to " + name2 + " \r\n";;
+			log.append(item.getQuantity()).append(" ").append(itemName).append(" from ").append(name1).append(" to ").append(name2).append(" \r\n");;
 		}
 		//Trade 2 to trade 1
-		log += trade2.getExchangeMesos() + " mesos from " + name2 + " to " + name1 + " \r\n";
+		log.append(trade2.getExchangeMesos()).append(" mesos from ").append(name2).append(" to ").append(name1).append(" \r\n");
 		for (Item item : trade2.getItems()){
 			String itemName = MapleItemInformationProvider.getInstance().getName(item.getItemId()) + "(" + item.getItemId() + ")";
-			log += item.getQuantity() + " " + itemName + " from " + name2 + " to " + name1 + " \r\n";;
+			log.append(item.getQuantity()).append(" ").append(itemName).append(" from ").append(name2).append(" to ").append(name1).append(" \r\n");;
 		}
-		log += "\r\n\r\n";
-		FilePrinter.print(FilePrinter.LOG_TRADE, log);
+		log.append("\r\n\r\n");
+		FilePrinter.print(FilePrinter.LOG_TRADE, log.toString());
 	}
 
 	public static void logExpedition(MapleExpedition expedition) {
-		Server.getInstance().broadcastGMMessage(expedition.getLeader().getWorld(), MaplePacketCreator.serverNotice(6, expedition.getType().toString() + " Expedition with leader " + expedition.getLeader().getName() + " finished after " + getTimeString(expedition.getStartTime())));
+		Server.getInstance().broadcastGMMessage(expedition.getLeader().getWorld(),
+				BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(),
+						expedition.getType().toString() + " Expedition with leader " + expedition.getLeader().getName()
+								+ " finished after " + getTimeString(expedition.getStartTime())));
 
-		String log = expedition.getType().toString() + " EXPEDITION\r\n";
-		log += getTimeString(expedition.getStartTime()) + "\r\n";
+		StringBuilder log = new StringBuilder(expedition.getType().toString() + " EXPEDITION\r\n");
+		log.append(getTimeString(expedition.getStartTime())).append("\r\n");
 
 		for (String memberName : expedition.getMembers().values()){
-			log += ">>" + memberName + "\r\n";
+			log.append(">>").append(memberName).append("\r\n");
 		}
-		log += "BOSS KILLS\r\n";
+		log.append("BOSS KILLS\r\n");
 		for (String message: expedition.getBossLogs()){
-			log += message;
+			log.append(message);
 		}
-		log += "\r\n";
-		FilePrinter.print(FilePrinter.LOG_EXPEDITION, log);
+		log.append("\r\n");
+		FilePrinter.print(FilePrinter.LOG_EXPEDITION, log.toString());
 	}
 	
 	public static String getTimeString(long then){

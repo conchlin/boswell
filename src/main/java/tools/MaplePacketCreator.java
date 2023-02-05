@@ -20,9 +20,7 @@
  */
 package tools;
 
-import java.awt.Point;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -36,12 +34,6 @@ import net.server.Server;
 import net.server.channel.handlers.PlayerInteractionHandler;
 import net.server.guild.MapleAlliance;
 import net.server.guild.MapleGuild;
-import server.cashshop.CashItemFactory;
-import server.cashshop.SpecialCashItem;
-import server.cashshop.CategoryDiscount;
-import server.cashshop.CommodityFlags;
-import server.cashshop.ItemStock;
-import server.cashshop.LimitedGoods;
 import server.DueyPackage;
 import server.MTSItemInfo;
 import server.MapleItemInformationProvider;
@@ -50,13 +42,11 @@ import server.MapleTrade;
 import server.life.MapleMonster;
 import server.life.MobSpawnType;
 import server.maps.MapleHiredMerchant;
-import server.maps.MapleMap;
 import server.maps.MapleMiniGame;
 import server.maps.MapleMiniGame.MiniGameResult;
 import server.maps.MaplePlayerShop;
 import server.maps.MaplePlayerShopItem;
 import server.life.MaplePlayerNPC;
-import server.skills.SkillMacro;
 import tools.data.output.MaplePacketLittleEndianWriter;
 import server.skills.Skill;
 import client.inventory.Equip;
@@ -102,105 +92,6 @@ public class MaplePacketCreator {
         mplew.write(recvIv);
         mplew.write(sendIv);
         mplew.write(8);
-        return mplew.getPacket();
-    }
-
-    /**
-     * Gets a server message packet.
-     *
-     * @param message The message to convey.
-     * @return The server message packet.
-     */
-    public static byte[] serverMessage(String message) {
-        return serverMessage(4, (byte) 0, message, true, false, 0);
-    }
-
-    /**
-     * Gets a server notice packet.
-     *
-     * Possible values for <code>type</code>:<br> 0: [Notice]<br> 1: Popup<br>
-     * 2: Megaphone<br> 3: Super Megaphone<br> 4: Scrolling message at top<br>
-     * 5: Pink Text<br> 6: Lightblue Text
-     *
-     * @param type The type of the notice.
-     * @param message The message to convey.
-     * @return The server notice packet.
-     */
-    public static byte[] serverNotice(int type, String message) {
-        return serverMessage(type, (byte) 0, message, false, false, 0);
-    }
-
-    /**
-     * Gets a server notice packet.
-     *
-     * Possible values for <code>type</code>:<br> 0: [Notice]<br> 1: Popup<br>
-     * 2: Megaphone<br> 3: Super Megaphone<br> 4: Scrolling message at top<br>
-     * 5: Pink Text<br> 6: Lightblue Text
-     *
-     * @param type The type of the notice.
-     * @param message The message to convey.
-     * @return The server notice packet.
-     */
-    public static byte[] serverNotice(int type, String message, int npc) {
-        return serverMessage(type, 0, message, false, false, npc);
-    }
-
-    public static byte[] serverNotice(int type, int channel, String message) {
-        return serverMessage(type, channel, message, false, false, 0);
-    }
-
-    public static byte[] serverNotice(int type, int channel, String message, boolean smegaEar) {
-        return serverMessage(type, channel, message, false, smegaEar, 0);
-    }
-
-    /**
-     * Gets a server message packet.
-     *
-     * Possible values for <code>type</code>:<br> 0: [Notice]<br> 1: Popup<br>
-     * 2: Megaphone<br> 3: Super Megaphone<br> 4: Scrolling message at top<br>
-     * 5: Pink Text<br> 6: Lightblue Text<br> 7: BroadCasting NPC
-     *
-     * @param type The type of the notice.
-     * @param channel The channel this notice was sent on.
-     * @param message The message to convey.
-     * @param servermessage Is this a scrolling ticker?
-     * @return The server notice packet.
-     */
-    private static byte[] serverMessage(int type, int channel, String message, boolean servermessage, boolean megaEar, int npc) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.SERVERMESSAGE.getValue());
-        mplew.write(type);
-        if (servermessage) {
-            mplew.write(1);
-        }
-        mplew.writeMapleAsciiString(message);
-        if (type == 3) {
-            mplew.write(channel - 1); // channel
-            mplew.writeBool(megaEar);
-        } else if (type == 6) {
-            mplew.writeInt(0);
-        } else if (type == 7) { // npc 
-            mplew.writeInt(npc);
-        }
-        return mplew.getPacket();
-    }
-
-    /**
-     * Sends the Gachapon green message when a user uses a gachapon ticket.
-     *
-     * @param item
-     * @param town
-     * @param player
-     * @return
-     */
-    public static byte[] gachaponMessage(Item item, String town, MapleCharacter player) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.SERVERMESSAGE.getValue());
-        mplew.write(0x0B);
-        mplew.writeMapleAsciiString(player.getName() + " : got a(n)");
-        mplew.writeInt(0); //random?
-        mplew.writeMapleAsciiString(town);
-        PacketUtil.addItemInfoZeroPos(mplew, item);
         return mplew.getPacket();
     }
 
@@ -2039,7 +1930,7 @@ public class MaplePacketCreator {
 
     public static byte[] itemMegaphone(String msg, boolean whisper, int channel, Item item) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.SERVERMESSAGE.getValue());
+        mplew.writeShort(SendOpcode.BroadcastMsg.getValue());
         mplew.write(8);
         mplew.writeMapleAsciiString(msg);
         mplew.write(channel - 1);
@@ -2080,7 +1971,7 @@ public class MaplePacketCreator {
 
     public static byte[] getMultiMegaphone(String[] messages, int channel, boolean showEar) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.SERVERMESSAGE.getValue());
+        mplew.writeShort(SendOpcode.BroadcastMsg.getValue());
         mplew.write(0x0A);
         if (messages[0] != null) {
             mplew.writeMapleAsciiString(messages[0]);

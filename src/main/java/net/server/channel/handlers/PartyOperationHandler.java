@@ -21,11 +21,13 @@
 */
 package net.server.channel.handlers;
 
+import enums.BroadcastMessageType;
 import enums.PartyResultType;
 import net.AbstractMaplePacketHandler;
 import net.server.world.MapleParty;
 import net.server.world.MaplePartyCharacter;
 import net.server.world.World;
+import network.packet.context.BroadcastMsgPacket;
 import network.packet.context.PartyPacket;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
@@ -68,7 +70,8 @@ public final class PartyOperationHandler extends AbstractMaplePacketHandler {
                     player.receivePartyMemberHP();
                     player.updatePartyMemberHP();
                 } else {
-                    c.announce(MaplePacketCreator.serverNotice(5, "You couldn't join the party due to an expired invitation request."));
+                    c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.PinkText.getType(),
+                            "You couldn't join the party due to an expired invitation request."));
                 }
             }
             case 4 -> { // invite
@@ -77,15 +80,18 @@ public final class PartyOperationHandler extends AbstractMaplePacketHandler {
                 if (invited != null) {
                     if (player.isCheater() && !invited.isCheater() ||
                             !player.isCheater() && invited.isCheater()) {
-                        c.announce(MaplePacketCreator.serverNotice(5, "The player you have invited is not allowed to join your party. Please contact a moderator for assistance."));
+                        c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.PinkText.getType(),
+                                "The player you have invited is not allowed to join your party. Please contact a moderator for assistance."));
                         return;
                     }
                     if (invited.getLevel() < 10 && !(player.getLevel() >= 10)) { //min requirement is level 10
-                        c.announce(MaplePacketCreator.serverNotice(5, "The player you have invited does not meet the requirements."));
+                        c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.PinkText.getType(),
+                                "The player you have invited does not meet the requirements."));
                         return;
                     }
                     if (invited.getLevel() >= 10 && player.getLevel() < 10) {    //trying to invite high level
-                        c.announce(MaplePacketCreator.serverNotice(5, "The player you have invited does not meet the requirements."));
+                        c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.PinkText.getType(),
+                                "The player you have invited does not meet the requirements."));
                         return;
                     }
                     if (invited.getParty() == null) {

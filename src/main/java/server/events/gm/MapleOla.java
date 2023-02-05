@@ -24,6 +24,8 @@ package server.events.gm;
 import client.MapleCharacter;
 import java.util.concurrent.ScheduledFuture;
 
+import enums.BroadcastMessageType;
+import network.packet.context.BroadcastMsgPacket;
 import network.packet.field.CField;
 import server.TimerManager;
 import tools.MaplePacketCreator;
@@ -54,7 +56,8 @@ public class MapleOla {
            this.time = 360000;
 
            chr.getMap().getPortal("join00").setPortalStatus(true);
-           chr.getClient().announce(MaplePacketCreator.serverNotice(0, "The portal has now opened. Press the up arrow key at the portal to enter."));
+           chr.getClient().announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Notice.getType(),
+                   "The portal has now opened. Press the up arrow key at the portal to enter."));
        }
 
         public boolean isTimerStarted() {

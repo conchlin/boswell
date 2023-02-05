@@ -30,6 +30,8 @@ import client.MapleCharacter;
 import constants.life.AreaBoss;
 import constants.life.Boss;
 import constants.life.Monster;
+import enums.BroadcastMessageType;
+import network.packet.context.BroadcastMsgPacket;
 import server.life.MapleLifeFactory;
 import server.life.MapleMonster;
 import tools.MaplePacketCreator;
@@ -303,7 +305,8 @@ public class WorldTour {
         if (achievement_name.length() > 0) {
             //player.getClient().getSession().write(WvsContext.Packet.onScriptProgressMessage(achievement_name + achievement_action));
             player.showHint(achievement_name + achievement_action);
-            player.getClient().announce(MaplePacketCreator.serverNotice(5, achievement_name + achievement_action));
+            player.getClient().announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.PinkText.getType(),
+                    achievement_name + achievement_action));
         }
         player.saveCharToDB(); // let's make sure entries always register in the db
     }

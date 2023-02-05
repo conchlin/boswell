@@ -26,6 +26,9 @@
 	ThreeStep - based on xQuasar's King Clang spawner
 
 **/
+importPackage(Packages.network.packet.context);
+importPackage(Packages.enums);
+
 function init() {
     scheduleNew();
 }
@@ -50,7 +53,7 @@ function start() {
 	}
 	
     royalCatthusDesert.spawnMonsterOnGroundBelow(deo, new Packages.java.awt.Point(645, 275));
-    royalCatthusDesert.broadcastMessage(Packages.tools.MaplePacketCreator.serverNotice(6, "Deo slowly appeared out of the sand dust."));
+    royalCatthusDesert.broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(), "Deo slowly appeared out of the sand dust."));
 	var respawn = em.randomSpawnTime(3 * 60 *60 * 1000);
 		em.schedule("start", respawn);
 }

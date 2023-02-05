@@ -26,9 +26,10 @@ package client.command.commands.staff;
 import client.command.Command;
 import client.MapleClient;
 import client.MapleCharacter;
+import enums.BroadcastMessageType;
 import net.server.Server;
+import network.packet.context.BroadcastMsgPacket;
 import tools.MapleLogger;
-import tools.MaplePacketCreator;
 
 public class MonitorCommand extends Command {
     {
@@ -55,7 +56,7 @@ public class MonitorCommand extends Command {
         }
         player.yellowMessage(victim.getId() + " is " + (!monitored ? "now being monitored." : "no longer being monitored."));
         String message = player.getName() + (!monitored ? " has started monitoring " : " has stopped monitoring ") + victim.getId() + ".";
-        Server.getInstance().broadcastGMMessage(c.getWorld(), MaplePacketCreator.serverNotice(5, message));
+        Server.getInstance().broadcastGMMessage(c.getWorld(), BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.PinkText.getType(), message));
 
     }
 }

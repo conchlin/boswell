@@ -44,12 +44,14 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Lock;
 
 import com.google.gson.JsonObject;
+import enums.BroadcastMessageType;
 import enums.PartyResultType;
 import net.database.DatabaseConnection;
 import net.database.Statements;
 import network.packet.CCashShop;
 import network.packet.CLogin;
 import network.packet.UserLocal;
+import network.packet.context.BroadcastMsgPacket;
 import network.packet.context.WvsContext;
 import network.packet.context.GuildPacket;
 import tools.*;
@@ -1192,12 +1194,12 @@ public class MapleClient {
 
     private void announceDisableServerMessage() {
         if (!this.getWorldServer().registerDisabledServerMessage(player.getId())) {
-            announce(MaplePacketCreator.serverMessage(""));
+            announce(BroadcastMsgPacket.Packet.onBroadcastBanner(""));
         }
     }
 
     public void announceServerMessage() {
-        announce(MaplePacketCreator.serverMessage(this.getChannelServer().getServerMessage()));
+        announce(BroadcastMsgPacket.Packet.onBroadcastBanner(this.getChannelServer().getServerMessage()));
     }
 
     public synchronized void announceBossHpBar(MapleMonster mm, final int mobHash, final byte[] packet) {
@@ -1240,14 +1242,16 @@ public class MapleClient {
             announce(WvsContext.Packet.enableActions());
             return;
         } else if (MapleMiniDungeonInfo.isDungeonMap(player.getMapId())) {
-            announce(MaplePacketCreator.serverNotice(5, "Changing channels or entering Cash Shop or MTS are disabled when inside a Mini-Dungeon."));
+            announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.PinkText.getType(),
+                    "Changing channels or entering Cash Shop or MTS are disabled when inside a Mini-Dungeon."));
             announce(WvsContext.Packet.enableActions());
             return;
         }
 
         String[] socket = Server.getInstance().getInetSocket(getWorld(), channel);
         if (socket == null) {
-            announce(MaplePacketCreator.serverNotice(1, "Channel " + channel + " is currently disabled. Try another channel."));
+            announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(),
+                    "Channel " + channel + " is currently disabled. Try another channel."));
             announce(WvsContext.Packet.enableActions());
             return;
         }

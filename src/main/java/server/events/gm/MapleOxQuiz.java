@@ -22,6 +22,8 @@
 package server.events.gm;
 
 import client.MapleCharacter;
+import enums.BroadcastMessageType;
+import network.packet.context.BroadcastMsgPacket;
 import network.packet.field.CField;
 import tools.Randomizer;
 import java.io.File;
@@ -97,7 +99,8 @@ public final class MapleOxQuiz {
             }
             //send question
             if (map.getCharacters().size() - number <= 2) {
-                map.broadcastMessage(MaplePacketCreator.serverNotice(6, "The event has ended"));
+                map.broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(),
+                        "The event has ended"));
                 map.getPortal("join00").setPortalStatus(true);
                 map.setOx(null);
                 map.setOxQuiz(false);

@@ -23,6 +23,8 @@
 -- Odin JavaScript --------------------------------------------------------------------------------
 	Door boss Spawner (based on xQuasar's King Clang spawner)
 **/
+importPackage(Packages.network.packet.context);
+importPackage(Packages.enums);
 
 function init() {
     scheduleNew();
@@ -52,7 +54,7 @@ function start() {
     
     var boss = Packages.server.life.MapleLifeFactory.getMonster(bossMobid);
     map.spawnMonsterOnGroundBelow(boss, bossPos);
-    map.broadcastMessage(Packages.tools.MaplePacketCreator.serverNotice(6, bossMsg));
+    map.broadcastMessage(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(), bossMsg));
     
     var respawn = em.randomSpawnTime(3 * 60 *60 * 1000);
 		em.schedule("start", respawn);

@@ -24,10 +24,12 @@ package net.server.channel.handlers;
 import java.awt.Point;
 import java.util.concurrent.ScheduledFuture;
 
+import enums.BroadcastMessageType;
 import net.AbstractMaplePacketHandler;
 import network.packet.MobPool;
 import network.packet.UserLocal;
 import network.packet.UserRemote;
+import network.packet.context.BroadcastMsgPacket;
 import network.packet.context.WvsContext;
 import server.MapleStatEffect;
 import server.TimerManager;
@@ -66,7 +68,8 @@ public final class SpecialMoveHandler extends AbstractMaplePacketHandler {
             skillLevel = 1;
             chr.setDojoEnergy(0);
             c.announce(MaplePacketCreator.getEnergy("energy", chr.getDojoEnergy()));
-            c.announce(MaplePacketCreator.serverNotice(5, "As you used the secret skill, your energy bar has been reset."));
+            c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.PinkText.getType(),
+                    "As you used the secret skill, your energy bar has been reset."));
         }
         if (skillLevel == 0 || skillLevel != __skillLevel) return;
         

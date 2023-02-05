@@ -27,12 +27,14 @@ import java.sql.SQLException;
 import client.inventory.manipulator.MapleInventoryManipulator;
 import constants.ServerConstants;
 import enums.AllianceResultType;
+import enums.BroadcastMessageType;
 import enums.FieldEffectType;
 import net.server.Server;
 import net.server.guild.MapleAlliance;
 import net.server.guild.MapleGuild;
 import net.server.world.MapleParty;
 import net.server.world.MaplePartyCharacter;
+import network.packet.context.BroadcastMsgPacket;
 import network.packet.field.CField;
 import network.packet.ScriptMan;
 import network.packet.StoreBank;
@@ -474,7 +476,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         LogHelper.logGacha(getPlayer(), item.getId(), map);
 
         if (ItemConstants.isGachNotificationPrize(item.getId())) { // only the good stuff
-            Server.getInstance().broadcastMessage(c.getWorld(), MaplePacketCreator.gachaponMessage(itemGained, map, getPlayer()));
+            Server.getInstance().broadcastMessage(c.getWorld(), BroadcastMsgPacket.Packet.onBroadcastGachapon(getPlayer(), itemGained, map));
         }
     }
 
@@ -738,14 +740,10 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
                 mc = ps.getCharacterById(mpc.getId());
                 if (mc != null) {
                     mc.changeMap(map, map.getPortal(0));
-                    mc.announce(MaplePacketCreator.serverNotice(6, LanguageConstants.getMessage(mc, LanguageConstants.CPQEntryLobby)));
+                    mc.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(),
+                            LanguageConstants.getMessage(mc, LanguageConstants.CPQEntryLobby)));
                     TimerManager tMan = TimerManager.getInstance();
-                    tMan.schedule(new Runnable() {
-                        @Override
-                        public void run() {
-                            mapClock(3 * 60);
-                        }
-                    }, 1500);
+                    tMan.schedule(() -> mapClock(3 * 60), 1500);
 
                     mc.setCpqTimer(TimerManager.getInstance().schedule(new Runnable() {
                         @Override
@@ -956,7 +954,8 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
                 mc = ps.getCharacterById(mpc.getId());
                 if (mc != null) {
                     mc.changeMap(map, map.getPortal(0));
-                    mc.announce(MaplePacketCreator.serverNotice(6, LanguageConstants.getMessage(mc, LanguageConstants.CPQEntryLobby)));
+                    mc.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(),
+                            LanguageConstants.getMessage(mc, LanguageConstants.CPQEntryLobby)));
                     TimerManager tMan = TimerManager.getInstance();
                     tMan.schedule(new Runnable() {
                         @Override

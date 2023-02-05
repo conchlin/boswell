@@ -55,6 +55,7 @@ import net.server.world.MapleParty;
 import net.server.world.MaplePartyCharacter;
 
 import network.packet.UserRemote;
+import network.packet.context.BroadcastMsgPacket;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.buffer.SimpleBufferAllocator;
 import org.apache.mina.core.filterchain.IoFilter;
@@ -329,7 +330,7 @@ public final class Channel {
     
     public void addPlayer(MapleCharacter chr) {
         players.addPlayer(chr);
-        chr.announce(MaplePacketCreator.serverMessage(serverMessage));
+        chr.announce(BroadcastMsgPacket.Packet.onBroadcastBanner(serverMessage));
     }
     
     public String getServerMessage() {
@@ -510,7 +511,7 @@ public final class Channel {
     
     public void setServerMessage(String message) {
         this.serverMessage = message;
-        broadcastPacket(MaplePacketCreator.serverMessage(message));
+        broadcastPacket(BroadcastMsgPacket.Packet.onBroadcastBanner(message));
         getWorldServer().resetDisabledServerMessages();
     }
     
