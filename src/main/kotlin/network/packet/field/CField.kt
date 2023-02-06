@@ -84,7 +84,7 @@ class CField {
          */
         fun onWhisper(target: String, sender: String, result: Int, vararg args: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.WHISPER.value)
+            mplew.writeShort(SendOpcode.Whisper.value)
             mplew.write(result)
             when (result) {
                 WhisperResultType.WhisperReply.result -> {

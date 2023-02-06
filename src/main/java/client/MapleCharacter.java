@@ -302,7 +302,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                     statup.add(new Pair<>(s.getKey(), s.getValue()));
                 }
 
-                announce(WvsContext.Packet.updatePlayerStats(statup, true, MapleCharacter.this));
+                announce(WvsContext.Packet.onStatChanged(statup, true, MapleCharacter.this));
             }
         });
 
@@ -825,7 +825,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 //            dropMessage("recalcLocalStats() in cancelPlayerBuffs()");
             recalcLocalStats();
             enforceMaxHpMp();
-            client.announce(WvsContext.Packet.cancelBuff(buffstats));
+            client.announce(WvsContext.Packet.onTemporaryStatReset(buffstats));
             if (buffstats.size() > 0) {
                 getMap().broadcastMessage(
                         this,
@@ -1067,7 +1067,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
             statup.add(new Pair<>(MapleStat.AVAILABLEAP, remainingAp));
             statup.add(new Pair<>(MapleStat.AVAILABLESP, remainingSp[GameConstants.getSkillBook(job.getId())]));
             statup.add(new Pair<>(MapleStat.JOB, job.getId()));
-            client.announce(WvsContext.Packet.updatePlayerStats(statup, true, this));
+            client.announce(WvsContext.Packet.onStatChanged(statup, true, this));
         } finally {
             statWlock.unlock();
             effLock.unlock();
@@ -2995,7 +2995,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
             statup.add(new Pair<>(MapleStat.MP, Math.min(mp, maxmp)));
             statup.add(new Pair<>(MapleStat.MAXHP, maxhp));
             statup.add(new Pair<>(MapleStat.MAXMP, maxmp));
-            client.announce(WvsContext.Packet.updatePlayerStats(statup, true, this));
+            client.announce(WvsContext.Packet.onStatChanged(statup, true, this));
         }
         if (effect.isMonsterRiding()) {
             this.getMount().cancelSchedule();
@@ -4897,7 +4897,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
             statup.add(new Pair<>(MapleStat.STR, str));
             statup.add(new Pair<>(MapleStat.DEX, dex));
 
-            client.announce(WvsContext.Packet.updatePlayerStats(statup, true, this));
+            client.announce(WvsContext.Packet.onStatChanged(statup, true, this));
         } finally {
             statWlock.unlock();
             effLock.unlock();
@@ -6147,7 +6147,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
             enforceMaxHpMp();
 
             if (!hpmpupdate.isEmpty()) {
-                client.announce(WvsContext.Packet.updatePlayerStats(hpmpupdate, true, this));
+                client.announce(WvsContext.Packet.onStatChanged(hpmpupdate, true, this));
             }
 
             if (oldmaxhp != localmaxhp) {
@@ -7934,7 +7934,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         removePet(pet, shift_left);
         commitExcludedItems();
 
-        client.announce(WvsContext.Packet.petStatUpdate(this));
+        client.announce(WvsContext.Packet.onPetStatChanged(this));
         client.announce(WvsContext.Packet.enableActions());
     }
 
@@ -8124,7 +8124,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     }
 
     private void updateSingleStat(MapleStat stat, int newval, boolean itemReaction) {
-        announce(WvsContext.Packet.updatePlayerStats(Collections.singletonList(new Pair<>(stat, Integer.valueOf(newval))), itemReaction, this));
+        announce(WvsContext.Packet.onStatChanged(Collections.singletonList(new Pair<>(stat, Integer.valueOf(newval))), itemReaction, this));
     }
 
     public void announce(final byte[] packet) {
@@ -9024,7 +9024,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         }
 
         if (!inactiveStats.isEmpty()) {
-            client.announce(WvsContext.Packet.cancelBuff(inactiveStats));
+            client.announce(WvsContext.Packet.onTemporaryStatReset(inactiveStats));
             getMap().broadcastMessage(this, UserRemote.Packet.cancelForeignBuff(getId(), inactiveStats), false);
         }
     }

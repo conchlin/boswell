@@ -73,10 +73,7 @@ import net.server.channel.Channel;
 import net.server.world.World;
 import network.packet.*;
 import network.packet.context.BroadcastMsgPacket;
-import network.packet.field.CField;
-import network.packet.field.CoconutPacket;
-import network.packet.field.MonsterCarnivalPacket;
-import network.packet.field.SnowballPacket;
+import network.packet.field.*;
 import network.packet.context.WvsContext;
 import scripting.map.MapScriptManager;
 import server.MapleItemInformationProvider;
@@ -2479,9 +2476,9 @@ public class MapleMap {
         }
         if (hasBoat() > 0) {
             if (hasBoat() == 1) {
-                chr.getClient().announce((MaplePacketCreator.boatPacket(true)));
+                chr.getClient().announce((ContiMove.Packet.onContiState(true)));
             } else {
-                chr.getClient().announce(MaplePacketCreator.boatPacket(false));
+                chr.getClient().announce(ContiMove.Packet.onContiState(false));
             }
         }
 
@@ -3239,7 +3236,7 @@ public class MapleMap {
     public void sendNightEffect(MapleCharacter mc) {
         for (Entry<Integer, Integer> types : backgroundTypes.entrySet()) {
             if (types.getValue() >= 3) { // 3 is a special number
-                mc.announce(MapLoadable.Packet.changeBackgroundEffect(true, types.getKey(), 0));
+                mc.announce(MapLoadable.Packet.onSetBackEffect(true, types.getKey(), 0));
             }
         }
     }
@@ -3894,12 +3891,12 @@ public class MapleMap {
     }
 
     public void broadcastShip(final boolean state) {
-        broadcastMessage(MaplePacketCreator.boatPacket(state));
+        broadcastMessage(ContiMove.Packet.onContiState(state));
         this.setDocked(state);
     }
 
     public void broadcastEnemyShip(final boolean state) {
-        broadcastMessage(MaplePacketCreator.crogBoatPacket(state));
+        broadcastMessage(ContiMove.Packet.onContiMove(state));
         this.setDocked(state);
     }
 

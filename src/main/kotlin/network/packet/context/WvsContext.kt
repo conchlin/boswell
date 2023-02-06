@@ -1,17 +1,19 @@
 package network.packet.context
 
 import client.*
-import client.inventory.Equip
-import client.inventory.InventoryOperation
+import client.inventory.*
 import constants.GameConstants
+import constants.ItemConstants
 import constants.skills.Buccaneer
 import constants.skills.ThunderBreaker
-import enums.BroadcastMessageType
 import enums.PopularityResponseType
 import enums.WvsMessageType
 import network.opcode.SendOpcode
+import server.maps.AbstractMapleMapObject
+import server.maps.MapleHiredMerchant
+import server.maps.MaplePlayerShop
+import server.maps.MaplePlayerShopItem
 import server.skills.SkillMacro
-import tools.MaplePacketCreator
 import tools.Pair
 import tools.data.output.MaplePacketLittleEndianWriter
 import tools.packets.PacketUtil
@@ -97,15 +99,13 @@ class WvsContext {
          *
          * @param stats The list of stats to update.
          * @param itemReaction Result of an item reaction(?)
-         *
-         * @return The stat update packet.
          */
-        fun updatePlayerStats(
+        fun onStatChanged(
             stats: List<Pair<MapleStat, Int>>,
             itemReaction: Boolean, chr: MapleCharacter?
         ): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.STAT_CHANGED.value)
+            mplew.writeShort(SendOpcode.StatChanged.value)
             mplew.write(if (itemReaction) 1 else 0)
             var updateMask = 0
             for (statupdate in stats) {
@@ -153,10 +153,10 @@ class WvsContext {
             return mplew.packet
         }
 
-        fun petStatUpdate(chr: MapleCharacter): ByteArray? {
+        fun onPetStatChanged(chr: MapleCharacter): ByteArray? {
             // this actually does nothing... packet structure and stats needs to be uncovered
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.STAT_CHANGED.value)
+            mplew.writeShort(SendOpcode.StatChanged.value)
             var mask = 0
             mask = mask or MapleStat.PET.value
             mplew.write(0)
@@ -180,7 +180,7 @@ class WvsContext {
          * @return The empty stat update packet.
          */
         fun enableActions(): ByteArray? {
-            return updatePlayerStats(EmptyStatUpdate, true, null)
+            return onStatChanged(EmptyStatUpdate, true, null)
         }
 
         /**
@@ -191,7 +191,7 @@ class WvsContext {
          * @return The stat update packet.
          */
         fun updatePlayerStats(stats: List<Pair<MapleStat, Int>>, chr: MapleCharacter?): ByteArray? {
-            return updatePlayerStats(stats, false, chr)
+            return onStatChanged(stats, false, chr)
         }
 
         /**
@@ -279,11 +279,11 @@ class WvsContext {
             return mplew.packet
         }
 
-        fun cancelBuff(statups: List<MapleBuffStat>): ByteArray? {
+        fun onTemporaryStatReset(statsToReset: List<MapleBuffStat>): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.CANCEL_BUFF.value)
-            writeLongMaskFromList(mplew, statups)
-            mplew.write(1) //?
+            mplew.writeShort(SendOpcode.TemporaryStatReset.value)
+            writeLongMaskFromList(mplew, statsToReset)
+            mplew.write(1)
 
             return mplew.packet
         }
@@ -390,7 +390,7 @@ class WvsContext {
 
         fun noteSendMsg(): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter(3)
-            mplew.writeShort(SendOpcode.MEMO_RESULT.value)
+            mplew.writeShort(SendOpcode.MemoResult.value)
             mplew.write(4)
             return mplew.packet
         }
@@ -402,7 +402,7 @@ class WvsContext {
      */
         fun noteError(error: Byte): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter(4)
-            mplew.writeShort(SendOpcode.MEMO_RESULT.value)
+            mplew.writeShort(SendOpcode.MemoResult.value)
             mplew.write(5)
             mplew.write(error)
             return mplew.packet
@@ -411,7 +411,7 @@ class WvsContext {
         @Throws(SQLException::class)
         fun showNotes(notes: ResultSet, count: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.MEMO_RESULT.value)
+            mplew.writeShort(SendOpcode.MemoResult.value)
             mplew.write(3)
             mplew.write(count)
             for (i in 0 until count) {
@@ -456,7 +456,7 @@ class WvsContext {
 
         fun enableReport(): ByteArray? { // thanks to snow
             val mplew = MaplePacketLittleEndianWriter(3)
-            mplew.writeShort(SendOpcode.CLAIM_STATUS_CHANGED.value)
+            mplew.writeShort(SendOpcode.ClaimSvrStatusChanged.value)
             mplew.write(1)
 
             return mplew.packet
@@ -474,37 +474,22 @@ class WvsContext {
             return mplew.packet
         }
 
-        fun getShowQuestCompletion(id: Int): ByteArray? {
+        fun onQuestClear(id: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.QUEST_CLEAR.value)
+            mplew.writeShort(SendOpcode.QuestClear.value)
             mplew.writeShort(id)
 
             return mplew.packet
         }
 
-        fun hiredMerchantBox(): ByteArray? {
+        fun onEntrustedShopCheckResult(type: Int, vararg args: Byte): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.ENTRUSTED_SHOP_CHECK_RESULT.value) // header.
-            mplew.write(0x07)
-
-            return mplew.packet
-        }
-
-        fun retrieveFirstMessage(): ByteArray? {
-            val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.ENTRUSTED_SHOP_CHECK_RESULT.value) // header.
-            mplew.write(0x09)
-
-            return mplew.packet
-        }
-
-        fun remoteChannelChange(ch: Byte): ByteArray? {
-            val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.ENTRUSTED_SHOP_CHECK_RESULT.value) // header.
-            mplew.write(0x10)
-            mplew.writeInt(0) //No idea yet
-            mplew.write(ch)
-
+            mplew.writeShort(SendOpcode.EntrustedShopCheckResult.value)
+            mplew.write(type)
+            if (args[0].toInt() != 0) {
+                mplew.writeInt(0)
+                mplew.write(args[0])
+            }
             return mplew.packet
         }
 
@@ -600,6 +585,83 @@ class WvsContext {
             val mplew = MaplePacketLittleEndianWriter(8)
             mplew.writeShort(SendOpcode.IncubatorResult.value)
             mplew.skip(6)
+            return mplew.packet
+        }
+
+        /**
+         * packet responsible for retrieving search results from the Owl of Minerva
+         *
+         * @param itemId the item being searched
+         * @param merchants shops to be searched
+         */
+        fun onShopScannerResult(
+            itemId: Int,
+            merchants: List<Pair<MaplePlayerShopItem, AbstractMapleMapObject>>
+        ): ByteArray? {
+            val itemType = ItemConstants.getInventoryType(itemId).type
+            val mplew = MaplePacketLittleEndianWriter()
+            mplew.writeShort(SendOpcode.ShopScannerResult.value) // header.
+            mplew.write(6)
+            mplew.writeInt(0)
+            mplew.writeInt(itemId)
+            mplew.writeInt(merchants.size)
+            for (hme in merchants) {
+                val item = hme.getLeft()
+                val mo = hme.getRight()
+                if (mo is MaplePlayerShop) {
+                    val owner: MapleCharacter = mo.owner
+                    mplew.writeMapleAsciiString(owner.name)
+                    mplew.writeInt(owner.mapId)
+                    mplew.writeMapleAsciiString(mo.description)
+                    mplew.writeInt(item.bundles.toInt())
+                    mplew.writeInt(item.item.quantity.toInt())
+                    mplew.writeInt(item.price)
+                    mplew.writeInt(owner.id)
+                    mplew.write(owner.client.channel - 1)
+                } else {
+                    val hm = mo as MapleHiredMerchant
+                    mplew.writeMapleAsciiString(hm.owner)
+                    mplew.writeInt(hm.mapId)
+                    mplew.writeMapleAsciiString(hm.description)
+                    mplew.writeInt(item.bundles.toInt())
+                    mplew.writeInt(item.item.quantity.toInt())
+                    mplew.writeInt(item.price)
+                    mplew.writeInt(hm.ownerId)
+                    mplew.write(hm.channel - 1)
+                }
+                mplew.write(itemType)
+                if (itemType == MapleInventoryType.EQUIP.type) {
+                    PacketUtil.addItemInfoZeroPos(mplew, item.item)
+                }
+            }
+            return mplew.packet
+        }
+
+        /**
+         * packet responsible for displaying the results of a successful Owl of Minerva search
+         *
+         * @param results
+         */
+        fun onShopScannerResult(results: List<Int?>): ByteArray? {
+            val mplew = MaplePacketLittleEndianWriter()
+            mplew.writeShort(SendOpcode.ShopScannerResult.value)
+            mplew.write(7)
+            mplew.write(results.size)
+            for (i in results) {
+                mplew.writeInt(i!!)
+            }
+            return mplew.packet
+        }
+
+        /**
+         * packet responsible for all client messaging related to the Owl of Minerva item
+         *
+         * @param result the message
+         */
+        fun onShopLinkResult(result: Int): ByteArray? {
+            val mplew = MaplePacketLittleEndianWriter(3)
+            mplew.writeShort(SendOpcode.ShopLinkResult.value)
+            mplew.write(result)
             return mplew.packet
         }
 

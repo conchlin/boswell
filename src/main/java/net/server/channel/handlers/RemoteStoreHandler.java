@@ -42,7 +42,7 @@ public class RemoteStoreHandler extends AbstractMaplePacketHandler {
             if (hm.getChannel() == chr.getClient().getChannel()) {
                 hm.visitShop(chr);
             } else {
-                c.announce(WvsContext.Packet.remoteChannelChange((byte) (hm.getChannel() - 1)));
+                c.announce(WvsContext.Packet.onEntrustedShopCheckResult(16, (byte) (hm.getChannel() - 1)));
             }
             return;
         } else {

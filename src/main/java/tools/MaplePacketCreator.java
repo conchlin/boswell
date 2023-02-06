@@ -484,7 +484,7 @@ public class MaplePacketCreator {
     public static byte[] charInfo(MapleCharacter chr) {
         //3D 00 0A 43 01 00 02 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.CHAR_INFO.getValue());
+        mplew.writeShort(SendOpcode.CharacterInfo.getValue());
         mplew.writeInt(chr.getId());
         mplew.write(chr.getLevel());
         mplew.writeShort(chr.getJob().getId());
@@ -1155,22 +1155,6 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    public static byte[] crogBoatPacket(boolean type) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.CONTI_MOVE.getValue());
-        mplew.write(10);
-        mplew.write(type ? 4 : 5);
-        return mplew.getPacket();
-    }
-
-    public static byte[] boatPacket(boolean type) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.CONTI_STATE.getValue());
-        mplew.write(type ? 1 : 2);
-        mplew.write(0);
-        return mplew.getPacket();
-    }
-
     public static byte[] getMiniGame(MapleClient c, MapleMiniGame minigame, boolean owner, int piece) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendOpcode.PLAYER_INTERACTION.getValue());
@@ -1497,83 +1481,6 @@ public class MaplePacketCreator {
         mplew.write(PlayerInteractionHandler.Action.CHAT_THING.getCode());
         mplew.write(owner ? 0 : 1);
         mplew.writeMapleAsciiString(c.getName() + " : " + chat);
-        return mplew.getPacket();
-    }
-
-    // 0: Success
-    // 1: The room is already closed.
-    // 2: You can't enter the room due to full capacity.
-    // 3: Other requests are being fulfilled this minute.
-    // 4: You can't do it while you're dead.
-    // 7: You are not allowed to trade other items at this point.
-    // 17: You may not enter this store.
-    // 18: The owner of the store is currently undergoing store maintenance. Please try again in a bit.
-    // 23: This can only be used inside the Free Market.
-    // default: This character is unable to do it.	
-    public static byte[] getOwlMessage(int msg) {
-        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter(3);
-
-        mplew.writeShort(SendOpcode.SHOP_LINK_RESULT.getValue());
-        mplew.write(msg); // depending on the byte sent, a different message is sent.
-
-        return mplew.getPacket();
-    }
-
-    public static byte[] owlOfMinerva(MapleClient c, int itemid, List<Pair<MaplePlayerShopItem, AbstractMapleMapObject>> hmsAvailable) {
-        byte itemType = ItemConstants.getInventoryType(itemid).getType();
-
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.SHOP_SCANNER_RESULT.getValue()); // header.
-        mplew.write(6);
-        mplew.writeInt(0);
-        mplew.writeInt(itemid);
-        mplew.writeInt(hmsAvailable.size());
-        for (Pair<MaplePlayerShopItem, AbstractMapleMapObject> hme : hmsAvailable) {
-            MaplePlayerShopItem item = hme.getLeft();
-            AbstractMapleMapObject mo = hme.getRight();
-
-            if (mo instanceof MaplePlayerShop ps) {
-                MapleCharacter owner = ps.getOwner();
-
-                mplew.writeMapleAsciiString(owner.getName());
-                mplew.writeInt(owner.getMapId());
-                mplew.writeMapleAsciiString(ps.getDescription());
-                mplew.writeInt(item.getBundles());
-                mplew.writeInt(item.getItem().getQuantity());
-                mplew.writeInt(item.getPrice());
-                mplew.writeInt(owner.getId());
-                mplew.write(owner.getClient().getChannel() - 1);
-            } else {
-                MapleHiredMerchant hm = (MapleHiredMerchant) mo;
-
-                mplew.writeMapleAsciiString(hm.getOwner());
-                mplew.writeInt(hm.getMapId());
-                mplew.writeMapleAsciiString(hm.getDescription());
-                mplew.writeInt(item.getBundles());
-                mplew.writeInt(item.getItem().getQuantity());
-                mplew.writeInt(item.getPrice());
-                mplew.writeInt(hm.getOwnerId());
-                mplew.write(hm.getChannel() - 1);
-            }
-
-            mplew.write(itemType);
-            if (itemType == MapleInventoryType.EQUIP.getType()) {
-                PacketUtil.addItemInfoZeroPos(mplew, item.getItem());
-            }
-        }
-        return mplew.getPacket();
-    }
-
-    public static byte[] getOwlOpen(List<Integer> owlLeaderboards) {
-        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-
-        mplew.writeShort(SendOpcode.SHOP_SCANNER_RESULT.getValue());
-        mplew.write(7);
-        mplew.write(owlLeaderboards.size());
-        for (Integer i : owlLeaderboards) {
-            mplew.writeInt(i);
-        }
-
         return mplew.getPacket();
     }
 

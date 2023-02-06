@@ -388,7 +388,7 @@ public final class UseCashItemHandler extends AbstractMaplePacketHandler {
             List<Pair<MaplePlayerShopItem, AbstractMapleMapObject>> hmsAvailable = c.getWorldServer().getAvailableItemBundles(itemid);
             if (!hmsAvailable.isEmpty()) remove(c, position, itemId);
 
-            c.announce(MaplePacketCreator.owlOfMinerva(c, itemid, hmsAvailable));
+            c.announce(WvsContext.Packet.onShopScannerResult(itemid, hmsAvailable));
             c.announce(WvsContext.Packet.enableActions());
 
         } else if (itemType == 524) {

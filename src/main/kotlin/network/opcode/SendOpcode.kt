@@ -27,9 +27,9 @@ enum class SendOpcode(val value: Int) {
     /*CWvsContext::OnPacket*/
     InventoryOperation(29),
     InventoryGrow(30),
-    STAT_CHANGED(31),
+    StatChanged(31),
     GIVE_BUFF(32),  //OnTemporaryStatSet
-    CANCEL_BUFF(33),  //OnTemporaryStatReset
+    TemporaryStatReset(33),
     ForcedStatSet(34),
     ForcedStatReset(35),
     ChangeSkillRecordResult(36),
@@ -37,16 +37,16 @@ enum class SendOpcode(val value: Int) {
     GivePopularityResult(38),
     WvsMessage(39),
     OpenFullClientDownloadLink(40),
-    MEMO_RESULT(41),
+    MemoResult(41),
     MapTransferResult(42),
     WEDDING_PHOTO(43),
-    //ANTI_MACRO_RESULT(0x2B),
-    CLAIM_RESULT(45),  // unnamed in idb
-    CLAIM_AVAILABLE_TIME(46),  // unnamed in idb
-    CLAIM_STATUS_CHANGED(47),  // unnamed in idb
-    SetTamingMobInfo(48),  // unnamed in idb
-    QUEST_CLEAR(49),  // unnamed in idb
-    ENTRUSTED_SHOP_CHECK_RESULT(50),  //OnEntrustedShopCheckResult
+    AntiMacroResult(44),
+    ClaimResult(45),
+    SetClaimSvrAvailableTime(46),
+    ClaimSvrStatusChanged(47),
+    SetTamingMobInfo(48),
+    QuestClear(49),
+    EntrustedShopCheckResult(50),
     SkillLearnItemResult(51),  // unnamed in idb
     GatherItemResult(52),
     SortItemResult(53),
@@ -54,7 +54,7 @@ enum class SendOpcode(val value: Int) {
     TradeMoneyLimit(57),
     SetGender(58),
     GuildBBSPacket(59),
-    CHAR_INFO(61),
+    CharacterInfo(61),
     PartyResult(62),
     FriendResult(63),
     GuildResult(65),
@@ -62,8 +62,8 @@ enum class SendOpcode(val value: Int) {
     TownPortal(67),
     BroadcastMsg(68),
     IncubatorResult(69),
-    SHOP_SCANNER_RESULT(70),
-    SHOP_LINK_RESULT(71),
+    ShopScannerResult(70),
+    ShopLinkResult(71),
     MARRIAGE_REQUEST(72),
     MARRIAGE_RESULT(73),
     WEDDING_GIFT_RESULT(74),
@@ -122,15 +122,15 @@ enum class SendOpcode(val value: Int) {
     SetITC(126),
     SetCashShop(127),
     /*CMapLoadable::OnPacket*/
-    SET_BACK_EFFECT(128),  //OnSetBackEffect
-    SET_MAP_OBJECT_VISIBLE(129),  //CMapLoadable::OnSetMapObjectVisible O_O
-    CLEAR_BACK_EFFECT(130),  //OnClearBackEffect
+    SetBackEffect(128),
+    SetMapObjectVisible(129),
+    ClearBackEffect(130),
     /*CField::OnPacket*/
     TransferFieldRequestIgnored(131),
     TransferChannelReqIgnored(132),
     FieldSpecificData(133),
     GroupMessage(134),
-    WHISPER(135),
+    Whisper(135),
     CoupleMessage(136),
     SummonItemInavailable(137),
     FieldEffect(138),
@@ -144,8 +144,8 @@ enum class SendOpcode(val value: Int) {
     Desc(146),
     Clock(147),
     /*Field_ContiMove::OnPacket*/
-    CONTI_MOVE(148),
-    CONTI_STATE(149),
+    ContiMove(148),
+    ContiState(149),
     /*CField::OnPacket*/
     SetQuestClear(150),
     SetQuestTime(151),
@@ -314,8 +314,9 @@ enum class SendOpcode(val value: Int) {
     ADMIN_SHOP(308),
     //CTrunk::OnPacket
     Trunk(309),
-    FREDRICK_MESSAGE(310),
-    FREDRICK(311),
+    /*CStoreBank::OnPacket*/
+    StoreBankGetAllResult(310),
+    StoreBankResult(311),
     RPS_GAME(312),
     MESSENGER(313),
     PLAYER_INTERACTION(314),
@@ -352,11 +353,12 @@ enum class SendOpcode(val value: Int) {
     SetMessage(341),
     ClearMessage(342),
     SendMessageResult(343),
-
+    //ITC
     MTS_OPERATION2(347),
     MTS_OPERATION(348),
     MAPLELIFE_RESULT(349),
     MAPLELIFE_ERROR(350),
     VICIOUS_HAMMER(354),
+    //WvsContext
     VEGA_SCROLL(358);
 }

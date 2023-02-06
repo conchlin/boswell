@@ -254,7 +254,7 @@ public class AssignAPProcessor {
                     player.updateMp(Math.max(0, curMp + mplose));
                 }
                 default -> {
-                    c.announce(WvsContext.Packet.updatePlayerStats(MaplePacketCreator.EMPTY_STATUPDATE, true, player));
+                    c.announce(WvsContext.Packet.onStatChanged(MaplePacketCreator.EMPTY_STATUPDATE, true, player));
                     return false;
                 }
             }
@@ -320,7 +320,7 @@ public class AssignAPProcessor {
                 }
                 break;
             default:
-                chr.announce(WvsContext.Packet.updatePlayerStats(MaplePacketCreator.EMPTY_STATUPDATE, true, chr));
+                chr.announce(WvsContext.Packet.onStatChanged(MaplePacketCreator.EMPTY_STATUPDATE, true, chr));
                 return false;
         }
         return true;

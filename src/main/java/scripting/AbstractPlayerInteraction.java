@@ -509,7 +509,7 @@ public class AbstractPlayerInteraction {
         getPlayer().addPet(evolved);
 
         getPlayer().getMap().broadcastMessage(c.getPlayer(), PetPacket.Packet.onPetActivated(c.getPlayer(), evolved, false, false), true);
-        c.announce(WvsContext.Packet.petStatUpdate(c.getPlayer()));
+        c.announce(WvsContext.Packet.onPetStatChanged(c.getPlayer()));
         c.announce(WvsContext.Packet.enableActions());
         c.getWorldServer().registerPetHunger(c.getPlayer(), c.getPlayer().getPetIndex(evolved));
 

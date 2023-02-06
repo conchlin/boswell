@@ -18,9 +18,9 @@ class MapLoadable {
          *
          * @return a packet to change the background effect of a specified layer.
          */
-        fun changeBackgroundEffect(remove: Boolean, layer: Int, transition: Int): ByteArray? {
+        fun onSetBackEffect(remove: Boolean, layer: Int, transition: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.SET_BACK_EFFECT.value)
+            mplew.writeShort(SendOpcode.SetBackEffect.value)
             mplew.writeBool(remove)
             mplew.writeInt(0) // not sure what this int32 does yet
             mplew.write(layer)
@@ -31,17 +31,17 @@ class MapLoadable {
 
         // the two functions below are unimplemented
 
-        fun setMapObjectVisible(obId: Int): ByteArray? {
+        fun onSetMapObjectVisible(obId: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.SET_MAP_OBJECT_VISIBLE.value)
+            mplew.writeShort(SendOpcode.SetMapObjectVisible.value)
             mplew.write(obId)
 
             return mplew.packet
         }
 
-        fun clearBackEffect(): ByteArray? {
+        fun onClearBackEffect(): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.CLEAR_BACK_EFFECT.value)
+            mplew.writeShort(SendOpcode.ClearBackEffect.value)
 
             return mplew.packet
         }

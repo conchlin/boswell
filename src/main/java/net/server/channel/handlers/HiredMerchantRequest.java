@@ -46,9 +46,9 @@ public final class HiredMerchantRequest extends AbstractMaplePacketHandler {
             if (!chr.hasMerchant()) {
                 try {
                     if (ItemFactory.MERCHANT.loadItems(chr.getId(), false).isEmpty() && chr.getMerchantMeso() == 0) {
-                        c.announce(WvsContext.Packet.hiredMerchantBox());
+                        c.announce(WvsContext.Packet.onEntrustedShopCheckResult(7));
                     } else {
-                        chr.announce(WvsContext.Packet.retrieveFirstMessage());
+                        chr.announce(WvsContext.Packet.onEntrustedShopCheckResult(9));
                     }
                 } catch (SQLException ex) {
                     ex.printStackTrace();

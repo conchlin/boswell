@@ -22,8 +22,10 @@ package net.server.channel.handlers;
 import constants.GameConstants;
 import client.MapleClient;
 import enums.BroadcastMessageType;
+import enums.ShopLinkResultType;
 import net.AbstractMaplePacketHandler;
 import network.packet.context.BroadcastMsgPacket;
+import network.packet.context.WvsContext;
 import server.maps.MaplePlayerShop;
 import server.maps.MapleHiredMerchant;
 import tools.MaplePacketCreator;
@@ -44,29 +46,32 @@ public final class OwlWarpHandler extends AbstractMaplePacketHandler {
                     "You cannot visit your own shop."));
             return;
         }
-        
+
         MapleHiredMerchant hm = c.getWorldServer().getHiredMerchant(ownerid);   // if both hired merchant and player shop is on the same map
         MaplePlayerShop ps;
-        if(hm == null || hm.getMapId() != mapid || !hm.hasItem(c.getPlayer().getOwlSearch())) {
+        if (hm == null || hm.getMapId() != mapid || !hm.hasItem(c.getPlayer().getOwlSearch())) {
             ps = c.getWorldServer().getPlayerShop(ownerid);
-            if(ps == null || ps.getMapId() != mapid || !ps.hasItem(c.getPlayer().getOwlSearch())) {
-                if(hm == null && ps == null) c.announce(MaplePacketCreator.getOwlMessage(1));
-                else c.announce(MaplePacketCreator.getOwlMessage(3));
+            if (ps == null || ps.getMapId() != mapid || !ps.hasItem(c.getPlayer().getOwlSearch())) {
+                if (hm == null && ps == null)
+                    c.announce(WvsContext.Packet.onShopLinkResult(ShopLinkResultType.Closed.getType()));
+                else c.announce(WvsContext.Packet.onShopLinkResult(ShopLinkResultType.TooManyRequests.getType()));
                 return;
             }
-            
-            if(ps.isOpen()) {
-                if(GameConstants.isFreeMarketRoom(mapid)) {
-                    if(ps.getChannel() == c.getChannel()) {
+
+            if (ps.isOpen()) {
+                if (GameConstants.isFreeMarketRoom(mapid)) {
+                    if (ps.getChannel() == c.getChannel()) {
                         c.getPlayer().changeMap(mapid);
 
-                        if(ps.isOpen()) {   //change map has a delay, must double check
-                            if(!ps.visitShop(c.getPlayer())) {
-                                if(!ps.isBanned(c.getPlayer().getName())) c.announce(MaplePacketCreator.getOwlMessage(2));
-                                else c.announce(MaplePacketCreator.getOwlMessage(17));
+                        if (ps.isOpen()) {   //change map has a delay, must double check
+                            if (!ps.visitShop(c.getPlayer())) {
+                                if (!ps.isBanned(c.getPlayer().getName()))
+                                    c.announce(WvsContext.Packet.onShopLinkResult(ShopLinkResultType.FullCapacity.getType()));
+                                else
+                                    c.announce(WvsContext.Packet.onShopLinkResult(ShopLinkResultType.CannotEnter.getType()));
                             }
                         } else {
-                            c.announce(MaplePacketCreator.getOwlMessage(18));
+                            c.announce(WvsContext.Packet.onShopLinkResult(ShopLinkResultType.StoreMaintenance.getType()));
                         }
                     } else {
                         c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(),
@@ -79,23 +84,23 @@ public final class OwlWarpHandler extends AbstractMaplePacketHandler {
                                     + hm.getChannel() + ", '" + hm.getMap().getMapName() + "'."));
                 }
             } else {
-                c.announce(MaplePacketCreator.getOwlMessage(18));
+                c.announce(WvsContext.Packet.onShopLinkResult(ShopLinkResultType.StoreMaintenance.getType()));
             }
         } else {
-            if(hm.isOpen()) {
-                if(GameConstants.isFreeMarketRoom(mapid)) {
-                    if(hm.getChannel() == c.getChannel()) {
+            if (hm.isOpen()) {
+                if (GameConstants.isFreeMarketRoom(mapid)) {
+                    if (hm.getChannel() == c.getChannel()) {
                         c.getPlayer().changeMap(mapid);
 
-                        if(hm.isOpen()) {   //change map has a delay, must double check
-                            if(hm.addVisitor(c.getPlayer())) {
+                        if (hm.isOpen()) {   //change map has a delay, must double check
+                            if (hm.addVisitor(c.getPlayer())) {
                                 c.announce(MaplePacketCreator.getHiredMerchant(c.getPlayer(), hm, false));
                                 c.getPlayer().setHiredMerchant(hm);
                             } else {
-                                c.announce(MaplePacketCreator.getOwlMessage(2));
+                                c.announce(WvsContext.Packet.onShopLinkResult(ShopLinkResultType.FullCapacity.getType()));
                             }
                         } else {
-                            c.announce(MaplePacketCreator.getOwlMessage(18));
+                            c.announce(WvsContext.Packet.onShopLinkResult(ShopLinkResultType.StoreMaintenance.getType()));
                         }
                     } else {
                         c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.Popup.getType(),
@@ -108,7 +113,7 @@ public final class OwlWarpHandler extends AbstractMaplePacketHandler {
                                     + hm.getChannel() + ", '" + hm.getMap().getMapName() + "'."));
                 }
             } else {
-                c.announce(MaplePacketCreator.getOwlMessage(18));
+                c.announce(WvsContext.Packet.onShopLinkResult(ShopLinkResultType.StoreMaintenance.getType()));
             }
         }
     }

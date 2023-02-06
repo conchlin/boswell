@@ -981,7 +981,7 @@ public class MapleStatEffect {
             applyto.updateMp(newMp);
             hpmpupdate.add(new Pair<>(MapleStat.MP, Integer.valueOf(applyto.getMp())));
         }
-        applyto.getClient().announce(WvsContext.Packet.updatePlayerStats(hpmpupdate, true, applyto));
+        applyto.getClient().announce(WvsContext.Packet.onStatChanged(hpmpupdate, true, applyto));
         if (moveTo != -1) {
             if (moveTo != applyto.getMapId()) {
                 MapleMap target;

@@ -13,7 +13,7 @@ class StoreBank {
 
         fun onStoreBankMessage(operation: Byte): ByteArray? { // StoreBankGetAllResult
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.FREDRICK_MESSAGE.value)
+            mplew.writeShort(SendOpcode.StoreBankGetAllResult.value)
             mplew.write(operation)
 
             return mplew.packet
@@ -21,7 +21,7 @@ class StoreBank {
 
         fun onStoreBankResult(chr: MapleCharacter): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
-            mplew.writeShort(SendOpcode.FREDRICK.value)
+            mplew.writeShort(SendOpcode.StoreBankResult.value)
             mplew.write(0x23)
             mplew.writeInt(9030000) // Fredrick
             mplew.writeInt(32272) //id
