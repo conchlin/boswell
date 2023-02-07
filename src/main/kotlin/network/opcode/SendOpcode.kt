@@ -353,9 +353,9 @@ enum class SendOpcode(val value: Int) {
     SetMessage(341),
     ClearMessage(342),
     SendMessageResult(343),
-    //ITC
-    MTS_OPERATION2(347),
-    MTS_OPERATION(348),
+    //ITCMan
+    ITCChargeParamResult(347),
+    ITCQueryCashResult(348),
     MAPLELIFE_RESULT(349),
     MAPLELIFE_ERROR(350),
     VICIOUS_HAMMER(354),
