@@ -36,8 +36,10 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
+import enums.ShopResultType;
 import net.database.DatabaseConnection;
-import tools.MaplePacketCreator;
+import network.packet.ShopPacket;
 
 /**
  *
@@ -76,7 +78,7 @@ public class MapleShop {
 
     public void sendShop(MapleClient c) {
         c.getPlayer().setShop(this);
-        c.announce(MaplePacketCreator.getNPCShop(c, getNpcId(), items));
+        c.announce(ShopPacket.Packet.onOpenShopDlg(c, getNpcId(), items));
     }
 
     public void buy(MapleClient c, short slot, int itemId, short quantity) {
@@ -103,12 +105,12 @@ public class MapleShop {
                         MapleInventoryManipulator.addById(c, itemId, quantity, "", -1);
                         c.getPlayer().gainMeso(-item.getPrice(), false);
                     }
-                    c.announce(MaplePacketCreator.shopTransaction((byte) 0));
+                    c.announce(ShopPacket.Packet.onShopResult(ShopResultType.Success.getResult()));
                 } else 
-                    c.announce(MaplePacketCreator.shopTransaction((byte) 3));
+                    c.announce(ShopPacket.Packet.onShopResult(ShopResultType.InventoryFull.getResult()));
                 
             } else
-                c.announce(MaplePacketCreator.shopTransaction((byte) 2));
+                c.announce(ShopPacket.Packet.onShopResult(ShopResultType.InsufficientMesos.getResult()));
 
         } else if (item.getPitch() > 0) {
             int amount = (int)Math.min((float) item.getPitch() * quantity, Integer.MAX_VALUE);
@@ -124,9 +126,9 @@ public class MapleShop {
                         MapleInventoryManipulator.addById(c, itemId, quantity, "", -1);
                         MapleInventoryManipulator.removeById(c, MapleInventoryType.ETC, 4310000, amount, false, false);
                     }
-                    c.announce(MaplePacketCreator.shopTransaction((byte) 0));
+                    c.announce(ShopPacket.Packet.onShopResult(ShopResultType.Success.getResult()));
                 } else
-                    c.announce(MaplePacketCreator.shopTransaction((byte) 3));
+                    c.announce(ShopPacket.Packet.onShopResult(ShopResultType.InventoryFull.getResult()));
             }
 
         } else if (c.getPlayer().getInventory(MapleInventoryType.CASH).countById(token) != 0) {
@@ -145,11 +147,11 @@ public class MapleShop {
                     }
                     c.getPlayer().gainMeso(diff, false);
                 } else {
-                    c.announce(MaplePacketCreator.shopTransaction((byte) 3));
+                    c.announce(ShopPacket.Packet.onShopResult(ShopResultType.InventoryFull.getResult()));
                 }
-                c.announce(MaplePacketCreator.shopTransaction((byte) 0));
+                c.announce(ShopPacket.Packet.onShopResult(ShopResultType.Success.getResult()));
             } else {
-                c.announce(MaplePacketCreator.shopTransaction((byte) 2));
+                c.announce(ShopPacket.Packet.onShopResult(ShopResultType.InsufficientMesos.getResult()));
             }
         }
     }
@@ -203,9 +205,9 @@ public class MapleShop {
             if (recvMesos > 0) {
                 c.getPlayer().gainMeso(recvMesos, false);
             }
-            c.announce(MaplePacketCreator.shopTransaction((byte) 0x8));
+            c.announce(ShopPacket.Packet.onShopResult(ShopResultType.Recharge.getResult()));
         } else {
-            c.announce(MaplePacketCreator.shopTransaction((byte) 0x5));
+            c.announce(ShopPacket.Packet.onShopResult(ShopResultType.NotInStock.getResult()));
         }
     }
 
@@ -225,9 +227,9 @@ public class MapleShop {
                 item.setQuantity(slotMax);
                 c.getPlayer().forceUpdateItem(item);
                 c.getPlayer().gainMeso(-price, false, true, false);
-                c.announce(MaplePacketCreator.shopTransaction((byte) 0x8));
+                c.announce(ShopPacket.Packet.onShopResult(ShopResultType.Recharge.getResult()));
             } else {
-                c.announce(MaplePacketCreator.shopTransaction((byte) 0x2));
+                c.announce(ShopPacket.Packet.onShopResult(ShopResultType.InsufficientMesos.getResult()));
             }
         }
     }

@@ -35,9 +35,7 @@ import net.server.channel.handlers.MiniRoomHandler;
 import net.server.guild.MapleAlliance;
 import net.server.guild.MapleGuild;
 import server.DueyPackage;
-import server.MTSItemInfo;
 import server.MapleItemInformationProvider;
-import server.MapleShopItem;
 import server.MapleTrade;
 import server.life.MapleMonster;
 import server.life.MobSpawnType;
@@ -56,7 +54,6 @@ import client.inventory.MaplePet;
 import client.newyear.NewYearCardRecord;
 import client.status.MonsterStatus;
 import client.status.MonsterStatusEffect;
-import constants.ItemConstants;
 import tools.packets.PacketUtil;
 
 /**
@@ -71,26 +68,6 @@ public class MaplePacketCreator {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendOpcode.SET_EXTRA_PENDANT_SLOT.getValue());
         mplew.writeBool(toggleExtraSlot);
-        return mplew.getPacket();
-    }
-
-    /**
-     * Sends a hello packet.
-     *
-     * @param mapleVersion The maple client version.
-     * @param sendIv the IV used by the server for sending
-     * @param recvIv the IV used by the server for receiving
-     * @return
-     */
-    public static byte[] getHello(short mapleVersion, byte[] sendIv, byte[] recvIv) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter(8);
-        mplew.writeShort(0x0E);
-        mplew.writeShort(mapleVersion);
-        mplew.writeShort(1);
-        mplew.write(49);
-        mplew.write(recvIv);
-        mplew.write(sendIv);
-        mplew.write(8);
         return mplew.getPacket();
     }
 
@@ -396,49 +373,6 @@ public class MaplePacketCreator {
                     // BroadCast_RemoveCardInfo
                     mplew.writeInt(newyear.getId());
         }
-        return mplew.getPacket();
-    }
-
-    public static byte[] getNPCShop(MapleClient c, int sid, List<MapleShopItem> items) {
-        MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.OPEN_NPC_SHOP.getValue());
-        mplew.writeInt(sid);
-        mplew.writeShort(items.size()); // item count
-        for (MapleShopItem item : items) {
-            mplew.writeInt(item.getItemId());
-            mplew.writeInt(item.getPrice());
-            mplew.writeInt(item.getPrice() == 0 ? item.getPitch() : 0); //Perfect Pitch
-            mplew.writeInt(0); //Can be used x minutes after purchase
-            mplew.writeInt(0); //Hmm
-            if (!ItemConstants.isRechargeable(item.getItemId())) {
-                mplew.writeShort(1); // stacksize o.o
-                mplew.writeShort(item.getBuyable());
-            } else {
-                mplew.writeShort(0);
-                mplew.writeInt(0);
-                mplew.writeShort(PacketUtil.doubleToShortBits(ii.getUnitPrice(item.getItemId())));
-                mplew.writeShort(ii.getSlotMax(c, item.getItemId()));
-            }
-        }
-        return mplew.getPacket();
-    }
-
-    /* 00 = /
-         * 01 = You don't have enough in stock
-         * 02 = You do not have enough mesos
-         * 03 = Please check if your inventory is full or not
-         * 05 = You don't have enough in stock
-         * 06 = Due to an error, the trade did not happen
-         * 07 = Due to an error, the trade did not happen
-         * 08 = /
-         * 0D = You need more items
-         * 0E = CRASH; LENGTH NEEDS TO BE LONGER :O
-     */
-    public static byte[] shopTransaction(byte code) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter(3);
-        mplew.writeShort(SendOpcode.CONFIRM_SHOP_TRANSACTION.getValue());
-        mplew.write(code);
         return mplew.getPacket();
     }
 

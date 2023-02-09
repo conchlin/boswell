@@ -308,10 +308,12 @@ enum class SendOpcode(val value: Int) {
     HORNTAIL_CAVE(302),  //CField::OnHontailTimer
     ZAKUM_SHRINE(303),  //CField::OnZakumTimer
     ScriptMessage(304),
-    OPEN_NPC_SHOP(305),
-    CONFIRM_SHOP_TRANSACTION(306),
-    ADMIN_SHOP_MESSAGE(307),  //lame :P
-    ADMIN_SHOP(308),
+    //Shop
+    OpenShopDlg(305),
+    ShopResult(306),
+    //AdminShop
+    AdminShopResult(307),
+    AdminShopCommodity(308),
     //CTrunk::OnPacket
     Trunk(309),
     /*CStoreBank::OnPacket*/

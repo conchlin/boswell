@@ -29,6 +29,7 @@ import java.util.Calendar;
 import java.util.concurrent.atomic.AtomicLong;
 
 import network.packet.CLogin;
+import network.packet.TCPHandshake;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
@@ -46,7 +47,6 @@ import net.server.coordinator.MapleSessionCoordinator;
 import tools.FilePrinter;
 import tools.MapleAESOFB;
 import tools.MapleLogger;
-import tools.MaplePacketCreator;
 import tools.data.input.ByteArrayByteStream;
 import tools.data.input.GenericSeekableLittleEndianAccessor;
 import tools.data.input.SeekableLittleEndianAccessor;
@@ -148,7 +148,7 @@ public class MapleServerHandler extends IoHandlerAdapter {
         client.setWorld(world);
         client.setChannel(channel);
         client.setSessionId(sessionId.getAndIncrement()); // Generates a reasonable session id.
-        session.write(MaplePacketCreator.getHello(ServerConstants.VERSION, ivSend, ivRecv));
+        session.write(TCPHandshake.Packet.onHandshake(ServerConstants.VERSION, ivSend, ivRecv));
         session.setAttribute(MapleClient.CLIENT_KEY, client);
     }
 
