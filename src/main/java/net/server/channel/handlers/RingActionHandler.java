@@ -39,7 +39,6 @@ import net.server.world.World;
 import net.server.channel.Channel;
 import network.packet.context.WvsContext;
 import server.MapleItemInformationProvider;
-import scripting.event.EventInstanceManager;
 import net.database.DatabaseConnection;
 import tools.Pair;
 import tools.data.input.SeekableLittleEndianAccessor;
@@ -433,7 +432,7 @@ public final class RingActionHandler extends AbstractMaplePacketHandler {
                     return;
                 }
                 
-                c.getAbstractPlayerInteraction().gainItem(itemId, (short) -1);
+                //c.getAbstractPlayerInteraction().gainItem(itemId, (short) -1);
                 break;
                 
             case 6: // Open Wedding Invitation
@@ -464,8 +463,8 @@ public final class RingActionHandler extends AbstractMaplePacketHandler {
 
                     MapleCharacter player = c.getPlayer();
 
-                    EventInstanceManager eim = player.getEventInstance();
-                    if (eim != null) {
+                    //EventInstanceManager eim = player.getEventInstance();
+                    /*if (eim != null) {
                         boolean isMarrying = (player.getId() == eim.getIntProperty("groomId") || player.getId() == eim.getIntProperty("brideId"));
 
                         if (isMarrying) {
@@ -491,7 +490,7 @@ public final class RingActionHandler extends AbstractMaplePacketHandler {
                                 eim.setProperty(wlKey, wishlistItems);
                             }
                         }
-                    }
+                    }*/
                 } catch (NumberFormatException ignored) {}
                 
                 break;

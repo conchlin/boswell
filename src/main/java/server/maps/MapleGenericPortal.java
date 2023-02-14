@@ -28,7 +28,6 @@ import constants.GameConstants;
 import java.awt.Point;
 
 import network.packet.context.WvsContext;
-import scripting.portal.PortalScriptManager;
 import server.MaplePortal;
 import net.server.audit.locks.MonitoredLockType;
 import net.server.audit.locks.MonitoredReentrantLock;
@@ -140,7 +139,7 @@ public class MapleGenericPortal implements MaplePortal {
             AutobanFactory.PORTAL_DISTANCE.alert(c.getPlayer(), "Player is accessing a portal while " +  distanceSq + " away from it.");
             AutobanFactory.PORTAL_DISTANCE.addPoint(c.getPlayer().getAutobanManager(), "Player is accessing a portal while " +  distanceSq + " away from it."); 
         }
-        if (getScriptName() != null) {
+        /*if (getScriptName() != null) {
             try {
                 scriptLock.lock();
                 try {
@@ -151,10 +150,10 @@ public class MapleGenericPortal implements MaplePortal {
             } catch(NullPointerException npe) {
                 npe.printStackTrace();
             }
-        } else if (getTargetMapId() != 999999999) {
+        } else*/ if (getTargetMapId() != 999999999) {
             MapleCharacter chr = c.getPlayer();
             if (!(chr.getChalkboard() != null && GameConstants.isFreeMarketRoom(getTargetMapId()))) {
-                MapleMap to = chr.getEventInstance() == null ? c.getChannelServer().getMapFactory().getMap(getTargetMapId()) : chr.getEventInstance().getMapInstance(getTargetMapId());
+                MapleMap to = c.getChannelServer().getMapFactory().getMap(getTargetMapId());
                 MaplePortal pto = to.getPortal(getTarget());
                 if (pto == null) {// fallback for missing portals - no real life case anymore - interesting for not implemented areas
                     pto = to.getPortal(0);

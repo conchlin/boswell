@@ -33,7 +33,6 @@ import server.TimerManager;
 import server.expeditions.MapleExpedition;
 import server.expeditions.MapleExpeditionType;
 import server.maps.MapleMap;
-import tools.MaplePacketCreator;
 
 /**
  *
@@ -180,7 +179,7 @@ public class AriantColiseum {
                 chr.setAriantColiseum(null);
                 
                 int shards = chr.countItem(4031868);
-                chr.getAbstractPlayerInteraction().removeAll(4031868);
+                //chr.getAbstractPlayerInteraction().removeAll(4031868);
                 chr.updateAriantScore(shards);
             }
         }

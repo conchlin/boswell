@@ -25,7 +25,6 @@ import java.awt.Point;
 import client.MapleCharacter;
 import client.MapleClient;
 import net.AbstractMaplePacketHandler;
-import scripting.quest.QuestScriptManager;
 import server.quest.MapleQuest;
 import server.life.MapleNPC;
 import tools.data.input.SeekableLittleEndianAccessor;
@@ -108,7 +107,7 @@ public final class QuestRequestHandler extends AbstractMaplePacketHandler {
             }
 
             if(quest.canStart(player, npc)) {
-                QuestScriptManager.getInstance().start(c, questid, npc);
+                //QuestScriptManager.getInstance().start(c, questid, npc);
             }
         } else if (action == 5) { // scripted end quests
             int npc = slea.readInt();
@@ -117,7 +116,7 @@ public final class QuestRequestHandler extends AbstractMaplePacketHandler {
             }
 
             if(quest.canComplete(player, npc)) {
-                QuestScriptManager.getInstance().end(c, questid, npc);
+                //QuestScriptManager.getInstance().end(c, questid, npc);
             }
         }
     }

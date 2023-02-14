@@ -71,6 +71,6 @@ public class WhatDropsFromCommand extends Command {
             }
         }
         
-        c.getAbstractPlayerInteraction().npcTalk(9010000, output);
+        //c.getAbstractPlayerInteraction().npcTalk(9010000, output);
     }
 }

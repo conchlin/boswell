@@ -43,11 +43,9 @@ import net.server.coordinator.MapleMatchCheckerCoordinator;
 import net.server.coordinator.matchchecker.MatchCheckerListenerFactory.MatchCheckerType;
 import network.packet.context.BroadcastMsgPacket;
 import network.packet.context.PartyPacket;
-import scripting.event.EventInstanceManager;
 import server.maps.MapleDoor;
 import server.maps.MapleMap;
 import server.partyquest.MonsterCarnival;
-import tools.MaplePacketCreator;
 
 public class MapleParty {
 
@@ -418,10 +416,10 @@ public class MapleParty {
                 
                 world.updateParty(party.getId(), PartyResultType.Disband.getResult(), partyplayer);
                 
-                EventInstanceManager eim = player.getEventInstance();
+                /*EventInstanceManager eim = player.getEventInstance();
                 if(eim != null) {
                     eim.disbandParty();
-                }
+                }*/
             } else {
                 MapleMap map = player.getMap();
                 if (map != null) {
@@ -435,10 +433,10 @@ public class MapleParty {
 
                 world.updateParty(party.getId(), PartyResultType.Leave.getResult(), partyplayer);
                 
-                EventInstanceManager eim = player.getEventInstance();
+                /*EventInstanceManager eim = player.getEventInstance();
                 if(eim != null) {
                     eim.leftParty(player);
-                }
+                }*/
             }
             
             player.setParty(null);
@@ -471,10 +469,10 @@ public class MapleParty {
                             mcpq.leftParty(emc.getId());
                         }
                         
-                        EventInstanceManager eim = emc.getEventInstance();
+                        /*EventInstanceManager eim = emc.getEventInstance();
                         if(eim != null) {
                             eim.leftParty(emc);
-                        }
+                        }*/
 
                         emc.setParty(null);
                         world.updateParty(party.getId(), PartyResultType.Expel.getResult(), expelled);

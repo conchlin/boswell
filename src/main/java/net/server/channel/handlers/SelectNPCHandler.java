@@ -26,7 +26,6 @@ import client.processor.DueyProcessor;
 import constants.ServerConstants;
 import net.AbstractMaplePacketHandler;
 import network.packet.context.WvsContext;
-import scripting.npc.NPCScriptManager;
 import server.life.MapleNPC;
 import server.maps.MapleMapObject;
 import server.life.MaplePlayerNPC;
@@ -52,16 +51,16 @@ public final class SelectNPCHandler extends AbstractMaplePacketHandler {
             if (npc.getId() == 9010009) {   //is duey
                 DueyProcessor.dueySendTalk(c, false);
             } else {
-                if (c.getCM() != null || c.getQM() != null) {
+                /*if (c.getCM() != null || c.getQM() != null) {
                     c.announce(WvsContext.Packet.enableActions());
                     return;
-                }
+                }*/
                 if(npc.getId() >= 9100100 && npc.getId() <= 9100200) {
                     // Custom handling for gachapon scripts to reduce the amount of scripts needed.
-                    NPCScriptManager.getInstance().start(c, npc.getId(), "gachapon", null);
+                    //NPCScriptManager.getInstance().start(c, npc.getId(), "gachapon", null);
                 } else {
-                    boolean hasNpcScript = NPCScriptManager.getInstance().start(c, npc.getId(), oid, null);
-                    if (!hasNpcScript) {
+                    //boolean hasNpcScript = NPCScriptManager.getInstance().start(c, npc.getId(), oid, null);
+                    /*if (!hasNpcScript) {
                         if (!npc.hasShop()) {
                             FilePrinter.printError(FilePrinter.NPC_UNCODED, "NPC " + npc.getName() + "(" + npc.getId() + ") is not coded.");
                             return;
@@ -71,17 +70,17 @@ public final class SelectNPCHandler extends AbstractMaplePacketHandler {
                         }
                         
                         npc.sendShop(c);
-                    }
+                    }*/
                 }
             }
         } else if (obj instanceof MaplePlayerNPC pnpc) {
-            NPCScriptManager nsm = NPCScriptManager.getInstance();
+            //NPCScriptManager nsm = NPCScriptManager.getInstance();
             
-            if (pnpc.getScriptId() < 9977777 && !nsm.isNpcScriptAvailable(c, "" + pnpc.getScriptId())) {
+            /*if (pnpc.getScriptId() < 9977777 && !nsm.isNpcScriptAvailable(c, "" + pnpc.getScriptId())) {
                 nsm.start(c, pnpc.getScriptId(), "rank_user", null);
             } else {
                 nsm.start(c, pnpc.getScriptId(), null);
-            }
+            }*/
         }
     }
 }

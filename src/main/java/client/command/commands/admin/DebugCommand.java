@@ -63,7 +63,7 @@ public class DebugCommand extends Command {
                     msgTypes += ("#L" + i + "#" + debugTypes[i] + "#l\r\n");
                 }
                 
-                c.getAbstractPlayerInteraction().npcTalk(9201143, msgTypes);
+                //c.getAbstractPlayerInteraction().npcTalk(9201143, msgTypes);
                 break;
             
             case "monster":
@@ -98,7 +98,7 @@ public class DebugCommand extends Command {
                 break;
 
             case "map":
-                player.dropMessage(6, "Current map id " + player.getMap().getId() + ", event: '" + ((player.getMap().getEventInstance() != null) ? player.getMap().getEventInstance().getName() : "null") + "'; Players: " + player.getMap().getAllPlayers().size() + ", Mobs: " + player.getMap().countMonsters() + ", Reactors: " + player.getMap().countReactors() + ", Items: " + player.getMap().countItems() + ", Objects: " + player.getMap().getMapObjects().size() + ".");
+                //player.dropMessage(6, "Current map id " + player.getMap().getId() + ", event: '" + ((player.getMap().getEventInstance() != null) ? player.getMap().getEventInstance().getName() : "null") + "'; Players: " + player.getMap().getAllPlayers().size() + ", Mobs: " + player.getMap().countMonsters() + ", Reactors: " + player.getMap().countReactors() + ", Items: " + player.getMap().countItems() + ", Objects: " + player.getMap().getMapObjects().size() + ".");
                 break;
 
             case "mobsp":
@@ -106,8 +106,8 @@ public class DebugCommand extends Command {
                 break;
 
             case "event":
-                if (player.getEventInstance() == null) player.dropMessage(6, "Player currently not in an event.");
-                else player.dropMessage(6, "Current event name: " + player.getEventInstance().getName() + ".");
+                /*if (player.getEventInstance() == null) player.dropMessage(6, "Player currently not in an event.");
+                else player.dropMessage(6, "Current event name: " + player.getEventInstance().getName() + ".");*/
                 break;
 
             case "areas":

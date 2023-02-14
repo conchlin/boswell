@@ -18,9 +18,9 @@ public class MigrateToITCRequestHandler extends AbstractMaplePacketHandler {
     public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         MapleCharacter player = c.getPlayer();
 
-        if (player.getEventInstance() != null) {
+        /*if (player.getEventInstance() != null) {
             player.dropMessage("You can't enter the FM when you are registered in an event.");
-        } else if (player.getMapId() == 109050001) { // event maps that aren't registered as event maps
+        } else */if (player.getMapId() == 109050001) { // event maps that aren't registered as event maps
             player.dropMessage("You can't enter the FM from an event map.");
         } else if (MapleMiniDungeonInfo.isDungeonMap(player.getMapId())) {
             player.dropMessage("You can't enter the FM when you are inside a mini-dungeon.");

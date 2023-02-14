@@ -23,8 +23,6 @@ package net.server.channel.handlers;
 
 import client.MapleClient;
 import net.AbstractMaplePacketHandler;
-import scripting.npc.NPCScriptManager;
-import scripting.quest.QuestScriptManager;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 /**
@@ -37,7 +35,7 @@ public final class ScriptMessageAnswerHandler extends AbstractMaplePacketHandler
         byte lastMsg = slea.readByte(); // 00 (last msg type I think)
         byte action = slea.readByte(); // 00 = end chat, 01 == follow
         if (lastMsg == 2) {
-            if (action != 0) {
+            /*if (action != 0) {
                 String returnText = slea.readMapleAsciiString();
                 if (c.getQM() != null) {
                     c.getQM().setGetText(returnText);
@@ -54,7 +52,7 @@ public final class ScriptMessageAnswerHandler extends AbstractMaplePacketHandler
                 c.getQM().dispose();
             } else {
                 c.getCM().dispose();
-            }
+            }*/
         } else {
             int selection = -1;
             if (slea.available() >= 4) {
@@ -62,7 +60,7 @@ public final class ScriptMessageAnswerHandler extends AbstractMaplePacketHandler
             } else if (slea.available() > 0) {
                 selection = slea.readByte();
             }
-            if (c.getQM() != null) {
+            /*if (c.getQM() != null) {
                 if (c.getQM().isStart()) {
                     QuestScriptManager.getInstance().start(c, action, lastMsg, selection);
                 } else {
@@ -70,7 +68,7 @@ public final class ScriptMessageAnswerHandler extends AbstractMaplePacketHandler
                 }
             } else if (c.getCM() != null) {
                 NPCScriptManager.getInstance().action(c, action, lastMsg, selection);
-            }
+            }*/
         }
     }
 }

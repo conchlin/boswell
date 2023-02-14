@@ -43,10 +43,8 @@ import network.packet.context.WvsContext;
 import server.cashshop.CashShop;
 import server.cashshop.CashItem;
 import server.cashshop.CashItemFactory;
-import client.inventory.manipulator.MapleInventoryManipulator;
 import server.MapleItemInformationProvider;
 import tools.FilePrinter;
-import tools.MaplePacketCreator;
 import tools.Pair;
 import tools.data.input.SeekableLittleEndianAccessor;
 
@@ -328,11 +326,11 @@ public final class CashOperationHandler extends AbstractMaplePacketHandler {
                     }
 
                     if (chr.getMeso() >= itemPrice) {
-                        if (chr.canHold(itemId)) {
+                        /*if (chr.canHold(itemId)) {
                             chr.gainMeso(-itemPrice, false);
                             MapleInventoryManipulator.addById(c, itemId, (short) 1, "", -1);
                             c.announce(CCashShop.Packet.onCashItemResult(CashItemResultType.ItemQuest.getResult(), chr, itemId));
-                        }
+                        }*/
                     }
                     c.announce(CCashShop.Packet.onQueryCashResult(c.getPlayer()));
                 } else if (action == 0x23) { //Friendship :3

@@ -265,10 +265,10 @@ public class ItemAction extends MapleQuestAction {
                 if (item.getId() == itemid) {
                     int missingQty = item.getCount() - chr.countItem(itemid);
                     if (missingQty > 0) {
-                        if (!chr.canHold(itemid, missingQty)) {
+                        /*if (!chr.canHold(itemid, missingQty)) {
                             chr.dropMessage(1, "Please check if you have enough space in your inventory.");
                             return false;
-                        }
+                        }*/
 
                         MapleInventoryManipulator.addById(chr.getClient(), item.getId(), (short) missingQty);
                         FilePrinter.print(FilePrinter.QUEST_RESTORE_ITEM, chr + " obtained " + itemid + " qty. " + missingQty + " from quest " + questID);

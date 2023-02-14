@@ -51,7 +51,7 @@ public class QuestStartCommand extends Command {
 
         if (victim != null) {
             if (victim.getQuestStatus(questId) == 0) {
-                victim.getAbstractPlayerInteraction().forceStartQuest(questId);
+                //victim.getAbstractPlayerInteraction().forceStartQuest(questId);
                 player.dropMessage(5, victim + ": QUEST " + questId + " started.");
                 victim.dropMessage(5, player + ": QUEST " + questId + " started.");
             } else {

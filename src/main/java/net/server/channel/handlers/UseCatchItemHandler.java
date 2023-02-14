@@ -88,7 +88,7 @@ public final class UseCatchItemHandler extends AbstractMaplePacketHandler {
                 if (mob.getId() == 9300157) {
                     if ((abm.getLastSpam(10) + 800) < currentServerTime()) {
                         if (mob.getHp() < ((mob.getMaxHp() / 10) * 4)) {
-                            if (chr.canHold(4031868, 1)) {
+                            /*if (chr.canHold(4031868, 1)) {
                                 if (Math.random() < 0.5) { // 50% chance
                                     chr.getMap().broadcastMessage(MobPool.Packet.onEffectByItem(monsterid, itemId, (byte) 1));
                                     mob.getMap().killMonster(mob, null, false);
@@ -99,7 +99,7 @@ public final class UseCatchItemHandler extends AbstractMaplePacketHandler {
                                 }
                             } else {
                                 chr.dropMessage(5, "Make a ETC slot available before using this item.");
-                            }
+                            }*/
                             
                             abm.spam(10);
                         } else {

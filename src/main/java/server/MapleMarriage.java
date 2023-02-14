@@ -26,14 +26,12 @@ import client.inventory.ItemFactory;
 import client.inventory.MapleInventory;
 import client.inventory.MapleInventoryType;
 import client.inventory.manipulator.MapleInventoryManipulator;
-import scripting.event.EventInstanceManager;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import scripting.event.EventManager;
 import net.database.DatabaseConnection;
 import tools.Pair;
 
@@ -41,10 +39,10 @@ import tools.Pair;
  *
  * @author Ronan
  */
-public class MapleMarriage extends EventInstanceManager {
-    
-    public MapleMarriage(EventManager em, String name) {
-        super(em, name);
+public class MapleMarriage /*extends EventInstanceManager*/ {
+/*
+    public MapleMarriage(*//*EventManager em, *//*String name) {
+        super();
     }
     
     public boolean giftItemToSpouse(int cid) {
@@ -182,5 +180,5 @@ public class MapleMarriage extends EventInstanceManager {
                 c.releaseClient();
             }
         }
-    }
+    }*/
 }

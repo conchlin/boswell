@@ -33,6 +33,6 @@ public class HelpCommand extends Command {
 
     @Override
     public void execute(MapleClient client, String[] params) {
-        client.getAbstractPlayerInteraction().openNpc(9010000, "commands");
+        //client.getAbstractPlayerInteraction().openNpc(9010000, "commands");
     }
 }

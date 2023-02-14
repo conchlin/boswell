@@ -10,6 +10,6 @@ public class TrophyCommand extends Command {
 
     @Override
     public void execute(MapleClient c, String[] params) {
-        c.getAbstractPlayerInteraction().openNpc(9200000, "TrophyExchange");
+        //c.getAbstractPlayerInteraction().openNpc(9200000, "TrophyExchange");
     }
 }

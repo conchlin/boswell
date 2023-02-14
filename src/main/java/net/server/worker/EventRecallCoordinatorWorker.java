@@ -29,6 +29,6 @@ public class EventRecallCoordinatorWorker implements Runnable {
     
     @Override
     public void run() {
-        MapleEventRecallCoordinator.getInstance().manageEventInstances();
+        /*MapleEventRecallCoordinator.getInstance().manageEventInstances();*/
     }
 }

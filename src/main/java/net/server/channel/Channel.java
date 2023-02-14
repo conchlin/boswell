@@ -66,7 +66,6 @@ import org.apache.mina.transport.socket.SocketSessionConfig;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 
 import provider.MapleDataProviderFactory;
-import scripting.event.EventScriptManager;
 import server.TimerManager;
 import server.events.gm.MapleEvent;
 import server.expeditions.MapleExpedition;
@@ -75,7 +74,6 @@ import server.maps.MapleHiredMerchant;
 import server.maps.MapleMap;
 import server.maps.MapleMapFactory;
 import server.maps.MapleMiniDungeon;
-import tools.MaplePacketCreator;
 import tools.Pair;
 import client.MapleCharacter;
 import client.status.MonsterStatusEffect;
@@ -90,7 +88,7 @@ public final class Channel {
     private IoAcceptor acceptor;
     private String ip, serverMessage;
     private MapleMapFactory mapFactory;
-    private EventScriptManager eventSM;
+    /*private EventScriptManager eventSM;*/
     private MobStatusScheduler mobStatusSchedulers[] = new MobStatusScheduler[ServerConstants.CHANNEL_LOCKS];
     private MobAnimationScheduler mobAnimationSchedulers[] = new MobAnimationScheduler[ServerConstants.CHANNEL_LOCKS];
     private MobClearSkillScheduler mobClearSkillSchedulers[] = new MobClearSkillScheduler[ServerConstants.CHANNEL_LOCKS];
@@ -143,9 +141,11 @@ public final class Channel {
         this.channel = channel;
         
         this.ongoingStartTime = startTime + 10000;  // rude approach to a world's last channel boot time, placeholder for the 1st wedding reservation ever
-        this.mapFactory = new MapleMapFactory(null, MapleDataProviderFactory.getDataProvider(new File(System.getProperty("wzpath") + "/Map.wz")), MapleDataProviderFactory.getDataProvider(new File(System.getProperty("wzpath") + "/String.wz")), world, channel);
+        this.mapFactory = new MapleMapFactory(MapleDataProviderFactory.getDataProvider(new File(System.getProperty("wzpath") + "/Map.wz")),
+                MapleDataProviderFactory.getDataProvider(new File(System.getProperty("wzpath") + "/String.wz")),
+                world, channel);
         try {
-            eventSM = new EventScriptManager(this, getEvents());
+            /*eventSM = new EventScriptManager(this, getEvents());*/
             port = 16555 + this.channel - 1;
             port += (world * 100);
             ip = ServerConstants.HOST + ":" + port;
@@ -158,10 +158,8 @@ public final class Channel {
             acceptor.getFilterChain().addLast("codec", (IoFilter) new ProtocolCodecFilter(new MapleCodecFactory()));
             acceptor.bind(new InetSocketAddress(port));
             ((SocketSessionConfig) acceptor.getSessionConfig()).setTcpNoDelay(true);
-            for (MapleExpeditionType exped : MapleExpeditionType.values()) {
-            	expedType.add(exped);
-            }
-            eventSM.init();
+            Collections.addAll(expedType, MapleExpeditionType.values());
+            /*eventSM.init();*/
             
             dojoStage = new int[20];
             dojoFinishTime = new long[20];
@@ -190,12 +188,12 @@ public final class Channel {
         }
     }
     
-    public void reloadEventScriptManager(){
+    /*public void reloadEventScriptManager(){
     	eventSM.cancel();
     	eventSM = null;
     	eventSM = new EventScriptManager(this, getEvents());
     	eventSM.init();
-    }
+    }*/
 
     public final void shutdown() {
         try {
@@ -213,8 +211,8 @@ public final class Channel {
             mapFactory.dispose();
             mapFactory = null;
             
-            eventSM.cancel();
-            eventSM = null;
+            /*eventSM.cancel();
+            eventSM = null;*/
             
             closeChannelSchedules();
             players = null;
@@ -371,9 +369,9 @@ public final class Channel {
         this.event = event;
     }
 
-    public EventScriptManager getEventSM() {
+    /*public EventScriptManager getEventSM() {
         return eventSM;
-    }
+    }*/
 
     public void broadcastGMPacket(final byte[] data) {
         for (MapleCharacter chr : players.getAllCharacters()) {

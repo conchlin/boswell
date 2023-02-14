@@ -38,7 +38,7 @@ public class ReloadEventsCommand extends Command {
     public void execute(MapleClient c, String[] params) {
         MapleCharacter player = c.getPlayer();
         for (Channel ch : Server.getInstance().getAllChannels()) {
-            ch.reloadEventScriptManager();
+            //ch.reloadEventScriptManager();
         }
         player.dropMessage(5, "Reloaded Events");
     }

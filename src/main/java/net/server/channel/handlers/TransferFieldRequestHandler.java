@@ -44,7 +44,7 @@ import tools.data.input.SeekableLittleEndianAccessor;
 public final class TransferFieldRequestHandler extends AbstractMaplePacketHandler {
 
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         MapleCharacter chr = c.getPlayer();
 
         if (chr.isChangingMaps() || chr.isBanned()) {
@@ -105,9 +105,9 @@ public final class TransferFieldRequestHandler extends AbstractMaplePacketHandle
                             chr.changeMap(map, map.findClosestPlayerSpawnpoint(chr.getPosition()));
                         } else {
                             boolean executeStandardPath = true;
-                            if (chr.getEventInstance() != null) {
+                            /*if (chr.getEventInstance() != null) {
                                 executeStandardPath = chr.getEventInstance().revivePlayer(chr);
-                            }
+                            }*/
                             if (executeStandardPath) {
                                 chr.respawn(map.getReturnMapId());
                             }

@@ -12,11 +12,6 @@
         <kotlin.version>1.7.10</kotlin.version>
     </properties>
     <dependencies>
-        <dependency>
-            <groupId>org.openjdk.nashorn</groupId>
-            <artifactId>nashorn-core</artifactId>
-            <version>15.4</version>
-        </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
         <dependency>

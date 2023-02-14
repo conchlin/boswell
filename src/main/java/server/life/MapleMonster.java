@@ -73,7 +73,6 @@ import net.server.audit.locks.MonitoredReentrantLock;
 import net.server.channel.Channel;
 import net.server.world.MapleParty;
 import net.server.world.MaplePartyCharacter;
-import scripting.event.EventInstanceManager;
 import server.TimerManager;
 import server.achievements.WorldTour;
 import server.life.MapleLifeFactory.BanishInfo;
@@ -1366,10 +1365,10 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                 if (!chrList.isEmpty()) {
                     MapleCharacter chr = (MapleCharacter) chrList.get(0);
 
-                    EventInstanceManager eim = map.getEventInstance();
-                    if (eim != null) {
-                        eim.friendlyItemDrop(m);
-                    }
+                    //EventInstanceManager eim = map.getEventInstance();
+                    //if (eim != null) {
+                    //    eim.friendlyItemDrop(m);
+                    //}
 
                     map.dropFromFriendlyMonster(chr, m);
                 }

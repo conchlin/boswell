@@ -46,7 +46,6 @@ import server.life.MapleLifeFactory;
 import server.life.MapleMonster;
 import server.life.MaplePlayerNPC;
 import server.life.MaplePlayerNPCFactory;
-import scripting.event.EventInstanceManager;
 import server.partyquest.GuardianSpawnPoint;
 import net.database.DatabaseConnection;
 import tools.Rect;
@@ -59,19 +58,19 @@ public class MapleMapFactory {
 
     private MapleDataProvider source;
     private MapleData nameData;
-    private EventInstanceManager event;
+    /*private EventInstanceManager event;*/
     private Map<Integer, MapleMap> maps = new HashMap<>();
     private ReadLock mapsRLock;
     private WriteLock mapsWLock;
     private int channel, world;
     private final Rect mbr;
 
-    public MapleMapFactory(EventInstanceManager eim, MapleDataProvider source, MapleDataProvider stringSource, int world, int channel) {
+    public MapleMapFactory(/*EventInstanceManager eim,*/ MapleDataProvider source, MapleDataProvider stringSource, int world, int channel) {
         this.source = source;
         this.nameData = stringSource.getData("Map.img");
         this.world = world;
         this.channel = channel;
-        this.event = eim;
+        //this.event = eim;
 
         ReentrantReadWriteLock rrwl = new MonitoredReentrantReadWriteLock(MonitoredLockType.MAP_FACTORY);
         this.mapsRLock = rrwl.readLock();
@@ -194,7 +193,7 @@ public class MapleMapFactory {
         }
         
         map = new MapleMap(mapid, world, channel, MapleDataTool.getInt("returnMap", infoData));
-        map.setEventInstance(event);
+        //map.setEventInstance(event);
 
         String onFirstEnter = MapleDataTool.getString(infoData.getChildByPath("onFirstUserEnter"), String.valueOf(mapid));
         map.setOnFirstUserEnter(onFirstEnter.equals("") ? String.valueOf(mapid) : onFirstEnter);
@@ -284,7 +283,7 @@ public class MapleMapFactory {
             int seats = mapData.getChildByPath("seat").getChildren().size();
             map.setSeats(seats);
         }
-        if (event == null) {
+        //if (event == null) {
             try (Connection con = DatabaseConnection.getConnection()) {
                 try (PreparedStatement ps = con.prepareStatement("SELECT * FROM playernpcs WHERE map = ? AND world = ?")) {
                     ps.setInt(1, omapid);
@@ -305,7 +304,7 @@ public class MapleMapFactory {
                     map.addPlayerNPCMapObject(dnpc);
                 }
             }
-        }
+        //}
 
         loadLifeFromWz(map, mapData);
         loadLifeFromDb(map);
@@ -540,7 +539,7 @@ public class MapleMapFactory {
             map.dispose();
         }
 
-        this.event = null;
+        //this.event = null;
     }
 
     public static float getMapRecoveryRate(int mapid) {

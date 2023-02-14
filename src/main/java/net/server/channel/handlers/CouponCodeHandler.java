@@ -97,9 +97,9 @@ public final class CouponCodeHandler extends AbstractMaplePacketHandler {
                     FilePrinter.printError(FilePrinter.UNHANDLED_EVENT, "Error trying to redeem itemid " + item + " from codeid " + codeid + ".");
                 }
 
-                if (!chr.canHold(item, qty)) {
+                /*if (!chr.canHold(item, qty)) {
                     return null;
-                }
+                }*/
 
                 ret.add(new Pair<>(5, new Pair<>(item, qty)));
             }

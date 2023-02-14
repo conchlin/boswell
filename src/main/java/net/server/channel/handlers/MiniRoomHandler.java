@@ -128,9 +128,9 @@ public final class MiniRoomHandler extends AbstractMaplePacketHandler {
             return 13;
         }
 
-        if(chr.getEventInstance() != null) {
+        /*if(chr.getEventInstance() != null) {
             return 5;
-        }
+        }*/
         
         return 0;
     }

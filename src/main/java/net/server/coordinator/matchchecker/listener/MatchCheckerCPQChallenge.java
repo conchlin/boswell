@@ -27,8 +27,6 @@ import java.util.Set;
 import net.server.coordinator.matchchecker.AbstractMatchCheckerListener;
 import net.server.coordinator.matchchecker.MatchCheckerListenerRecipe;
 import net.server.world.MaplePartyCharacter;
-import scripting.npc.NPCConversationManager;
-import scripting.npc.NPCScriptManager;
 
 /**
  *
@@ -58,8 +56,8 @@ public class MatchCheckerCPQChallenge implements MatchCheckerListenerRecipe {
             
             @Override
             public void onMatchCreated(MapleCharacter leader, Set<MapleCharacter> nonLeaderMatchPlayers, String message) {
-                NPCConversationManager cm = leader.getClient().getCM();
-                int npcid = cm.getNpc();
+                /*NPCConversationManager cm = leader.getClient().getCM();
+                int npcid = cm.getNpc();*/
                 
                 MapleCharacter ldr = null;
                 for (MapleCharacter chr : nonLeaderMatchPlayers) {
@@ -75,12 +73,12 @@ public class MatchCheckerCPQChallenge implements MatchCheckerListenerRecipe {
                 }
                 
                 if (message.contentEquals("cpq1")) {
-                    NPCScriptManager.getInstance().start("cpqchallenge", ldr.getClient(), npcid, chrMembers);
+                    //NPCScriptManager.getInstance().start("cpqchallenge", ldr.getClient(), npcid, chrMembers);
                 } else {
-                    NPCScriptManager.getInstance().start("cpqchallenge2", ldr.getClient(), npcid, chrMembers);
+                    //NPCScriptManager.getInstance().start("cpqchallenge2", ldr.getClient(), npcid, chrMembers);
                 }
                 
-                cm.sendOk(LanguageConstants.getMessage(chr, LanguageConstants.CPQChallengeRoomSent));
+                //cm.sendOk(LanguageConstants.getMessage(chr, LanguageConstants.CPQChallengeRoomSent));
             }
             
             @Override
@@ -96,9 +94,9 @@ public class MatchCheckerCPQChallenge implements MatchCheckerListenerRecipe {
                 }
                 
                 if (message.contentEquals("cpq1")) {
-                    ldr.getClient().getCM().startCPQ(chr, ldr.getMapId() + 1);
+                    //ldr.getClient().getCM().startCPQ(chr, ldr.getMapId() + 1);
                 } else {
-                    ldr.getClient().getCM().startCPQ2(chr, ldr.getMapId() + 1);
+                    //ldr.getClient().getCM().startCPQ2(chr, ldr.getMapId() + 1);
                 }
                 
                 ldr.getParty().setEnemy(chr.getParty());

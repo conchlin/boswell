@@ -23,7 +23,6 @@ package net.server.channel.handlers;
 
 import client.MapleClient;
 import net.AbstractMaplePacketHandler;
-import scripting.reactor.ReactorScriptManager;
 import server.maps.MapleReactor;
 import tools.data.input.SeekableLittleEndianAccessor;
 
@@ -39,9 +38,9 @@ public final class ReactorTouchHandler extends AbstractMaplePacketHandler {
         MapleReactor reactor = c.getPlayer().getMap().getReactorByOid(oid);
         if (reactor != null) {
             if (slea.readByte() != 0) {
-                ReactorScriptManager.getInstance().touch(c, reactor);
+                //ReactorScriptManager.getInstance().touch(c, reactor);
             } else {
-                ReactorScriptManager.getInstance().untouch(c, reactor);
+                //ReactorScriptManager.getInstance().untouch(c, reactor);
             }
         }
     }

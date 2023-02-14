@@ -32,9 +32,7 @@ import java.util.concurrent.locks.Lock;
 import net.server.audit.locks.factory.MonitoredReentrantLockFactory;
 
 import network.packet.ReactorPool;
-import scripting.reactor.ReactorScriptManager;
 import server.TimerManager;
-import tools.MaplePacketCreator;
 import tools.Pair;
 import net.server.audit.locks.MonitoredLockType;
 import server.partyquest.GuardianSpawnPoint;
@@ -254,7 +252,7 @@ public class MapleReactor extends AbstractMapleMapObject {
                     attackHit = wHit;
                     System.out.println("hit reactor: " + this.getId());
 
-                    ReactorScriptManager.getInstance().onHit(c, this);
+                    //ReactorScriptManager.getInstance().onHit(c, this);
 
                     int reactorType = stats.getType(state);
                     if (reactorType < 999 && reactorType != -1) {//type 2 = only hit from right (kerning swamp plants), 00 is air left 02 is ground left
@@ -278,11 +276,11 @@ public class MapleReactor extends AbstractMapleMapObject {
                                         map.broadcastMessage(ReactorPool.Packet.onReactorChangeState(this, stance));
                                     }
 
-                                    ReactorScriptManager.getInstance().act(c, this);
+                                    //ReactorScriptManager.getInstance().act(c, this);
                                 } else { //reactor not broken yet
                                     map.broadcastMessage(ReactorPool.Packet.onReactorChangeState(this, stance));
                                     if (state == stats.getNextState(state, b)) {//current state = next state, looping reactor
-                                        ReactorScriptManager.getInstance().act(c, this);
+                                        //ReactorScriptManager.getInstance().act(c, this);
                                     }
 
                                     setShouldCollect(true);     // refresh collectability on item drop-based reactors
@@ -298,7 +296,7 @@ public class MapleReactor extends AbstractMapleMapObject {
                         state++;
                         map.broadcastMessage(ReactorPool.Packet.onReactorChangeState(this, stance));
                         if (this.getId() != 9980000 && this.getId() != 9980001) {
-                            ReactorScriptManager.getInstance().act(c, this);
+                            //ReactorScriptManager.getInstance().act(c, this);
                         }
 
                         setShouldCollect(true);
