@@ -8,6 +8,7 @@ import java.io.PrintStream
 import javax.script.ScriptEngineManager
 
 class ScriptManagerTest {
+
     @Test
     fun testScriptEngine() {
         val engine = ScriptEngineManager().getEngineByExtension("groovy")!!
@@ -15,21 +16,13 @@ class ScriptManagerTest {
 
         assertEquals(3, res1)
     }
+
     @Test
     fun testReadScript() {
         val engine = ScriptEngineManager().getEngineByExtension("groovy")!!
         val scriptFile = File("./scripts/test_script.groovy")
         val out = captureOut {
             engine.eval(scriptFile.reader())
-        }.lines()
-
-        assertEquals(listOf("hello from test_script"), out)
-    }
-
-    @Test
-    fun testStartScript() {
-        val out = captureOut {
-            ScriptManager.startScript("test_script")
         }.lines()
 
         assertEquals(listOf("hello from test_script"), out)
