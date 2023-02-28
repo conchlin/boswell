@@ -25,14 +25,23 @@ import client.MapleClient;
 import network.packet.NpcPool;
 import server.MapleShopFactory;
 import server.maps.MapleMapObjectType;
-import tools.MaplePacketCreator;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class MapleNPC extends AbstractLoadedMapleLife {
-    private MapleNPCStats stats;
+    private String templateName;
+    private String scriptName;
+    private Map<Integer, String> scripts = new HashMap<>(); // npcId, scriptName
+    // todo scripts contains all the valid scriptName pairings that will be referenced for future scripting
 
-    public MapleNPC(int id, MapleNPCStats stats) {
-        super(id);
-        this.stats = stats;
+    public MapleNPC(int templateId, String templateName, String scriptName) {
+        super(templateId);
+        this.templateName = templateName;
+        this.scriptName = scriptName;
+
+        registerValidScriptPair(templateId, scriptName);
     }
 
     public boolean hasShop() {
@@ -70,7 +79,27 @@ public class MapleNPC extends AbstractLoadedMapleLife {
         return MapleMapObjectType.NPC;
     }
 
-    public String getName() {
-        return stats.getName();
+    public String getTemplateName() {
+        return templateName;
+    }
+
+    public String getScriptName() { return scriptName; }
+
+    public Map<Integer, String> getScripts() {
+        // <npcId, scriptName>
+        return scripts;
+    }
+
+
+    /**
+     * add a unique key/value pair to scripts
+     *
+     * @param templateId npcId
+     * @param scriptName the name specified in the wz files
+     */
+    public void registerValidScriptPair(int templateId, String scriptName) {
+        if (!Objects.equals(scriptName, "") && templateId > 0) {
+            scripts.putIfAbsent(templateId, scriptName);
+        }
     }
 }

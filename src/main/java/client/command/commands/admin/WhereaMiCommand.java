@@ -77,7 +77,7 @@ public class WhereaMiCommand extends Command {
         if (!npcs.isEmpty()) {
             player.yellowMessage("NPCs on this map:");
             for (MapleNPC npc : npcs) {
-                player.dropMessage(5, ">> " + npc.getName() + " - " + npc.getId() + " - Oid: " + npc.getObjectId());
+                player.dropMessage(5, ">> " + npc.getTemplateName() + " - " + npc.getId() + " - Oid: " + npc.getObjectId());
             }
         }
         
