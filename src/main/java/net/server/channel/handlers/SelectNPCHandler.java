@@ -49,20 +49,25 @@ public final class SelectNPCHandler extends AbstractMaplePacketHandler {
         int objectId = slea.readInt();
         MapleMapObject obj = c.getPlayer().getMap().getMapObject(objectId);
         if (obj instanceof MapleNPC npc) {
-            if (npc.getId() == 9010009) {   //is duey
-                DueyProcessor.dueySendTalk(c, false);
-            } else {
-                // todo handle shop compatibility
-                String script = npc.getScripts().get(npc.getId());
+            String script = npc.getScripts().get(npc.getId());
 
-                if (script == null) {
-                    // if npc does not have a valid script name we use the npcId instead
-                    script = String.valueOf(npc.getId());
-                }
-
-                ScriptManager.Companion.startScript(c, npc, script);
+            if (script == null) {
+                // if npc does not have a valid script name we use the npcId instead
+                script = String.valueOf(npc.getId());
             }
+            if (!hasCustomHandling(c, npc)) {
+                ScriptManager.Companion.runScript(c, npc, script);
+            }
+
         }
         // todo add additional support for player npcs
+    }
+
+    public boolean hasCustomHandling(MapleClient c, MapleNPC npc) {
+        if (npc.getId() == 9010009) { // duey
+            DueyProcessor.dueySendTalk(c, false);
+            return true;
+        }
+        return false;
     }
 }
