@@ -56,7 +56,7 @@ public final class SelectNPCHandler extends AbstractMaplePacketHandler {
                 script = String.valueOf(npc.getId());
             }
             if (!hasCustomHandling(c, npc)) {
-                ScriptManager.Companion.runScript(c, npc, script);
+                ScriptManager.Companion.runNpcScript(c, npc, script);
             }
 
         }
