@@ -10,10 +10,6 @@ class ScriptPortal(p: MaplePortal, c: MapleClient) {
     val portal: MaplePortal = p
     val client: MapleClient = c
 
-    fun message(msg: String?) {
-        client.player.message(msg)
-    }
-
     /**
      * The portal will move the user to the specified field
      *
@@ -30,9 +26,5 @@ class ScriptPortal(p: MaplePortal, c: MapleClient) {
      */
     fun showInfoEffect(pathway: String) {
         client.announce(UserLocal.onEffect(UserEffectType.SHOW_INFO.effect, pathway));
-    }
-
-    fun balloonMessage(msg: String, width: Int, height: Int) {
-        client.announce(UserLocal.onBalloonMessage(msg, width, height));
     }
 }

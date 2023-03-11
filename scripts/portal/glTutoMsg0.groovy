@@ -8,5 +8,5 @@
     @Created: 2023-03-06 
 */
 
-portal.balloonMessage("Once you leave this area you won't be able to return.", 150, 5)
+user.balloonMessage("Once you leave this area you won't be able to return.", 150, 5)
     

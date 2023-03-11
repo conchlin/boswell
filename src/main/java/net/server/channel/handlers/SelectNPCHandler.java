@@ -27,10 +27,9 @@ import constants.ServerConstants;
 import net.AbstractMaplePacketHandler;
 import network.packet.context.WvsContext;
 import script.ScriptManager;
+import script.ScriptType;
 import server.life.MapleNPC;
 import server.maps.MapleMapObject;
-import server.life.MaplePlayerNPC;
-import tools.FilePrinter;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 public final class SelectNPCHandler extends AbstractMaplePacketHandler {
@@ -56,7 +55,7 @@ public final class SelectNPCHandler extends AbstractMaplePacketHandler {
                 script = String.valueOf(npc.getId());
             }
             if (!hasCustomHandling(c, npc)) {
-                ScriptManager.Companion.runNpcScript(c, npc, script);
+                ScriptManager.Companion.runScript(c, objectId, script, ScriptType.Npc);
             }
 
         }

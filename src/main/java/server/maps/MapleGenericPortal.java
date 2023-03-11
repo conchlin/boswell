@@ -29,6 +29,7 @@ import java.awt.Point;
 
 import network.packet.context.WvsContext;
 import script.ScriptManager;
+import script.ScriptType;
 import server.MaplePortal;
 import net.server.audit.locks.MonitoredLockType;
 import net.server.audit.locks.MonitoredReentrantLock;
@@ -133,7 +134,7 @@ public class MapleGenericPortal implements MaplePortal {
         }
         if (getScriptName() != null) {
             try {
-                ScriptManager.Companion.runPortalScript(c, this);
+                ScriptManager.Companion.runScript(c, getId(), scriptName, ScriptType.Portal);
             } catch(NullPointerException npe) {
                 npe.printStackTrace();
             }
