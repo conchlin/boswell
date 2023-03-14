@@ -75,6 +75,8 @@ import network.packet.*;
 import network.packet.context.BroadcastMsgPacket;
 import network.packet.field.*;
 import network.packet.context.WvsContext;
+import script.ScriptManager;
+import script.ScriptType;
 import server.MapleItemInformationProvider;
 import server.MaplePortal;
 import server.MapleStatEffect;
@@ -2327,15 +2329,19 @@ public class MapleMap {
                 startItemMonitor();
             }
 
-            /*if (onFirstUserEnter.length() != 0 && !chr.hasEntered(onFirstUserEnter, mapid) && MapScriptManager.getInstance().scriptExists(onFirstUserEnter, true)) {
+            if (onFirstUserEnter.length() != 0 && !chr.hasEntered(onFirstUserEnter, mapid)) {
                 chr.enteredScript(onFirstUserEnter, mapid);
-                MapScriptManager.getInstance().runMapScript(chr.getClient(), onFirstUserEnter, true);
-            }*/
+                // passing map id as the object id, but it doesn't matter for this situation
+                ScriptManager.Companion.runScript(chr.getClient(), this.mapid, onFirstUserEnter, ScriptType.FirstEnterField);
+                //MapScriptManager.getInstance().runMapScript(chr.getClient(), onFirstUserEnter, true);
+            }
         }
         if (onUserEnter.length() != 0) {
             if (onUserEnter.equals("cygnusTest") && (mapid < 913040000 || mapid > 913040006)) {
                 chr.saveLocation("INTRO");
             }
+            // passing map id as the object id, but it doesn't matter for this situation
+            ScriptManager.Companion.runScript(chr.getClient(), this.mapid, this.getOnUserEnter(), ScriptType.UserEnterField);
             /*MapScriptManager.getInstance().runMapScript(chr.getClient(), onUserEnter, false);*/
         }
         if (FieldLimit.CANNOTUSEMOUNTS.check(fieldLimit) && chr.getBuffedValue(MapleBuffStat.MONSTER_RIDING) != null) {

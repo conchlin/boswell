@@ -1,10 +1,10 @@
 package script
 
-enum class ScriptType(type: String) {
+enum class ScriptType(val type: String) {
     None(""),
     Npc("npc"),
-    Field("field"),
-    FirstEnterField("field"),
+    UserEnterField("field/onUserEnter"),
+    FirstEnterField("field/onFirstUserEnter"),
     Portal("portal"),
     Reactor("reactor"),
     Item("item"),
