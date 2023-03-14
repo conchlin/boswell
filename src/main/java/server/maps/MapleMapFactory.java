@@ -456,10 +456,17 @@ public class MapleMapFactory {
         MapleReactor myReactor = new MapleReactor(MapleReactorFactory.getReactor(Integer.parseInt(id)), Integer.parseInt(id));
         int x = MapleDataTool.getInt(reactor.getChildByPath("x"));
         int y = MapleDataTool.getInt(reactor.getChildByPath("y"));
+        String name = MapleDataTool.getString(reactor.getChildByPath("name"));
         myReactor.setFacingDirection(FacingDirection);
         myReactor.setPosition(new Point(x, y));
         myReactor.setDelay(MapleDataTool.getInt(reactor.getChildByPath("reactorTime")) * 1000);
-        myReactor.setName(MapleDataTool.getString(reactor.getChildByPath("name"), ""));
+        if (name.equals("")) {
+            // unfortunately there are cases where the name is empty
+            // if that happens we use the reactor id as the name
+            myReactor.setName(id);
+        } else {
+            myReactor.setName(name);
+        }
         myReactor.resetReactorActions(0);
         return myReactor;
     }
