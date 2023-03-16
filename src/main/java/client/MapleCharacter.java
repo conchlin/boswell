@@ -34,6 +34,8 @@ import network.packet.*;
 import network.packet.context.*;
 import network.packet.field.CField;
 import network.packet.field.MonsterCarnivalPacket;
+import script.ScriptManager;
+import script.ScriptType;
 import server.cashshop.CashShop;
 import client.autoban.AutobanFactory;
 import client.autoban.AutobanManager;
@@ -1809,10 +1811,9 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                 mapitem.unlockItem();
             }
 
-            //if (itemScript != null) {
-                //ItemScriptManager ism = ItemScriptManager.getInstance();
-                //ism.runItemScript(client, itemScript);
-            //}
+            if (itemScript != null) {
+                ScriptManager.Companion.runScript(client, mapitem.getItemId(), itemScript.getScript(), ScriptType.Item);
+            }
         }
         client.announce(WvsContext.Packet.enableActions());
     }

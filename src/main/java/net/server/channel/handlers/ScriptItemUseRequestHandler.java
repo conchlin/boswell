@@ -25,6 +25,8 @@ import client.MapleClient;
 import client.inventory.Item;
 import constants.ItemConstants;
 import net.AbstractMaplePacketHandler;
+import script.ScriptManager;
+import script.ScriptType;
 import server.MapleItemInformationProvider;
 import server.MapleItemInformationProvider.ScriptedItem;
 import tools.data.input.SeekableLittleEndianAccessor;
@@ -48,8 +50,7 @@ public final class ScriptItemUseRequestHandler extends AbstractMaplePacketHandle
         if (item == null || item.getItemId() != itemId || item.getQuantity() < 1) {
             return;
         }
-        
-        /*ItemScriptManager ism = ItemScriptManager.getInstance();
-        ism.runItemScript(c, info);*/
+
+        ScriptManager.Companion.runScript(c, itemId, info.getScript(), ScriptType.Item);
     }
 }
