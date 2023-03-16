@@ -25,6 +25,8 @@ import java.awt.Point;
 import client.MapleCharacter;
 import client.MapleClient;
 import net.AbstractMaplePacketHandler;
+import script.ScriptManager;
+import script.ScriptType;
 import server.quest.MapleQuest;
 import server.life.MapleNPC;
 import tools.data.input.SeekableLittleEndianAccessor;
@@ -66,7 +68,7 @@ public final class QuestRequestHandler extends AbstractMaplePacketHandler {
     }
     
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         byte action = slea.readByte();
         short questid = slea.readShort();
         MapleCharacter player = c.getPlayer();
@@ -106,18 +108,24 @@ public final class QuestRequestHandler extends AbstractMaplePacketHandler {
                 return;
             }
 
-            if(quest.canStart(player, npc)) {
+            if (quest.canStart(player, npc)) {
+                if (!quest.canStartWithoutRequirements(c.getPlayer())) {
+                    c.getPlayer().setNpcCooldown(System.currentTimeMillis());
+                    return;
+                }
                 //QuestScriptManager.getInstance().start(c, questid, npc);
+                ScriptManager.Companion.runScript(c, quest.getId(), quest.getName(), ScriptType.Quest);
+                c.setClickedNPC();
             }
         } else if (action == 5) { // scripted end quests
             int npc = slea.readInt();
-            if(!isNpcNearby(slea, player, quest, npc)) {
-                return;
-            }
+            //if(!isNpcNearby(slea, player, quest, npc)) {
+            //    return;
+            //}
 
-            if(quest.canComplete(player, npc)) {
+            /*if (quest.canComplete(player, npc)) {
                 //QuestScriptManager.getInstance().end(c, questid, npc);
-            }
+            }*/
         }
     }
 }
