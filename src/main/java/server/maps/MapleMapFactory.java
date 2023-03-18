@@ -195,11 +195,14 @@ public class MapleMapFactory {
         map = new MapleMap(mapid, world, channel, MapleDataTool.getInt("returnMap", infoData));
         //map.setEventInstance(event);
 
-        String onFirstEnter = MapleDataTool.getString(infoData.getChildByPath("onFirstUserEnter"), String.valueOf(mapid));
-        map.setOnFirstUserEnter(onFirstEnter.equals("") ? String.valueOf(mapid) : onFirstEnter);
+        // we should assume that each onUserEnter and onFirstUserEnter that is necessary for the gameplay
+        // would have a valid string within the wz file. So by setting all non-valid inputs to 0 we can
+        // easily figure out which maps need groovy field scripts
+        String onFirstEnter = MapleDataTool.getString(infoData.getChildByPath("onFirstUserEnter"), String.valueOf(0));
+        map.setOnFirstUserEnter(onFirstEnter.equals("") ? String.valueOf(0) : onFirstEnter);
+        String onEnter = MapleDataTool.getString(infoData.getChildByPath("onUserEnter"), String.valueOf(0));
+        map.setOnUserEnter(onEnter.equals("") ? String.valueOf(0) : onEnter);
 
-        String onEnter = MapleDataTool.getString(infoData.getChildByPath("onUserEnter"), String.valueOf(mapid));
-        map.setOnUserEnter(onEnter.equals("") ? String.valueOf(mapid) : onEnter);
         //map.setBGM(MapleDataTool.getString(mapData.getChildByPath("info/bgm")));
         map.setFieldLimit(MapleDataTool.getInt(infoData.getChildByPath("fieldLimit"), 0));
         map.setMobInterval((short) MapleDataTool.getInt(infoData.getChildByPath("createMobInterval"), 5000));

@@ -3,6 +3,7 @@ package script
 import client.MapleClient
 import network.packet.ScriptMan
 import script.binding.*
+import script.template.*
 import server.MapleItemInformationProvider
 import server.life.MapleNPC
 import server.quest.MapleQuest

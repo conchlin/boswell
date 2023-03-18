@@ -38,22 +38,8 @@ import constants.ServerConstants;
 
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Random;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
@@ -2329,20 +2315,18 @@ public class MapleMap {
                 startItemMonitor();
             }
 
-            if (onFirstUserEnter.length() != 0 && !chr.hasEntered(onFirstUserEnter, mapid)) {
+            if (!Objects.equals(onFirstUserEnter, "0") && !chr.hasEntered(onFirstUserEnter, mapid)) {
+                // if a field needs a script component the onFirstUserEnter value would not be 0
                 chr.enteredScript(onFirstUserEnter, mapid);
-                // passing map id as the object id, but it doesn't matter for this situation
                 ScriptManager.Companion.runScript(chr.getClient(), this.mapid, onFirstUserEnter, ScriptType.FirstEnterField);
-                //MapScriptManager.getInstance().runMapScript(chr.getClient(), onFirstUserEnter, true);
             }
         }
-        if (onUserEnter.length() != 0) {
+        if (!Objects.equals(onUserEnter, "0")) {
+            // if a field needs a script component the onUserEnter value would not be 0
             if (onUserEnter.equals("cygnusTest") && (mapid < 913040000 || mapid > 913040006)) {
                 chr.saveLocation("INTRO");
             }
-            // passing map id as the object id, but it doesn't matter for this situation
             ScriptManager.Companion.runScript(chr.getClient(), this.mapid, this.getOnUserEnter(), ScriptType.UserEnterField);
-            /*MapScriptManager.getInstance().runMapScript(chr.getClient(), onUserEnter, false);*/
         }
         if (FieldLimit.CANNOTUSEMOUNTS.check(fieldLimit) && chr.getBuffedValue(MapleBuffStat.MONSTER_RIDING) != null) {
             chr.cancelEffectFromBuffStat(MapleBuffStat.MONSTER_RIDING);

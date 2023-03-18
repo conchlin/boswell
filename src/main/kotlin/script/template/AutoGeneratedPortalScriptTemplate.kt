@@ -1,4 +1,4 @@
-package script
+package script.template
 
 import client.MapleClient
 import server.MaplePortal
