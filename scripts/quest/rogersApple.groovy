@@ -12,7 +12,7 @@
     Relevant Mobs: []
             
     @Author: Auto Generated
-    @Created: 2023-03-16 
+    @Created: 2023-03-19 
     */
     
     user.message("A script file has been generated for this quest. However, the quest does not currently work.")
