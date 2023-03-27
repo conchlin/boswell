@@ -1,6 +1,6 @@
 package script
 
-enum class ScriptMessageType (val type: Byte) {
+enum class ScriptMessageType (val type: Int) {
    Say(0),
    AskYesNo(1),
    AskText(2),

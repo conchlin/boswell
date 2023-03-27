@@ -24,8 +24,8 @@ class ScriptMan {
             mplew.write(ScriptMessageType.Say.type)
             mplew.write(0)
             mplew.writeMapleAsciiString(text)
-            mplew.writeBool(back);
-            mplew.writeBool(next);
+            mplew.writeBool(back)
+            mplew.writeBool(next)
 
             return mplew.packet
         }

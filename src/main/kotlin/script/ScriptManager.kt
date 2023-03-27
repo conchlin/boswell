@@ -10,6 +10,7 @@ import server.quest.MapleQuest
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileReader
+import java.util.*
 import java.util.concurrent.Executors
 import javax.script.ScriptEngineManager
 import javax.script.ScriptException
@@ -23,6 +24,8 @@ class ScriptManager {
         private var directory = ""
         private var script: File? = null
         private val pool = Executors.newCachedThreadPool()
+        var posScriptHistory: Int = 0
+        var scriptHist: LinkedList<ScriptHistory> = LinkedList<ScriptHistory>()
 
         /**
          * @param client
@@ -44,10 +47,13 @@ class ScriptManager {
             } else {
                 script = scriptFile
 
-                try {
-                    pool.submit {
+                pool.submit {
+                    try {
                         if (st == ScriptType.Npc) {
-                            engine.put("npc", ScriptNpc(client.player.map.getMapObject(objectId) as MapleNPC, client))
+                            engine.put(
+                                "npc",
+                                ScriptNpc(this, client.player.map.getMapObject(objectId) as MapleNPC, client)
+                            )
                         }
                         if (st == ScriptType.Portal) {
                             engine.put("portal", ScriptPortal(client.player.map.getPortal(objectId), client))
@@ -66,11 +72,13 @@ class ScriptManager {
                         engine.put("user", client.player)
                         engine.put("field", ScriptField(client.player.map, client))
                         engine.eval(script?.let { FileReader(it) })
+                    } catch (se: ScriptException) {
+                        se.printStackTrace()
+                    } catch (fnfe: FileNotFoundException) {
+                        fnfe.printStackTrace()
+                    } finally {
+                        //destroy()
                     }
-                } catch (se: ScriptException) {
-                    se.printStackTrace()
-                } catch (fnfe: FileNotFoundException) {
-                    fnfe.printStackTrace()
                 }
             }
         }
