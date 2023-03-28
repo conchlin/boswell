@@ -1682,7 +1682,7 @@ public class MapleItemInformationProvider {
     public int getStatLevelupProbability(int itemId, int type) {
         MapleData data = getItemData(itemId);
         MapleData data1 = data.getChildByPath("info").getChildByPath("level").getChildByPath("case").getChildByPath("" + type).getChildByPath("prob");
-    	return MapleDataTool.getIntConvert(data1, 0);
+    	return MapleDataTool.getIntConvert(data1);
     }
 
     public LevelUpInformation getItemLevelupStats(int itemId, int level) {
