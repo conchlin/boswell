@@ -7,11 +7,17 @@ import script.template.*
 import server.MapleItemInformationProvider
 import server.life.MapleNPC
 import server.quest.MapleQuest
+import tools.data.input.SeekableLittleEndianAccessor
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileReader
 import java.util.*
 import java.util.concurrent.Executors
+import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.locks.Lock
+import java.util.concurrent.locks.ReentrantLock
+import javax.script.Bindings
+import javax.script.ScriptContext
 import javax.script.ScriptEngineManager
 import javax.script.ScriptException
 
@@ -20,12 +26,31 @@ class ScriptManager {
 
     companion object {
 
+        //Decoder Status
+        const val Ready = 0
+        const val Decoding = 1
+        const val Message = 2
+        const val Pending = 3
+        const val Finishing = 4
         val engine = ScriptEngineManager().getEngineByExtension("groovy")!!
         private var directory = ""
         private var script: File? = null
         private val pool = Executors.newCachedThreadPool()
-        var posScriptHistory: Int = 0
-        var scriptHist: LinkedList<ScriptHistory> = LinkedList<ScriptHistory>()
+        private var oid: Int
+        var posScriptHistory: Int
+        var scriptHist: LinkedList<ScriptHistory>
+        var status: AtomicInteger
+        private val continuation: Object
+        var lock: Lock
+
+        init {
+            oid = 0
+            posScriptHistory = 0
+            scriptHist = LinkedList<ScriptHistory>()
+            status = AtomicInteger(Ready)
+            continuation = Object()
+            lock = ReentrantLock()
+        }
 
         /**
          * @param client
@@ -34,51 +59,54 @@ class ScriptManager {
          * @param st
          */
         fun runScript(client: MapleClient, objectId: Int, name: String, st: ScriptType) {
-            directory = "./scripts/${st.type}"
-            val scriptName = String.format(
-                "%s/%s%s", directory,
-                name, ".groovy"
-            )
-            val scriptFile = File(scriptName)
-            val exists: Boolean = scriptFile.exists()
+            lock.lock()
+            try {
+                directory = "./scripts/${st.type}"
+                val scriptName = String.format(
+                    "%s/%s%s", directory,
+                    name, ".groovy"
+                )
+                val scriptFile = File(scriptName)
+                val exists: Boolean = scriptFile.exists()
+                oid = objectId
 
-            if (!exists) {
-                handleMissingScript(client, objectId, name, st)
-            } else {
-                script = scriptFile
+                if (!exists) {
+                    handleMissingScript(client, objectId, name, st)
+                } else {
+                    script = scriptFile
+                }
+            } finally {
+                lock.unlock()
+            }
 
-                pool.submit {
-                    try {
-                        if (st == ScriptType.Npc) {
-                            engine.put(
-                                "npc",
-                                ScriptNpc(this, client.player.map.getMapObject(objectId) as MapleNPC, client)
-                            )
-                        }
-                        if (st == ScriptType.Portal) {
-                            engine.put("portal", ScriptPortal(client.player.map.getPortal(objectId), client))
-                        }
-                        if (st == ScriptType.Reactor) {
-                            engine.put(
-                                "reactor",
-                                ScriptReactor(client.player.map.getReactorById(objectId), client)
-                            )
-                        }
-                        if (st == ScriptType.Item) {
-                            val ii = MapleItemInformationProvider.getInstance()
-                            val info = ii.getScriptedItemInfo(objectId) // item id in this case
-                            engine.put("item", ScriptItem(info, client))
-                        }
-                        engine.put("user", client.player)
-                        engine.put("field", ScriptField(client.player.map, client))
-                        engine.eval(script?.let { FileReader(it) })
-                    } catch (se: ScriptException) {
-                        se.printStackTrace()
-                    } catch (fnfe: FileNotFoundException) {
-                        fnfe.printStackTrace()
-                    } finally {
-                        //destroy()
-                    }
+            val binding: Bindings? = engine.getBindings(ScriptContext.GLOBAL_SCOPE)
+
+            if (st == ScriptType.Npc) {
+                binding?.set("npc", ScriptNpc(this, client.player.map.getMapObject(objectId) as MapleNPC, client))
+            }
+            if (st == ScriptType.Portal) {
+                binding?.set("portal", ScriptPortal(client.player.map.getPortal(objectId), client))
+            }
+            if (st == ScriptType.Reactor) {
+                binding?.set("reactor", ScriptReactor(client.player.map.getReactorById(objectId), client))
+            }
+            if (st == ScriptType.Item) {
+                val ii = MapleItemInformationProvider.getInstance()
+                val info = ii.getScriptedItemInfo(objectId) // item id in this case
+                binding?.set("item", ScriptItem(info, client))
+            }
+            binding?.set("user", client.player)
+            binding?.set("field", ScriptField(client.player.map, client))
+
+            pool.execute {
+                try {
+                    engine.eval(script?.let { FileReader(it) }, binding)
+                } catch (se: ScriptException) {
+                    se.printStackTrace()
+                } catch (fnfe: FileNotFoundException) {
+                    fnfe.printStackTrace()
+                } finally {
+                    destroy()
                 }
             }
         }
@@ -138,6 +166,7 @@ class ScriptManager {
                     autoGenScript = AutoGeneratedItemScriptTemplate(info, client)
                     autoGenScript.create()
                 }
+
                 ScriptType.Quest -> {
                     val newScriptName = sanitizeScriptName(name)
                     autoGenScript = AutoGeneratedQuestScriptTemplate(
@@ -159,7 +188,6 @@ class ScriptManager {
                         back = false,
                         next = false
                     )
-
                 )
             }
         }
@@ -175,5 +203,117 @@ class ScriptManager {
             val camel = script.replaceFirstChar { it.lowercase() }
             return camel.filter { it.isLetterOrDigit() }
         }
+
+        /*
+        below is the handling of the ScriptMessageAnswer packet and all it's components. I'm putting
+        it here temporarily because I need access to this companion object.
+         */
+        fun onScriptMessageAnswer(slea: SeekableLittleEndianAccessor, client: MapleClient) {
+            if (posScriptHistory == 0 || scriptHist.isEmpty()) {
+                return
+            }
+            val msgType: Byte = slea.readByte()
+            val action: Byte = slea.readByte()
+
+            when (msgType) {
+                ScriptMessageType.Say.type.toByte() -> {
+                    var posMsgHistory: Int
+                    if (action > 0) {
+                        if (action.toInt() != 1) {
+                            tryFinish()
+                            return
+                        }
+                        if (posScriptHistory == scriptHist.size) {
+                            tryResume()
+                            return
+                        }
+                        posMsgHistory = posScriptHistory + 1
+                    } else {
+                        if (action < 0 || posScriptHistory == 0) {
+                            tryFinish()
+                            return
+                        }
+                        posMsgHistory = posScriptHistory - 1
+                    }
+                    posScriptHistory = posMsgHistory
+                    var hist: ScriptHistory = scriptHist[posMsgHistory - 1]
+                    var next: Boolean = hist.memory?.get(1).toString().isEmpty()
+                    client.announce(
+                        ScriptMan.onSay(
+                            (client.player.map.getMapObject(oid) as MapleNPC).id,
+                            hist.memory?.get(0).toString(),
+                            posMsgHistory != 1,
+                            next
+                        )
+                    )
+                }
+
+                else -> {
+                    tryFinish()
+                }
+                // other msgType cases go here
+            }
+        }
+
+        fun destroy() {
+            lock.lock()
+            try {
+                if (script != null) {
+                    script = null
+                }
+                if (status.get() != Ready) {
+                    status.set(Ready)
+                }
+                scriptHist.clear()
+                posScriptHistory = 0
+            } finally {
+                lock.unlock()
+            }
+        }
+
+        private fun tryFinish() {
+            if (status.get() != Finishing) {
+                if (status.get() != Pending) {
+                    status.set(Pending)
+                    clearHistory()
+                    clear()
+                    tryResume()
+                } else {
+                    clear()
+                }
+            }
+        }
+
+        fun tryCapture() {
+            synchronized(continuation) {
+                try {
+                    continuation.wait()
+                } catch (ex: InterruptedException) {
+                    continuation.notifyAll()
+                }
+            }
+        }
+
+        private fun tryResume() {
+            if (status.get() != Finishing) {
+                synchronized(continuation) {
+                    continuation.notifyAll()
+                }
+            }
+        }
+
+        private fun clearHistory() {
+            scriptHist.clear()
+            posScriptHistory = 0
+        }
+
+        fun clear() {
+            if (status.get() != Finishing) {
+                status.set(Finishing)
+                destroy()
+            }
+        }
+
+        // end of ScriptMessageAnswer handling
     }
 }

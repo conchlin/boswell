@@ -6,6 +6,7 @@ import script.ScriptHistory
 import script.ScriptManager
 import script.ScriptMessageType
 import server.life.MapleNPC
+import java.lang.RuntimeException
 
 
 class ScriptNpc(s: ScriptManager.Companion, n: MapleNPC, c: MapleClient) {
@@ -13,10 +14,11 @@ class ScriptNpc(s: ScriptManager.Companion, n: MapleNPC, c: MapleClient) {
     val npc: MapleNPC = n
     val client: MapleClient = c
     val sm: ScriptManager.Companion = s
-    private val continuation: Object = Object()
-
 
     private fun makeMessagePacket(type: Int, mem: ArrayList<Any>) {
+        if (sm.status.get() == ScriptManager.Finishing) {
+            throw RuntimeException("Attempting to execute script after finish status.")
+        }
         if (!sm.scriptHist.isEmpty() && (type != ScriptMessageType.Say.type || sm.scriptHist.first.type != ScriptMessageType.Say.type)) {
             clearHistory()
         }
@@ -44,9 +46,14 @@ class ScriptNpc(s: ScriptManager.Companion, n: MapleNPC, c: MapleClient) {
         memory.add(msg)
         memory.add(next)
         makeMessagePacket(ScriptMessageType.Say.type, memory)
-        client.announce(sm.scriptHist[sm.posScriptHistory - 1].packet)
+        sendMessageAnswer()
         memory.clear()
-        tryCapture()
+        sm.tryCapture()
+    }
+
+    private fun sendMessageAnswer() {
+        client.announce(sm.scriptHist[sm.posScriptHistory - 1].packet)
+        sm.status.set(ScriptManager.Message)
     }
 
     fun sayNext(msg: String) {
@@ -56,15 +63,5 @@ class ScriptNpc(s: ScriptManager.Companion, n: MapleNPC, c: MapleClient) {
     private fun clearHistory() {
         sm.scriptHist.clear()
         sm.posScriptHistory = 0
-    }
-
-    private fun tryCapture() {
-        synchronized(continuation) {
-            try {
-                continuation.wait()
-            } catch (ex: InterruptedException) {
-                continuation.notifyAll()
-            }
-        }
     }
 }
