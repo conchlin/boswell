@@ -88,26 +88,7 @@ public abstract class CharacterFactory {
                     equipped.addItemFromDB(eq_weapon.copy());
                 }
 
-                Item eq_codex = ii.getEquipById(1142998);
-                eq_codex.setPosition((byte) -20);
-                equipped.addItemFromDB(eq_codex.copy());
-
-                Item eq_covid = ii.getEquipById(1012064);
-                eq_covid.setPosition((byte) -2); // face
-                equipped.addItemFromDB(eq_covid.copy());
-
-                Item eq_headgear = ii.getEquipById(1002562);
-                eq_headgear.setPosition((byte) -1); // hat
-                equipped.addItemFromDB(eq_headgear.copy());
-
-                Item eq_overall = ii.getEquipById(1052081);
-                eq_overall.setPosition((byte) -5); // overall
-                equipped.addItemFromDB(eq_overall.copy());
-
                 recipe.addStartingItem(5030000, 1, MapleInventoryType.CASH); // merchant
-                // below items are beta only
-                recipe.addStartingItem(3019999, 1, MapleInventoryType.SETUP); // under the avenue chair
-                // end of beta only items
 
                 if (!newchar.insertNewChar(recipe)) return -2;
 
