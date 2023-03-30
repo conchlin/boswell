@@ -113,8 +113,9 @@ public final class QuestRequestHandler extends AbstractMaplePacketHandler {
                     c.getPlayer().setNpcCooldown(System.currentTimeMillis());
                     return;
                 }
-                //QuestScriptManager.getInstance().start(c, questid, npc);
-                ScriptManager.Companion.runScript(c, quest.getId(), quest.getName(), ScriptType.Quest);
+                // converting the quest name to camel case works much better for our groovy scripts
+                String camelScript = ScriptManager.Companion.sanitizeScriptName(quest.getName());
+                ScriptManager.Companion.runScript(c, quest.getId(), camelScript, ScriptType.Quest);
                 c.setClickedNPC();
             }
         } else if (action == 5) { // scripted end quests
