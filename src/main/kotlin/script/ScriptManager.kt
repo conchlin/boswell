@@ -20,6 +20,7 @@ import javax.script.Bindings
 import javax.script.ScriptContext
 import javax.script.ScriptEngineManager
 import javax.script.ScriptException
+import kotlin.experimental.and
 
 
 class ScriptManager {
@@ -42,6 +43,9 @@ class ScriptManager {
         var status: AtomicInteger
         private val continuation: Object
         var lock: Lock
+        var value: Any? = null
+        private var inputNo = 0
+        private var inputStr: String? = null
 
         init {
             oid = 0
@@ -213,7 +217,7 @@ class ScriptManager {
                 return
             }
             val msgType: Byte = slea.readByte()
-            val action: Byte = slea.readByte()
+            var action: Byte = slea.readByte()
 
             when (msgType) {
                 ScriptMessageType.Say.type.toByte() -> {
@@ -246,6 +250,62 @@ class ScriptManager {
                             next
                         )
                     )
+                }
+
+                ScriptMessageType.AskYesNo.type.toByte() -> {
+                    if (action.toInt() == -1) {
+                        tryFinish()
+                        return
+                    }
+                    this.value = action
+                    tryResume()
+                }
+
+                ScriptMessageType.AskAvatar.type.toByte() -> {
+                    if (action.toInt() == 0) {
+                        tryFinish()
+                        return
+                    }
+                    val selection = slea.readByte()
+                    if ((selection and 0x80.toByte()).toInt() == 0) {
+                        var hist: ScriptHistory = scriptHist[posScriptHistory - 1]
+                        if (hist != null && hist.memory?.size!! > 2) {
+                            var candidate = hist.memory!![2] as IntArray
+                            // change the styles here
+                        } else {
+                            action = selection
+                        }
+                    }
+                    this.value = action
+                    tryResume()
+                }
+                ScriptMessageType.AskMenu.type.toByte() -> {
+                    if (action.toInt() == 0) {
+                        tryFinish()
+                        return
+                    }
+                    this.value = slea.readInt()
+                    tryResume()
+                }
+
+                ScriptMessageType.AskText.type.toByte() -> {
+                    if (action.toInt() == 0) {
+                        tryFinish()
+                        return
+                    }
+                    this.inputStr = slea.readMapleAsciiString()
+                    this.value = this.inputStr
+                    tryResume()
+                }
+
+                ScriptMessageType.AskNumber.type.toByte() -> {
+                    if (action.toInt() == 0) {
+                        tryFinish()
+                        return
+                    }
+                    this.inputNo = slea.readInt()
+                    this.value = this.inputNo
+                    tryResume()
                 }
 
                 else -> {
@@ -285,6 +345,7 @@ class ScriptManager {
         }
 
         fun tryCapture() {
+            this.value = null
             synchronized(continuation) {
                 try {
                     continuation.wait()

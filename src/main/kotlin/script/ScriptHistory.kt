@@ -9,6 +9,7 @@ class ScriptHistory(t: Int) {
     var packet: ByteArray? = null
     var memory: ArrayList<Any>? = null
     var speakerTemplateID = 0
+    var couponItemID = 0
 
     init {
         this.type = t
