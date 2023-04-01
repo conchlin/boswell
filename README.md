@@ -10,6 +10,13 @@ can be found [here](https://github.com/boswell83/boswell).
 
 -------------------------------------------------------------------
 
+## odinms_scripting Branch
+This branch is meant to preserve the older odinms scripting style. This set-up is 
+much more mature than the current groovy scripting Boswell has. If you are looking
+for something that is playable this will work much better. 
+
+-------------------------------------------------------------------
+
 ## Requirements/Dependencies
 - [x] Java (17+)
 - [x] Kotlin (1.7.10)
