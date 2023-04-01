@@ -38,12 +38,12 @@ public final class WeddingHandler extends AbstractMaplePacketHandler {
                 MapleCharacter chr = c.getPlayer();
                 final byte mode = slea.readByte();
 
-                if (mode == 6) { //additem
+                /*if (mode == 6) { //additem
                     short slot = slea.readShort();
                     int itemid = slea.readInt();
                     short quantity = slea.readShort();
 
-                    MapleMarriage marriage = c.getPlayer().getMarriageInstance();
+                    //MapleMarriage marriage = c.getPlayer().getMarriageInstance();
                     if (marriage != null) {
                         try {
                             boolean groomWishlist = marriage.giftItemToSpouse(chr.getId());
@@ -146,7 +146,7 @@ public final class WeddingHandler extends AbstractMaplePacketHandler {
                     c.announce(WvsContext.Packet.enableActions());
                 } else {
                     System.out.println(mode);
-                }
+                }*/
             } finally {
                 c.releaseClient();
             }

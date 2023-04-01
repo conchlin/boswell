@@ -25,7 +25,6 @@ import client.MapleClient;
 import client.autoban.AutobanFactory;
 import constants.ItemConstants;
 import net.AbstractMaplePacketHandler;
-import scripting.npc.NPCScriptManager;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 /**
@@ -56,6 +55,6 @@ public final class UseGachaponRemoteRequestHandler extends AbstractMaplePacketHa
 		} else {
 			npcId = gacha == 8 ? 9100109 : 9100117;
 		}
-		NPCScriptManager.getInstance().start(c, npcId, "gachaponRemote", null);
+		//NPCScriptManager.getInstance().start(c, npcId, "gachaponRemote", null);
 	}
 }

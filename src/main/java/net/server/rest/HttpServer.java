@@ -8,7 +8,6 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import net.server.Server;
 import net.server.world.World;
-import scripting.reactor.ReactorScriptManager;
 import server.life.MapleMonsterInformationProvider;
 import tools.Pair;
 
@@ -85,7 +84,7 @@ public class HttpServer {
             final com.sun.net.httpserver.HttpServer server = com.sun.net.httpserver.HttpServer.create(new InetSocketAddress(HOSTNAME, PORT), BACKLOG);
             server.createContext("/reloaddrops", new Route(data -> {
                 MapleMonsterInformationProvider.getInstance().clearDrops();
-                ReactorScriptManager.getInstance().clearDrops();
+                //ReactorScriptManager.getInstance().clearDrops();
                 return new Pair<>(200, "{\"success\":true}");
             }));
             server.createContext("/saveall", new Route(data -> {

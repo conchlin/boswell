@@ -46,7 +46,6 @@ import server.life.MapleLifeFactory;
 import server.life.MapleMonster;
 import server.life.MaplePlayerNPC;
 import server.life.MaplePlayerNPCFactory;
-import scripting.event.EventInstanceManager;
 import server.partyquest.GuardianSpawnPoint;
 import net.database.DatabaseConnection;
 import tools.Rect;
@@ -59,19 +58,19 @@ public class MapleMapFactory {
 
     private MapleDataProvider source;
     private MapleData nameData;
-    private EventInstanceManager event;
+    /*private EventInstanceManager event;*/
     private Map<Integer, MapleMap> maps = new HashMap<>();
     private ReadLock mapsRLock;
     private WriteLock mapsWLock;
     private int channel, world;
     private final Rect mbr;
 
-    public MapleMapFactory(EventInstanceManager eim, MapleDataProvider source, MapleDataProvider stringSource, int world, int channel) {
+    public MapleMapFactory(/*EventInstanceManager eim,*/ MapleDataProvider source, MapleDataProvider stringSource, int world, int channel) {
         this.source = source;
         this.nameData = stringSource.getData("Map.img");
         this.world = world;
         this.channel = channel;
-        this.event = eim;
+        //this.event = eim;
 
         ReentrantReadWriteLock rrwl = new MonitoredReentrantReadWriteLock(MonitoredLockType.MAP_FACTORY);
         this.mapsRLock = rrwl.readLock();
@@ -194,13 +193,16 @@ public class MapleMapFactory {
         }
         
         map = new MapleMap(mapid, world, channel, MapleDataTool.getInt("returnMap", infoData));
-        map.setEventInstance(event);
+        //map.setEventInstance(event);
 
-        String onFirstEnter = MapleDataTool.getString(infoData.getChildByPath("onFirstUserEnter"), String.valueOf(mapid));
-        map.setOnFirstUserEnter(onFirstEnter.equals("") ? String.valueOf(mapid) : onFirstEnter);
+        // we should assume that each onUserEnter and onFirstUserEnter that is necessary for the gameplay
+        // would have a valid string within the wz file. So by setting all non-valid inputs to 0 we can
+        // easily figure out which maps need groovy field scripts
+        String onFirstEnter = MapleDataTool.getString(infoData.getChildByPath("onFirstUserEnter"), String.valueOf(0));
+        map.setOnFirstUserEnter(onFirstEnter.equals("") ? String.valueOf(0) : onFirstEnter);
+        String onEnter = MapleDataTool.getString(infoData.getChildByPath("onUserEnter"), String.valueOf(0));
+        map.setOnUserEnter(onEnter.equals("") ? String.valueOf(0) : onEnter);
 
-        String onEnter = MapleDataTool.getString(infoData.getChildByPath("onUserEnter"), String.valueOf(mapid));
-        map.setOnUserEnter(onEnter.equals("") ? String.valueOf(mapid) : onEnter);
         //map.setBGM(MapleDataTool.getString(mapData.getChildByPath("info/bgm")));
         map.setFieldLimit(MapleDataTool.getInt(infoData.getChildByPath("fieldLimit"), 0));
         map.setMobInterval((short) MapleDataTool.getInt(infoData.getChildByPath("createMobInterval"), 5000));
@@ -284,7 +286,7 @@ public class MapleMapFactory {
             int seats = mapData.getChildByPath("seat").getChildren().size();
             map.setSeats(seats);
         }
-        if (event == null) {
+        //if (event == null) {
             try (Connection con = DatabaseConnection.getConnection()) {
                 try (PreparedStatement ps = con.prepareStatement("SELECT * FROM playernpcs WHERE map = ? AND world = ?")) {
                     ps.setInt(1, omapid);
@@ -305,7 +307,7 @@ public class MapleMapFactory {
                     map.addPlayerNPCMapObject(dnpc);
                 }
             }
-        }
+        //}
 
         loadLifeFromWz(map, mapData);
         loadLifeFromDb(map);
@@ -457,10 +459,17 @@ public class MapleMapFactory {
         MapleReactor myReactor = new MapleReactor(MapleReactorFactory.getReactor(Integer.parseInt(id)), Integer.parseInt(id));
         int x = MapleDataTool.getInt(reactor.getChildByPath("x"));
         int y = MapleDataTool.getInt(reactor.getChildByPath("y"));
+        String name = MapleDataTool.getString(reactor.getChildByPath("name"));
         myReactor.setFacingDirection(FacingDirection);
         myReactor.setPosition(new Point(x, y));
         myReactor.setDelay(MapleDataTool.getInt(reactor.getChildByPath("reactorTime")) * 1000);
-        myReactor.setName(MapleDataTool.getString(reactor.getChildByPath("name"), ""));
+        if (name.equals("")) {
+            // unfortunately there are cases where the name is empty
+            // if that happens we use the reactor id as the name
+            myReactor.setName(id);
+        } else {
+            myReactor.setName(name);
+        }
         myReactor.resetReactorActions(0);
         return myReactor;
     }
@@ -540,7 +549,7 @@ public class MapleMapFactory {
             map.dispose();
         }
 
-        this.event = null;
+        //this.event = null;
     }
 
     public static float getMapRecoveryRate(int mapid) {

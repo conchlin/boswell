@@ -54,7 +54,7 @@ public class IpListCommand extends Command {
             }
         }
         
-        c.getAbstractPlayerInteraction().npcTalk(22000, str);
+        //c.getAbstractPlayerInteraction().npcTalk(22000, str);
     }
     
 }

@@ -31,7 +31,6 @@ import server.maps.MapleMap;
 import tools.Randomizer;
 import tools.data.input.SeekableLittleEndianAccessor;
 import client.MapleClient;
-import scripting.event.EventInstanceManager;
 
 /**
  * @author Xotic & BubblesDev
@@ -52,7 +51,7 @@ public final class MobHitByMobHandler extends AbstractMaplePacketHandler {
         }
 
         int damage = Randomizer.nextInt(((monster.getMaxHp() / 13 + monster.getPADamage() * 10)) * 2 + 500) / 10; //Beng's formula.
-        EventInstanceManager eim = map.getEventInstance();
+        //EventInstanceManager eim = map.getEventInstance();
 
         if (monster.getHp() - damage < 1) {     // friendly dies
             switch (monster.getId()) {
@@ -83,9 +82,9 @@ public final class MobHitByMobHandler extends AbstractMaplePacketHandler {
 
             map.killFriendlies(monster);
         } else {
-            if (eim != null) {
+            /*if (eim != null) {
                 eim.friendlyDamaged(monster);
-            }
+            }*/
         }
 
         //monster.applyAndGetHpDamage(damage, false);

@@ -67,6 +67,6 @@ public class GachaCommand extends Command {
             }
         }
       
-        c.getAbstractPlayerInteraction().npcTalk(9010000, talkStr);
+        //c.getAbstractPlayerInteraction().npcTalk(9010000, talkStr);
     }
 }

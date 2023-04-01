@@ -102,9 +102,9 @@ public final class ItemMakeRequestHandler extends AbstractMaplePacketHandler {
             if (ItemConstants.isEquipment(toCreate)) {   // only equips uses stimulant and reagents
                 if (slea.readByte() != 0) {  // stimulant
                     stimulantid = ii.getMakerStimulant(toCreate);
-                    if (!c.getAbstractPlayerInteraction().haveItem(stimulantid)) {
+                    /*if (!c.getAbstractPlayerInteraction().haveItem(stimulantid)) {
                         stimulantid = -1;
-                    }
+                    }*/
                 }
 
                 int reagents = Math.min(slea.readInt(), getMakerReagentSlots(toCreate));
@@ -122,11 +122,11 @@ public final class ItemMakeRequestHandler extends AbstractMaplePacketHandler {
 
                 List<Pair<Integer, Short>> toUpdate = new LinkedList<>();
                 for (Map.Entry<Integer, Short> r : reagentids.entrySet()) {
-                    int qty = c.getAbstractPlayerInteraction().getItemQuantity(r.getKey());
+                    //int qty = c.getAbstractPlayerInteraction().getItemQuantity(r.getKey());
 
-                    if (qty < r.getValue()) {
+                    /*if (qty < r.getValue()) {
                         toUpdate.add(new Pair<>(r.getKey(), (short) qty));
-                    }
+                    }*/
                 }
 
                 // remove those not present on player inventory
@@ -192,7 +192,7 @@ public final class ItemMakeRequestHandler extends AbstractMaplePacketHandler {
                     MapleInventoryManipulator.removeFromSlot(c, MapleInventoryType.EQUIP, (short) pos, (short) 1, false);
                 } else {
                     for (Pair<Integer, Integer> p : recipe.getReqItems()) {
-                        c.getAbstractPlayerInteraction().gainItem(p.getLeft(), (short) -p.getRight(), false);
+                        //c.getAbstractPlayerInteraction().gainItem(p.getLeft(), (short) -p.getRight(), false);
 
                     }
                 }
@@ -207,22 +207,22 @@ public final class ItemMakeRequestHandler extends AbstractMaplePacketHandler {
                         if (p.getLeft() >= 4250000 && p.getLeft() <= 4251402) { // gem check bc maybe other cases apply here
                             int newGem = calculateGemReward(p.getLeft());
                             short gemAmt = getGemQuantity(newGem, p.getLeft());
-                            c.getAbstractPlayerInteraction().gainItem(newGem, gemAmt, false);
-                            c.announce(UserLocal.Packet.makerResult(makerSucceeded, newGem, gemAmt, recipe.getCost(), recipe.getReqItems(), stimulantid, new LinkedList<>(reagentids.keySet())));
+                            //c.getAbstractPlayerInteraction().gainItem(newGem, gemAmt, false);
+                            //c.announce(UserLocal.Packet.makerResult(makerSucceeded, newGem, gemAmt, recipe.getCost(), recipe.getReqItems(), stimulantid, new LinkedList<>(reagentids.keySet())));
                             strengthen = true;
                         } else {
-                            c.getAbstractPlayerInteraction().gainItem(p.getLeft(), p.getRight().shortValue(), false);
+                            //c.getAbstractPlayerInteraction().gainItem(p.getLeft(), p.getRight().shortValue(), false);
                         }
                     }
                 } else { // reagentid list wouldnt be empty for equips
                     toCreate = recipe.getGainItems().get(0).getLeft();
 
-                    if (stimulantid != -1) c.getAbstractPlayerInteraction().gainItem(stimulantid, (short) -1, false);
+                    /*if (stimulantid != -1) c.getAbstractPlayerInteraction().gainItem(stimulantid, (short) -1, false);
                     if (!reagentids.isEmpty()) {
                         for (Map.Entry<Integer, Short> r : reagentids.entrySet()) {
                             c.getAbstractPlayerInteraction().gainItem(r.getKey(), (short) (-1 * r.getValue()), false);
                         }
-                    }
+                    }*/
 
                     if (cost > 0) c.getPlayer().gainMeso(-cost, false);
                     makerSucceeded = addBoostedMakerItem(c, toCreate, stimulantid, reagentids);
@@ -244,7 +244,7 @@ public final class ItemMakeRequestHandler extends AbstractMaplePacketHandler {
                 c.getPlayer().getMap().broadcastMessage(c.getPlayer(),
                         UserRemote.Packet.onRemoteUserEffect(c.getPlayer().getId(), UserEffectType.MAKER.getEffect(), effect), false);
                 if (toCreate == 4260003 && type == 3 && c.getPlayer().getQuestStatus(6033) == 1) {
-                    c.getAbstractPlayerInteraction().setQuestProgress(6033, 1);
+                    //c.getAbstractPlayerInteraction().setQuestProgress(6033, 1);
                 }
             }
         }
@@ -415,9 +415,9 @@ public final class ItemMakeRequestHandler extends AbstractMaplePacketHandler {
             addQuantity.add(p.getRight());
         }
 
-        if (!c.getAbstractPlayerInteraction().canHoldAllAfterRemoving(addItemids, addQuantity, rmvItemids, rmvQuantity)) {
+        /*if (!c.getAbstractPlayerInteraction().canHoldAllAfterRemoving(addItemids, addQuantity, rmvItemids, rmvQuantity)) {
             return 5;
-        }
+        }*/
 
         return 0;
     }

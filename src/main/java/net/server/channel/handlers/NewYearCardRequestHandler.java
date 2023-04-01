@@ -55,7 +55,7 @@ public final class NewYearCardRequestHandler extends AbstractMaplePacketHandler 
 
                 int status = getValidNewYearCardStatus(itemid, player, slot);
                 if(status == 0) {
-                    if(player.canHold(4300000, 1)) {
+                    /*if(player.canHold(4300000, 1)) {
                         String receiver = slea.readMapleAsciiString();  //[04 00 54 65 73 74] -> sReceiverName (person to send to) 
 
                         int receiverid = getReceiverId(receiver, c.getWorld());
@@ -81,7 +81,7 @@ public final class NewYearCardRequestHandler extends AbstractMaplePacketHandler 
                         }
                     } else {
                         player.announce(MaplePacketCreator.onNewYearCardRes(player, -1, 5, 0x10));  // inventory full
-                    }
+                    }*/
                 } else {
                     player.announce(MaplePacketCreator.onNewYearCardRes(player, -1, 5, status));  // item and inventory errors
                 }
@@ -95,7 +95,7 @@ public final class NewYearCardRequestHandler extends AbstractMaplePacketHandler 
             
             if(newyear != null && newyear.getReceiverId() == player.getId() && !newyear.isReceiverCardReceived()) {
                 if(!newyear.isSenderCardDiscarded()) {
-                    if(player.canHold(4301000, 1)) {
+                    /*if(player.canHold(4301000, 1)) {
                         newyear.stopNewYearCardTask();
                         NewYearCardRecord.updateNewYearCard(newyear);
 
@@ -114,7 +114,7 @@ public final class NewYearCardRequestHandler extends AbstractMaplePacketHandler 
                         }
                     } else {
                         player.announce(MaplePacketCreator.onNewYearCardRes(player, -1, 5, 0x10));  // inventory full
-                    }
+                    }*/
                 } else {
                     player.dropMessage(6, "[New Year] The sender of the New Year card already dropped it. Nothing to receive.");
                 }

@@ -25,7 +25,8 @@ import client.MapleClient;
 import client.inventory.Item;
 import constants.ItemConstants;
 import net.AbstractMaplePacketHandler;
-import scripting.item.ItemScriptManager;
+import script.ScriptManager;
+import script.ScriptType;
 import server.MapleItemInformationProvider;
 import server.MapleItemInformationProvider.ScriptedItem;
 import tools.data.input.SeekableLittleEndianAccessor;
@@ -36,7 +37,7 @@ import tools.data.input.SeekableLittleEndianAccessor;
  */
 public final class ScriptItemUseRequestHandler extends AbstractMaplePacketHandler {
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         slea.readInt(); // trash stamp, thanks RMZero213
         short itemSlot = slea.readShort(); // item slot, thanks RMZero213
         int itemId = slea.readInt();
@@ -49,8 +50,7 @@ public final class ScriptItemUseRequestHandler extends AbstractMaplePacketHandle
         if (item == null || item.getItemId() != itemId || item.getQuantity() < 1) {
             return;
         }
-        
-        ItemScriptManager ism = ItemScriptManager.getInstance();
-        ism.runItemScript(c, info);
+
+        ScriptManager.Companion.runScript(c, itemId, info.getScript(), ScriptType.Item);
     }
 }

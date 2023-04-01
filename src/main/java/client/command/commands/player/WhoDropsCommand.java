@@ -83,7 +83,7 @@ public class WhoDropsCommand extends Command {
                     return;
                 }
                 
-                c.getAbstractPlayerInteraction().npcTalk(9010000, output);
+                //c.getAbstractPlayerInteraction().npcTalk(9010000, output);
             } finally {
                 c.releaseClient();
             }

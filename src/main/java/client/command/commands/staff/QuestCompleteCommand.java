@@ -51,7 +51,7 @@ public class QuestCompleteCommand extends Command {
 
         if (victim != null) {
             if (victim.getQuestStatus(questId) == 1) {
-                victim.getAbstractPlayerInteraction().forceCompleteQuest(questId);
+                //victim.getAbstractPlayerInteraction().forceCompleteQuest(questId);
                 player.dropMessage(5, victim + ": QUEST " + questId + " completed.");
                 victim.dropMessage(5, player + ": QUEST " + questId + " completed.");
             } else {

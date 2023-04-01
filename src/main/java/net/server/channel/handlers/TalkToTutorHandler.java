@@ -25,7 +25,6 @@ package net.server.channel.handlers;
 import client.MapleClient;
 import client.MapleJob;
 import net.AbstractMaplePacketHandler;
-import scripting.npc.NPCScriptManager;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 /**
@@ -36,9 +35,9 @@ public class TalkToTutorHandler extends AbstractMaplePacketHandler {
     @Override
     public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         if (c.getPlayer().getJob().equals(MapleJob.NOBLESSE)) {
-            NPCScriptManager.getInstance().start(c, 1101008, null);
+            //NPCScriptManager.getInstance().start(c, 1101008, null);
         } else {
-            NPCScriptManager.getInstance().start(c, 1202000, null);
+            //NPCScriptManager.getInstance().start(c, 1202000, null);
         }
     }
 

@@ -137,6 +137,6 @@ public class SearchCommand extends Command {
         }
         sb.append("\r\n#kLoaded within ").append((double) (System.currentTimeMillis() - start) / 1000).append(" seconds.");//because I can, and it's free
 
-        c.getAbstractPlayerInteraction().npcTalk(9010000, sb.toString());
+        //c.getAbstractPlayerInteraction().npcTalk(9010000, sb.toString());
     }
 }

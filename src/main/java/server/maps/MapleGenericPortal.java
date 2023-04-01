@@ -28,7 +28,8 @@ import constants.GameConstants;
 import java.awt.Point;
 
 import network.packet.context.WvsContext;
-import scripting.portal.PortalScriptManager;
+import script.ScriptManager;
+import script.ScriptType;
 import server.MaplePortal;
 import net.server.audit.locks.MonitoredLockType;
 import net.server.audit.locks.MonitoredReentrantLock;
@@ -45,7 +46,6 @@ public class MapleGenericPortal implements MaplePortal {
     private int id;
     private String scriptName;
     private boolean portalState;
-    private MonitoredReentrantLock scriptLock = null;
     
     public MapleGenericPortal(int type) {
         this.type = type;
@@ -119,14 +119,6 @@ public class MapleGenericPortal implements MaplePortal {
     @Override
     public void setScriptName(String scriptName) {
         this.scriptName = scriptName;
-        
-        if(scriptName != null) {
-            if(scriptLock == null) {
-                scriptLock = MonitoredReentrantLockFactory.createLock(MonitoredLockType.PORTAL, true);
-            }
-        } else {
-            scriptLock = null;
-        }
     }
 
     @Override
@@ -142,19 +134,14 @@ public class MapleGenericPortal implements MaplePortal {
         }
         if (getScriptName() != null) {
             try {
-                scriptLock.lock();
-                try {
-                    changed = PortalScriptManager.getInstance().executePortalScript(this, c);
-                } finally {
-                    scriptLock.unlock();
-                }
+                ScriptManager.Companion.runScript(c, getId(), scriptName, ScriptType.Portal);
             } catch(NullPointerException npe) {
                 npe.printStackTrace();
             }
         } else if (getTargetMapId() != 999999999) {
             MapleCharacter chr = c.getPlayer();
             if (!(chr.getChalkboard() != null && GameConstants.isFreeMarketRoom(getTargetMapId()))) {
-                MapleMap to = chr.getEventInstance() == null ? c.getChannelServer().getMapFactory().getMap(getTargetMapId()) : chr.getEventInstance().getMapInstance(getTargetMapId());
+                MapleMap to = c.getChannelServer().getMapFactory().getMap(getTargetMapId());
                 MaplePortal pto = to.getPortal(getTarget());
                 if (pto == null) {// fallback for missing portals - no real life case anymore - interesting for not implemented areas
                     pto = to.getPortal(0);

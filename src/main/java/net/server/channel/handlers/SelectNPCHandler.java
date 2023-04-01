@@ -26,11 +26,10 @@ import client.processor.DueyProcessor;
 import constants.ServerConstants;
 import net.AbstractMaplePacketHandler;
 import network.packet.context.WvsContext;
-import scripting.npc.NPCScriptManager;
+import script.ScriptManager;
+import script.ScriptType;
 import server.life.MapleNPC;
 import server.maps.MapleMapObject;
-import server.life.MaplePlayerNPC;
-import tools.FilePrinter;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 public final class SelectNPCHandler extends AbstractMaplePacketHandler {
@@ -40,48 +39,34 @@ public final class SelectNPCHandler extends AbstractMaplePacketHandler {
             c.announce(WvsContext.Packet.enableActions());
             return;
         }
-        
-        if(currentServerTime() - c.getPlayer().getNpcCooldown() < ServerConstants.BLOCK_NPC_RACE_CONDT) {
+
+        if (currentServerTime() - c.getPlayer().getNpcCooldown() < ServerConstants.BLOCK_NPC_RACE_CONDT) {
             c.announce(WvsContext.Packet.enableActions());
             return;
         }
         
-        int oid = slea.readInt();
-        MapleMapObject obj = c.getPlayer().getMap().getMapObject(oid);
+        int objectId = slea.readInt();
+        MapleMapObject obj = c.getPlayer().getMap().getMapObject(objectId);
         if (obj instanceof MapleNPC npc) {
-            if (npc.getId() == 9010009) {   //is duey
-                DueyProcessor.dueySendTalk(c, false);
-            } else {
-                if (c.getCM() != null || c.getQM() != null) {
-                    c.announce(WvsContext.Packet.enableActions());
-                    return;
-                }
-                if(npc.getId() >= 9100100 && npc.getId() <= 9100200) {
-                    // Custom handling for gachapon scripts to reduce the amount of scripts needed.
-                    NPCScriptManager.getInstance().start(c, npc.getId(), "gachapon", null);
-                } else {
-                    boolean hasNpcScript = NPCScriptManager.getInstance().start(c, npc.getId(), oid, null);
-                    if (!hasNpcScript) {
-                        if (!npc.hasShop()) {
-                            FilePrinter.printError(FilePrinter.NPC_UNCODED, "NPC " + npc.getName() + "(" + npc.getId() + ") is not coded.");
-                            return;
-                        } else if(c.getPlayer().getShop() != null) {
-                            c.announce(WvsContext.Packet.enableActions());
-                            return;
-                        }
-                        
-                        npc.sendShop(c);
-                    }
-                }
+            String script = npc.getScripts().get(npc.getId());
+
+            if (script == null) {
+                // if npc does not have a valid script name we use the npcId instead
+                script = String.valueOf(npc.getId());
             }
-        } else if (obj instanceof MaplePlayerNPC pnpc) {
-            NPCScriptManager nsm = NPCScriptManager.getInstance();
-            
-            if (pnpc.getScriptId() < 9977777 && !nsm.isNpcScriptAvailable(c, "" + pnpc.getScriptId())) {
-                nsm.start(c, pnpc.getScriptId(), "rank_user", null);
-            } else {
-                nsm.start(c, pnpc.getScriptId(), null);
+            if (!hasCustomHandling(c, npc)) {
+                ScriptManager.Companion.runScript(c, objectId, script, ScriptType.Npc);
             }
+
         }
+        // todo add additional support for player npcs
+    }
+
+    public boolean hasCustomHandling(MapleClient c, MapleNPC npc) {
+        if (npc.getId() == 9010009) { // duey
+            DueyProcessor.dueySendTalk(c, false);
+            return true;
+        }
+        return false;
     }
 }

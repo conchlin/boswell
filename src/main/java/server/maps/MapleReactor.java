@@ -22,19 +22,24 @@
 package server.maps;
 
 import client.MapleClient;
-import constants.ServerConstants;
 
 import java.awt.Rectangle;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.*;
 
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.locks.Lock;
+
+import net.database.DatabaseConnection;
 import net.server.audit.locks.factory.MonitoredReentrantLockFactory;
 
 import network.packet.ReactorPool;
-import scripting.reactor.ReactorScriptManager;
+import script.ScriptManager;
+import script.ScriptType;
 import server.TimerManager;
-import tools.MaplePacketCreator;
+import tools.FilePrinter;
 import tools.Pair;
 import net.server.audit.locks.MonitoredLockType;
 import server.partyquest.GuardianSpawnPoint;
@@ -59,6 +64,7 @@ public class MapleReactor extends AbstractMapleMapObject {
     private ScheduledFuture<?> timeoutTask = null;
     private GuardianSpawnPoint guardian = null;
     private byte facingDirection = 0;
+    private Map<Integer, List<ReactorDropEntry>> drops = new HashMap<>();
     private Lock reactorLock = MonitoredReentrantLockFactory.createLock(MonitoredLockType.REACTOR, true);
     private Lock hitLock = MonitoredReentrantLockFactory.createLock(MonitoredLockType.REACTOR_HIT, true);
 
@@ -218,30 +224,22 @@ public class MapleReactor extends AbstractMapleMapObject {
         if (timeOut > -1) {
             final byte nextState = stats.getTimeoutState(state);
 
-            timeoutTask = TimerManager.getInstance().schedule(new Runnable() {
-                @Override
-                public void run() {
-                    timeoutTask = null;
-                    tryForceHitReactor(nextState);
-                }
+            timeoutTask = TimerManager.getInstance().schedule(() -> {
+                timeoutTask = null;
+                tryForceHitReactor(nextState);
             }, timeOut);
         }
     }
 
     public void delayedHitReactor(final MapleClient c, long delay) {
-        TimerManager.getInstance().schedule(new Runnable() {
-            @Override
-            public void run() {
-                hitReactor(c);
-            }
-        }, delay);
+        TimerManager.getInstance().schedule(() -> hitReactor(c), delay);
     }
 
     public void hitReactor(MapleClient c) {
-        hitReactor(false, 0, (short) 0, 0, c);
+        hitReactor(false, (short) 0, 0, c);
     }
 
-    public void hitReactor(boolean wHit, int charPos, short stance, int skillid, MapleClient c) {
+    public void hitReactor(boolean wHit, short stance, int skillid, MapleClient c) {
         try {
             if (!this.isActive()) {
                 return;
@@ -252,9 +250,8 @@ public class MapleReactor extends AbstractMapleMapObject {
                 try {
                     cancelReactorTimeout();
                     attackHit = wHit;
-                    System.out.println("hit reactor: " + this.getId());
 
-                    ReactorScriptManager.getInstance().onHit(c, this);
+                    //ReactorScriptManager.getInstance().onHit(c, this);
 
                     int reactorType = stats.getType(state);
                     if (reactorType < 999 && reactorType != -1) {//type 2 = only hit from right (kerning swamp plants), 00 is air left 02 is ground left
@@ -278,14 +275,14 @@ public class MapleReactor extends AbstractMapleMapObject {
                                         map.broadcastMessage(ReactorPool.Packet.onReactorChangeState(this, stance));
                                     }
 
-                                    ReactorScriptManager.getInstance().act(c, this);
+                                    ScriptManager.Companion.runScript(c, this.getId(), this.getName(), ScriptType.Reactor);
                                 } else { //reactor not broken yet
                                     map.broadcastMessage(ReactorPool.Packet.onReactorChangeState(this, stance));
                                     if (state == stats.getNextState(state, b)) {//current state = next state, looping reactor
-                                        ReactorScriptManager.getInstance().act(c, this);
+                                        ScriptManager.Companion.runScript(c, this.getId(), this.getName(), ScriptType.Reactor);
                                     }
 
-                                    setShouldCollect(true);     // refresh collectability on item drop-based reactors
+                                    setShouldCollect(true);     // refresh collect-ability on item drop-based reactors
                                     refreshReactorTimeout();
                                     if (stats.getType(state) == 100) {
                                         map.searchItemReactors(this);
@@ -298,7 +295,7 @@ public class MapleReactor extends AbstractMapleMapObject {
                         state++;
                         map.broadcastMessage(ReactorPool.Packet.onReactorChangeState(this, stance));
                         if (this.getId() != 9980000 && this.getId() != 9980001) {
-                            ReactorScriptManager.getInstance().act(c, this);
+                            ScriptManager.Companion.runScript(c, this.getId(), this.getName(), ScriptType.Reactor);
                         }
 
                         setShouldCollect(true);
@@ -319,9 +316,17 @@ public class MapleReactor extends AbstractMapleMapObject {
     }
 
     public Rectangle getArea() {
-        return new Rectangle(getPosition().x + stats.getTL().x, getPosition().y + stats.getTL().y, stats.getBR().x - stats.getTL().x, stats.getBR().y - stats.getTL().y);
+        return new Rectangle(
+                getPosition().x + stats.getTL().x,
+                getPosition().y + stats.getTL().y,
+                stats.getBR().x - stats.getTL().x,
+                stats.getBR().y - stats.getTL().y);
     }
 
+    /**
+     * If the name node is empty or null we default to the reactor id
+     * @return
+     */
     public String getName() {
         return name;
     }

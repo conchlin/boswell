@@ -20,10 +20,8 @@
 package net.server.coordinator;
 
 import constants.ServerConstants;
-import scripting.event.EventInstanceManager;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -38,24 +36,24 @@ public class MapleEventRecallCoordinator {
         return instance;
     }
     
-    private ConcurrentHashMap<Integer, EventInstanceManager> eventHistory = new ConcurrentHashMap<>();
+    //private ConcurrentHashMap<Integer, EventInstanceManager> eventHistory = new ConcurrentHashMap<>();
     
-    private static boolean isRecallableEvent(EventInstanceManager eim) {
+    /*private static boolean isRecallableEvent(EventInstanceManager eim) {
         return eim != null && !eim.isEventDisposed() && !eim.isEventCleared();
-    }
+    }*/
     
-    public EventInstanceManager recallEventInstance(int characterId) {
+    /*public EventInstanceManager recallEventInstance(int characterId) {
         EventInstanceManager eim = eventHistory.remove(characterId);
         return isRecallableEvent(eim) ? eim : null;
-    }
+    }*/
     
-    public void storeEventInstance(int characterId, EventInstanceManager eim) {
+    /*public void storeEventInstance(int characterId, EventInstanceManager eim) {
         if (ServerConstants.USE_ENABLE_RECALL_EVENT && isRecallableEvent(eim)) {
             eventHistory.put(characterId, eim);
         }
-    }
+    }*/
     
-    public void manageEventInstances() {
+    /*public void manageEventInstances() {
         if (!eventHistory.isEmpty()) {
             List<Integer> toRemove = new LinkedList<>();
             
@@ -69,5 +67,5 @@ public class MapleEventRecallCoordinator {
                 eventHistory.remove(r);
             }
         }
-    }
+    }*/
 }

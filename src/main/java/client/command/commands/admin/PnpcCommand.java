@@ -67,7 +67,7 @@ public class PnpcCommand extends Command {
         int ypos = checkpos.y;
         int fh = player.getMap().getFootholds().findBelow(checkpos).getId();
 
-        if (npc != null && !npc.getName().equals("MISSINGNO")) {
+        if (npc != null && !npc.getTemplateName().equals("MISSINGNO")) {
             try (Connection con = DatabaseConnection.getConnection()) {
                 try (PreparedStatement ps = con.prepareStatement("INSERT INTO plife ( life, f, fh, cy, rx0, rx1, type, x, y, world, map, mobtime, hide ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )")) {
                     ps.setInt(1, npcId);

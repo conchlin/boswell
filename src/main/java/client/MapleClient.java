@@ -74,13 +74,6 @@ import org.apache.mina.core.session.IoSession;
 import client.inventory.MapleInventoryType;
 import constants.GameConstants;
 import constants.ServerConstants;
-import scripting.AbstractPlayerInteraction;
-import scripting.event.EventInstanceManager;
-import scripting.event.EventManager;
-import scripting.npc.NPCConversationManager;
-import scripting.npc.NPCScriptManager;
-import scripting.quest.QuestActionManager;
-import scripting.quest.QuestScriptManager;
 import server.life.MapleMonster;
 import server.ThreadManager;
 import server.maps.*;
@@ -160,9 +153,9 @@ public class MapleClient {
         return session;
     }
 
-    public EventManager getEventManager(String event) {
+    /*public EventManager getEventManager(String event) {
         return getChannelServer().getEventSM().getEventManager(event);
-    }
+    }*/
 
     public MapleCharacter getPlayer() {
         return player;
@@ -172,9 +165,9 @@ public class MapleClient {
         this.player = player;
     }
 
-    public AbstractPlayerInteraction getAbstractPlayerInteraction() {
-        return new AbstractPlayerInteraction(this);
-    }
+    //public AbstractPlayerInteraction getAbstractPlayerInteraction() {
+    //    return new AbstractPlayerInteraction(this);
+    //}
 
     public void sendCharList(int server) {
         this.announce(CLogin.Packet.getCharList(this, server));
@@ -748,10 +741,10 @@ public class MapleClient {
             if (!serverTransition) {    // thanks MedicOP for detecting an issue with party leader change on changing channels
                 removePartyPlayer(wserv);
 
-                EventInstanceManager eim = player.getEventInstance();
-                if (eim != null) {
-                    eim.playerDisconnected(player);
-                }
+                //EventInstanceManager eim = player.getEventInstance();
+                //if (eim != null) {
+                //    eim.playerDisconnected(player);
+                //}
 
                 if (player.getMonsterCarnival() != null) {
                     player.getMonsterCarnival().playerDisconnected(getPlayer().getId());
@@ -1032,13 +1025,13 @@ public class MapleClient {
         engines.remove(name);
     }
 
-    public NPCConversationManager getCM() {
+    /*public NPCConversationManager getCM() {
         return NPCScriptManager.getInstance().getCM(this);
-    }
+    }*/
 
-    public QuestActionManager getQM() {
+    /*public QuestActionManager getQM() {
         return QuestScriptManager.getInstance().getQM(this);
-    }
+    }*/
 
     public boolean acceptToS() {
         boolean disconnect = false;
@@ -1332,8 +1325,8 @@ public class MapleClient {
 
     public void closePlayerScriptInteractions() {
         this.removeClickedNPC();
-        NPCScriptManager.getInstance().dispose(this);
-        QuestScriptManager.getInstance().dispose(this);
+        /*NPCScriptManager.getInstance().dispose(this);
+        QuestScriptManager.getInstance().dispose(this);*/
     }
 
     public boolean attemptCsCoupon() {

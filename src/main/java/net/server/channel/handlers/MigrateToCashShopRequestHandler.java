@@ -49,12 +49,12 @@ public class MigrateToCashShopRequestHandler extends AbstractMaplePacketHandler 
                 return;
             }
             
-            if(mc.getEventInstance() != null) {
+            /*if(mc.getEventInstance() != null) {
                 c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.PinkText.getType(),
                         "Entering Cash Shop or MTS are disabled when registered on an event."));
                 c.announce(WvsContext.Packet.enableActions());
                 return;
-            }
+            }*/
             
             if(MapleMiniDungeonInfo.isDungeonMap(mc.getMapId())) {
                 c.announce(BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.PinkText.getType(),

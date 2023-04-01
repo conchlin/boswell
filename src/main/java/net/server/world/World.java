@@ -67,7 +67,6 @@ import network.packet.field.CField;
 import network.packet.UserRemote;
 import network.packet.context.GuildPacket;
 import network.packet.context.PartyPacket;
-import scripting.event.EventInstanceManager;
 import server.TimerManager;
 import server.maps.MapleHiredMerchant;
 import server.maps.MapleMap;
@@ -889,10 +888,10 @@ public class World {
         } else if (result == PartyResultType.ChangeLeader.getResult()) {
             MapleCharacter mc = party.getLeader().getPlayer();
             MapleCharacter newLeader = target.getPlayer();
-            EventInstanceManager eim = mc.getEventInstance();
-            if (eim != null && eim.isEventLeader(mc)) {
+            /*EventInstanceManager eim = mc.getEventInstance();*/
+            /*if (eim != null && eim.isEventLeader(mc)) {
                 eim.changedLeader(newLeader);
-            } else {
+            } else {*/
                 int oldLeaderMapid = mc.getMapId();
 
                 if (MapleMiniDungeonInfo.isDungeonMap(oldLeaderMapid)) {
@@ -903,7 +902,7 @@ public class World {
                         }
                     }
                 }
-            }
+            //}
             party.setLeader(target);
         } else {
             System.out.println("Unhandled updateParty operation -> " + result);

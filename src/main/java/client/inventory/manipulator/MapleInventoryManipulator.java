@@ -688,10 +688,10 @@ public class MapleInventoryManipulator {
             if(ItemConstants.isNewYearCardEtc(itemId)) {
                 if(itemId == 4300000) {
                     NewYearCardRecord.removeAllNewYearCard(true, chr);
-                    c.getAbstractPlayerInteraction().removeAll(4300000);
+                    //c.getAbstractPlayerInteraction().removeAll(4300000);
                 } else {
                     NewYearCardRecord.removeAllNewYearCard(false, chr);
-                    c.getAbstractPlayerInteraction().removeAll(4301000);
+                    //c.getAbstractPlayerInteraction().removeAll(4301000);
                 }
             } else if (ItemConstants.isWeddingRing(source.getItemId())) {
                 map.disappearingItemDrop(chr, chr, target, dropPos);
@@ -725,10 +725,10 @@ public class MapleInventoryManipulator {
             } else if(ItemConstants.isNewYearCardEtc(itemId)) {
                 if(itemId == 4300000) {
                     NewYearCardRecord.removeAllNewYearCard(true, chr);
-                    c.getAbstractPlayerInteraction().removeAll(4300000);
+                    //c.getAbstractPlayerInteraction().removeAll(4300000);
                 } else {
                     NewYearCardRecord.removeAllNewYearCard(false, chr);
-                    c.getAbstractPlayerInteraction().removeAll(4301000);
+                    //c.getAbstractPlayerInteraction().removeAll(4301000);
                 }
             }
             

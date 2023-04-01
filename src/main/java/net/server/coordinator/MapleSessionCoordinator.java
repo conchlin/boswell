@@ -638,6 +638,6 @@ public class MapleSessionCoordinator {
             }
         }
         
-        c.getAbstractPlayerInteraction().npcTalk(2140000, str);
+        //c.getAbstractPlayerInteraction().npcTalk(2140000, str);
     }
 }

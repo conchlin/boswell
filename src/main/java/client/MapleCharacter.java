@@ -34,6 +34,8 @@ import network.packet.*;
 import network.packet.context.*;
 import network.packet.field.CField;
 import network.packet.field.MonsterCarnivalPacket;
+import script.ScriptManager;
+import script.ScriptType;
 import server.cashshop.CashShop;
 import client.autoban.AutobanFactory;
 import client.autoban.AutobanManager;
@@ -56,9 +58,6 @@ import net.server.guild.MapleGuild;
 import net.server.guild.MapleGuildCharacter;
 import net.server.world.*;
 import org.apache.mina.util.ConcurrentHashSet;
-import scripting.AbstractPlayerInteraction;
-import scripting.event.EventInstanceManager;
-import scripting.item.ItemScriptManager;
 import server.*;
 import server.MapleItemInformationProvider.ScriptedItem;
 import server.achievements.WorldTour;
@@ -152,7 +151,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     private AtomicInteger chair = new AtomicInteger(-1);
     private int merchantmeso;
     private BuddyList buddylist;
-    private EventInstanceManager eventInstance = null;
+    //private EventInstanceManager eventInstance = null;
     private MapleHiredMerchant hiredMerchant = null;
     private MapleClient client;
     private BossQuest bossQuest;
@@ -526,14 +525,14 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     }
 
     public boolean hasJustMarried() {
-        EventInstanceManager eim = getEventInstance();
+        /*EventInstanceManager eim = getEventInstance();
         if (eim != null) {
             String prop = eim.getProperty("groomId");
 
             if (prop != null) {
                 return (Integer.parseInt(prop) == id || eim.getIntProperty("brideId") == id) && (mapid == 680000110 || mapid == 680000210);
             }
-        }
+        }*/
 
         return false;
     }
@@ -1151,10 +1150,11 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 
     public MapleMap getWarpMap(int map) {
         MapleMap warpMap;
-        EventInstanceManager eim = getEventInstance();
-        if (eim != null) {
-            warpMap = eim.getMapInstance(map);
-        } else if (this.getMonsterCarnival() != null && this.getMonsterCarnival().getEventMap().getId() == map) {
+        //EventInstanceManager eim = getEventInstance();
+        //if (eim != null) {
+        //    warpMap = eim.getMapInstance(map);
+        //}
+        if (this.getMonsterCarnival() != null && this.getMonsterCarnival().getEventMap().getId() == map) {
             warpMap = this.getMonsterCarnival().getEventMap();
         } else {
             warpMap = client.getChannelServer().getMapFactory().getMap(map);
@@ -1167,19 +1167,19 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         newWarpMap = map;
     }
 
-    private void eventChangedMap(int map) {
-        EventInstanceManager eim = getEventInstance();
-        if (eim != null) {
-            eim.changedMap(this, map);
-        }
-    }
+    //private void eventChangedMap(int map) {
+    //    EventInstanceManager eim = getEventInstance();
+    //    if (eim != null) {
+    //        eim.changedMap(this, map);
+    //    }
+    //}
 
-    private void eventAfterChangedMap(int map) {
-        EventInstanceManager eim = getEventInstance();
-        if (eim != null) {
-            eim.afterChangedMap(this, map);
-        }
-    }
+    //private void eventAfterChangedMap(int map) {
+    //    EventInstanceManager eim = getEventInstance();
+    //    if (eim != null) {
+    //        eim.afterChangedMap(this, map);
+    //    }
+    //}
 
     public boolean canRecoverLastBanish() {
         return System.currentTimeMillis() - this.banishTime < 5 * 60 * 1000;
@@ -1219,52 +1219,52 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 
     public void changeMap(int map) {
         MapleMap warpMap;
-        EventInstanceManager eim = getEventInstance();
+        //EventInstanceManager eim = getEventInstance();
 
-        if (eim != null) {
-            warpMap = eim.getMapInstance(map);
-        } else {
+        //if (eim != null) {
+        //    warpMap = eim.getMapInstance(map);
+        //} else {
             warpMap = client.getChannelServer().getMapFactory().getMap(map);
-        }
+        //}
 
         changeMap(warpMap, warpMap.getRandomPlayerSpawnpoint());
     }
 
     public void changeMap(int map, int portal) {
         MapleMap warpMap;
-        EventInstanceManager eim = getEventInstance();
+        //EventInstanceManager eim = getEventInstance();
 
-        if (eim != null) {
-            warpMap = eim.getMapInstance(map);
-        } else {
+        //if (eim != null) {
+        //    warpMap = eim.getMapInstance(map);
+        //} else {
             warpMap = client.getChannelServer().getMapFactory().getMap(map);
-        }
+        //}
 
         changeMap(warpMap, warpMap.getPortal(portal));
     }
 
     public void changeMap(int map, String portal) {
         MapleMap warpMap;
-        EventInstanceManager eim = getEventInstance();
+        //EventInstanceManager eim = getEventInstance();
 
-        if (eim != null) {
-            warpMap = eim.getMapInstance(map);
-        } else {
+        //if (eim != null) {
+        //    warpMap = eim.getMapInstance(map);
+        //} else {
             warpMap = client.getChannelServer().getMapFactory().getMap(map);
-        }
+        //}
 
         changeMap(warpMap, warpMap.getPortal(portal));
     }
 
     public void changeMap(int map, MaplePortal portal) {
         MapleMap warpMap;
-        EventInstanceManager eim = getEventInstance();
+        //EventInstanceManager eim = getEventInstance();
 
-        if (eim != null) {
-            warpMap = eim.getMapInstance(map);
-        } else {
+        //if (eim != null) {
+        //    warpMap = eim.getMapInstance(map);
+        //} else {
             warpMap = client.getChannelServer().getMapFactory().getMap(map);
-        }
+        //}
 
         changeMap(warpMap, portal);
     }
@@ -1280,7 +1280,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     public void changeMap(final MapleMap target, final MaplePortal pto) {
         canWarpCounter++;
 
-        eventChangedMap(target.getId());    // player can be dropped from an event here, hence the new warping target.
+        //eventChangedMap(target.getId());    // player can be dropped from an event here, hence the new warping target.
         MapleMap to = getWarpMap(target.getId());
         changeMapInternal(to, pto.getPosition(), CStage.Packet.onSetField(this, to.getId(), pto.getId(), false));
         canWarpMap = false;
@@ -1290,13 +1290,13 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
             canWarpMap = true;
         }
 
-        eventAfterChangedMap(this.getMapId());
+        //eventAfterChangedMap(this.getMapId());
     }
 
     public void changeMap(final MapleMap target, final Point pos) {
         canWarpCounter++;
 
-        eventChangedMap(target.getId());
+        //eventChangedMap(target.getId());
         MapleMap to = getWarpMap(target.getId());
         changeMapInternal(to, pos, CStage.Packet.onSetField(this, to.getId(), 0x80, true, pos));
         canWarpMap = false;
@@ -1306,28 +1306,28 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
             canWarpMap = true;
         }
 
-        eventAfterChangedMap(this.getMapId());
+        //eventAfterChangedMap(this.getMapId());
     }
 
     public void forceChangeMap(final MapleMap target, final MaplePortal pto) {
         // will actually enter the map given as parameter, regardless of being an eventmap or whatnot
 
         canWarpCounter++;
-        eventChangedMap(999999999);
+        //eventChangedMap(999999999);
 
-        EventInstanceManager mapEim = target.getEventInstance();
-        if (mapEim != null) {
-            EventInstanceManager playerEim = this.getEventInstance();
-            if (playerEim != null) {
-                playerEim.exitPlayer(this);
-                if (playerEim.getPlayerCount() == 0) {
-                    playerEim.dispose();
-                }
-            }
+        //EventInstanceManager mapEim = target.getEventInstance();
+        //if (mapEim != null) {
+        //    EventInstanceManager playerEim = this.getEventInstance();
+        //    if (playerEim != null) {
+        //        playerEim.exitPlayer(this);
+        //        if (playerEim.getPlayerCount() == 0) {
+        //            playerEim.dispose();
+        //        }
+        //    }
 
-            // thanks Thora for finding an issue with players not being actually warped into the target event map (rather sent to the event starting map)
-            mapEim.registerPlayer(this, false);
-        }
+        //    // thanks Thora for finding an issue with players not being actually warped into the target event map (rather sent to the event starting map)
+        //    mapEim.registerPlayer(this, false);
+        //}
 
         MapleMap to = target; // warps directly to the target intead of the target's map id, this allows GMs to patrol players inside instances.
         changeMapInternal(to, pto.getPosition(), CStage.Packet.onSetField(this, to.getId(), pto.getId(), false));
@@ -1338,7 +1338,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
             canWarpMap = true;
         }
 
-        eventAfterChangedMap(this.getMapId());
+        //eventAfterChangedMap(this.getMapId());
     }
 
     public List<Integer> getLastVisitedMapids() {
@@ -1513,10 +1513,10 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
             changeMap(temp);
         } else {
             // if this event map has a gate already opened, render it
-            EventInstanceManager eim = getEventInstance();
-            if (eim != null) {
-                eim.recoverOpenedGate(this, map.getId());
-            }
+            //EventInstanceManager eim = getEventInstance();
+            //if (eim != null) {
+            //    eim.recoverOpenedGate(this, map.getId());
+            //}
 
             // if this map has obstacle components moving, make it do so for this client
             announce(MaplePacketCreator.environmentMoveList(map.getEnvironment().entrySet()));
@@ -1812,8 +1812,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
             }
 
             if (itemScript != null) {
-                ItemScriptManager ism = ItemScriptManager.getInstance();
-                ism.runItemScript(client, itemScript);
+                ScriptManager.Companion.runScript(client, mapitem.getItemId(), itemScript.getScript(), ScriptType.Item);
             }
         }
         client.announce(WvsContext.Packet.enableActions());
@@ -1823,13 +1822,13 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         return inventory[ItemConstants.getInventoryType(itemid).ordinal()].countById(itemid);
     }
 
-    public boolean canHold(int itemid) {
+    /*public boolean canHold(int itemid) {
         return canHold(itemid, 1);
-    }
+    }*/
 
-    public boolean canHold(int itemid, int quantity) {
+/*    public boolean canHold(int itemid, int quantity) {
         return client.getAbstractPlayerInteraction().canHold(itemid, quantity);
-    }
+    }*/
 
     public boolean canHoldUniques(List<Integer> itemids) {
         for (Integer itemid : itemids) {
@@ -3185,9 +3184,9 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         return client;
     }
 
-    public AbstractPlayerInteraction getAbstractPlayerInteraction() {
+    /*public AbstractPlayerInteraction getAbstractPlayerInteraction() {
         return client.getAbstractPlayerInteraction();
-    }
+    }*/
 
     public final List<MapleQuestStatus> getCompletedQuests() {
         synchronized (quests) {
@@ -3263,16 +3262,16 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         bossRepeats = repeats;
     }
 
-    public EventInstanceManager getEventInstance() {
+/*    public EventInstanceManager getEventInstance() {
         evtLock.lock();
         try {
             return eventInstance;
         } finally {
             evtLock.unlock();
         }
-    }
+    }*/
 
-    public MapleMarriage getMarriageInstance() {
+/*    public MapleMarriage getMarriageInstance() {
         EventInstanceManager eim = getEventInstance();
 
         if (eim != null || !(eim instanceof MapleMarriage)) {
@@ -3280,7 +3279,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         } else {
             return null;
         }
-    }
+    }*/
 
     public void resetExcluded(int petId) {
         chrLock.lock();
@@ -5832,10 +5831,10 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         //dispelDebuffs();
         lastDeathtime = Server.getInstance().getCurrentTime();
 
-        EventInstanceManager eim = getEventInstance();
+        /*EventInstanceManager eim = getEventInstance();
         if (eim != null) {
             eim.playerKilled(this);
-        }
+        }*/
         int[] charmID = {5130000, 4031283, 4140903};
         int possesed = 0;
         int i;
@@ -5924,13 +5923,9 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     }
 
     public void respawn(int returnMap) {
-        respawn(null, returnMap);    // unspecified EIM, don't force EIM unregister in this case
-    }
-
-    public void respawn(EventInstanceManager eim, int returnMap) {
-        if (eim != null) {
+        /*if (eim != null) {
             eim.unregisterPlayer(this);    // some event scripts uses this...
-        }
+        }*/
         changeMap(returnMap);
 
         cancelAllBuffs(false);  // thanks Oblivium91 for finding out players still could revive in area and take damage before returning to town
@@ -7073,14 +7068,14 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         energybar = set;
     }
 
-    public void setEventInstance(EventInstanceManager eventInstance) {
+    /*public void setEventInstance(EventInstanceManager eventInstance) {
         evtLock.lock();
         try {
             this.eventInstance = eventInstance;
         } finally {
             evtLock.unlock();
         }
-    }
+    }*/
 
     public void setExp(int amount) {
         this.exp.set(amount);
@@ -9148,11 +9143,11 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         cancelFishingTask();
 
         fishing = TimerManager.getInstance().register(() -> {
-            if (!getAbstractPlayerInteraction().hasItem(2300000)) { // bait
+            /*if (!getAbstractPlayerInteraction().hasItem(2300000)) { // bait
                 getClient().announceHint("It appears you have run out of the correct bait.", 500);
                 cancelFishingTask();
                 return;
-            }
+            }*/
             MapleInventoryManipulator.removeById(getClient(), MapleInventoryType.USE, 2300000, 1, false, false);
             int randVal = fish.getInstance().getFishingReward();
 

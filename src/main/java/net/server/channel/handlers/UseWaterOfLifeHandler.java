@@ -28,7 +28,7 @@ import tools.data.input.SeekableLittleEndianAccessor;
 public final class UseWaterOfLifeHandler extends AbstractMaplePacketHandler {
 
     @Override
-    public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
-        c.getAbstractPlayerInteraction().openNpc(1032102, "waterOfLife");
+    public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+        //c.getAbstractPlayerInteraction().openNpc(1032102, "waterOfLife");
     }
 }

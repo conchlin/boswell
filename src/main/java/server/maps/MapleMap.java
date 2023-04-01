@@ -38,22 +38,8 @@ import constants.ServerConstants;
 
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Random;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
@@ -75,7 +61,8 @@ import network.packet.*;
 import network.packet.context.BroadcastMsgPacket;
 import network.packet.field.*;
 import network.packet.context.WvsContext;
-import scripting.map.MapScriptManager;
+import script.ScriptManager;
+import script.ScriptType;
 import server.MapleItemInformationProvider;
 import server.MaplePortal;
 import server.MapleStatEffect;
@@ -88,7 +75,6 @@ import server.events.gm.MapleOxQuiz;
 import server.events.gm.MapleSnowball;
 import server.life.*;
 import server.life.MapleLifeFactory.selfDestruction;
-import scripting.event.EventInstanceManager;
 import server.partyquest.GuardianSpawnPoint;
 import server.partyquest.MapleCarnivalFactory;
 import server.partyquest.MapleCarnivalFactory.MCSkill;
@@ -134,7 +120,7 @@ public class MapleMap {
     private boolean clock;
     private boolean boat;
     private boolean docked = false;
-    private EventInstanceManager event = null;
+    /*private EventInstanceManager event = null;*/
     private String mapName;
     private String streetName;
     private BlowWeather mapEffect = null;
@@ -205,13 +191,13 @@ public class MapleMap {
         objectWLock = objectLock.writeLock();
     }
 
-    public void setEventInstance(EventInstanceManager eim) {
+    /*public void setEventInstance(EventInstanceManager eim) {
         event = eim;
-    }
+    }*/
 
-    public EventInstanceManager getEventInstance() {
+    /*public EventInstanceManager getEventInstance() {
         return event;
-    }
+    }*/
 
     public Rectangle getMapArea() {
         return mapArea;
@@ -1789,9 +1775,9 @@ public class MapleMap {
 
     public void spawnRevives(final MapleMonster monster) {
         monster.setMap(this);
-        if (getEventInstance() != null) {
+        /*if (getEventInstance() != null) {
             getEventInstance().registerMonster(monster);
-        }
+        }*/
 
         spawnAndAddRangedMapObject(monster, c -> c.announce(MaplePacketCreator.spawnMonster(monster, MobSpawnType.REVIVED.getType())));
         updateMonsterController(monster);
@@ -1888,9 +1874,9 @@ public class MapleMap {
         monster.changeDifficulty(difficulty, isPq);
 
         monster.setMap(this);
-        if (getEventInstance() != null) {
+        /*if (getEventInstance() != null) {
             getEventInstance().registerMonster(monster);
-        }
+        }*/
 
         spawnAndAddRangedMapObject(monster, c -> c.announce(MaplePacketCreator.spawnMonster(monster, MobSpawnType.REGEN.getType())), null);
         updateMonsterController(monster);
@@ -1948,9 +1934,9 @@ public class MapleMap {
             spos.y--;
         }
 
-        if (getEventInstance() != null) {
+        /*if (getEventInstance() != null) {
             getEventInstance().registerMonster(monster);
-        }
+        }*/
 
         monster.setPosition(spos);
         monster.setSpawnEffect(effect);
@@ -2329,16 +2315,18 @@ public class MapleMap {
                 startItemMonitor();
             }
 
-            if (onFirstUserEnter.length() != 0 && !chr.hasEntered(onFirstUserEnter, mapid) && MapScriptManager.getInstance().scriptExists(onFirstUserEnter, true)) {
+            if (!Objects.equals(onFirstUserEnter, "0") && !chr.hasEntered(onFirstUserEnter, mapid)) {
+                // if a field needs a script component the onFirstUserEnter value would not be 0
                 chr.enteredScript(onFirstUserEnter, mapid);
-                MapScriptManager.getInstance().runMapScript(chr.getClient(), onFirstUserEnter, true);
+                ScriptManager.Companion.runScript(chr.getClient(), this.mapid, onFirstUserEnter, ScriptType.FirstEnterField);
             }
         }
-        if (onUserEnter.length() != 0) {
+        if (!Objects.equals(onUserEnter, "0")) {
+            // if a field needs a script component the onUserEnter value would not be 0
             if (onUserEnter.equals("cygnusTest") && (mapid < 913040000 || mapid > 913040006)) {
                 chr.saveLocation("INTRO");
             }
-            MapScriptManager.getInstance().runMapScript(chr.getClient(), onUserEnter, false);
+            ScriptManager.Companion.runScript(chr.getClient(), this.mapid, this.getOnUserEnter(), ScriptType.UserEnterField);
         }
         if (FieldLimit.CANNOTUSEMOUNTS.check(fieldLimit) && chr.getBuffedValue(MapleBuffStat.MONSTER_RIDING) != null) {
             chr.cancelEffectFromBuffStat(MapleBuffStat.MONSTER_RIDING);
@@ -2455,9 +2443,9 @@ public class MapleMap {
                     (byte) 0xE7, 3, (byte) 0xE7, 3, 0x78, (byte) 0x8C};
             chr.getClient().announce(WvsContext.Packet.onForcedStatSet(aranStats));
         }
-        if (chr.getEventInstance() != null && chr.getEventInstance().isTimerStarted()) {
+        /*if (chr.getEventInstance() != null && chr.getEventInstance().isTimerStarted()) {
             chr.getClient().announce(CField.Packet.onClock(true, (int) (chr.getEventInstance().getTimeLeft() / 1000)));
-        }
+        }*/
         if (chr.getFitness() != null && chr.getFitness().isTimerStarted()) {
             chr.getClient().announce(CField.Packet.onClock(true, (int) (chr.getFitness().getTimeLeft() / 1000)));
         }
@@ -4199,7 +4187,7 @@ public class MapleMap {
 
         clearMapObjects();
 
-        event = null;
+        /*event = null;*/
         footholds = null;
         portals.clear();
         mapEffect = null;

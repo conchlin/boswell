@@ -39,7 +39,8 @@ import tools.StringUtil;
 
 public class MapleLifeFactory {
 
-    private static MapleDataProvider data = MapleDataProviderFactory.getDataProvider(new File(System.getProperty("wzpath") + "/Mob.wz"));
+    private static MapleDataProvider mobData = MapleDataProviderFactory.getDataProvider(new File(System.getProperty("wzpath") + "/Mob.wz"));
+    private static MapleDataProvider npcData = MapleDataProviderFactory.getDataProvider(new File(System.getProperty("wzpath") + "/Npc.wz"));
     private final static MapleDataProvider stringDataWZ = MapleDataProviderFactory.getDataProvider(new File(System.getProperty("wzpath") + "/String.wz"));
     private static MapleData mobStringData = stringDataWZ.getData("Mob.img");
     private static MapleData npcStringData = stringDataWZ.getData("Npc.img");
@@ -47,6 +48,7 @@ public class MapleLifeFactory {
 
     public static AbstractLoadedMapleLife getLife(int id, String type) {
         if (type.equalsIgnoreCase("n")) {
+
             return getNPC(id);
         } else if (type.equalsIgnoreCase("m")) {
             return getMonster(id);
@@ -82,7 +84,7 @@ public class MapleLifeFactory {
     }
     
     private static Pair<MapleMonsterStats, List<MobAttackInfoHolder>> getMonsterStats(int mid) {
-        MapleData monsterData = data.getData(StringUtil.getLeftPaddedStr(Integer.toString(mid) + ".img", '0', 11));
+        MapleData monsterData = mobData.getData(StringUtil.getLeftPaddedStr(mid + ".img", '0', 11));
         if (monsterData == null) {
             return null;
         }
@@ -245,7 +247,7 @@ public class MapleLifeFactory {
         try {
             MapleMonsterStats stats = monsterStats.get(Integer.valueOf(mid));
             if (stats == null) {
-                MapleData monsterData = data.getData(StringUtil.getLeftPaddedStr(Integer.toString(mid) + ".img", '0', 11));
+                MapleData monsterData = mobData.getData(StringUtil.getLeftPaddedStr(mid + ".img", '0', 11));
                 if (monsterData == null) {
                     return -1;
                 }
@@ -269,7 +271,27 @@ public class MapleLifeFactory {
     }
 
     public static MapleNPC getNPC(int nid) {
-        return new MapleNPC(nid, new MapleNPCStats(MapleDataTool.getString(nid + "/name", npcStringData, "MISSINGNO")));
+        return new MapleNPC(nid, getTemplateName(nid), getScriptName(nid));
+    }
+
+    public static String getTemplateName(int nid) {
+        return MapleDataTool.getString(nid + "/name", npcStringData, "MISSINGNO");
+    }
+
+    /**
+     * Travel the Npc.wz xml tree and determine whether a NPC has
+     * a pre-determined script name
+     *
+     * @param nid templateId
+     * @return script name
+     */
+    public static String getScriptName(int nid) {
+        // Npc.wz/info/script/0/script
+        MapleData npcDataById = npcData.getData(StringUtil.getLeftPaddedStr(nid + ".img", '0', 11));
+        MapleData npcInfo = npcDataById.getChildByPath("info");
+        MapleData npcScript = npcInfo.getChildByPath("script");
+
+        return npcScript != null ? MapleDataTool.getString("0/script", npcScript, ""): "";
     }
     
     public static String getNPCDefaultTalk(int nid) {
