@@ -76,6 +76,7 @@ class ScriptManager {
 
                 if (!exists) {
                     handleMissingScript(client, objectId, name, st)
+                    return // so that we do not try to eval a null script
                 } else {
                     script = scriptFile
                 }
