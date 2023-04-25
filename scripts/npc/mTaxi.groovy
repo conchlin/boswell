@@ -1,12 +1,11 @@
 /*
-    
     Npc Name: VIP Cab            
     Npc ID: 1032005
     Location Name: Ellinia/Lith Harbor
     Location ID: 101000000
             
-    @Author: Auto Generated
-    @Created: 2023-03-03 
+    @Author: Connor
+    @Created: 2023-04-09
 */
 
 def beginner = false

@@ -1,15 +1,15 @@
 /*
     Npc Name: Puro
-    Npc ID: 1200004
-    Location Name: Lith Harbor
-    Location ID: 104000000
+    Npc ID: 1200003
+    Location Name: Dangerous Forest
+    Location ID: 140020300
             
     @Author: Connor
-    @Created: 2023-04-20
+    @Created: 2023-04-20 
 */
 
-def ret = npc.askYesNo("Are you thinking about leaving Victoria Island and heading to our town? If you board " +
-        "this ship, I can take you from #bLith Harbor#k to #bRien#k and back. Would you like to go to #bRien#k?" +
+def ret = npc.askYesNo("Are you thinking about leaving Rien and heading back? If you board this ship, I can " +
+        "take you from #bLith Harbor#k to #bRien#k and back. Would you like to go to #bVinctoria Island#k?" +
         "\r\n\r\n The trip costs #b1000 Mesos#k")
 
 if (ret == 1) {
@@ -18,7 +18,7 @@ if (ret == 1) {
                 "enough. You must pay the fee or I can't let you get on...")
     } else {
         user.gainMeso(-1000)
-        user.changeMap(140020300, 0)
+        user.changeMap(104000000, 26)
     }
 } else {
     npc.say("If you're not interested, then oh well...")
