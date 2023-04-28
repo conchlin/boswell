@@ -15,6 +15,8 @@ all pre-existing javascript scripts are no longer functional and need to be rewr
 If you would like to use the old odinms scripting style you can find that 
 in the `odinms-scripting` branch or in the project Releases.
 
+Documentation on how to write these new scripts can be found [here](https://github.com/conchlin/boswell/tree/main/scripts).
+
 -------------------------------------------------------------------
 
 ## Requirements/Dependencies
