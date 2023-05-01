@@ -29,7 +29,7 @@ import client.MapleCharacter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import net.database.Statements;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 
 public class NonCheaterCommand extends Command {
     {

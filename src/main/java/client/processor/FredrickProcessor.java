@@ -43,7 +43,7 @@ import net.server.world.World;
 import network.packet.StoreBank;
 import server.MapleItemInformationProvider;
 import server.maps.MapleHiredMerchant;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 import tools.FilePrinter;
 import tools.MaplePacketCreator;
 import tools.Pair;

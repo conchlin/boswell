@@ -28,7 +28,7 @@ import java.sql.SQLException;
 
 import net.database.Statements;
 import tools.Pair;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 
 /**
  *

@@ -32,7 +32,7 @@ import net.database.Statements;
 import server.movement.AbsoluteLifeMovement;
 import server.movement.LifeMovement;
 import server.movement.LifeMovementFragment;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 import tools.Pair;
 
 import java.awt.*;

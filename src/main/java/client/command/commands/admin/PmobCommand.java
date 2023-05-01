@@ -37,7 +37,7 @@ import client.MapleClient;
 import java.awt.Point;
 
 import server.life.MapleMonster;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 
 public class PmobCommand extends Command {
     {

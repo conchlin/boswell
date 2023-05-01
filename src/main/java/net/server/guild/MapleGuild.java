@@ -35,7 +35,7 @@ import net.server.coordinator.MapleInviteCoordinator.InviteResult;
 import net.server.coordinator.MapleInviteCoordinator.InviteType;
 import net.server.coordinator.MapleMatchCheckerCoordinator;
 import net.database.Statements;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 import network.packet.context.WvsContext;
 import network.packet.field.CField;
 import network.packet.UserRemote;

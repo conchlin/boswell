@@ -61,7 +61,7 @@ import server.maps.NostalgicMap;
 import server.quest.MapleQuest;
 import server.skills.SkillFactory;
 import tools.AutoJCE;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 import tools.Pair;
 
 import java.io.FileInputStream;
@@ -694,8 +694,7 @@ public class Server {
 
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 
-        DatabaseConnection.initialize();
-
+        // by calling getConnection it will initialize the database
         try (Connection con = DatabaseConnection.getConnection()) {
             Statements.Update("accounts").set("loggedin", 0).execute(con);
             Statements.Update("characters").set("hasmerchant", false).execute(con);

@@ -34,7 +34,7 @@ import java.util.Map;
 
 import enums.FriendResultType;
 import net.server.PlayerStorage;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 import network.packet.context.FriendPacket;
 import tools.MaplePacketCreator;
 

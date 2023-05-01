@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import net.server.audit.locks.MonitoredLockType;
 import net.server.audit.locks.factory.MonitoredReentrantLockFactory;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 import tools.Pair;
 
 /**

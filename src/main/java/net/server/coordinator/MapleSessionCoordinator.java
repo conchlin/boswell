@@ -27,7 +27,7 @@ import net.server.Server;
 import net.server.audit.locks.MonitoredLockType;
 import net.server.audit.locks.factory.MonitoredReentrantLockFactory;
 import org.apache.mina.core.session.IoSession;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

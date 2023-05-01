@@ -24,7 +24,7 @@ package net.server.handlers.login;
 import client.MapleClient;
 import enums.LoginResultType;
 import net.MaplePacketHandler;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 import net.server.Server;
 import net.database.Statements;
 import network.packet.CLogin;

@@ -27,7 +27,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 
 /**
  *

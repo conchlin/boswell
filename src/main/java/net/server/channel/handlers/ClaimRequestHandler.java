@@ -28,7 +28,7 @@ import java.sql.SQLException;
 import enums.BroadcastMessageType;
 import net.AbstractMaplePacketHandler;
 import net.server.Server;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 import network.packet.context.BroadcastMsgPacket;
 import network.packet.context.WvsContext;
 import tools.data.input.SeekableLittleEndianAccessor;

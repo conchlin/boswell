@@ -27,7 +27,7 @@ import java.sql.SQLException;
 
 import enums.CashItemResultType;
 import net.AbstractMaplePacketHandler;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 import network.packet.CCashShop;
 import tools.data.input.SeekableLittleEndianAccessor;
 import client.MapleClient;

@@ -28,7 +28,7 @@ import client.listeners.MobKilledEvent;
 import client.listeners.MobKilledListener;
 import constants.*;
 import enums.*;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 import net.database.Statements;
 import network.packet.*;
 import network.packet.context.*;

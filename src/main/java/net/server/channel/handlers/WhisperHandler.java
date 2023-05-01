@@ -29,7 +29,7 @@ import constants.ServerConstants;
 import enums.WhisperResultType;
 import net.AbstractMaplePacketHandler;
 import net.server.world.World;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 import network.packet.field.CField;
 import tools.FilePrinter;
 import tools.LogHelper;

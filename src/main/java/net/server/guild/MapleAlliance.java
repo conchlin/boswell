@@ -38,7 +38,7 @@ import net.server.coordinator.MapleInviteCoordinator.InviteType;
 import net.server.world.MapleParty;
 import net.server.world.MaplePartyCharacter;
 import net.database.Statements;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 import network.packet.context.AlliancePacket;
 import tools.Pair;
 

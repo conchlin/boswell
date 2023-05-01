@@ -40,7 +40,7 @@ import provider.MapleDataProviderFactory;
 import provider.MapleDataTool;
 import server.MapleItemInformationProvider;
 import server.skills.MobSkill;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 import tools.Pair;
 import tools.Randomizer;
 

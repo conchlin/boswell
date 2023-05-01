@@ -27,7 +27,7 @@ import constants.ServerConstants;
 import net.server.Server;
 import net.server.audit.locks.MonitoredLockType;
 import net.server.audit.locks.factory.MonitoredReentrantLockFactory;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 import tools.Pair;
 
 import java.sql.Connection;

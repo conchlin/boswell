@@ -30,7 +30,7 @@ import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
 import net.server.Server;
 import server.TimerManager;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 import tools.MaplePacketCreator;
 
 /**

@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Set;
 
 import enums.ShopResultType;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 import network.packet.ShopPacket;
 
 /**

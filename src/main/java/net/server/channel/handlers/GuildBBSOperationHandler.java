@@ -31,7 +31,7 @@ import java.sql.SQLException;
 import enums.GuildResultType;
 import net.AbstractMaplePacketHandler;
 import net.database.Statements;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 import network.packet.context.GuildPacket;
 import tools.data.input.SeekableLittleEndianAccessor;
 

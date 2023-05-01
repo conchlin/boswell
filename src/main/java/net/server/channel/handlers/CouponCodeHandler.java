@@ -38,7 +38,7 @@ import java.util.Map.Entry;
 import net.AbstractMaplePacketHandler;
 import net.server.Server;
 import server.MapleItemInformationProvider;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 import tools.FilePrinter;
 import tools.Pair;
 import tools.data.input.SeekableLittleEndianAccessor;

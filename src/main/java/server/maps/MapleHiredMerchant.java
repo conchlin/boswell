@@ -47,7 +47,7 @@ import network.packet.EmployeePool;
 import network.packet.context.BroadcastMsgPacket;
 import network.packet.context.WvsContext;
 import server.MapleItemInformationProvider;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 import tools.MaplePacketCreator;
 import tools.Pair;
 import net.server.audit.locks.MonitoredLockType;

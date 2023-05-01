@@ -32,7 +32,7 @@ import provider.MapleData;
 import provider.MapleDataProvider;
 import provider.MapleDataProviderFactory;
 import provider.MapleDataTool;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 import tools.Pair;
 
 import java.io.File;

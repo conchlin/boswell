@@ -16,7 +16,7 @@ import provider.MapleData;
 import provider.MapleDataProvider;
 import provider.MapleDataProviderFactory;
 import provider.MapleDataTool;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 
 public class CashItemFactory {
 

@@ -31,7 +31,7 @@ import net.server.Server;
 import network.packet.context.BroadcastMsgPacket;
 import network.packet.field.CField;
 import server.TimerManager;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 import tools.MaplePacketCreator;
 
 import java.sql.Connection;

@@ -46,7 +46,7 @@ import java.util.concurrent.locks.Lock;
 import com.google.gson.JsonObject;
 import enums.BroadcastMessageType;
 import enums.PartyResultType;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 import net.database.Statements;
 import network.packet.CCashShop;
 import network.packet.CLogin;

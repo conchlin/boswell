@@ -28,7 +28,7 @@ import client.command.Command;
 import client.MapleClient;
 import server.MapleItemInformationProvider;
 import server.life.MapleMonsterInformationProvider;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 import tools.Pair;
 
 import java.sql.Connection;

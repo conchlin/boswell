@@ -39,7 +39,7 @@ import network.packet.context.WvsContext;
 import server.MTSItemInfo;
 import client.inventory.manipulator.MapleInventoryManipulator;
 import server.MapleItemInformationProvider;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 import client.MapleCharacter;

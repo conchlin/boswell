@@ -89,7 +89,7 @@ import net.server.channel.CharacterIdChannelPair;
 import net.server.guild.MapleGuild;
 import net.server.guild.MapleGuildCharacter;
 import net.server.guild.MapleGuildSummary;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 import tools.MaplePacketCreator;
 import tools.Pair;
 import net.server.audit.locks.MonitoredLockType;

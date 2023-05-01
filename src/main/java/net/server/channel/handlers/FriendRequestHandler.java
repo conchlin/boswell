@@ -38,7 +38,7 @@ import enums.BroadcastMessageType;
 import enums.FriendResultType;
 import net.AbstractMaplePacketHandler;
 import net.server.world.World;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 import network.packet.context.BroadcastMsgPacket;
 import network.packet.context.FriendPacket;
 import tools.data.input.SeekableLittleEndianAccessor;

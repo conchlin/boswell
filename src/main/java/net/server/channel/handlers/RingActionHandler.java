@@ -39,7 +39,7 @@ import net.server.world.World;
 import net.server.channel.Channel;
 import network.packet.context.WvsContext;
 import server.MapleItemInformationProvider;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 import tools.Pair;
 import tools.data.input.SeekableLittleEndianAccessor;
 import tools.packets.Wedding;

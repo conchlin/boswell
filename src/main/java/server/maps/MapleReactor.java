@@ -32,7 +32,7 @@ import java.util.*;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.locks.Lock;
 
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 import net.server.audit.locks.factory.MonitoredReentrantLockFactory;
 
 import network.packet.ReactorPool;

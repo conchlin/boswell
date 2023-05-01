@@ -47,7 +47,7 @@ import network.packet.FuncKeyMappedMan;
 import network.packet.NpcPool;
 import network.packet.context.*;
 import server.skills.SkillFactory;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 import client.BuddyList;

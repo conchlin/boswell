@@ -36,7 +36,7 @@ import client.command.Command;
 import client.MapleCharacter;
 import client.MapleClient;
 import java.awt.Point;
-import net.database.DatabaseConnection;
+import database.DatabaseConnection;
 import tools.Pair;
 
 public class PmobRemoveCommand extends Command {
