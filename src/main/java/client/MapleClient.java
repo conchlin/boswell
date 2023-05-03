@@ -46,8 +46,7 @@ import java.util.concurrent.locks.Lock;
 import com.google.gson.JsonObject;
 import enums.BroadcastMessageType;
 import enums.PartyResultType;
-import database.DatabaseConnection;
-import net.database.Statements;
+import database.*;
 import network.packet.CCashShop;
 import network.packet.CLogin;
 import network.packet.UserLocal;
@@ -306,7 +305,7 @@ public class MapleClient {
         }
     }
 
-    // TODO: Recode to close statements...
+    // TODO: Recode to close new DatabaseStatements...
     private void loadMacsIfNescessary() throws SQLException {
         if (macs.isEmpty()) {
             try (Connection con = DatabaseConnection.getConnection();
@@ -328,7 +327,7 @@ public class MapleClient {
     public void banHWID() {
         try (Connection con = DatabaseConnection.getConnection()) {
             loadHWIDIfNescessary();
-            Statements.Insert.into("hwid_bans").add("hwid", hwid).execute(con);
+            DatabaseStatements.Insert.into("hwid_bans").add("hwid", hwid).execute(con);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -581,7 +580,7 @@ public class MapleClient {
             this.hwid = hwid.toString();
 
             try (Connection con = DatabaseConnection.getConnection()) {
-                Statements.Update("accounts").set("hwid", this.hwid).where("id", accId).execute(con);
+                new DatabaseStatements.Update("accounts").set("hwid", this.hwid).where("id", accId).execute(con);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -602,7 +601,7 @@ public class MapleClient {
             }
         }
         try (Connection con = DatabaseConnection.getConnection()) {
-            Statements.Update("accounts").set("macs", newMacData.toString()).where("id", accId).execute(con);
+            new DatabaseStatements.Update("accounts").set("macs", newMacData.toString()).where("id", accId).execute(con);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -682,7 +681,7 @@ public class MapleClient {
             if (state == LOGIN_LOGGEDIN) {
                 loggedIn = true;
             } else if (state == LOGIN_SERVER_TRANSITION) {
-                Statements.Update("accounts").set("loggedin", 0).where("id", getAccID()).execute(con);
+                new DatabaseStatements.Update("accounts").set("loggedin", 0).where("id", getAccID()).execute(con);
             } else {
                 loggedIn = false;
             }
@@ -1145,7 +1144,7 @@ public class MapleClient {
     public synchronized boolean gainCharacterSlot() {
         if (characterSlots < 15) {
             try (Connection con = DatabaseConnection.getConnection()) {
-                Statements.Update("accounts").set("characterslots", this.characterSlots + 1).where("id", accId).execute(con);
+                new DatabaseStatements.Update("accounts").set("characterslots", this.characterSlots + 1).where("id", accId).execute(con);
                 this.characterSlots += 1;
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -1179,7 +1178,7 @@ public class MapleClient {
     public void setGender(byte m) {
         this.gender = m;
         try (Connection con = DatabaseConnection.getConnection()) {
-            Statements.Update("accounts").set("gender", gender).where("id", accId).execute(con);
+            new DatabaseStatements.Update("accounts").set("gender", gender).where("id", accId).execute(con);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -1379,7 +1378,7 @@ public class MapleClient {
     public void setClearance(byte c) {
         this.clearance = c;
         try (Connection con = DatabaseConnection.getConnection()) {
-            Statements.Update("accounts").set("clearance", clearance).where("id", accId).execute(con);
+            new DatabaseStatements.Update("accounts").set("clearance", clearance).where("id", accId).execute(con);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -1405,7 +1404,7 @@ public class MapleClient {
     public void setTrophy(int t) {
         this.trophy = t;
         try (Connection con = DatabaseConnection.getConnection()) {
-            Statements.Update("accounts").set("trophy", trophy).where("id", accId).execute(con);
+            new DatabaseStatements.Update("accounts").set("trophy", trophy).where("id", accId).execute(con);
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -28,8 +28,7 @@ import client.listeners.MobKilledEvent;
 import client.listeners.MobKilledListener;
 import constants.*;
 import enums.*;
-import database.DatabaseConnection;
-import net.database.Statements;
+import database.*;
 import network.packet.*;
 import network.packet.context.*;
 import network.packet.field.CField;
@@ -596,7 +595,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         if (getClient().getChannel() != GameConstants.CHEATER_CHANNEL) this.getClient().changeChannel(GameConstants.CHEATER_CHANNEL);
         System.out.println("[CHEATING] " + this.name + ": " + reason);
         try (Connection con = DatabaseConnection.getConnection()) {
-            Statements.Update("accounts").set("cheater", true).set("banreason", reason).where("id", accountid).execute(con);
+            new DatabaseStatements.Update("accounts").set("cheater", true).set("banreason", reason).where("id", accountid).execute(con);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -605,7 +604,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     public void ban(String reason) {
         this.isbanned = true;
         try (Connection con = DatabaseConnection.getConnection()) {
-            Statements.Update("accounts").set("banned", true).set("banreason", reason).where("id", accountid).execute(con);
+            new DatabaseStatements.Update("accounts").set("banned", true).set("banreason", reason).where("id", accountid).execute(con);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -633,7 +632,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                 ps.setString(1, id);
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
-                        Statements.Update("accounts").set("banned", true).set("banreason", reason).where("id", rs.getInt(1)).execute(con);
+                        new DatabaseStatements.Update("accounts").set("banned", true).set("banreason", reason).where("id", rs.getInt(1)).execute(con);
                         ret = true;
                     }
                 }
@@ -1545,7 +1544,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
             skills.remove(skill);
             this.client.announce(WvsContext.Packet.onChangeSkillRecordResult(skill.getId(), newLevel, newMasterlevel, -1));
             try (Connection con = DatabaseConnection.getConnection()) {
-                Statements.Delete.from("skills").where("skillid", skill.getId()).where("characterid", id).execute(con);
+                DatabaseStatements.Delete.from("skills").where("skillid", skill.getId()).where("characterid", id).execute(con);
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -1882,7 +1881,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                 ps.setInt(1, guildId);
                 ps.execute();
             }
-            Statements.Delete.from("guilds").where("guildid", guildId).execute(con);
+            DatabaseStatements.Delete.from("guilds").where("guildid", guildId).execute(con);
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -1910,7 +1909,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                 ps.execute();
             }
 
-            Statements.Update("guilds").set("name", newName).where("guildid", guildId).execute(con);
+            new DatabaseStatements.Update("guilds").set("name", newName).where("guildid", guildId).execute(con);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -1975,19 +1974,19 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                 }
             }
 
-            Statements.Delete.from("buddies").where("characterid", cid).execute(con);
+            DatabaseStatements.Delete.from("buddies").where("characterid", cid).execute(con);
 
             try (PreparedStatement ps = con.prepareStatement("SELECT threadid FROM bbs_threads WHERE postercid = ?")) {
                 ps.setInt(1, cid);
 
                 try (ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
-                        Statements.Delete.from("bbs_replies").where("threadid", rs.getInt("threadid")).execute(con);
+                        DatabaseStatements.Delete.from("bbs_replies").where("threadid", rs.getInt("threadid")).execute(con);
                     }
                 }
             }
 
-            Statements.Delete.from("bbs_threads").where("postercid", cid).execute(con);
+            DatabaseStatements.Delete.from("bbs_threads").where("postercid", cid).execute(con);
 
             try (PreparedStatement ps = con.prepareStatement("SELECT id, guildid, guildrank, name, allianceRank FROM characters WHERE id = ? AND accountid = ?")) {
                 ps.setInt(1, cid);
@@ -1999,13 +1998,13 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                 }
             }
 
-            Statements.Delete.from("wish_lists").where("charid", cid).execute(con);
-            Statements.Delete.from("cooldowns").where("charid", cid).execute(con);
-            Statements.Delete.from("player_diseases").where("charid", cid).execute(con);
-            Statements.Delete.from("area_info").where("charid", cid).execute(con);
-            Statements.Delete.from("monster_book").where("charid", cid).execute(con);
-            Statements.Delete.from("characters").where("id", cid).execute(con);
-            Statements.Delete.from("fame_log").where("characterid_to", cid).execute(con);
+            DatabaseStatements.Delete.from("wish_lists").where("charid", cid).execute(con);
+            DatabaseStatements.Delete.from("cooldowns").where("charid", cid).execute(con);
+            DatabaseStatements.Delete.from("player_diseases").where("charid", cid).execute(con);
+            DatabaseStatements.Delete.from("area_info").where("charid", cid).execute(con);
+            DatabaseStatements.Delete.from("monster_book").where("charid", cid).execute(con);
+            DatabaseStatements.Delete.from("characters").where("id", cid).execute(con);
+            DatabaseStatements.Delete.from("fame_log").where("characterid_to", cid).execute(con);
 
             try (PreparedStatement ps = con.prepareStatement("SELECT inventoryitemid, petid FROM inventory_items WHERE characterid = ?")) {
                 ps.setInt(1, cid);
@@ -2019,13 +2018,13 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 
                             try (ResultSet rs2 = ps2.executeQuery()) {
                                 while (rs2.next()) {
-                                    Statements.Delete.from("rings").where("id", rs2.getInt("ringid")).execute(con);
+                                    DatabaseStatements.Delete.from("rings").where("id", rs2.getInt("ringid")).execute(con);
                                 }
                             }
                         }
 
-                        Statements.Delete.from("inventory_equipment").where("inventoryitemid", inventoryitemid).execute(con);
-                        Statements.Delete.from("pets").where("petid", rs.getInt("petid")).execute(con);
+                        DatabaseStatements.Delete.from("inventory_equipment").where("inventoryitemid", inventoryitemid).execute(con);
+                        DatabaseStatements.Delete.from("pets").where("petid", rs.getInt("petid")).execute(con);
                     }
                 }
             }
@@ -2038,15 +2037,15 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                 try (ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
                         int mtsid = rs.getInt("id");
-                        Statements.Delete.from("mts_items").where("id", mtsid).execute(con);
+                        DatabaseStatements.Delete.from("mts_items").where("id", mtsid).execute(con);
                     }
                 }
             }
-            Statements.Delete.from("mts_cart").where("cid", cid).execute(con);
+            DatabaseStatements.Delete.from("mts_cart").where("cid", cid).execute(con);
 
             String[] toDel = {"fame_log", "inventory_items", "keymap", "medal_maps", "quest_status", "quest_progress", "saved_locations", "trock_locations", "skill_macros", "skills", "event_stats", "server_queue"};
             for (String s : toDel) {
-                Statements.Delete.from(s).where("characterid", cid).execute(con);
+                DatabaseStatements.Delete.from(s).where("characterid", cid).execute(con);
             }
 
             Server.getInstance().deleteCharacterEntry(accId, cid);
@@ -4474,7 +4473,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         lastfametime = System.currentTimeMillis();
         lastmonthfameids.add(to.getId());
         try (Connection con = DatabaseConnection.getConnection()) {
-            Statements.Insert.into("fame_log")
+            DatabaseStatements.Insert.into("fame_log")
                     .add("characterid", getId())
                     .add("characterid_to", to.getId())
                     .execute(con);
@@ -5617,7 +5616,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                     }
                 }
 
-                Statements.Delete.from("cooldowns").where("charid", ret.getId()).execute(con);
+                DatabaseStatements.Delete.from("cooldowns").where("charid", ret.getId()).execute(con);
 
                 Map<MapleDisease, Pair<Long, MobSkill>> loadedDiseases = new LinkedHashMap<>();
                 try (PreparedStatement ps = con.prepareStatement("SELECT * FROM player_diseases WHERE charid = ?")) {
@@ -5640,7 +5639,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                     }
                 }
 
-                Statements.Delete.from("player_diseases").where("charid", ret.getId()).execute(con);
+                DatabaseStatements.Delete.from("player_diseases").where("charid", ret.getId()).execute(con);
 
 /*                if (!loadedDiseases.isEmpty()) {
                     Server.getInstance().getPlayerBuffStorage().addDiseasesToStorage(ret.id, loadedDiseases);
@@ -6302,8 +6301,8 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 
         if (!listcd.isEmpty()) {
             try (Connection con = DatabaseConnection.getConnection()) {
-                Statements.Delete.from("cooldowns").where("charid", id).execute(con);
-                Statements.BatchInsert statement = new Statements.BatchInsert("cooldowns");
+                DatabaseStatements.Delete.from("cooldowns").where("charid", id).execute(con);
+                DatabaseStatements.BatchInsert statement = new DatabaseStatements.BatchInsert("cooldowns");
 
                 for (PlayerCoolDownValueHolder cooling : listcd) {
                     statement.add("charid", getId());
@@ -6321,9 +6320,8 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         Map<MapleDisease, Pair<Long, MobSkill>> listds = getAllDiseases();
         if (!listds.isEmpty()) {
             try (Connection con = DatabaseConnection.getConnection()) {
-                Statements.Delete.from("player_diseases").where("charid", id).execute(con);
-
-                Statements.BatchInsert statement = new Statements.BatchInsert("player_diseases");
+                DatabaseStatements.Delete.from("player_diseases").where("charid", id).execute(con);
+                DatabaseStatements.BatchInsert statement = new DatabaseStatements.BatchInsert("player_diseases");
 
                 for (Entry<MapleDisease, Pair<Long, MobSkill>> e : listds.entrySet()) {
                     MobSkill ms = e.getValue().getRight();
@@ -6484,7 +6482,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         try (Connection con = DatabaseConnection.getConnection()) {
             try {
                 con.setAutoCommit(false);
-                Statements.Insert statement = new Statements.Insert("characters");
+                DatabaseStatements.Insert statement = new DatabaseStatements.Insert("characters");
                 statement.add("skincolor", skinColor.getId());
                 statement.add("gender", gender);
                 statement.add("job", getJob().getId());
@@ -6496,7 +6494,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                 statement.add("name", name);
                 statement.add("world", world);
 
-                this.id = statement.execute(con);
+                statement.execute(con);
 
                 if (this.id == -1) {
                     FilePrinter.printError(FilePrinter.INSERT_CHAR, "Error trying to insert " + name);
@@ -6579,7 +6577,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     }
 
     private void saveCharacter(Connection con) throws SQLException {
-        Statements.Update statement = Statements.Update("characters");
+        DatabaseStatements.Update statement = new DatabaseStatements.Update("characters");
         statement.cond("id", id);
 
         effLock.lock();
@@ -6681,7 +6679,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         statement.set("ariantpoints", ariantPoints);
         statement.set("partysearch", canRecvPartySearchInvite);
 
-        if (statement.execute_keys(con) < 1) {
+        if (statement.executeKeys(con) < 1) {
             throw new RuntimeException("Character not in database (" + id + ")");
         }
     }
@@ -6689,9 +6687,9 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     public void savePetIgnores(Connection con) throws SQLException {
         for (Entry<Integer, Set<Integer>> es : getExcluded().entrySet()) {    // this set is already protected
 
-            Statements.Delete.from("pet_ignores").where("petid", es.getKey()).execute(con);
+            DatabaseStatements.Delete.from("pet_ignores").where("petid", es.getKey()).execute(con);
 
-            Statements.BatchInsert statement = new Statements.BatchInsert("pet_ignores");
+            DatabaseStatements.BatchInsert statement = new DatabaseStatements.BatchInsert("pet_ignores");
             for (Integer x : es.getValue()) {
                 statement.add("petid", es.getKey());
                 statement.add("itemid", x);
@@ -6701,9 +6699,8 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     }
 
     public void saveKeymap(Connection con) throws SQLException {
-        Statements.Delete.from("keymap").where("characterid", id).execute(con);
-
-        Statements.BatchInsert statement = new Statements.BatchInsert("keymap");
+        DatabaseStatements.Delete.from("keymap").where("characterid", id).execute(con);
+        DatabaseStatements.BatchInsert statement = new DatabaseStatements.BatchInsert("keymap");
 
         for (Entry<Integer, MapleKeyBinding> keybinding : Collections.unmodifiableSet(keymap.entrySet())) {
             statement.add("characterid", id);
@@ -6728,8 +6725,8 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     }
 
     public void saveSkillMacros(Connection con) throws SQLException {
-        Statements.Delete.from("skill_macros").where("characterid", id).execute(con);
-        Statements.BatchInsert statement = new Statements.BatchInsert("skill_macros");
+        DatabaseStatements.Delete.from("skill_macros").where("characterid", id).execute(con);
+        DatabaseStatements.BatchInsert statement = new DatabaseStatements.BatchInsert("skill_macros");
 
         for (int i = 0; i < 5; i++) {
             SkillMacro macro = skillMacros[i];
@@ -6747,8 +6744,8 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     }
 
     public void saveSkills(Connection con) throws SQLException {
-        Statements.Delete.from("skills").where("characterid", id).execute(con);
-        Statements.BatchInsert statement = new Statements.BatchInsert("skills");
+        DatabaseStatements.Delete.from("skills").where("characterid", id).execute(con);
+        DatabaseStatements.BatchInsert statement = new DatabaseStatements.BatchInsert("skills");
         for (Entry<PlayerSkill, SkillEntry> skill : skills.entrySet()) {
             statement.add("characterid", id);
             statement.add("skillid", skill.getKey().getId());
@@ -6760,8 +6757,8 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     }
 
     public void saveSavedLocations(Connection con) throws SQLException {
-        Statements.Delete.from("saved_locations").where("characterid", id).execute(con);
-        Statements.BatchInsert statement = new Statements.BatchInsert("saved_locations");
+        DatabaseStatements.Delete.from("saved_locations").where("characterid", id).execute(con);
+        DatabaseStatements.BatchInsert statement = new DatabaseStatements.BatchInsert("saved_locations");
         for (SavedLocationType savedLocationType : SavedLocationType.values()) {
             if (savedLocations[savedLocationType.ordinal()] != null) {
                 statement.add("characterid", id);
@@ -6774,8 +6771,8 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     }
 
     public void saveTrockLocations(Connection con) throws SQLException {
-        Statements.Delete.from("trock_locations").where("characterid", id).execute(con);
-        Statements.BatchInsert statement = new Statements.BatchInsert("trock_locations");
+        DatabaseStatements.Delete.from("trock_locations").where("characterid", id).execute(con);
+        DatabaseStatements.BatchInsert statement = new DatabaseStatements.BatchInsert("trock_locations");
         for (int i = 0; i < getTrockSize(); i++) {
             if (trockmaps.get(i) != 999999999) {
                 statement.add("characterid", getId());
@@ -6794,8 +6791,8 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     }
 
     public void saveBuddies(Connection con) throws SQLException {
-        Statements.Delete.from("buddies").where("characterid", id).where("pending", 0).execute(con);
-        Statements.BatchInsert statement = new Statements.BatchInsert("buddies");
+        DatabaseStatements.Delete.from("buddies").where("characterid", id).where("pending", 0).execute(con);
+        DatabaseStatements.BatchInsert statement = new DatabaseStatements.BatchInsert("buddies");
         for (BuddylistEntry entry : buddylist.getBuddies()) {
             if (entry.isVisible()) {
                 statement.add("characterid", id);
@@ -6808,8 +6805,8 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     }
 
     public void saveWorldTour(Connection con) throws SQLException {
-        Statements.Delete.from("world_tour").where("charid", id).execute(con);
-        Statements.BatchInsert statement = new Statements.BatchInsert("world_tour");
+        DatabaseStatements.Delete.from("world_tour").where("charid", id).execute(con);
+        DatabaseStatements.BatchInsert statement = new DatabaseStatements.BatchInsert("world_tour");
         for (String achid : finishedWorldTour) {
             statement.add("charid", id);
             statement.add("worldtourid", achid);
@@ -6819,8 +6816,8 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     }
 
     public void saveAreaInfo(Connection con) throws SQLException {
-        Statements.Delete.from("area_info").where("charid", id).execute(con);
-        Statements.BatchInsert statement = new Statements.BatchInsert("area_info");
+        DatabaseStatements.Delete.from("area_info").where("charid", id).execute(con);
+        DatabaseStatements.BatchInsert statement = new DatabaseStatements.BatchInsert("area_info");
         for (Entry<Short, String> area : area_info.entrySet()) {
             statement.add("charid", id);
             statement.add("area", area.getKey());
@@ -6830,8 +6827,8 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     }
 
     public void saveEventStats(Connection con) throws SQLException {
-        Statements.Delete.from("event_stats").where("characterid", id).execute(con);
-        Statements.BatchInsert statement = new Statements.BatchInsert("event_stats");
+        DatabaseStatements.Delete.from("event_stats").where("characterid", id).execute(con);
+        DatabaseStatements.BatchInsert statement = new DatabaseStatements.BatchInsert("event_stats");
         for (Map.Entry<String, MapleEvents> entry : events.entrySet()) {
             statement.add("characterid", id);
             statement.add("name", entry.getKey());
@@ -6841,16 +6838,16 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     }
 
     public void saveQuestProgress(Connection con) throws SQLException {
-        Statements.Delete.from("medal_maps").where("characterid", id).execute(con);
-        Statements.Delete.from("quest_progress").where("characterid", id).execute(con);
-        Statements.Delete.from("quest_status").where("characterid", id).execute(con);
+        DatabaseStatements.Delete.from("medal_maps").where("characterid", id).execute(con);
+        DatabaseStatements.Delete.from("quest_progress").where("characterid", id).execute(con);
+        DatabaseStatements.Delete.from("quest_status").where("characterid", id).execute(con);
 
-        Statements.BatchInsert questprogress = new Statements.BatchInsert("quest_progress");
-        Statements.BatchInsert medalmaps = new Statements.BatchInsert("medal_maps");
+        DatabaseStatements.BatchInsert questprogress = new DatabaseStatements.BatchInsert("quest_progress");
+        DatabaseStatements.BatchInsert medalmaps = new DatabaseStatements.BatchInsert("medal_maps");
 
         synchronized (quests) {
             for (MapleQuestStatus q : quests.values()) {
-                Statements.Insert queststatus = new Statements.Insert("quest_status");
+                DatabaseStatements.Insert queststatus = new DatabaseStatements.Insert("quest_status");
                 queststatus.add("characterid", id);
                 queststatus.add("quest", q.getQuest().getId());
                 queststatus.add("status", q.getStatus().getId());
@@ -6858,11 +6855,11 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                 queststatus.add("expires", q.getExpirationTime());
                 queststatus.add("forfeited", q.getForfeited());
                 queststatus.add("completed", q.getCompleted());
-                int questid = queststatus.execute(con);
+                int questid = queststatus.executeUpdate(con);
 
                 for (int mob : q.getProgress().keySet()) {
                     questprogress.add("characterid", id);
-                    questprogress.add("queststatusid", questid);
+                    questprogress.add("queststatusid",  questid);
                     questprogress.add("progressid", mob);
                     questprogress.add("progress", q.getProgress(mob));
                 }
@@ -7012,7 +7009,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 
     public static void sendNote(String to, String from, String msg, byte fame) throws SQLException {
         try (Connection con = DatabaseConnection.getConnection()) {
-            Statements.Insert.into("notes")
+            DatabaseStatements.Insert.into("notes")
                     .add("\"to\"", to)
                     .add("\"from\"", from)
                     .add("message", msg)
@@ -7112,7 +7109,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     public void setClearance(int c) {
         this.charClearance = c;
         try (Connection con = DatabaseConnection.getConnection()) {
-            Statements.Update("characters").set("clearance", charClearance).where("id", id).execute(con);
+            new DatabaseStatements.Update("characters").set("clearance", charClearance).where("id", id).execute(con);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -7121,7 +7118,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     public void setTrophy(int t) {
         this.charTrophy = t;
         try (Connection con = DatabaseConnection.getConnection()) {
-            Statements.Update("trophy").set("trophy", charTrophy).where("id", id).execute(con);
+            new DatabaseStatements.Update("trophy").set("trophy", charTrophy).where("id", id).execute(con);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -7412,7 +7409,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 
         this.name = name;
         try (Connection con = DatabaseConnection.getConnection()) {
-            Statements.Update("characters").set("name", name).where("id", id).execute(con);
+            new DatabaseStatements.Update("characters").set("name", name).where("id", id).execute(con);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -8688,7 +8685,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 
     public void setRewardPoints(int value) {
         try (Connection con = DatabaseConnection.getConnection()) {
-            Statements.Update("accounts").set("rewardpoints", value).where("id", accountid).execute(con);
+            new DatabaseStatements.Update("accounts").set("rewardpoints", value).where("id", accountid).execute(con);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -8696,7 +8693,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 
     public void setReborns(int value) {
         try (Connection con = DatabaseConnection.getConnection()) {
-            Statements.Update("characters").set("reborns", value).where("id", id).execute(con);
+            new DatabaseStatements.Update("characters").set("reborns", value).where("id", id).execute(con);
         } catch (SQLException e) {
             e.printStackTrace();
         }

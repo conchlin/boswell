@@ -30,7 +30,7 @@ import java.sql.SQLException;
 
 import enums.GuildResultType;
 import net.AbstractMaplePacketHandler;
-import net.database.Statements;
+import database.DatabaseStatements;
 import database.DatabaseConnection;
 import network.packet.context.GuildPacket;
 import tools.data.input.SeekableLittleEndianAccessor;
@@ -125,7 +125,7 @@ public final class GuildBBSOperationHandler extends AbstractMaplePacketHandler {
                 return;
             }
             int threadid = threadRS.getInt("threadid");
-            Statements.Insert.into("bbs_replies")
+            DatabaseStatements.Insert.into("bbs_replies")
                     .add("threadid", threadid)
                     .add("postercid", c.getPlayer().getId())
                     .add("timestamp", currentServerTime())
@@ -178,7 +178,7 @@ public final class GuildBBSOperationHandler extends AbstractMaplePacketHandler {
                     nextId = rs.getInt("lastLocalId") + 1;
                 }
             }
-            Statements.Insert.into("bbs_threads")
+            DatabaseStatements.Insert.into("bbs_threads")
                 .add("postercid", c.getId())
                 .add("name", title)
                 .add("timestamp", currentServerTime())
@@ -212,8 +212,8 @@ public final class GuildBBSOperationHandler extends AbstractMaplePacketHandler {
             }
             int threadid = threadRS.getInt("threadid");
 
-            Statements.Delete.from("bbs_replies").where("threadid", threadid).execute(con);
-            Statements.Delete.from("bbs_threads").where("threadid", threadid).execute(con);
+            DatabaseStatements.Delete.from("bbs_replies").where("threadid", threadid).execute(con);
+            DatabaseStatements.Delete.from("bbs_threads").where("threadid", threadid).execute(con);
         } catch (SQLException se) {
             se.printStackTrace();
         }
@@ -237,7 +237,7 @@ public final class GuildBBSOperationHandler extends AbstractMaplePacketHandler {
                 }
                 threadid = rs.getInt("threadid");
             }
-            Statements.Delete.from("bbs_replies").where("replyid", replyid).execute(con);
+            DatabaseStatements.Delete.from("bbs_replies").where("replyid", replyid).execute(con);
             try (PreparedStatement psb = con.prepareStatement("UPDATE bbs_threads SET replycount = replycount - 1 WHERE threadid = ?")) {
                 psb.setInt(1, threadid);
                 psb.execute();

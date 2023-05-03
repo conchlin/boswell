@@ -40,7 +40,7 @@ public class Transaction {
         String actionStr = purchase ? "BUY" : "SELL";
          try {
             try (Connection con = DatabaseConnection.getConnection()) {
-                Statements.Insert.into("exchange_transactions")
+                new DatabaseStatements.Insert.into("exchange_transactions")
                 .add("charid", cid)
                 .add("action", actionStr)
                 .add("amount", amount)

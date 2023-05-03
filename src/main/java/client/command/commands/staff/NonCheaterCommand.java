@@ -28,7 +28,7 @@ import client.MapleClient;
 import client.MapleCharacter;
 import java.sql.Connection;
 import java.sql.SQLException;
-import net.database.Statements;
+import database.DatabaseStatements;
 import database.DatabaseConnection;
 
 public class NonCheaterCommand extends Command {
@@ -49,7 +49,7 @@ public class NonCheaterCommand extends Command {
         
         if (target != null) {
             try (Connection con = DatabaseConnection.getConnection()) {
-                Statements.Update("accounts").set("cheater", false).where("id", target.getAccountID()).execute(con);
+                new DatabaseStatements.Update("accounts").set("cheater", false).where("id", target.getAccountID()).execute(con);
             } catch (SQLException e) {
                 e.printStackTrace();
             }

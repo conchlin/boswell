@@ -28,7 +28,7 @@ import network.packet.PetPacket;
 import network.packet.UserLocal;
 import network.packet.UserRemote;
 import server.MapleItemInformationProvider;
-import net.database.Statements;
+import database.DatabaseStatements;
 import server.movement.AbsoluteLifeMovement;
 import server.movement.LifeMovement;
 import server.movement.LifeMovementFragment;
@@ -102,8 +102,8 @@ public class MaplePet extends Item {
 
     public static void deleteFromDb(MapleCharacter owner, int petid) {
         try (Connection con = DatabaseConnection.getConnection()) {
-            Statements.Delete.from("pets").where("petid", petid).execute(con);
-            Statements.Delete.from("pet_ignores").where("petid", petid).execute(con);
+            DatabaseStatements.Delete.from("pets").where("petid", petid).execute(con);
+            DatabaseStatements.Delete.from("pet_ignores").where("petid", petid).execute(con);
             owner.resetExcluded(petid);
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -113,7 +113,7 @@ public class MaplePet extends Item {
     public void saveToDb() {
         try (Connection con = DatabaseConnection.getConnection()) {
 
-            Statements.Update statement = Statements.Update("pets");
+            DatabaseStatements.Update statement = new DatabaseStatements.Update("pets");
             statement.cond("petid", getUniqueId());
             statement.set("name", getName());
             statement.set("level", getLevel());
@@ -131,7 +131,7 @@ public class MaplePet extends Item {
     public static int createPet(int itemid) {
         try (Connection con = DatabaseConnection.getConnection()) {
 
-            Statements.Insert statement = new Statements.Insert("pets");
+            DatabaseStatements.Insert statement = new DatabaseStatements.Insert("pets");
             statement.add("name", MapleItemInformationProvider.getInstance().getName(itemid));
             statement.add("level", 1);
             statement.add("closeness", 0);
@@ -139,7 +139,7 @@ public class MaplePet extends Item {
             statement.add("summoned", false);
             statement.add("flag", 0);
 
-            int ret = statement.execute(con);
+            int ret = statement.executeUpdate(con);
             return ret;
         } catch (SQLException e) {
             e.printStackTrace();

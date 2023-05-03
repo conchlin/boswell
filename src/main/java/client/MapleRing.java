@@ -26,7 +26,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import net.database.Statements;
+import database.DatabaseStatements;
 import tools.Pair;
 import database.DatabaseConnection;
 
@@ -110,22 +110,22 @@ public class MapleRing implements Comparable<MapleRing> {
         }
 
         try (Connection con = DatabaseConnection.getConnection()) {
-            Statements.Insert statement = new Statements.Insert("rings");
+            DatabaseStatements.Insert statement = new DatabaseStatements.Insert("rings");
             statement.add("itemid", itemid);
             statement.add("partnerchrid", partner2.getId());
             statement.add("partnername", partner2.getName());
 
-            int ringid1 = statement.execute(con);
+            int ringid1 = statement.executeUpdate(con);
 
-            statement = new Statements.Insert("rings");
+            statement = new DatabaseStatements.Insert("rings");
             statement.add("itemid", itemid);
             statement.add("partnerringid", ringid1);
             statement.add("partnerchrid", partner1.getId());
             statement.add("partnername", partner1.getName());
 
-            int ringid2 = statement.execute(con);
+            int ringid2 = statement.executeUpdate(con);
 
-            Statements.Update update = Statements.Update("rings");
+            DatabaseStatements.Update update = new DatabaseStatements.Update("rings");
             update.set("partnerringid", ringid2);
             update.cond("id", ringid1);
             update.execute(con);

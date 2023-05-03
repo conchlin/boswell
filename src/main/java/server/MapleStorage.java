@@ -23,7 +23,7 @@ import client.inventory.Item;
 import client.inventory.ItemFactory;
 import client.inventory.MapleInventoryType;
 import enums.TrunkResultType;
-import net.database.Statements;
+import database.DatabaseStatements;
 import net.server.audit.locks.MonitoredLockType;
 import net.server.audit.locks.factory.MonitoredReentrantLockFactory;
 import network.packet.CTrunk;
@@ -119,7 +119,7 @@ public class MapleStorage {
 
     public void saveToDB(Connection con) {
         try {
-            Statements.Update("storages").where("storageid", id)
+            new DatabaseStatements.Update("storages").where("storageid", id)
                     .set("slots", slots)
                     .set("meso", meso)
                     .execute(con);

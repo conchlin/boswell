@@ -63,7 +63,7 @@ public class Wallet {
     /*public void executeCoinPurchase(MapleCharacter investor) {
         try {
           try (Connection con = DatabaseConnection.getConnection()) {
-            Statements.Insert.into("exchange_wallet")
+            new DatabaseStatements.Insert.into("exchange_wallet")
                     .add("charid", investor.getId())
                     .add("currency", coin.getCurrency())
                     .add("price", coin.getPrice())

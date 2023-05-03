@@ -37,7 +37,7 @@ import net.server.coordinator.MapleInviteCoordinator.InviteResult;
 import net.server.coordinator.MapleInviteCoordinator.InviteType;
 import net.server.world.MapleParty;
 import net.server.world.MaplePartyCharacter;
-import net.database.Statements;
+import database.DatabaseStatements;
 import database.DatabaseConnection;
 import network.packet.context.AlliancePacket;
 import tools.Pair;
@@ -249,8 +249,8 @@ public class MapleAlliance {
         MapleAlliance alliance = srv.getAlliance(allianceId);
 
         try (Connection con = DatabaseConnection.getConnection()) {
-            Statements.Delete.from("alliance").where("id", allianceId).execute(con);
-            Statements.Delete.from("alliance_guilds").where("allianceid", allianceId).execute(con);
+            DatabaseStatements.Delete.from("alliance").where("id", allianceId).execute(con);
+            DatabaseStatements.Delete.from("alliance_guilds").where("allianceid", allianceId).execute(con);
 
             //Server.getInstance().allianceMessage(allianceId, MaplePacketCreator.disbandAlliance(allianceId), -1, -1);
             Server.getInstance().allianceMessage(allianceId,
@@ -262,7 +262,7 @@ public class MapleAlliance {
     
     private static void removeGuildFromAllianceOnDb(int guildId) {
         try (Connection con = DatabaseConnection.getConnection()) {
-            Statements.Delete.from("alliance_guilds").where("guildid", guildId).execute(con);
+            DatabaseStatements.Delete.from("alliance_guilds").where("guildid", guildId).execute(con);
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         }

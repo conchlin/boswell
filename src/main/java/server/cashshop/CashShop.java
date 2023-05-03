@@ -36,7 +36,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
-import net.database.Statements;
+import database.DatabaseStatements;
 
 import javax.xml.crypto.Data;
 
@@ -198,7 +198,7 @@ public class CashShop {
 
     public void gift(int recipient, String from, String message, int sn, int ringid) {
         try (Connection con = DatabaseConnection.getConnection()) {
-            Statements.Insert.into("gifts")
+            DatabaseStatements.Insert.into("gifts")
                     .add("\"to\"", recipient)
                     .add("\"from\"", from)
                     .add("message", message)
@@ -243,7 +243,7 @@ public class CashShop {
                 }
             }
 
-            Statements.Delete.from("gifts").where("\"to\"", characterId).execute(con);
+            DatabaseStatements.Delete.from("gifts").where("\"to\"", characterId).execute(con);
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         }
@@ -260,7 +260,7 @@ public class CashShop {
     }
 
     public void save(Connection con) throws SQLException {
-        Statements.Update("accounts")
+        new DatabaseStatements.Update("accounts")
                 .set("nxcredit", nxCredit)
                 .set("maplepoint", maplePoint)
                 .set("nxprepaid", nxPrepaid)
@@ -274,9 +274,9 @@ public class CashShop {
         }
 
         factory.saveItems(itemsWithType, accountId, con);
-        Statements.Delete.from("wish_lists").where("charid", characterId).execute(con);
+        DatabaseStatements.Delete.from("wish_lists").where("charid", characterId).execute(con);
 
-        Statements.BatchInsert statement = new Statements.BatchInsert("wish_lists");
+        DatabaseStatements.BatchInsert statement = new DatabaseStatements.BatchInsert("wish_lists");
         for (int sn : wishList) {
             statement.add("charid", characterId);
             statement.add("sn", sn);

@@ -24,7 +24,7 @@ package client;
 import enums.UserEffectType;
 import net.server.audit.locks.MonitoredLockType;
 import net.server.audit.locks.factory.MonitoredReentrantLockFactory;
-import net.database.Statements;
+import database.DatabaseStatements;
 import network.packet.UserLocal;
 import network.packet.UserRemote;
 import network.packet.context.WvsContext;
@@ -189,9 +189,9 @@ public final class MonsterBook {
             return;
         }
 
-        Statements.Delete.from("monster_book").where("charid", owner.getId());
+        DatabaseStatements.Delete.from("monster_book").where("charid", owner.getId());
 
-        Statements.BatchInsert statement = new Statements.BatchInsert("monster_book");
+        DatabaseStatements.BatchInsert statement = new DatabaseStatements.BatchInsert("monster_book");
         for (Entry<Integer, Integer> all : cardSet) {
             statement.add("charid", owner.getId());
             statement.add("cardid", all.getKey());

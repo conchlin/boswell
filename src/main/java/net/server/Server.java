@@ -32,7 +32,7 @@ import constants.ItemConstants;
 import constants.OpcodeConstants;
 import constants.ServerConstants;
 import net.MapleServerHandler;
-import net.database.Statements;
+import database.DatabaseStatements;
 import net.mina.MapleCodecFactory;
 import net.server.audit.ThreadTracker;
 import net.server.audit.locks.MonitoredLockType;
@@ -696,8 +696,8 @@ public class Server {
 
         // by calling getConnection it will initialize the database
         try (Connection con = DatabaseConnection.getConnection()) {
-            Statements.Update("accounts").set("loggedin", 0).execute(con);
-            Statements.Update("characters").set("hasmerchant", false).execute(con);
+            new DatabaseStatements.Update("accounts").set("loggedin", 0).execute(con);
+            new DatabaseStatements.Update("characters").set("hasmerchant", false).execute(con);
 
             cleanNxcodeCoupons(con);
             loadCouponRates(con);

@@ -1,7 +1,7 @@
 package server.partyquest;
 
 import client.MapleCharacter;
-import net.database.Statements;
+import database.DatabaseStatements;
 import database.DatabaseConnection;
 
 import java.sql.Connection;
@@ -49,8 +49,8 @@ public class BossQuest {
     }
 
     public static void saveBossQuest(MapleCharacter player, Connection con) throws SQLException  {
-        Statements.Delete.from("boss_quest").where("id", player.getId()).execute(con);
-        Statements.BatchInsert statement = new Statements.BatchInsert("bossquest");
+        DatabaseStatements.Delete.from("boss_quest").where("id", player.getId()).execute(con);
+        DatabaseStatements.BatchInsert statement = new DatabaseStatements.BatchInsert("bossquest");
         for (Map.Entry<Integer, Integer> entry : bossLimit.entrySet()) {
             statement.add("id", entry.getKey());
             statement.add("attempts", entry.getValue());
@@ -65,7 +65,7 @@ public class BossQuest {
 
     public static void resetBPQ() {
         try (Connection con = DatabaseConnection.getConnection()) {
-            Statements.Update("boss_quest")
+            new DatabaseStatements.Update("boss_quest")
                     .set("attempts", 0)
                     .where("id", "> 1") // everyone
                     .execute(con);

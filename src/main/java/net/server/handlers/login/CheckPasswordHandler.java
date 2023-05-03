@@ -26,7 +26,7 @@ import enums.LoginResultType;
 import net.MaplePacketHandler;
 import database.DatabaseConnection;
 import net.server.Server;
-import net.database.Statements;
+import database.DatabaseStatements;
 import network.packet.CLogin;
 import tools.*;
 import tools.data.input.SeekableLittleEndianAccessor;
@@ -89,7 +89,7 @@ public final class CheckPasswordHandler implements MaplePacketHandler {
         if (c.finishLogin() == 0) {
             c.checkChar(c.getAccID());
             try (Connection con = DatabaseConnection.getConnection()) {
-                Statements.Update statement = Statements.Update("accounts");
+                DatabaseStatements.Update statement = new DatabaseStatements.Update("accounts");
                 statement.cond("name", login.toLowerCase());
                 statement.set("lastknownip", c.getSession().getRemoteAddress().toString());
                 statement.execute(con);

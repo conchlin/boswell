@@ -34,7 +34,7 @@ import net.server.coordinator.MapleInviteCoordinator;
 import net.server.coordinator.MapleInviteCoordinator.InviteResult;
 import net.server.coordinator.MapleInviteCoordinator.InviteType;
 import net.server.coordinator.MapleMatchCheckerCoordinator;
-import net.database.Statements;
+import database.DatabaseStatements;
 import database.DatabaseConnection;
 import network.packet.context.WvsContext;
 import network.packet.field.CField;
@@ -151,7 +151,7 @@ public class MapleGuild {
     public void writeToDB(boolean bDisband) {
         try (Connection con = DatabaseConnection.getConnection()) {
             if (!bDisband) {
-                Statements.Update("guilds").where("guildid", this.id)
+                new DatabaseStatements.Update("guilds").where("guildid", this.id)
                         .set("gp", gp)
                         .set("logo", logo)
                         .set("logocolor", logoColor)
@@ -166,11 +166,11 @@ public class MapleGuild {
                         .set("notice", notice)
                         .execute(con);
             } else {
-                Statements.Update("characters")
+                new DatabaseStatements.Update("characters")
                         .set("guildid", 0)
                         .set("guildrank", 5)
                         .where("guildid", this.id).execute(con);
-                Statements.Delete.from("guilds").where("guildid", this.id).execute(con);
+                DatabaseStatements.Delete.from("guilds").where("guildid", this.id).execute(con);
 
                 membersLock.lock();
                 try {
@@ -406,14 +406,14 @@ public class MapleGuild {
                 }
             }
 
-            int guildId = Statements.Insert.into("guilds")
+            int guildId = DatabaseStatements.Insert.into("guilds")
                     .add("leader", leaderId)
                     .add("name", name)
                     .add("signature", (int) System.currentTimeMillis())
-                    .execute(con);
+                    .executeUpdate(con);
 
             if (guildId > 0) {
-                Statements.Update("characters").set("guildid", guildId).where("id", leaderId).execute(con);
+                new DatabaseStatements.Update("characters").set("guildid", guildId).where("id", leaderId).execute(con);
 
                 System.out.println("guild done");
                 return guildId;
@@ -475,7 +475,7 @@ public class MapleGuild {
                             Server.getInstance().getWorld(mgc.getWorld()).setGuildAndRank(cid, 0, 5);
                         } else {
                             try (Connection con = DatabaseConnection.getConnection()) {
-                                Statements.Insert.into("notes")
+                                DatabaseStatements.Insert.into("notes")
                                         .add("\"to\"", mgc.getName())
                                         .add("\"from\"", initiator.getName())
                                         .add("message", "You have been expelled from the guild.")
@@ -745,7 +745,7 @@ public class MapleGuild {
     public void setAllianceId(int aid) {
         this.allianceId = aid;
         try (Connection con = DatabaseConnection.getConnection()) {
-            Statements.Update("guilds").set("allianceid", aid).where("guildid", id).execute(con);
+            new DatabaseStatements.Update("guilds").set("allianceid", aid).where("guildid", id).execute(con);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -764,7 +764,7 @@ public class MapleGuild {
         }
 
         try (Connection con = DatabaseConnection.getConnection()) {
-            Statements.Update("characters").set("allianceRank", 5).where("guildid", id).execute(con);
+            new DatabaseStatements.Update("characters").set("allianceRank", 5).where("guildid", id).execute(con);
         } catch (SQLException e) {
             e.printStackTrace();
         }

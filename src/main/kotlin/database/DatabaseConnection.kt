@@ -57,25 +57,20 @@ class DatabaseConnection {
         }
 
         private fun getNumberOfAccounts(): Int {
-            var con: Connection? = null
-            var ps: PreparedStatement? = null
-            var rs: ResultSet? = null
             return try {
-                con = DriverManager.getConnection(
+                DriverManager.getConnection(
                     ServerConstants.DB_URL,
                     ServerConstants.DB_USER,
                     ServerConstants.DB_PASS
-                )
-                ps = con.prepareStatement("SELECT count(*) FROM accounts")
-                rs = ps.executeQuery()
-                rs.next()
-                rs.getInt(1)
+                ).use { con ->
+                    con.prepareStatement("SELECT count(*) FROM accounts").use { ps ->
+                        ps.executeQuery().use { rs ->
+                            if (rs.next()) rs.getInt(1) else 0
+                        }
+                    }
+                }
             } catch (sqle: SQLException) {
                 20
-            } finally {
-                rs?.close()
-                ps?.close()
-                con?.close()
             }
         }
 
