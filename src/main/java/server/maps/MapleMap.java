@@ -1608,6 +1608,17 @@ public class MapleMap {
         return null;
     }
 
+    public MapleNPC getNPCByObjectId(int objectId) {
+        for (MapleMapObject obj : getMapObjects()) {
+            if (obj.getObjectId() == objectId) {
+                MapleNPC npc = (MapleNPC) obj;
+                return npc;
+            }
+        }
+
+        return null;
+    }
+
     public boolean containsNPC(int npcid) {
         objectRLock.lock();
         try {
