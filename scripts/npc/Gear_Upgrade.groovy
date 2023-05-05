@@ -9,4 +9,4 @@
     @Author: Auto Generated
     @Created: 2023-03-03 
     */
-    npc.say("If you have nothing to say, then move on.")
+    script.say("If you have nothing to say, then move on.")

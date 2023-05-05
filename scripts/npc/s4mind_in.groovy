@@ -9,4 +9,4 @@
     @Author: Auto Generated
     @Created: 2023-03-03 
     */
-    npc.say("Anyone can work out in the training room. If you're a true Pirate, you should be working out here at least once a day. ")
+    script.say("Anyone can work out in the training room. If you're a true Pirate, you should be working out here at least once a day. ")

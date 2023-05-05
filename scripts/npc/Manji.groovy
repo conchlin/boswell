@@ -9,4 +9,4 @@
     @Author: Auto Generated
     @Created: 2023-03-03 
     */
-    npc.say("Anyone who dares to stand in my path will be punished dearly...")
+    script.say("Anyone who dares to stand in my path will be punished dearly...")

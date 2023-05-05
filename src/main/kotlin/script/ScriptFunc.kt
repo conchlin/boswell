@@ -1,18 +1,14 @@
-package script.binding
+package script
 
-import client.MapleClient
+import client.MapleCharacter
 import network.packet.ScriptMan
-import script.ScriptHistory
-import script.ScriptManager
-import script.ScriptMessageType
-import server.life.MapleNPC
+import java.util.*
 
-
-class ScriptNpc(s: ScriptManager.Companion, n: MapleNPC, c: MapleClient) {
-
-    val npc: MapleNPC = n
-    val client: MapleClient = c
-    val sm: ScriptManager.Companion = s
+class ScriptFunc(
+    private val sm: ScriptManager.Companion,
+    private val objectId: Int,
+    private val user: MapleCharacter
+) {
 
     private fun makeMessagePacket(type: Int, mem: ArrayList<Any>) {
         if (sm.status.get() == ScriptManager.Finishing) {
@@ -27,36 +23,58 @@ class ScriptNpc(s: ScriptManager.Companion, n: MapleNPC, c: MapleClient) {
         when (type) {
             ScriptMessageType.Say.type -> {
                 val next = mem[1] as Boolean
-                hist.packet = ScriptMan.onSay(npc.id, mem[0].toString(), sm.posScriptHistory != 0, next)
+                hist.packet = ScriptMan.onSay(
+                    user.map.getNPCByObjectId(objectId).id,
+                    mem[0].toString(),
+                    sm.posScriptHistory != 0,
+                    next
+                )
             }
 
             ScriptMessageType.AskYesNo.type -> {
-                hist.packet = ScriptMan.onAskYesNo(npc.id, mem[0].toString())
+                hist.packet = ScriptMan.onAskYesNo(user.map.getNPCByObjectId(objectId).id, mem[0].toString())
             }
 
             ScriptMessageType.AskAvatar.type -> {
                 hist.couponItemID = mem[1] as Int
-                hist.packet = ScriptMan.onAskAvatar(4, npc.id, mem[0].toString(), mem[2] as IntArray)
+                hist.packet = ScriptMan.onAskAvatar(
+                    4,
+                    user.map.getNPCByObjectId(objectId).id,
+                    mem[0].toString(),
+                    mem[2] as IntArray
+                )
             }
 
             ScriptMessageType.AskMenu.type -> {
-                hist.packet = ScriptMan.onAskMenu(4, npc.id, mem[0].toString())
+                hist.packet = ScriptMan.onAskMenu(4, user.map.getNPCByObjectId(objectId).id, mem[0].toString())
             }
 
             ScriptMessageType.AskText.type -> {
                 hist.packet =
-                    ScriptMan.onAskText(npc.id, mem[0].toString(), mem[1].toString(), mem[2] as Short, mem[3] as Short)
+                    ScriptMan.onAskText(
+                        user.map.getNPCByObjectId(objectId).id,
+                        mem[0].toString(),
+                        mem[1].toString(),
+                        mem[2] as Short,
+                        mem[3] as Short
+                    )
             }
 
             ScriptMessageType.AskNumber.type -> {
                 hist.packet =
-                    ScriptMan.onAskNumber(npc.id, mem[0].toString(), mem[1] as Int, mem[2] as Int, mem[3] as Int)
+                    ScriptMan.onAskNumber(
+                        user.map.getNPCByObjectId(objectId).id,
+                        mem[0].toString(),
+                        mem[1] as Int,
+                        mem[2] as Int,
+                        mem[3] as Int
+                    )
             }
 
             else -> return
         }
 
-        hist.speakerTemplateID = npc.id
+        hist.speakerTemplateID = user.map.getNPCByObjectId(objectId).id
         sm.scriptHist.addLast(hist)
         sm.posScriptHistory = sm.scriptHist.size
     }
@@ -151,9 +169,10 @@ class ScriptNpc(s: ScriptManager.Companion, n: MapleNPC, c: MapleClient) {
     }
 
     private fun sendMessageAnswer() {
-        client.announce(sm.scriptHist[sm.posScriptHistory - 1].packet)
+        user.announce(sm.scriptHist[sm.posScriptHistory - 1].packet)
         sm.status.set(ScriptManager.Message)
     }
+
     private fun clearHistory() {
         sm.scriptHist.clear()
         sm.posScriptHistory = 0

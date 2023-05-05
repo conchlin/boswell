@@ -9,4 +9,4 @@
     @Author: Auto Generated
     @Created: 2023-03-03 
     */
-    npc.say("Back in the day, Mr. Do was respected for his intellect. Everyone knew him, the genius Mr. Do of Mu Lung!")
+    script.say("Back in the day, Mr. Do was respected for his intellect. Everyone knew him, the genius Mr. Do of Mu Lung!")

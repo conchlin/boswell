@@ -9,4 +9,4 @@
     @Author: Auto Generated
     @Created: 2023-03-03 
     */
-    npc.say("Only authorized personnel permitted from this point on.")
+    script.say("Only authorized personnel permitted from this point on.")

@@ -9,4 +9,4 @@
     @Author: Auto Generated
     @Created: 2023-03-03 
     */
-    npc.say("Salu o'kahari, friend!")
+    script.say("Salu o'kahari, friend!")

@@ -9,4 +9,4 @@
     @Author: Auto Generated
     @Created: 2023-03-03 
     */
-    npc.say("Hello there. I'm Eurek the Alchemist, wandering around places all over the world of MapleStory. I'm here just to stop by for a bit.")
+    script.say("Hello there. I'm Eurek the Alchemist, wandering around places all over the world of MapleStory. I'm here just to stop by for a bit.")

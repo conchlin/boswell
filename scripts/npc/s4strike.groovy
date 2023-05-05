@@ -9,4 +9,4 @@
     @Author: Auto Generated
     @Created: 2023-03-03 
     */
-    npc.say("Ehem~ what is it?")
+    script.say("Ehem~ what is it?")

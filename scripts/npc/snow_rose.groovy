@@ -9,4 +9,4 @@
     @Author: Auto Generated
     @Created: 2023-03-03 
     */
-    npc.say("Emotion that I feel is real? Or just illusion coming from mechanical error?")
+    script.say("Emotion that I feel is real? Or just illusion coming from mechanical error?")

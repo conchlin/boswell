@@ -9,4 +9,4 @@
     @Author: Auto Generated
     @Created: 2023-03-03 
     */
-    npc.say("Behold, I am the mighty Glimmer Man! One of the most powerful mages in the world!")
+    script.say("Behold, I am the mighty Glimmer Man! One of the most powerful mages in the world!")

@@ -9,4 +9,4 @@
     @Author: Auto Generated
     @Created: 2023-03-03 
     */
-    npc.say("Hello there? I'm Rooney.")
+    script.say("Hello there? I'm Rooney.")

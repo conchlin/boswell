@@ -9,4 +9,4 @@
     @Author: Auto Generated
     @Created: 2023-03-03 
     */
-    npc.say("Weddings are my game. Any questions? I may be able to help!")
+    script.say("Weddings are my game. Any questions? I may be able to help!")

@@ -9,4 +9,4 @@
     @Author: Auto Generated
     @Created: 2023-03-03 
     */
-    npc.say("&lt;Spark> I am cybernetic automaton model T-1337 *BZZ* ")
+    script.say("&lt;Spark> I am cybernetic automaton model T-1337 *BZZ* ")

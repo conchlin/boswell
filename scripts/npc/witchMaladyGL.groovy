@@ -10,4 +10,4 @@
     @Created: 2023-03-02 
     */
 
-    npc.say("Kekeke... Tricking people is simply amusing. Muhaha! Hey, who are you? Go away! I have no business with you!")
+    script.say("Kekeke... Tricking people is simply amusing. Muhaha! Hey, who are you? Go away! I have no business with you!")

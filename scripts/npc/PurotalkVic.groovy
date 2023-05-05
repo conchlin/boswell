@@ -9,4 +9,4 @@
     @Author: Auto Generated
     @Created: 2023-03-03 
     */
-    npc.say("If you move around recklessly and wind up dropping from the ship, you'll be sent back to the place of origin. You wouldn't want that to happen.")
+    script.say("If you move around recklessly and wind up dropping from the ship, you'll be sent back to the place of origin. You wouldn't want that to happen.")

@@ -9,4 +9,4 @@
     @Author: Auto Generated
     @Created: 2023-03-03 
     */
-    npc.say("What are you here fore? Are you here because of my ravishing good looks?")
+    script.say("What are you here fore? Are you here because of my ravishing good looks?")

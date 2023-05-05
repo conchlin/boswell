@@ -9,4 +9,4 @@
     @Author: Auto Generated
     @Created: 2023-03-03 
     */
-    npc.say("I don't have the time to talk to you... In fact, I am not as free as what you think I am.")
+    script.say("I don't have the time to talk to you... In fact, I am not as free as what you think I am.")

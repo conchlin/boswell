@@ -9,4 +9,4 @@
     @Author: Auto Generated
     @Created: 2023-03-03 
     */
-    npc.say("How can I help you today?")
+    script.say("How can I help you today?")

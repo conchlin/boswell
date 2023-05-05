@@ -9,4 +9,4 @@
     @Author: Auto Generated
     @Created: 2023-03-03 
     */
-    npc.say("Why do you need to see Kyrin?")
+    script.say("Why do you need to see Kyrin?")

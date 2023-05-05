@@ -9,4 +9,4 @@
     @Author: Auto Generated
     @Created: 2023-03-03 
     */
-    npc.say("I guess you came all the way here to try the world's best cooking? Well, my friend, you've come to the right place.")
+    script.say("I guess you came all the way here to try the world's best cooking? Well, my friend, you've come to the right place.")

@@ -9,4 +9,4 @@
     @Author: Auto Generated
     @Created: 2023-03-03 
     */
-    npc.say("How in the world did someone spot me?")
+    script.say("How in the world did someone spot me?")

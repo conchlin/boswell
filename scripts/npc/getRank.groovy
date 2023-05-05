@@ -9,4 +9,4 @@
     @Author: Auto Generated
     @Created: 2023-03-03 
     */
-    npc.say("Do you know about the Boss Rush challenge?")
+    script.say("Do you know about the Boss Rush challenge?")

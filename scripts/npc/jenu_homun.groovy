@@ -9,4 +9,4 @@
     @Author: Auto Generated
     @Created: 2023-03-03 
     */
-    npc.say("Tradition means that it has high value of power. Since black magician age, Only Zenumist have kept developing Alchemy.")
+    script.say("Tradition means that it has high value of power. Since black magician age, Only Zenumist have kept developing Alchemy.")

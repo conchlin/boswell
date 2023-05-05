@@ -9,4 +9,4 @@
     @Author: Auto Generated
     @Created: 2023-03-03 
     */
-    npc.say("Ready to try the maple Quiz?")
+    script.say("Ready to try the maple Quiz?")
