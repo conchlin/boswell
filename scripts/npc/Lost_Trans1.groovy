@@ -9,4 +9,4 @@
     @Author: Auto Generated
     @Created: 2023-03-03 
     */
-    npc.say("I'm the new sheriff in town. I'm going to corral this town into a crime-free zone. Can you help me?")
+    script.say("I'm the new sheriff in town. I'm going to corral this town into a crime-free zone. Can you help me?")

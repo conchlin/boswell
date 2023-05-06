@@ -17,7 +17,7 @@ for (var i = 0; i < destinations.size(); i++) {
     message += "\r\n#L" + i + "##bThe platform to " + boatType[i] + " that heads to " + destinations[i] + ".#l";
 }
 
-def sel = npc.askMenu(message)
-npc.sayNext("Ok #h #, I will send you to the platform for #b#m" + (200000110 + (sel * 10)) + "##k.")
+def sel = script.askMenu(message)
+script.sayNext("Ok #h #, I will send you to the platform for #b#m" + (200000110 + (sel * 10)) + "##k.")
 user.changeMap(200000110 + (sel * 10), "west00")
 

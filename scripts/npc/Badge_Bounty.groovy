@@ -9,4 +9,4 @@
     @Author: Auto Generated
     @Created: 2023-03-03 
     */
-    npc.say("Is it dinner time again yet?")
+    script.say("Is it dinner time again yet?")

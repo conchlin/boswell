@@ -9,4 +9,4 @@
     @Author: Auto Generated
     @Created: 2023-03-03 
     */
-    npc.say("I want to just quit and go home.")
+    script.say("I want to just quit and go home.")

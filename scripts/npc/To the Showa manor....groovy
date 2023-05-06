@@ -9,4 +9,4 @@
     @Author: Auto Generated
     @Created: 2023-03-03 
     */
-    npc.say("Don't talk to me if you are just as weak-willed as the people that lives around here.")
+    script.say("Don't talk to me if you are just as weak-willed as the people that lives around here.")

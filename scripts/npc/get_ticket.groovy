@@ -25,13 +25,13 @@ static int getTravelLocation(int currentMap) {
 }
 
 def currentMap = user.getMapId()
-def sel = npc.askMenu("We are ready for takeoff! Do you want to travel to #b#m" + getTravelLocation(currentMap) + "##k? " +
+def sel = script.askMenu("We are ready for takeoff! Do you want to travel to #b#m" + getTravelLocation(currentMap) + "##k? " +
         " For the low cost of 10,000 meso I can take you there! But please do hurry and decide before the ship leaves!" +
         "\r\n#L0##bI would like to travel to #m" + getTravelLocation(currentMap) +"##k \r\n#L1# #bI would like to ride the ship#k")
 
 if (sel == 0) {
     if (user.getMeso() < 10000) {
-        npc.say("Hmm.. Are you sure that you have #b1000 Mesos#k? Check your Inventory and make sure you have enough. " +
+        script.say("Hmm.. Are you sure that you have #b1000 Mesos#k? Check your Inventory and make sure you have enough. " +
                 "You must pay the fee or I can't let you get on...")
     } else {
         user.gainMeso(-10000)
@@ -40,5 +40,5 @@ if (sel == 0) {
 
 } else if (sel == 1) {
     // this option is needed only to gain access to the balrog on the orbis flight
-    npc.say("This feature is not complete")
+    script.say("This feature is not complete")
 }

@@ -9,4 +9,4 @@
     @Author: Auto Generated
     @Created: 2023-03-03 
     */
-    npc.say("My dream is to travel all over the world.... Just like you... But my father just doesn't let me...")
+    script.say("My dream is to travel all over the world.... Just like you... But my father just doesn't let me...")

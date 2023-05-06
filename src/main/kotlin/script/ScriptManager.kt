@@ -2,6 +2,7 @@ package script
 
 import client.MapleClient
 import network.packet.ScriptMan
+import org.slf4j.LoggerFactory
 import script.binding.*
 import script.template.*
 import server.MapleItemInformationProvider
@@ -11,15 +12,13 @@ import tools.data.input.SeekableLittleEndianAccessor
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileReader
+import java.io.IOException
 import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.locks.Lock
 import java.util.concurrent.locks.ReentrantLock
-import javax.script.Bindings
-import javax.script.ScriptContext
-import javax.script.ScriptEngineManager
-import javax.script.ScriptException
+import javax.script.*
 import kotlin.experimental.and
 
 
@@ -33,10 +32,8 @@ class ScriptManager {
         const val Message = 2
         const val Pending = 3
         const val Finishing = 4
-        val engine = ScriptEngineManager().getEngineByExtension("groovy")!!
-        private var directory = ""
-        private var script: File? = null
         private val pool = Executors.newCachedThreadPool()
+        private val logger = LoggerFactory.getLogger(ScriptManager::class.java)
         private var oid: Int
         var posScriptHistory: Int
         var scriptHist: LinkedList<ScriptHistory>
@@ -57,59 +54,39 @@ class ScriptManager {
         }
 
         /**
-         * @param client
-         * @param objectId
-         * @param name either the actual script name or the npcId
-         * @param st
+         * responsible for running all scripts in the game
+         *
+         * @param client of the user
+         * @param objectId either the field objectId or questId
+         * @param name the name of the script (this is pulled from the wz files)
+         * @param scriptType see ScriptType.kt for enum values
          */
-        fun runScript(client: MapleClient, objectId: Int, name: String, st: ScriptType) {
-            lock.lock()
-            try {
-                directory = "./scripts/${st.type}"
-                val scriptName = String.format(
-                    "%s/%s%s", directory,
-                    name, ".groovy"
-                )
-                val scriptFile = File(scriptName)
-                val exists: Boolean = scriptFile.exists()
-                oid = objectId
-
-                if (!exists) {
-                    handleMissingScript(client, objectId, name, st)
-                    return // so that we do not try to eval a null script
-                } else {
-                    script = scriptFile
-                }
-            } finally {
-                lock.unlock()
+        @JvmStatic
+        fun runScript(client: MapleClient, objectId: Int, name: String, scriptType: ScriptType) {
+            val scriptFile = File("./scripts/${scriptType.type}/$name.groovy")
+            oid = objectId
+            if (!scriptFile.exists()) {
+                // if the file doesn't exist we generate one
+                handleMissingScript(client, objectId, name, scriptType)
+                return
             }
 
-            val binding: Bindings? = engine.getBindings(ScriptContext.GLOBAL_SCOPE)
-
-            if (st == ScriptType.Npc) {
-                binding?.set("npc", ScriptNpc(this, client.player.map.getMapObject(objectId) as MapleNPC, client))
+            val scriptFunc = ScriptFunc(this, objectId, client.player) // so that we can access the companion obj
+            val bindings = SimpleBindings().apply {
+                // add our bindings to use when scripting
+                put("user", client.player)
+                put("field", client.player.map)
+                put("script", scriptFunc)
             }
-            if (st == ScriptType.Portal) {
-                binding?.set("portal", ScriptPortal(client.player.map.getPortal(objectId), client))
-            }
-            if (st == ScriptType.Reactor) {
-                binding?.set("reactor", ScriptReactor(client.player.map.getReactorById(objectId), client))
-            }
-            if (st == ScriptType.Item) {
-                val ii = MapleItemInformationProvider.getInstance()
-                val info = ii.getScriptedItemInfo(objectId) // item id in this case
-                binding?.set("item", ScriptItem(info, client))
-            }
-            binding?.set("user", client.player)
-            binding?.set("field", ScriptField(client.player.map, client))
 
             pool.execute {
                 try {
-                    engine.eval(script?.let { FileReader(it) }, binding)
+                    val engine = ScriptEngineManager().getEngineByExtension("groovy")!!
+                    engine.eval(FileReader(scriptFile), bindings)
                 } catch (se: ScriptException) {
-                    se.printStackTrace()
+                    logger.error("Error running script: ${se.message}", se)
                 } catch (fnfe: FileNotFoundException) {
-                    fnfe.printStackTrace()
+                    logger.error("Error the file was not found: ${fnfe.message}", fnfe)
                 } finally {
                     destroy()
                 }
@@ -132,7 +109,6 @@ class ScriptManager {
                 ScriptType.UserEnterField -> { // onUserEnter
                     autoGenScript = AutoGeneratedFieldScriptTemplate(
                         client.player.map,
-                        client,
                         name,
                         false
                     )
@@ -142,7 +118,6 @@ class ScriptManager {
                 ScriptType.FirstEnterField -> {
                     autoGenScript = AutoGeneratedFieldScriptTemplate(
                         client.player.map,
-                        client,
                         name,
                         true
                     )
@@ -212,6 +187,7 @@ class ScriptManager {
         below is the handling of the ScriptMessageAnswer packet and all it's components. I'm putting
         it here temporarily because I need access to this companion object.
          */
+        @JvmStatic
         fun onScriptMessageAnswer(slea: SeekableLittleEndianAccessor, client: MapleClient) {
             if (posScriptHistory == 0 || scriptHist.isEmpty()) {
                 return
@@ -318,9 +294,6 @@ class ScriptManager {
         fun destroy() {
             lock.lock()
             try {
-                if (script != null) {
-                    script = null
-                }
                 if (status.get() != Ready) {
                     status.set(Ready)
                 }

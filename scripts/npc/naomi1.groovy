@@ -9,4 +9,4 @@
     @Author: Auto Generated
     @Created: 2023-03-03 
     */
-    npc.say("Hey, there.  The name's Spindle.  I'm good at fixing stuff when they break, and building things so they won't.  Need something?  If not, I'm kinda busy here...")
+    script.say("Hey, there.  The name's Spindle.  I'm good at fixing stuff when they break, and building things so they won't.  Need something?  If not, I'm kinda busy here...")

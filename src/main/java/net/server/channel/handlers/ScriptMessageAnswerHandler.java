@@ -33,6 +33,6 @@ import tools.data.input.SeekableLittleEndianAccessor;
 public final class ScriptMessageAnswerHandler extends AbstractMaplePacketHandler {
     @Override
     public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
-        ScriptManager.Companion.onScriptMessageAnswer(slea, c);
+        ScriptManager.onScriptMessageAnswer(slea, c);
     }
 }

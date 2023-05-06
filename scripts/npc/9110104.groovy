@@ -9,4 +9,4 @@
     @Author: Auto Generated
     @Created: 2023-03-03 
     */
-    npc.say("Flee for your lives! It's dangerous here!")
+    script.say("Flee for your lives! It's dangerous here!")

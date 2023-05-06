@@ -11,7 +11,7 @@
 def currentMap = user.getMapId()
 def location = currentMap == 100000000 ? "Amoria" : "Henesys"
 
-def ret = npc.askYesNo("I can take you to the " + location +". Are you ready to go?")
+def ret = script.askYesNo("I can take you to the " + location +". Are you ready to go?")
 
 if (ret == 1) {
     if (currentMap == 100000000) {

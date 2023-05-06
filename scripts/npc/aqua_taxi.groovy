@@ -34,13 +34,13 @@ if (user.haveItem(4031242)) {
     payment = true
 }
 
-def sel = npc.askMenu("Ocean are all connected to each other. Place you can't reach by foot can easily reached oversea. " +
+def sel = script.askMenu("Ocean are all connected to each other. Place you can't reach by foot can easily reached oversea. " +
         "How about taking #bDolphin Taxi#k with us today?\r\n" + menu)
 
 if (sel == 0) {
     if (payment) {
         if (user.getMeso() < 1000) {
-            npc.say("I don't think you have enough money...")
+            script.say("I don't think you have enough money...")
         } else {
             user.gainMeso(-1000)
         }
@@ -50,7 +50,7 @@ if (sel == 0) {
     user.changeMap(230030200, 2)
 } else if (sel == 1) {
     if (user.getMeso() < 1000) {
-        npc.say("I don't think you have enough money...")
+        script.say("I don't think you have enough money...")
     } else {
         user.gainMeso(-1000)
         user.changeMap(atHerbTown ? 230000000 : 251000100)

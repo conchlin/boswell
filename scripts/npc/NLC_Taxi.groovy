@@ -13,16 +13,16 @@ def destination = currentMap == 600000000 ? "the Haunted Mansion" : "New Leaf Ci
 def warpDestination = -1
 def fee = 1500
 
-def ret = npc.askYesNo("Would you like to go to #b" + destination + "#k? The fee is " + fee + " mesos.")
+def ret = script.askYesNo("Would you like to go to #b" + destination + "#k? The fee is " + fee + " mesos.")
 
 if (ret == 1) {
     warpDestination = destination == "New Leaf City" ? 600000000 : 682000000
     if (user.getMeso() < fee) {
-        npc.say("Hey, what are you trying to pull on? You don't have enough mesos to pay the fee.")
+        script.say("Hey, what are you trying to pull on? You don't have enough mesos to pay the fee.")
     } else {
         user.gainMeso(-fee)
         user.changeMap(warpDestination, 0)
     }
 } else {
-    npc.say("Alright, see you next time.")
+    script.say("Alright, see you next time.")
 }

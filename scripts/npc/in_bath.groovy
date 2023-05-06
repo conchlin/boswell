@@ -9,4 +9,4 @@
     @Author: Auto Generated
     @Created: 2023-03-03 
     */
-    npc.say("This is where you leave your pain and fatigue behind.")
+    script.say("This is where you leave your pain and fatigue behind.")

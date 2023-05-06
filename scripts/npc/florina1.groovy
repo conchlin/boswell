@@ -10,14 +10,14 @@
 
 def returnMap = user.peekSavedLocation("FLORINA")
 
-npc.sayNext("So you want to leave #b#m110000000##k? If you want, I can take you back to #b#m" + returnMap + "##k.")
+script.sayNext("So you want to leave #b#m110000000##k? If you want, I can take you back to #b#m" + returnMap + "##k.")
 
-def ret = npc.askYesNo("Are you sure you want to return to #b#m" + returnMap + "##k? Alright, we'll have to get " +
+def ret = script.askYesNo("Are you sure you want to return to #b#m" + returnMap + "##k? Alright, we'll have to get " +
         "going fast. Do you want to head back to #m" + returnMap + "# now?")
 if (ret == 1) {
     user.getSavedLocation("FLORINA")
     user.changeMap(returnMap)
 } else {
-    npc.say("You must have some business to take care of here. It's not a bad idea to take some rest at #m"+ returnMap +
+    script.say("You must have some business to take care of here. It's not a bad idea to take some rest at #m"+ returnMap +
             "# Look at me; I love it here so much that I wound up living here. Hahaha anyway, talk to me when you feel like going back.")
 }

@@ -9,4 +9,4 @@
     @Author: Auto Generated
     @Created: 2023-03-03 
     */
-    npc.say("Hear the call, from the big to the small! New Leaf City welcomes you all! ")
+    script.say("Hear the call, from the big to the small! New Leaf City welcomes you all! ")
