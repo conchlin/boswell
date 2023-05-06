@@ -1,13 +1,17 @@
-# Scripting Documentation
-This file will be treated as the official documentation of the Boswell scripting environment. This file also assumes that
- you have a basic understanding of OOP and data structures. 
+# Boswell Scripting Environment Documentation
+This README file serves as the official documentation of the Boswell scripting environment. 
+This document is intended for developers who want to create custom scripts for the environment.
+
+### Prerequisites
+Before you can start developing scripts for the Boswell environment, you should have a basic 
+understanding of OOP and data structures.
 
 -------------------------------------------------------------------
 
 ## Groovy Basics
-Boswell has adopted the Groovy language for scripting purposes. The main reason behind this decision is the syntax 
-similarities that it shares with Java and Kotlin. Having this similarity could help to reduce the learning curve when 
-utilizing and writing these scripts. 
+Boswell uses Groovy as its scripting language. Groovy has similar syntax to Java and Kotlin, making it easier for 
+developers to learn and use. Below are some simple examples of the Groovy syntax. For a more detailed summary you
+can check out official [Groovy Documentation](https://groovy-lang.org/documentation.html). 
 
 ```groovy
 // this is a single line comment
@@ -33,47 +37,34 @@ static void sayHello() {
 -------------------------------------------------------------------
 
 ## Scripting Basics
-All groovy scripts are executed on a global scope. That means that unlike a lot of older sources (Odinms) you do not 
-need to invoke various functions like start(), action(), etc. Instead, we simply execute all of our code line-by-line 
-right here in the script.
+All Groovy scripts in Boswell are executed on a global scope. This means that unlike older projects like 
+Odinms, you don't need to invoke various functions like start(), action(), etc. Instead, all code is 
+executed line-by-line in the script.
 
 ```groovy
-// in this example we see each line includes either a sayNext() or say() method call
+// this example is taken directly from the rithTeleport.groovy npc script
+// in this example we see each line includes a sayNext() method call
 // each line is asynchronously executed so that we can have multiple dialogue boxes back-to-back
-npc.sayNext("The first dialogue box")
-npc.sayNext("the second dialogue box")
-npc.say("the final dialogue box")
+script.sayNext("Alright I'll explain to you more about #bHenesys#k. It's a bowman-town located at the southernmost " +
+        "part of the island, made on a flatland in the midst of a deep forest and prairies. The weather's just " +
+        "right, and everything is plentiful around that town, perfect for living. Go check it out.")
+script.sayNext("Around the prairie you'll find weak monsters such as snails, mushrooms, and pigs. According to " +
+        "what I hear, though, in the deepest part of the Pig Park, which is connected to the town somewhere, " +
+        "you'll find a humongous, powerful mushroom called Mushmom every now and then.")
 ```
 
-### Script Types and Bindings
-Boswell has 6 script types ``field, item, npc, portal, quest, reactor`` that are utilized in this version of maplestory. 
-Each script type is treated slightly differently and is exposed to different methods based on needs. This is where 
-ScriptEngine global bindings come into play. Each script binding pairs a keyword to a file location within the source. 
-This provides a streamlined way of accessing methods for scripting purposes and helps provide readability and code 
-organization. However, depending on script type not all bindings are added to that specific engine instance (ex. you wouldn't 
-need a portal binding if you are running a npc script). The list of bindings are as follows:
+### Auto-generated Script Templates
+Whenever a script is encountered in-game but does not exist a simple script will automatically be generated. 
+These scripts have some very basic info within them that is meant to make development a bit easier. The naming 
+conventions for scripts are taken directly from the wz files, so they'll always remain consistent!
+
+### Scripting Bindings
+Script engine bindings provide a convenient way to access methods within the Boswell source. Most of these methods are found 
+within ``ScriptFunc.kt`` and can be accessed using the `script` keyword. However, other bindings do exist such as:
 
 ```
-user -> MapleCharacter.java
-field -> MapleMap.java
-item -> ScriptItem.kt
-npc -> ScriptNpc.kt
-portal -> ScriptPortal.kt
-quest -> ScriptQuest.kt
-reactor -> ScriptReactor.kt
-```
-Please note: With the exception of `user` and `field`, all script binding related files can be found in `src/main/kotlin/script/bindings/.`.
-
-So if we look at the previous example of code we can now see where exactly these keywords and methods calls are coming from.
-```groovy
-// by using the npc keyword we can access methods within the ScriptNpc.kt file 
-// ScriptNpc.sayNext() and ScriptNpc.say()
-npc.sayNext("The first dialogue box")
-npc.sayNext("the second dialogue box")
-npc.say("the final dialogue box")
-// let's say that after talking to the NPC you want to warp the player to a different map
-// this can be accomplished by using a different binding and method call (accessing that player's specific instance of MapleCharacter.changeMap())
-user.changeMap(100000000)
+user -> this allows access to MapleCharacter
+field -> this allows access to MapleMap
 ```
 
 ### NPC Scripting
@@ -81,50 +72,82 @@ NPC scripts probably take up the majority of scripts needed to provide smooth ga
 that are unique to them and necessary to master in order to write their scripts. These NPC script methods are as follows:
 
 
-``say(msg: String)`` : ``Broadcasts a dialogue box with an ok button. This is commonly used for the last dialogue of an NPC.``
+``say(msg: String) : Broadcasts a dialogue box with an ok button. This is commonly used for the last dialogue of 
+an NPC. This method should only be used for the script type NPC.``
 
-``sayNext(msg: String)`` : ``Broadcasts a dialogue box with a next button. This is used when dialogue boxes are needed in succession.``
+``say(msg: String, templateId: Int) : Broadcasts a dialogue box with an ok button with an NPC that you can specify. 
+ This method should only be used for the non-NPC script types.``
 
-``askYesNo(msg: String)`` : ``Broadcasts a dialogue box with a yes and no button. It returns the value of the response. 1 for yes and 0 for no.``
+``sayNext(msg: String) : Broadcasts a dialogue box with a next button. This is used when dialogue boxes are needed 
+in succession. This method should only be used for the script type NPC.``
+
+``sayNext(msg: String, templateId: Int) : Broadcasts a dialogue box with a next button with an NPC that you can 
+specify. This method should only be used for the script type NPC.``
+
+``askYesNo(msg: String) : Broadcasts a dialogue box with a yes and no button. It returns the value of the response. 
+1 for yes and 0 for no. This method should only be used for the script type NPC.``
+
+``askYesNo(msg: String, templateId: Int) : Broadcasts a dialogue box with a yes and no button. It returns the value of the response.
+1 for yes and 0 for no. This method should only be used for non-NPC script types.``
+
+``askMenu(msg: String) : Broadcasts a dialogue box that can handles lists of options to choose from. It returns the selection number of whatever option has been chosen.``
+
+``askAvatar(msg: String, vararg _: Int) :  ``
+
+``askNumber(msg: String, def: Int, min: Int, max: Int) :  ``
+
+``askText(msg:String) :  ``
+
+``askText(msg: String, msgDefault: String, lengthMin: Int, lengthMax: Int) :  ``
+
+### Examples
+
 ```groovy
-// example of using askYesNo()
-// since we are evaluating the return value of askYesNo we need to store it in a variable
-def ret = npc.askYesNo("Would you like to continue?")
+// say(msg: String) -> should only be used for NPC scripts
+script.say("Behold, I am the mighty Glimmer Man! One of the most powerful mages in the world!")
 
-// we then give different responses based on the answer
+// say(msg: String, templateId: Int) -> should be used for all non-NPC scripts
+script.say("Behold, I am the mighty Glimmer Man! One of the most powerful mages in the world!", 9201083)
+
+// sayNext(msg: String) -> should only be used for NPC scripts
+script.sayNext("Behold, I am the mighty Glimmer Man! One of the most powerful mages in the world!")
+
+// sayNext(msg: String, templateId: Int) -> should be used for all non-NPC scripts
+script.sayNext("Behold, I am the mighty Glimmer Man! One of the most powerful mages in the world!", 9201083)
+
+// askYesNo(msg: String)
+def ret = script.askYesNo("Oh, and.. so.. this ship will take you to #bEreve#k, the place where you'll find crimson " +
+        "leaves soaking up the sun, the gently breeze that glides past the stream, and the Empress of Maple, Cygnus. " +
+        "Would you like to head over to #bEreve#k? \r\n\r\n The trip costs #b1000 Mesos#k")
 if (ret == 1) { // yes
-    npc.say("Great! Let's continue!")
-} else { // no
- // ret == 0
-    npc.say("You must have something else to do :(")
+    user.gainMeso(-1000)
+    user.changeMap(130000210)
+} else {
+    script.say("If you're not interested, then oh well...")
+}
+
+//askYesNo(msg: String, templateId: Int) -> should be used for all non-NPC scripts
+def ret = script.askYesNo("Oh, and.. so.. this ship will take you to #bEreve#k, the place where you'll find crimson " +
+        "leaves soaking up the sun, the gently breeze that glides past the stream, and the Empress of Maple, Cygnus. " +
+        "Would you like to head over to #bEreve#k? \r\n\r\n The trip costs #b1000 Mesos#k", 1100007)
+if (ret == 1) { // yes
+    user.gainMeso(-1000)
+    user.changeMap(130000210)
+} else {
+    script.say("If you're not interested, then oh well...", 1100007)
+}
+
+// askMenu(msg: String) example
+def sel = script.askMenu("It's understandable that you may be confused about this place if this is your first " + "time around. " +
+        "If you got any questions about this place, fire away.\r\n#L0##bWhat kind of towns are here in Victoria Island?" +
+        "#l\r\n#L1#Please take me somewhere else.#k#l")
+if (sel == 0) {
+    // what kind of towns?
+} else if (sel == 1) { 
+    //i'd like to go somewhere
 }
 ```
 
-``askMenu(msg: String)`` : ``Broadcasts a dialogue box that can handles lists of options to choose from. It returns the selection number of whatever option has been chosen.``
-```groovy
-// example of using askMenu()
-// we are basing our response off the return value of askMenu()
-// each selection should be surrounded by #L<selection number>#<text>#l 
-def sel = npc.askMenu("What option do you want to choose? #L0#1st option is best!#l #L1#2nd option is my choice!#l")
-
-// we then handle each possible selection value
-if (sel == 0) { 
-    npc.say("I agree, the 1st option is the best!")
-} else if (sel == 1) {
-    npc.say("Yup, you're right. The second option is a great choice.")
-}
-```
-
-todo: The rest of the npc scripting methods below are implemented but not used. As they are utilized documentation should be added
-for them.
-
-``askAvatar(msg: String, vararg _: Int)`` : `` ``
-
-``askNumber(msg: String, def: Int, min: Int, max: Int)`` : `` ``
-
-``askText(msg:String)`` : `` ``
-
-``askText(msg: String, msgDefault: String, lengthMin: Int, lengthMax: Int)`` : `` ``
-
-todo: Sometimes other script types will need access to these npc dialogues. A simple way needs to be added.
-
+# Conclusion
+Thank you for reading the Boswell scripting environment documentation. If you have any questions or comments, 
+please feel free to contact either myself or join the Boswell discord!
