@@ -298,6 +298,17 @@ public class MapleLifeFactory {
         return MapleDataTool.getString(nid + "/d0", npcStringData, "(...)");
     }
 
+    /**
+     * The trunkPut node exists in all NPCs that are treated as storages
+     */
+    public static boolean isTrunkNPC(int nid) {
+        MapleData npcDataById = npcData.getData(StringUtil.getLeftPaddedStr(nid + ".img", '0', 11));
+        MapleData npcInfo = npcDataById.getChildByPath("info");
+        MapleData npcTrunk = npcInfo.getChildByPath("trunkPut");
+
+        return npcTrunk != null;
+    }
+
     public static class BanishInfo {
 
         private int map;

@@ -11,7 +11,7 @@ public class ShopCommand extends Command {
 
     @Override
     public void execute(MapleClient c, String[] params) {
-        MapleShopFactory.getInstance().getShop(69420).sendShop(c);
+        MapleShopFactory.getInstance().getShop(69420).openShopDlg(c);
     }
 }
 

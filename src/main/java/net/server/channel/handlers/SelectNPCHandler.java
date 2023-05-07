@@ -55,7 +55,7 @@ public final class SelectNPCHandler extends AbstractMaplePacketHandler {
                 script = String.valueOf(npc.getId());
             }
             if (!hasCustomHandling(c, npc)) {
-                ScriptManager.Companion.runScript(c, objectId, script, ScriptType.Npc);
+                ScriptManager.runScript(c, objectId, script, ScriptType.Npc);
             }
 
         }
@@ -65,6 +65,14 @@ public final class SelectNPCHandler extends AbstractMaplePacketHandler {
     public boolean hasCustomHandling(MapleClient c, MapleNPC npc) {
         if (npc.getId() == 9010009) { // duey
             DueyProcessor.dueySendTalk(c, false);
+            return true;
+        }
+        if (npc.hasShop()) {
+            npc.sendShop(c);
+            return true;
+        }
+        if (npc.hasTrunk()) {
+            c.getPlayer().getStorage().sendStorage(c, npc.getId());
             return true;
         }
         return false;
