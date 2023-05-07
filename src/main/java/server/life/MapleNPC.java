@@ -52,6 +52,10 @@ public class MapleNPC extends AbstractLoadedMapleLife {
         MapleShopFactory.getInstance().getShopForNPC(getId()).openShopDlg(c);
     }
 
+    public boolean hasTrunk() {
+        return MapleLifeFactory.isTrunkNPC(getId());
+    }
+
     @Override
     public void sendSpawnData(MapleClient client) {
         // removes the following NPC: Maple TV's, Inkwell, Mimi, Abdullah, Gaga, first job statues, power b. fore

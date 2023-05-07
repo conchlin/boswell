@@ -71,6 +71,10 @@ public final class SelectNPCHandler extends AbstractMaplePacketHandler {
             npc.sendShop(c);
             return true;
         }
+        if (npc.hasTrunk()) {
+            c.getPlayer().getStorage().sendStorage(c, npc.getId());
+            return true;
+        }
         return false;
     }
 }
