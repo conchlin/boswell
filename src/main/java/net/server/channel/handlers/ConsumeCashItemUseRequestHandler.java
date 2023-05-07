@@ -477,7 +477,7 @@ public final class ConsumeCashItemUseRequestHandler extends AbstractMaplePacketH
             if (player.getShop() == null) {
                 MapleShop shop = MapleShopFactory.getInstance().getShop(1338);
                 if (shop != null) {
-                    shop.sendShop(c);
+                    shop.openShopDlg(c);
                     remove(c, position, itemId);
                 }
             } else {

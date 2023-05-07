@@ -34,6 +34,6 @@ public class GmShopCommand extends Command {
 
     @Override
     public void execute(MapleClient c, String[] params) {
-        MapleShopFactory.getInstance().getShop(1337).sendShop(c);
+        MapleShopFactory.getInstance().getShop(1337).openShopDlg(c);
     }
 }

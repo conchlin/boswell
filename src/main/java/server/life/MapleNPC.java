@@ -49,7 +49,7 @@ public class MapleNPC extends AbstractLoadedMapleLife {
     }
 
     public void sendShop(MapleClient c) {
-        MapleShopFactory.getInstance().getShopForNPC(getId()).sendShop(c);
+        MapleShopFactory.getInstance().getShopForNPC(getId()).openShopDlg(c);
     }
 
     @Override

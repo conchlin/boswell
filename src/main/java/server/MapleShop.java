@@ -76,7 +76,7 @@ public class MapleShop {
         items.add(item);
     }
 
-    public void sendShop(MapleClient c) {
+    public void openShopDlg(MapleClient c) {
         c.getPlayer().setShop(this);
         c.announce(ShopPacket.Packet.onOpenShopDlg(c, getNpcId(), items));
     }
