@@ -9,7 +9,7 @@
     <version>boswell</version>
     <properties>
         <maven.compiler.release>17</maven.compiler.release>
-        <kotlin.version>1.7.10</kotlin.version>
+        <kotlin.version>1.8.10</kotlin.version>
     </properties>
     <dependencies>
         <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
