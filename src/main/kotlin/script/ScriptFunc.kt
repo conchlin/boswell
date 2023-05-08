@@ -19,7 +19,7 @@ class ScriptFunc(
         if (sm.status.get() == ScriptManager.Finishing) {
             throw RuntimeException("Attempting to execute script after finish status.")
         }
-        if (!sm.scriptHist.isEmpty() && (type != ScriptMessageType.Say.type || sm.scriptHist.first.type != ScriptMessageType.Say.type)) {
+        if (sm.scriptHist.isNotEmpty() && (type != ScriptMessageType.Say.type || sm.scriptHist.first().type != ScriptMessageType.Say.type)) {
             clearHistory()
         }
         val hist = ScriptHistory(type)
@@ -64,7 +64,7 @@ class ScriptFunc(
         }
 
         hist.speakerTemplateID = templateId
-        sm.scriptHist.addLast(hist)
+        sm.scriptHist.add(hist)
         sm.posScriptHistory = sm.scriptHist.size
     }
 
@@ -118,8 +118,8 @@ class ScriptFunc(
      * Broadcasts a NPC chat window with yes/no buttons
      * This should be used only be used for NPC scripts
      */
-    fun askYesNo(msg: String) {
-        askYesNo(msg, user.map.getNPCByObjectId(objectId).id)
+    fun askYesNo(msg: String): Any? {
+        return askYesNo(msg, user.map.getNPCByObjectId(objectId).id)
     }
 
     /**

@@ -3,7 +3,6 @@ package script
 import client.MapleClient
 import network.packet.ScriptMan
 import org.slf4j.LoggerFactory
-import script.binding.*
 import script.template.*
 import server.MapleItemInformationProvider
 import server.life.MapleNPC
@@ -12,7 +11,6 @@ import tools.data.input.SeekableLittleEndianAccessor
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileReader
-import java.io.IOException
 import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
@@ -36,7 +34,7 @@ class ScriptManager {
         private val logger = LoggerFactory.getLogger(ScriptManager::class.java)
         private var oid: Int
         var posScriptHistory: Int
-        var scriptHist: LinkedList<ScriptHistory>
+        var scriptHist: ArrayList<ScriptHistory>
         var status: AtomicInteger
         private val continuation: Object
         var lock: Lock
@@ -47,7 +45,7 @@ class ScriptManager {
         init {
             oid = 0
             posScriptHistory = 0
-            scriptHist = LinkedList<ScriptHistory>()
+            scriptHist = ArrayList<ScriptHistory>()
             status = AtomicInteger(Ready)
             continuation = Object()
             lock = ReentrantLock()
