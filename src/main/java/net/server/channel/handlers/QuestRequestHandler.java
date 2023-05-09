@@ -27,6 +27,7 @@ import client.MapleClient;
 import net.AbstractMaplePacketHandler;
 import script.ScriptManager;
 import script.ScriptType;
+import server.life.MapleLifeFactory;
 import server.quest.MapleQuest;
 import server.life.MapleNPC;
 import tools.data.input.SeekableLittleEndianAccessor;
@@ -70,6 +71,8 @@ public final class QuestRequestHandler extends AbstractMaplePacketHandler {
     public void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         byte action = slea.readByte();
         short questid = slea.readShort();
+        int npcId;
+        MapleNPC npc;
         MapleCharacter player = c.getPlayer();
         MapleQuest quest = MapleQuest.getInstance(questid);
         if (action == 0) { // Restore lost item, Credits Darter ( Rajan )
@@ -77,7 +80,13 @@ public final class QuestRequestHandler extends AbstractMaplePacketHandler {
             int itemid = slea.readInt();
             quest.restoreLostItem(player, itemid);
         } else if (action == 1) { //Start Quest
-            MapleNPC npc = player.getMap().getNPCById(slea.readInt());
+            npcId = slea.readInt();
+            if (player.getMap().containsNPC(npcId)) {
+                npc = player.getMap().getNPCById(npcId);
+            }
+            else {
+                npc = MapleLifeFactory.getNPC(npcId);
+            }
             if(!isNpcNearby(slea, player, quest, npc)) {
                 return;
             }
@@ -86,7 +95,13 @@ public final class QuestRequestHandler extends AbstractMaplePacketHandler {
                 quest.start(player, npc.getId());
             }
         } else if (action == 2) { // Complete Quest
-            MapleNPC npc = player.getMap().getNPCById(slea.readInt());
+            npcId = slea.readInt();
+            if (player.getMap().containsNPC(npcId)) {
+                npc = player.getMap().getNPCById(npcId);
+            }
+            else {
+                npc = MapleLifeFactory.getNPC(npcId);
+            }
             if(!isNpcNearby(slea, player, quest, npc)) {
                 return;
             }
@@ -102,7 +117,13 @@ public final class QuestRequestHandler extends AbstractMaplePacketHandler {
         } else if (action == 3) {// forfeit quest
             quest.forfeit(player);
         } else if (action == 4) { // scripted start quest
-            MapleNPC npc = player.getMap().getNPCById(slea.readInt());
+            npcId = slea.readInt();
+            if (player.getMap().containsNPC(npcId)) {
+                npc = player.getMap().getNPCById(npcId);
+            }
+            else {
+                npc = MapleLifeFactory.getNPC(npcId);
+            }
             if(!isNpcNearby(slea, player, quest, npc)) {
                 return;
             }
@@ -118,7 +139,7 @@ public final class QuestRequestHandler extends AbstractMaplePacketHandler {
                 c.setClickedNPC();
             }
         } else if (action == 5) { // scripted end quests
-            int npc = slea.readInt();
+            npcId = slea.readInt();
             //if(!isNpcNearby(slea, player, quest, npc)) {
             //    return;
             //}
