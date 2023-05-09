@@ -287,6 +287,15 @@ class ScriptManager {
                     tryResume()
                 }
 
+                ScriptMessageType.AskAccept.type.toByte() -> {
+                    if (action.toInt() == -1) {
+                        tryFinish()
+                        return
+                    }
+                    this.value = action
+                    tryResume()
+                }
+
                 else -> {
                     tryFinish()
                 }
