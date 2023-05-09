@@ -115,5 +115,17 @@ class ScriptMan {
             }
             return mplew.packet
         }
+
+        fun onAskAccept(speakerTemplateID: Int, text: String?): ByteArray? {
+            val mplew = MaplePacketLittleEndianWriter()
+            mplew.writeShort(SendOpcode.ScriptMessage.value)
+            mplew.write(4.toByte()) //4 is for NPC conversation actions
+            mplew.writeInt(speakerTemplateID)
+            mplew.write(ScriptMessageType.AskAccept.type)
+            mplew.write(0)
+            mplew.writeMapleAsciiString(text)
+
+            return mplew.packet
+        }
     }
 }

@@ -69,6 +69,10 @@ class ScriptFunc(
                 )
             }
 
+            ScriptMessageType.AskAccept.type -> {
+                hist.packet = ScriptMan.onAskAccept(speaker, mem[0].toString())
+            }
+
             else -> return
         }
 
@@ -157,6 +161,16 @@ class ScriptFunc(
         return sm.value
     }
 
+    fun askAccept(msg: String): Any? {
+        val memory: ArrayList<Any> = ArrayList()
+        memory.add(msg)
+        makeMessagePacket(ScriptMessageType.AskAccept.type, memory)
+        sendMessageAnswer()
+        memory.clear()
+        sm.tryCapture()
+
+        return sm.value
+    }
     fun askText(msg: String): Any? {
         return askText(msg, "", 0, 0)
     }
