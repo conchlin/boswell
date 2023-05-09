@@ -35,10 +35,7 @@ public class MigrateToITCRequestHandler extends AbstractMaplePacketHandler {
         } else if (GameConstants.isDojo(c.getPlayer().getMapId())) {
             player.dropMessage("You cannot enter the FM when in Dojo.");
         } else {
-            player.saveLocation("FREE_MARKET");
-            player.saveLocationOnWarp();
-            player.saveCharToDB();
-            player.changeMap(910000000, "out00");
+            player.changeMapToFreeMarket();
         }
 
         c.announce(WvsContext.Packet.enableActions());
