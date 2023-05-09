@@ -78,6 +78,7 @@ class ScriptManager {
                 // add our bindings to use when scripting
                 put("user", client.player)
                 put("field", client.player.map)
+                put("map_factory", client.channelServer.mapFactory)
                 put("script", scriptFunc)
             }
 

@@ -1308,6 +1308,18 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         //eventAfterChangedMap(this.getMapId());
     }
 
+    public final void changeMapToFreeMarket() {
+        if (getMapId() != 910000000) {
+            if (getLevel() >= 15) {
+                saveLocation("FREE_MARKET");
+                saveLocationOnWarp();
+                changeMap(910000000, "st00");
+            } else {
+                dropMessage(5, "You must be level 15 in order to be able to enter the FreeMarket.");
+            }
+        }
+    }
+
     public void forceChangeMap(final MapleMap target, final MaplePortal pto) {
         // will actually enter the map given as parameter, regardless of being an eventmap or whatnot
 
