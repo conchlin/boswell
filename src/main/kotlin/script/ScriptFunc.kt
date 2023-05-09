@@ -10,12 +10,21 @@ import java.util.*
 class ScriptFunc(
     private val sm: ScriptManager.Companion, private val objectId: Int, private val user: MapleCharacter
 ) {
-
-    private fun makeMessagePacket(type: Int, mem: ArrayList<Any>) {
-        makeMessagePacket(type, user.map.getNPCByObjectId(objectId).id, mem)
+    constructor(
+        sm: ScriptManager.Companion,
+        objectId: Int,
+        user: MapleCharacter,
+        templateID: Int
+    ) : this(sm, objectId, user) {
+        this.speaker = templateID
     }
 
-    private fun makeMessagePacket(type: Int, templateId: Int, mem: ArrayList<Any>) {
+    private var speaker = 0
+
+    private fun makeMessagePacket(type: Int, mem: ArrayList<Any>) {
+        if (speaker == 0) {
+            speaker = user.map.getNPCByObjectId(objectId).id
+        }
         if (sm.status.get() == ScriptManager.Finishing) {
             throw RuntimeException("Attempting to execute script after finish status.")
         }
@@ -29,68 +38,57 @@ class ScriptFunc(
             ScriptMessageType.Say.type -> {
                 val next = mem[1] as Boolean
                 hist.packet = ScriptMan.onSay(
-                    templateId, mem[0].toString(), sm.posScriptHistory != 0, next
+                    speaker, mem[0].toString(), sm.posScriptHistory != 0, next
                 )
             }
 
             ScriptMessageType.AskYesNo.type -> {
-                hist.packet = ScriptMan.onAskYesNo(templateId, mem[0].toString())
+                hist.packet = ScriptMan.onAskYesNo(speaker, mem[0].toString())
             }
 
             ScriptMessageType.AskAvatar.type -> {
                 hist.couponItemID = mem[1] as Int
                 hist.packet = ScriptMan.onAskAvatar(
-                    4, templateId, mem[0].toString(), mem[2] as IntArray
+                    4, speaker, mem[0].toString(), mem[2] as IntArray
                 )
             }
 
             ScriptMessageType.AskMenu.type -> {
-                hist.packet = ScriptMan.onAskMenu(4, templateId, mem[0].toString())
+                hist.packet = ScriptMan.onAskMenu(4, speaker, mem[0].toString())
             }
 
             ScriptMessageType.AskText.type -> {
                 hist.packet = ScriptMan.onAskText(
-                    templateId, mem[0].toString(), mem[1].toString(), mem[2] as Short, mem[3] as Short
+                    speaker, mem[0].toString(), mem[1].toString(), mem[2] as Short, mem[3] as Short
                 )
             }
 
             ScriptMessageType.AskNumber.type -> {
                 hist.packet = ScriptMan.onAskNumber(
-                    templateId, mem[0].toString(), mem[1] as Int, mem[2] as Int, mem[3] as Int
+                    speaker, mem[0].toString(), mem[1] as Int, mem[2] as Int, mem[3] as Int
                 )
             }
 
             else -> return
         }
 
-        hist.speakerTemplateID = templateId
+        hist.speakerTemplateID = speaker
         sm.scriptHist.add(hist)
         sm.posScriptHistory = sm.scriptHist.size
     }
 
     /**
      * Broadcasts a regular NPC chat window with no next button
-     * This should only be used for NPC scripts
      */
     fun say(msg: String) {
-        say(msg, user.map.getNPCByObjectId(objectId).id, false)
+        say(msg, false)
     }
 
-    /**
-     * Broadcasts a regular NPC chat window with no next button
-     * This should be used for non-NPC scripts
-     *
-     * @param templateId the npcId you want to broadcast
-     */
-    fun say(msg: String, templateId: Int) {
-        say(msg, templateId, false)
-    }
-
-    private fun say(msg: String, templateId: Int, next: Boolean) {
+    private fun say(msg: String, next: Boolean) {
         val memory: ArrayList<Any> = ArrayList()
         memory.add(msg)
         memory.add(next)
-        makeMessagePacket(ScriptMessageType.Say.type, templateId, memory)
+        makeMessagePacket(ScriptMessageType.Say.type, memory)
         sendMessageAnswer()
         memory.clear()
         sm.tryCapture()
@@ -98,40 +96,18 @@ class ScriptFunc(
 
     /**
      * Broadcasts a regular NPC chat window with a next button
-     * This should only be used for NPC scripts
      */
     fun sayNext(msg: String) {
-        say(msg, user.map.getNPCByObjectId(objectId).id, true)
-    }
-
-    /**
-     * Broadcasts a regular NPC chat window with a next button
-     * This should be used for non-NPC scripts
-     *
-     * @param templateId the npcId you want to broadcast
-     */
-    fun sayNext(msg: String, templateId: Int) {
-        say(msg, templateId, true)
+        say(msg, true)
     }
 
     /**
      * Broadcasts a NPC chat window with yes/no buttons
-     * This should be used only be used for NPC scripts
      */
     fun askYesNo(msg: String): Any? {
-        return askYesNo(msg, user.map.getNPCByObjectId(objectId).id)
-    }
-
-    /**
-     * Broadcasts a NPC chat window with yes/no buttons
-     * This should be used for non-NPC scripts
-     *
-     * @param templateId the npcId you want to broadcast
-     */
-    fun askYesNo(msg: String, templateId: Int): Any? {
         val memory: ArrayList<Any> = ArrayList()
         memory.add(msg)
-        makeMessagePacket(ScriptMessageType.AskYesNo.type, templateId, memory)
+        makeMessagePacket(ScriptMessageType.AskYesNo.type, memory)
         sendMessageAnswer()
         memory.clear()
         sm.tryCapture()

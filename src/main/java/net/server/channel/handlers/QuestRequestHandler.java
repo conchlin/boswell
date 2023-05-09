@@ -38,7 +38,7 @@ import tools.data.input.SeekableLittleEndianAccessor;
 public final class QuestRequestHandler extends AbstractMaplePacketHandler {
     
     // isNpcNearby credits to GabrielSin
-    private static boolean isNpcNearby(SeekableLittleEndianAccessor slea, MapleCharacter player, MapleQuest quest, int npcId) {
+    private static boolean isNpcNearby(SeekableLittleEndianAccessor slea, MapleCharacter player, MapleQuest quest, MapleNPC npc) {
         Point playerP;
         Point pos = player.getPosition();
         
@@ -52,7 +52,6 @@ public final class QuestRequestHandler extends AbstractMaplePacketHandler {
         }
         
         if (!quest.isAutoStart() && !quest.isAutoComplete()) {
-            MapleNPC npc = player.getMap().getNPCById(npcId);
             if(npc == null) {
                 return false;
             }
@@ -78,44 +77,44 @@ public final class QuestRequestHandler extends AbstractMaplePacketHandler {
             int itemid = slea.readInt();
             quest.restoreLostItem(player, itemid);
         } else if (action == 1) { //Start Quest
-            int npc = slea.readInt();
+            MapleNPC npc = player.getMap().getNPCById(slea.readInt());
             if(!isNpcNearby(slea, player, quest, npc)) {
                 return;
             }
             
-            if(quest.canStart(player, npc)) {
-                quest.start(player, npc);
+            if(quest.canStart(player, npc.getId())) {
+                quest.start(player, npc.getId());
             }
         } else if (action == 2) { // Complete Quest
-            int npc = slea.readInt();
+            MapleNPC npc = player.getMap().getNPCById(slea.readInt());
             if(!isNpcNearby(slea, player, quest, npc)) {
                 return;
             }
 
-            if (quest.canComplete(player, npc)) {
+            if (quest.canComplete(player, npc.getId())) {
                 if (slea.available() >= 2) {
                     int selection = slea.readShort();
-                    quest.complete(player, npc, selection);
+                    quest.complete(player, npc.getId(), selection);
                 } else {
-                    quest.complete(player, npc);
+                    quest.complete(player, npc.getId());
                 }
             }
         } else if (action == 3) {// forfeit quest
             quest.forfeit(player);
         } else if (action == 4) { // scripted start quest
-            int npc = slea.readInt();
+            MapleNPC npc = player.getMap().getNPCById(slea.readInt());
             if(!isNpcNearby(slea, player, quest, npc)) {
                 return;
             }
 
-            if (quest.canStart(player, npc)) {
+            if (quest.canStart(player, npc.getId())) {
                 if (!quest.canStartWithoutRequirements(c.getPlayer())) {
                     c.getPlayer().setNpcCooldown(System.currentTimeMillis());
                     return;
                 }
                 // converting the quest name to camel case works much better for our groovy scripts
                 String camelScript = ScriptManager.Companion.sanitizeScriptName(quest.getName());
-                ScriptManager.Companion.runScript(c, quest.getId(), camelScript, ScriptType.Quest);
+                ScriptManager.runScript(c, npc.getId(), quest.getId(), camelScript, ScriptType.Quest);
                 c.setClickedNPC();
             }
         } else if (action == 5) { // scripted end quests
