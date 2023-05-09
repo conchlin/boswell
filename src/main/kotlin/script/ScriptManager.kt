@@ -36,7 +36,8 @@ class ScriptManager {
         var posScriptHistory: Int
         var scriptHist: ArrayList<ScriptHistory>
         var status: AtomicInteger
-        private val continuation: Object
+        private val continuationLock = ReentrantLock()
+        private val continuationLockCondition = continuationLock.newCondition()
         var lock: Lock
         var value: Any? = null
         private var inputNo = 0
@@ -47,7 +48,6 @@ class ScriptManager {
             posScriptHistory = 0
             scriptHist = ArrayList<ScriptHistory>()
             status = AtomicInteger(Ready)
-            continuation = Object()
             lock = ReentrantLock()
         }
 
@@ -61,6 +61,10 @@ class ScriptManager {
          */
         @JvmStatic
         fun runScript(client: MapleClient, objectId: Int, name: String, scriptType: ScriptType) {
+            runScript(client, 0, objectId, name, scriptType)
+        }
+        @JvmStatic
+        fun runScript(client: MapleClient, templateId: Int, objectId: Int, name: String, scriptType: ScriptType) {
             val scriptFile = File("./scripts/${scriptType.type}/$name.groovy")
             oid = objectId
             if (!scriptFile.exists()) {
@@ -69,7 +73,7 @@ class ScriptManager {
                 return
             }
 
-            val scriptFunc = ScriptFunc(this, objectId, client.player) // so that we can access the companion obj
+            val scriptFunc = ScriptFunc(this, objectId, client.player, templateId) // so that we can access the companion obj
             val bindings = SimpleBindings().apply {
                 // add our bindings to use when scripting
                 put("user", client.player)
@@ -218,7 +222,7 @@ class ScriptManager {
                     var next: Boolean = hist.memory?.get(1).toString().isEmpty()
                     client.announce(
                         ScriptMan.onSay(
-                            (client.player.map.getMapObject(oid) as MapleNPC).id,
+                            hist.speakerTemplateID,
                             hist.memory?.get(0).toString(),
                             posMsgHistory != 1,
                             next
@@ -317,19 +321,21 @@ class ScriptManager {
 
         fun tryCapture() {
             this.value = null
-            synchronized(continuation) {
-                try {
-                    continuation.wait()
-                } catch (ex: InterruptedException) {
-                    continuation.notifyAll()
-                }
+            continuationLock.lock()
+            try {
+                continuationLockCondition.await()
+            } finally {
+                continuationLock.unlock()
             }
         }
 
         private fun tryResume() {
             if (status.get() != Finishing) {
-                synchronized(continuation) {
-                    continuation.notifyAll()
+                continuationLock.lock()
+                try {
+                    continuationLockCondition.signalAll()
+                } finally {
+                    continuationLock.unlock()
                 }
             }
         }
