@@ -203,7 +203,7 @@ class ScriptFunc(
 
     fun startQuest(questId: Int) {
         try {
-            MapleQuest.getInstance(questId).start(user, questId)
+            MapleQuest.getInstance(questId).start(user, speaker)
         } catch (npe: NullPointerException) {
             throw IllegalArgumentException("Error starting quest: $questId", npe)
         }
@@ -211,7 +211,7 @@ class ScriptFunc(
 
     fun forceStartQuest(questId: Int) {
         try {
-            MapleQuest.getInstance(questId).forceStart(user, questId)
+            MapleQuest.getInstance(questId).forceStart(user, speaker)
         } catch (npe: NullPointerException) {
             throw IllegalArgumentException("Error starting quest: $questId", npe)
         }
@@ -219,7 +219,7 @@ class ScriptFunc(
 
     fun completeQuest(questId: Int) {
         try {
-            MapleQuest.getInstance(questId).complete(user, questId)
+            MapleQuest.getInstance(questId).complete(user, speaker)
         } catch (npe: NullPointerException) {
             throw IllegalArgumentException("Error completing quest: $questId", npe)
         }
@@ -227,7 +227,7 @@ class ScriptFunc(
 
     fun forceCompleteQuest(questId: Int) {
         try {
-            MapleQuest.getInstance(questId).forceComplete(user, questId)
+            MapleQuest.getInstance(questId).forceComplete(user, speaker)
         } catch (npe: NullPointerException) {
             throw IllegalArgumentException("Error completing quest: $questId", npe)
         }
