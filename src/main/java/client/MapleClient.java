@@ -44,6 +44,7 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Lock;
 
 import com.google.gson.JsonObject;
+import database.tables.AccountsTbl;
 import enums.BroadcastMessageType;
 import enums.PartyResultType;
 import database.*;
@@ -124,9 +125,6 @@ public class MapleClient {
     private long lastNpcClick;
     private long sessionId;
     private int lang = 0;
-    private byte clearance = 0;
-    private int trophy = 0;
-    private byte cygnusBuff = 0;
 
     static {
         /*for (int i = 0; i < 200; i++) {
@@ -293,15 +291,7 @@ public class MapleClient {
 
     private void loadHWIDIfNescessary() throws SQLException {
         if (hwid == null) {
-            try (Connection con = DatabaseConnection.getConnection();
-                 PreparedStatement ps = con.prepareStatement("SELECT hwid FROM accounts WHERE id = ?")) {
-                ps.setInt(1, accId);
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        hwid = rs.getString("hwid");
-                    }
-                }
-            }
+            AccountsTbl.loadHardwareId(accId);
         }
     }
 
@@ -382,16 +372,7 @@ public class MapleClient {
 
     public void setPin(String pin) {
         this.pin = pin;
-        try {
-            try (Connection con = DatabaseConnection.getConnection();
-                 PreparedStatement ps = con.prepareStatement("UPDATE accounts SET pin = ? WHERE id = ?")) {
-                ps.setString(1, pin);
-                ps.setInt(2, accId);
-                ps.executeUpdate();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        AccountsTbl.updatePin(pin, accId);
     }
 
     public String getPin() {
@@ -412,16 +393,7 @@ public class MapleClient {
 
     public void setPic(String pic) {
         this.pic = pic;
-        try {
-            try (Connection con = DatabaseConnection.getConnection();
-                 PreparedStatement ps = con.prepareStatement("UPDATE accounts SET pic = ? WHERE id = ?")) {
-                ps.setString(1, pic);
-                ps.setInt(2, accId);
-                ps.executeUpdate();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        AccountsTbl.updatePic(pic, accId);
     }
 
     public String getPic() {
@@ -451,7 +423,7 @@ public class MapleClient {
         }
 
         try (Connection con = DatabaseConnection.getConnection()) {
-            try (PreparedStatement ps = con.prepareStatement("SELECT id, password, gender, banned, gm, pin, pic, characterslots, tos, clearance, trophy FROM accounts WHERE name = ?")) {
+            try (PreparedStatement ps = con.prepareStatement("SELECT id, password, gender, banned, gm, pin, pic, characterslots, tos FROM accounts WHERE name = ?")) {
                 ps.setString(1, login.toLowerCase());
                 try (ResultSet rs = ps.executeQuery()) {
                     accId = -2;
@@ -470,8 +442,6 @@ public class MapleClient {
                         characterSlots = rs.getByte("characterslots");
                         String passhash = rs.getString("password");
                         boolean tos = rs.getBoolean("tos");
-                        clearance = rs.getByte("clearance");
-                        trophy = rs.getInt("trophy");
 
                         if (banned) return 3;
                         if (ServerConstants.GM_SERVER && gmlevel == 0) return 15;
@@ -528,6 +498,7 @@ public class MapleClient {
         }
     }
 
+    // todo change this to return timestamp or long so there is no need for null
     public Calendar getTempBanCalendar() {
         final Calendar lTempban = Calendar.getInstance();
         try (Connection con = DatabaseConnection.getConnection()) {
@@ -579,11 +550,7 @@ public class MapleClient {
 
             this.hwid = hwid.toString();
 
-            try (Connection con = DatabaseConnection.getConnection()) {
-                new DatabaseStatements.Update("accounts").set("hwid", this.hwid).where("id", accId).execute(con);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            AccountsTbl.updateHardwareId(accId, this.hwid);
         } else {
             this.disconnect(false, false); // Invalid HWID...
         }
@@ -600,11 +567,7 @@ public class MapleClient {
                 newMacData.append(", ");
             }
         }
-        try (Connection con = DatabaseConnection.getConnection()) {
-            new DatabaseStatements.Update("accounts").set("macs", newMacData.toString()).where("id", accId).execute(con);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        AccountsTbl.updateMacAddress(accId, newMacData.toString());
     }
 
     public void setAccID(int id) {
@@ -621,19 +584,7 @@ public class MapleClient {
             MapleSessionCoordinator.getInstance().updateOnlineSession(this.getSession());
         }
 
-
-        try (Connection con = DatabaseConnection.getConnection()) {
-            try (PreparedStatement ps = con.prepareStatement("UPDATE accounts SET loggedin = ?, lastlogin = now() WHERE id = ?")) {
-                // using sql currenttime here could potentially break the login, thanks Arnah for pointing this out
-
-                ps.setInt(1, newstate);
-                //ps.setTimestamp(2, new java.sql.Timestamp(Server.getInstance().getCurrentTime()));
-                ps.setInt(2, getAccID());
-                ps.executeUpdate();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        AccountsTbl.updateLoginState(newstate, getAccID());
 
         if (getAccID() >= 0 && ServerConstants.HTTP_SERVER) {
             Server.httpWorker.add("http://localhost:17003/api/connections_changed");
@@ -681,7 +632,7 @@ public class MapleClient {
             if (state == LOGIN_LOGGEDIN) {
                 loggedIn = true;
             } else if (state == LOGIN_SERVER_TRANSITION) {
-                new DatabaseStatements.Update("accounts").set("loggedin", 0).where("id", getAccID()).execute(con);
+                AccountsTbl.updateLoggedInStatus(0, getAccID());
             } else {
                 loggedIn = false;
             }
@@ -1037,25 +988,11 @@ public class MapleClient {
         if (accountName == null) {
             return true;
         }
-        try (Connection con = DatabaseConnection.getConnection()) {
-            try (PreparedStatement ps = con.prepareStatement("SELECT tos FROM accounts WHERE id = ?")) {
-                ps.setInt(1, accId);
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        if (rs.getBoolean("tos")) {
-                            disconnect = true;
-                        }
-                    }
-                }
-            }
-
-            try (PreparedStatement psa = con.prepareStatement("UPDATE accounts SET tos = true WHERE id = ?")) {
-                psa.setInt(1, accId);
-                psa.executeUpdate();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        if (!AccountsTbl.hasAcceptedTOS(accId)) {
+            disconnect = true;
         }
+
+        AccountsTbl.updateTOS(true, accId);
         return disconnect;
     }
 
@@ -1143,32 +1080,11 @@ public class MapleClient {
 
     public synchronized boolean gainCharacterSlot() {
         if (characterSlots < 15) {
-            try (Connection con = DatabaseConnection.getConnection()) {
-                new DatabaseStatements.Update("accounts").set("characterslots", this.characterSlots + 1).where("id", accId).execute(con);
-                this.characterSlots += 1;
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            AccountsTbl.updateCharacterSlots(characterSlots + 1, accId);
+            this.characterSlots += 1;
             return true;
         }
         return false;
-    }
-
-    public final byte getGReason() {
-
-        try (Connection con = DatabaseConnection.getConnection()) {
-            try (PreparedStatement ps = con.prepareStatement("SELECT greason FROM accounts WHERE id = ?")) {
-                ps.setInt(1, accId);
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        return rs.getByte("greason");
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return 0;
     }
 
     public byte getGender() {
@@ -1177,11 +1093,7 @@ public class MapleClient {
 
     public void setGender(byte m) {
         this.gender = m;
-        try (Connection con = DatabaseConnection.getConnection()) {
-            new DatabaseStatements.Update("accounts").set("gender", gender).where("id", accId).execute(con);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        AccountsTbl.updateGender(m, accId);
     }
 
     private void announceDisableServerMessage() {
@@ -1356,57 +1268,5 @@ public class MapleClient {
 
     public void setLanguage(int lingua) {
         this.lang = lingua;
-    }
-
-    public final byte getClearance() {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            try (PreparedStatement ps = con.prepareStatement("SELECT clearance FROM accounts WHERE id = ?")) {
-                ps.setInt(1, accId);
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        return rs.getByte("clearance");
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return 0;
-    }
-
-    public void setClearance(byte c) {
-        this.clearance = c;
-        try (Connection con = DatabaseConnection.getConnection()) {
-            new DatabaseStatements.Update("accounts").set("clearance", clearance).where("id", accId).execute(con);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public final int getTrophy() {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            try (PreparedStatement ps = con.prepareStatement("SELECT trophy FROM accounts WHERE id = ?")) {
-                ps.setInt(1, accId);
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        return rs.getInt("trophy");
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return 0;
-    }
-
-    public void setTrophy(int t) {
-        this.trophy = t;
-        try (Connection con = DatabaseConnection.getConnection()) {
-            new DatabaseStatements.Update("accounts").set("trophy", trophy).where("id", accId).execute(con);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 }

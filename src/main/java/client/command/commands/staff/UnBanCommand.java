@@ -27,6 +27,7 @@ import client.command.Command;
 import client.MapleClient;
 import client.MapleCharacter;
 import database.DatabaseConnection;
+import database.tables.AccountsTbl;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -45,9 +46,7 @@ public class UnBanCommand extends Command {
         }
         int aid = MapleCharacter.getAccountIdByName(params[0]);
         try (Connection con = DatabaseConnection.getConnection()) {
-            try (PreparedStatement p = con.prepareStatement("UPDATE accounts SET banned = false WHERE id = " + aid)) {
-                p.executeUpdate();
-            }
+            AccountsTbl.updateBanStatus(aid, false, "");
             try (PreparedStatement p = con.prepareStatement("DELETE FROM ip_bans WHERE aid = " + aid)) {
                 p.executeUpdate();
             }

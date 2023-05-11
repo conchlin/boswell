@@ -26,10 +26,7 @@ package client.command.commands.staff;
 import client.command.Command;
 import client.MapleClient;
 import client.MapleCharacter;
-import java.sql.Connection;
-import java.sql.SQLException;
-import database.DatabaseStatements;
-import database.DatabaseConnection;
+import database.tables.AccountsTbl;
 
 public class NonCheaterCommand extends Command {
     {
@@ -48,11 +45,7 @@ public class NonCheaterCommand extends Command {
         MapleCharacter target = c.getChannelServer().getPlayerStorage().getCharacterByName(ign);
         
         if (target != null) {
-            try (Connection con = DatabaseConnection.getConnection()) {
-                new DatabaseStatements.Update("accounts").set("cheater", false).where("id", target.getAccountID()).execute(con);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            AccountsTbl.updateCheaterStatus(target, "", false);
             
             target.message("You have been cleared of your cheater status.");
             player.message("You have cleared " + ign + "of their cheater status");

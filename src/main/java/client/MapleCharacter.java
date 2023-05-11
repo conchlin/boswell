@@ -27,6 +27,7 @@ import client.listeners.DamageListener;
 import client.listeners.MobKilledEvent;
 import client.listeners.MobKilledListener;
 import constants.*;
+import database.tables.AccountsTbl;
 import enums.*;
 import database.*;
 import network.packet.*;
@@ -594,20 +595,12 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         this.ischeater = true;
         if (getClient().getChannel() != GameConstants.CHEATER_CHANNEL) this.getClient().changeChannel(GameConstants.CHEATER_CHANNEL);
         System.out.println("[CHEATING] " + this.name + ": " + reason);
-        try (Connection con = DatabaseConnection.getConnection()) {
-            new DatabaseStatements.Update("accounts").set("cheater", true).set("banreason", reason).where("id", accountid).execute(con);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        AccountsTbl.updateCheaterStatus(this, reason, true);
     }
 
     public void ban(String reason) {
         this.isbanned = true;
-        try (Connection con = DatabaseConnection.getConnection()) {
-            new DatabaseStatements.Update("accounts").set("banned", true).set("banreason", reason).where("id", accountid).execute(con);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        AccountsTbl.updateBanStatus(accountid, true, reason);
     }
 
     public static boolean ban(String id, String reason, boolean accountId) {
@@ -632,7 +625,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                 ps.setString(1, id);
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
-                        new DatabaseStatements.Update("accounts").set("banned", true).set("banreason", reason).where("id", rs.getInt(1)).execute(con);
+                        AccountsTbl.updateBanStatus(rs.getInt(1), true, reason);
                         ret = true;
                     }
                 }
@@ -8678,31 +8671,6 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
         this.commandtext = text;
     }
 
-    public int getRewardPoints() {
-        try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement("SELECT rewardpoints FROM accounts WHERE id=?;")) {
-            ps.setInt(1, accountid);
-            try (ResultSet resultSet = ps.executeQuery()) {
-                int point = -1;
-                if (resultSet.next()) {
-                    point = resultSet.getInt(1);
-                }
-                return point;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return -1;
-    }
-
-    public void setRewardPoints(int value) {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            new DatabaseStatements.Update("accounts").set("rewardpoints", value).where("id", accountid).execute(con);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void setReborns(int value) {
         try (Connection con = DatabaseConnection.getConnection()) {
             new DatabaseStatements.Update("characters").set("reborns", value).where("id", id).execute(con);
@@ -8936,14 +8904,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 
     public void setLanguage(int num) {
         getClient().setLanguage(num);
-        try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement("UPDATE accounts SET language = ? WHERE id = ?")) {
-            ps.setInt(1, num);
-            ps.setInt(2, getClient().getAccID());
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        AccountsTbl.updateLanguage(num, getClient().getAccID());
     }
 
     public int getLanguage() {
