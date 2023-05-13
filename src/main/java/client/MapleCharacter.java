@@ -28,6 +28,7 @@ import client.listeners.MobKilledEvent;
 import client.listeners.MobKilledListener;
 import constants.*;
 import database.tables.AccountsTbl;
+import database.tables.GuildsTbl;
 import enums.*;
 import database.*;
 import network.packet.*;
@@ -1886,8 +1887,8 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                 ps.setInt(1, guildId);
                 ps.execute();
             }
-            DatabaseStatements.Delete.from("guilds").where("guildid", guildId).execute(con);
 
+            GuildsTbl.deleteGuild(guildId);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -1895,29 +1896,15 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 
     public int updateGuildName(int guildId, String newName) {
         if (newName.length() > 12) {
-            System.out.println("guild name > 12 char");
             return 0;
         }
-        try (Connection con = DatabaseConnection.getConnection()) {
-            try (PreparedStatement checkPs = con.prepareStatement("SELECT guildid FROM guilds WHERE name = ?")) {
-                checkPs.setString(1, newName);
-                ResultSet rs = checkPs.executeQuery();
-                if (rs.next()) {
-                    System.out.println("guild name already exists");
-                    return 1;
-                }
-            }
-
-            try (PreparedStatement ps = con.prepareStatement("UPDATE guilds SET name = ? WHERE guildid = ?")) {
-                ps.setString(1, newName);
-                ps.setInt(2, guildId);
-                ps.execute();
-            }
-
-            new DatabaseStatements.Update("guilds").set("name", newName).where("guildid", guildId).execute(con);
-        } catch (SQLException ex) {
-            ex.printStackTrace();
+        if (!GuildsTbl.checkNameAvailability(newName)) {
+            // if guild name already exists
+            return 1;
         }
+
+        GuildsTbl.updateGuildName(guildId, newName);
+
         return 2;
     }
 
