@@ -39,7 +39,7 @@ class AccountsTbl {
                 getConnection().use { con ->
                     Update("accounts")
                         .set("loggedin", status)
-                        .set("id", accountId)
+                        .where("id", accountId)
                         .execute(
                         con!!
                     )
