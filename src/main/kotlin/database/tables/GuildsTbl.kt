@@ -37,7 +37,6 @@ class GuildsTbl {
                         checkPs.setString(1, name)
                         val rs = checkPs.executeQuery()
                         if (!rs.next()) {
-                            println("guild name already exists")
                             return true
                         }
                     }
