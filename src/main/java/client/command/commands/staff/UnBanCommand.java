@@ -28,6 +28,7 @@ import client.MapleClient;
 import client.MapleCharacter;
 import database.DatabaseConnection;
 import database.tables.AccountsTbl;
+import database.tables.CharactersTbl;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -44,20 +45,8 @@ public class UnBanCommand extends Command {
             player.yellowMessage("Syntax: !unban <playername>");
             return;
         }
-        int aid = MapleCharacter.getAccountIdByName(params[0]);
-        try (Connection con = DatabaseConnection.getConnection()) {
-            AccountsTbl.updateBanStatus(aid, false, "");
-            try (PreparedStatement p = con.prepareStatement("DELETE FROM ip_bans WHERE aid = " + aid)) {
-                p.executeUpdate();
-            }
-            try (PreparedStatement p = con.prepareStatement("DELETE FROM mac_bans WHERE aid = " + aid)) {
-                p.executeUpdate();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            player.message("Failed to unban " + params[0]);
-            return;
-        }
-        player.message("Unbanned " + params[0]);
+        int accountId = CharactersTbl.loadAccountIdByUsername(params[0]);
+        AccountsTbl.updateBanStatus(accountId, false, "");
+        player.message("[SUCCESS] Unbanned " + params[0]);
     }
 }

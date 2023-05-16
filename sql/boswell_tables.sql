@@ -218,8 +218,7 @@ CREATE TABLE characters (
     ariantpoints integer DEFAULT 0,
     partysearch boolean DEFAULT false,
     inserted_at timestamp(0) without time zone DEFAULT now(),
-    updated_at timestamp(0) without time zone DEFAULT now(),
-    clearance integer DEFAULT 0
+    updated_at timestamp(0) without time zone DEFAULT now()
 );
 
 CREATE INDEX characters_ranking1 ON characters USING btree (level, exp);

@@ -25,6 +25,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import database.tables.CharactersTbl;
 import enums.BroadcastMessageType;
 import net.AbstractMaplePacketHandler;
 import net.server.Server;
@@ -61,7 +62,7 @@ public final class ClaimRequestHandler extends AbstractMaplePacketHandler {
             Server.getInstance().broadcastGMMessage(c.getWorld(),
                     BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(),
                             victim + " was reported for: " + description));
-            addReport(c.getPlayer().getId(), MapleCharacter.getIdByName(victim), 0, description, null);
+            addReport(c.getPlayer().getId(), CharactersTbl.loadIdByName(victim), 0, description, null);
         } else if (type == 1) {
             String chatlog = slea.readMapleAsciiString();
             if (chatlog == null) {
@@ -79,7 +80,7 @@ public final class ClaimRequestHandler extends AbstractMaplePacketHandler {
             Server.getInstance().broadcastGMMessage(c.getWorld(),
                     BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(),
                             victim + " was reported for: " + description));
-            addReport(c.getPlayer().getId(), MapleCharacter.getIdByName(victim), reason, description, chatlog);
+            addReport(c.getPlayer().getId(), CharactersTbl.loadIdByName(victim), reason, description, chatlog);
         } else {
             Server.getInstance().broadcastGMMessage(c.getWorld(),
                     BroadcastMsgPacket.Packet.onBroadcastMsg(BroadcastMessageType.BlueText.getType(),

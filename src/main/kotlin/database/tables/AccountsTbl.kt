@@ -56,9 +56,12 @@ class AccountsTbl {
                     Update("accounts").set("banned", isBanned).set("banreason", reason).where("id", accountId).execute(
                         con!!
                     )
+                    con.prepareStatement("DELETE FROM ip_bans WHERE aid = $accountId").use { p -> p.executeUpdate() }
+                    con.prepareStatement("DELETE FROM mac_bans WHERE aid = $accountId").use { p -> p.executeUpdate() }
                 }
             } catch (e: SQLException) {
                 e.printStackTrace()
+                return
             }
         }
 

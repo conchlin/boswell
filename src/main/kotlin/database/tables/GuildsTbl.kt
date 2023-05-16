@@ -62,7 +62,12 @@ class GuildsTbl {
         fun deleteGuild(guildId: Int) {
             try {
                 getConnection().use { con ->
-                    Delete.from("guilds").where("guildid", guildId).execute(con!!)
+                    con!!.prepareStatement("UPDATE characters SET guildid = 0, guildrank = 5 WHERE guildid = ?")
+                        .use { ps ->
+                            ps.setInt(1, guildId)
+                            ps.execute()
+                        }
+                    Delete.from("guilds").where("guildid", guildId).execute(con)
                 }
             } catch (e: SQLException) {
                 e.printStackTrace()

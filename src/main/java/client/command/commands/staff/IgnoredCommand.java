@@ -26,6 +26,7 @@ package client.command.commands.staff;
 import client.command.Command;
 import client.MapleClient;
 import client.MapleCharacter;
+import database.tables.CharactersTbl;
 import tools.MapleLogger;
 
 public class IgnoredCommand extends Command {
@@ -37,7 +38,8 @@ public class IgnoredCommand extends Command {
     public void execute(MapleClient c, String[] params) {
         MapleCharacter player = c.getPlayer();
         for (Integer cid : MapleLogger.ignored) {
-            player.yellowMessage(MapleCharacter.getNameById(cid) + " is being ignored.");
+            String username = CharactersTbl.loadNameById(cid);
+            player.yellowMessage(username + " is being ignored.");
         }
     }
 }

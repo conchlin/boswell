@@ -743,11 +743,7 @@ public class MapleGuild {
             membersLock.unlock();
         }
 
-        try (Connection con = DatabaseConnection.getConnection()) {
-            new DatabaseStatements.Update("characters").set("allianceRank", 5).where("guildid", id).execute(con);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        CharactersTbl.resetAllianceRanks(id);
     }
 
     public static int getIncreaseGuildCost(int size) {

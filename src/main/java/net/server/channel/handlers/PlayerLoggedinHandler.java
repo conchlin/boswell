@@ -28,6 +28,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.google.gson.JsonObject;
+import database.tables.GuildsTbl;
 import enums.AllianceResultType;
 import enums.FriendResultType;
 import enums.LoginResultType;
@@ -279,7 +280,7 @@ public final class PlayerLoggedinHandler extends AbstractMaplePacketHandler {
                 if (player.getGuildId() > 0) {
                     MapleGuild playerGuild = server.getGuild(player.getGuildId(), player.getWorld(), player);
                     if (playerGuild == null) {
-                        player.deleteGuild(player.getGuildId());
+                        GuildsTbl.deleteGuild(player.getGuildId());
                         player.getMGC().setGuildId(0);
                         player.getMGC().setGuildRank(5);
                     } else {
