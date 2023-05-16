@@ -1,9 +1,6 @@
 package server.cashshop;
 
 import java.io.File;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,11 +9,11 @@ import java.util.Map;
 import java.util.Set;
 
 import client.inventory.Item;
+import database.tables.CashShopTbl;
 import provider.MapleData;
 import provider.MapleDataProvider;
 import provider.MapleDataProviderFactory;
 import provider.MapleDataTool;
-import database.DatabaseConnection;
 
 public class CashItemFactory {
 
@@ -64,155 +61,39 @@ public class CashItemFactory {
 
     public static void loadSpecialCashItems() {
         specialCashItems.clear();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM cs_modded_commodity");
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                SpecialCashItem cash = new SpecialCashItem(rs.getInt("sn"), rs.getInt("item_id"));
-                cash.setCount(rs.getInt("count"));
-                cash.setPriority(rs.getInt("priority"));
-                cash.setPeriod(rs.getInt("period"));
-                cash.setMaplePoints(rs.getInt("maple_point"));
-                cash.setMesos(rs.getInt("mesos"));
-                cash.setPremiumUser(rs.getBoolean("premium_user"));
-                cash.setRequiredLevel(rs.getInt("required_level"));
-                cash.setGender(rs.getInt("gender"));
-                cash.setSale(rs.getBoolean("sale"));
-                cash.setJob(rs.getInt("class"));
-                cash.setLimit(rs.getInt("_limit"));
-                cash.setCash(rs.getInt("pb_cash"));
-                String[] contents = rs.getString("package_contents").split(",");
-                for (String content : contents) {
-                    cash.getItems().add(Integer.parseInt(content));
-                }
-                cash.setPoint(rs.getInt("pb_point"));
-                cash.setGift(rs.getInt("pb_gift"));
-                specialCashItems.add(cash);
-            }
-            rs.close();
-            ps.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+        ArrayList<SpecialCashItem> specialItems = CashShopTbl.loadSpecialCSItems();
+        specialCashItems.addAll(specialItems);
     }
 
     public static void loadBlockedItems() {
         blockedCashItems.clear();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM cs_blocked_items");
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                blockedCashItems.add(rs.getInt("sn"));
-            }
-            rs.close();
-            ps.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+        ArrayList<Integer> blockedItems = CashShopTbl.loadBlockedItems();
+        blockedCashItems.addAll(blockedItems);
+        System.out.println("blocked items are -> "+ blockedCashItems);
     }
 
     public static void loadDiscountedCategories() {
         discountedCategories.clear();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM cs_discounted_categories");
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                discountedCategories.add(new CategoryDiscount(rs.getInt("category"), rs.getInt("subcategory"), rs.getInt("discount_rate")));
-            }
-            rs.close();
-            ps.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+        ArrayList<CategoryDiscount> discounts = CashShopTbl.loadDiscountedCategories();
+        discountedCategories.addAll(discounts);
     }
 
     public static void loadLimitedGoods() {
         limitedGoods.clear();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM cs_limited_goods");
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                LimitedGoods goods = new LimitedGoods(rs.getInt("start_sn"), rs.getInt("end_sn"));
-                goods.setGoodsCount(rs.getInt("count"));
-                goods.setEventSN(rs.getInt("event_sn"));
-                goods.setExpireDays(rs.getInt("expire"));
-                goods.setFlag(rs.getInt("flag"));
-                goods.setStartDate(rs.getInt("start_date"));
-                goods.setEndDate(rs.getInt("end_date"));
-                goods.setStartHour(rs.getInt("start_hour"));
-                goods.setEndHour(rs.getInt("end_hour"));
-                String[] days = rs.getString("days").split(",");
-                int[] daysOfWeek = new int[7];
-                for (int i = 0; i < days.length; i++) {
-                    daysOfWeek[i] = Integer.parseInt(days[i]);
-                }
-                goods.setDaysOfWeek(daysOfWeek);
-
-                limitedGoods.add(goods);
-            }
-            rs.close();
-            ps.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+        ArrayList<LimitedGoods> goods = CashShopTbl.loadGoods("limited");
+        limitedGoods.addAll(goods);
     }
 
     public static void loadZeroGoods() {
         limitedGoods.clear();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM cs_zero_goods");
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                LimitedGoods goods = new LimitedGoods(rs.getInt("start_sn"), rs.getInt("end_sn"));
-                goods.setGoodsCount(rs.getInt("count"));
-                goods.setEventSN(rs.getInt("event_sn"));
-                goods.setExpireDays(rs.getInt("expire"));
-                goods.setFlag(rs.getInt("flag"));
-                goods.setStartDate(rs.getInt("start_date"));
-                goods.setEndDate(rs.getInt("end_date"));
-                goods.setStartHour(rs.getInt("start_hour"));
-                goods.setEndHour(rs.getInt("end_hour"));
-                String[] days = rs.getString("days").split(",");
-                int[] daysOfWeek = new int[7];
-                for (int i = 0; i < days.length; i++) {
-                    daysOfWeek[i] = Integer.parseInt(days[i]);
-                }
-                goods.setDaysOfWeek(daysOfWeek);
-
-                limitedGoods.add(goods);
-            }
-            rs.close();
-            ps.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+        ArrayList<LimitedGoods> goods = CashShopTbl.loadGoods("zero");
+        limitedGoods.addAll(goods);
     }
 
     public static void loadStock() {
         stock.clear();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM cs_stock");
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                stock.add(new ItemStock(rs.getInt("sn"), rs.getInt("state")));
-            }
-            rs.close();
-            ps.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+        ArrayList<ItemStock> itemStock = CashShopTbl.loadStock();
+        stock.addAll(itemStock);
     }
 
     public static CashItem getRandomCashItem() {
