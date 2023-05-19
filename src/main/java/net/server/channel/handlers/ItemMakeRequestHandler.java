@@ -32,6 +32,7 @@ import constants.GameConstants;
 
 import java.util.*;
 
+import database.tables.MakerTbl;
 import enums.BroadcastMessageType;
 import enums.UserEffectType;
 import net.AbstractMaplePacketHandler;
@@ -364,11 +365,11 @@ public final class ItemMakeRequestHandler extends AbstractMaplePacketHandler {
     }
 
     private static Pair<Integer, List<Pair<Integer, Integer>>> generateDisassemblyInfo(int itemId) {
-        int recvFee = ii.getMakerDisassembledFee(itemId);
-        if (recvFee > -1) {
-            List<Pair<Integer, Integer>> gains = ii.getMakerDisassembledItems(itemId);
+        int disassembleFee = MakerTbl.loadDisassembleFee(itemId);
+        if (disassembleFee > -1) {
+            List<Pair<Integer, Integer>> gains = MakerTbl.loadDisassembledItems(itemId);
             if (!gains.isEmpty()) {
-                return new Pair<>(recvFee, gains);
+                return new Pair<>(disassembleFee, gains);
             }
         }
 
