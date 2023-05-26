@@ -1923,117 +1923,16 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 
     public static boolean deleteCharFromDB(MapleCharacter player, int senderAccId) {
         int cid = player.getId();
-        if (!Server.getInstance().haveCharacterEntry(senderAccId, cid)) {    // thanks zera (EpiphanyMS) for pointing a critical exploit with non-authored character deletion request
+        if (!Server.getInstance().haveCharacterEntry(senderAccId, cid)) {
+            // thanks zera (EpiphanyMS) for pointing a critical exploit with non-authored character deletion request
+            return false;
+        }
+        if (!CharactersTbl.deleteCharacter(player)) {
+            // there has been an error deleting the character
             return false;
         }
 
-        int accId = senderAccId, world = 0;
-        try (Connection con = DatabaseConnection.getConnection()) {
-            try (PreparedStatement ps = con.prepareStatement("SELECT world FROM characters WHERE id = ?")) {
-                ps.setInt(1, cid);
-
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        world = rs.getInt("world");
-                    }
-                }
-            }
-
-            try (PreparedStatement ps = con.prepareStatement("SELECT buddyid FROM buddies WHERE characterid = ?")) {
-                ps.setInt(1, cid);
-
-                try (ResultSet rs = ps.executeQuery()) {
-                    while (rs.next()) {
-                        int buddyid = rs.getInt("buddyid");
-                        MapleCharacter buddy = Server.getInstance().getWorld(world).getPlayerStorage().getCharacterById(buddyid);
-
-                        if (buddy != null) {
-                            buddy.deleteBuddy(cid);
-                        }
-                    }
-                }
-            }
-
-            DatabaseStatements.Delete.from("buddies").where("characterid", cid).execute(con);
-
-            try (PreparedStatement ps = con.prepareStatement("SELECT threadid FROM bbs_threads WHERE postercid = ?")) {
-                ps.setInt(1, cid);
-
-                try (ResultSet rs = ps.executeQuery()) {
-                    while (rs.next()) {
-                        DatabaseStatements.Delete.from("bbs_replies").where("threadid", rs.getInt("threadid")).execute(con);
-                    }
-                }
-            }
-
-            DatabaseStatements.Delete.from("bbs_threads").where("postercid", cid).execute(con);
-
-            try (PreparedStatement ps = con.prepareStatement("SELECT id, guildid, guildrank, name, allianceRank FROM characters WHERE id = ? AND accountid = ?")) {
-                ps.setInt(1, cid);
-                ps.setInt(2, accId);
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next() && rs.getInt("guildid") > 0) {
-                        Server.getInstance().deleteGuildCharacter(new MapleGuildCharacter(player, cid, 0, rs.getString("name"), (byte) -1, (byte) -1, 0, rs.getInt("guildrank"), rs.getInt("guildid"), false, rs.getInt("allianceRank")));
-                    }
-                }
-            }
-
-            DatabaseStatements.Delete.from("wish_lists").where("charid", cid).execute(con);
-            DatabaseStatements.Delete.from("cooldowns").where("charid", cid).execute(con);
-            DatabaseStatements.Delete.from("player_diseases").where("charid", cid).execute(con);
-            DatabaseStatements.Delete.from("area_info").where("charid", cid).execute(con);
-            DatabaseStatements.Delete.from("monster_book").where("charid", cid).execute(con);
-            CharactersTbl.deleteCharacter(cid);
-            DatabaseStatements.Delete.from("fame_log").where("characterid_to", cid).execute(con);
-
-            try (PreparedStatement ps = con.prepareStatement("SELECT inventoryitemid, petid FROM inventory_items WHERE characterid = ?")) {
-                ps.setInt(1, cid);
-
-                try (ResultSet rs = ps.executeQuery()) {
-                    while (rs.next()) {
-                        long inventoryitemid = rs.getLong("inventoryitemid");
-
-                        try (PreparedStatement ps2 = con.prepareStatement("SELECT ringid FROM inventory_equipment WHERE inventoryitemid = ?")) {
-                            ps2.setLong(1, inventoryitemid);
-
-                            try (ResultSet rs2 = ps2.executeQuery()) {
-                                while (rs2.next()) {
-                                    DatabaseStatements.Delete.from("rings").where("id", rs2.getInt("ringid")).execute(con);
-                                }
-                            }
-                        }
-
-                        DatabaseStatements.Delete.from("inventory_equipment").where("inventoryitemid", inventoryitemid).execute(con);
-                        DatabaseStatements.Delete.from("pets").where("petid", rs.getInt("petid")).execute(con);
-                    }
-                }
-            }
-
-            FredrickProcessor.removeFredrickLog(cid);   // thanks maple006 for pointing out the player's Fredrick items are not being deleted at character deletion
-
-            try (PreparedStatement ps = con.prepareStatement("SELECT id FROM mts_cart WHERE cid = ?")) {
-                ps.setInt(1, cid);
-
-                try (ResultSet rs = ps.executeQuery()) {
-                    while (rs.next()) {
-                        int mtsid = rs.getInt("id");
-                        DatabaseStatements.Delete.from("mts_items").where("id", mtsid).execute(con);
-                    }
-                }
-            }
-            DatabaseStatements.Delete.from("mts_cart").where("cid", cid).execute(con);
-
-            String[] toDel = {"fame_log", "inventory_items", "keymap", "medal_maps", "quest_status", "quest_progress", "saved_locations", "trock_locations", "skill_macros", "skills", "event_stats", "server_queue"};
-            for (String s : toDel) {
-                DatabaseStatements.Delete.from(s).where("characterid", cid).execute(con);
-            }
-
-            Server.getInstance().deleteCharacterEntry(accId, cid);
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+        return true;
     }
 
     private void stopChairTask() {
