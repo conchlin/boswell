@@ -31,6 +31,8 @@ import constants.GameConstants;
 import constants.ItemConstants;
 import constants.OpcodeConstants;
 import constants.ServerConstants;
+import database.tables.AccountsTbl;
+import database.tables.CharactersTbl;
 import net.MapleServerHandler;
 import database.DatabaseStatements;
 import net.mina.MapleCodecFactory;
@@ -696,9 +698,8 @@ public class Server {
 
         // by calling getConnection it will initialize the database
         try (Connection con = DatabaseConnection.getConnection()) {
-            new DatabaseStatements.Update("accounts").set("loggedin", 0).execute(con);
-            new DatabaseStatements.Update("characters").set("hasmerchant", false).execute(con);
-
+            AccountsTbl.updateLoggedInStatus(0);
+            CharactersTbl.updateHasMerchant(false);
             cleanNxcodeCoupons(con);
             loadCouponRates(con);
             updateActiveCoupons();

@@ -34,6 +34,7 @@ import client.inventory.Item;
 import client.inventory.MapleInventoryType;
 import client.inventory.manipulator.MapleInventoryManipulator;
 import client.processor.DueyProcessor;
+import database.tables.CharactersTbl;
 import net.AbstractMaplePacketHandler;
 import net.server.world.World;
 import net.server.channel.Channel;
@@ -190,7 +191,7 @@ public final class RingActionHandler extends AbstractMaplePacketHandler {
             partner.addMarriageRing(null);
         }
         
-        chr.dropMessage(5, "You have successfully break the marriage with " + MapleCharacter.getNameById(partnerid) + ".");
+        chr.dropMessage(5, "You have successfully break the marriage with " + CharactersTbl.loadNameById(partnerid) + ".");
         
         //chr.announce(Wedding.OnMarriageResult((byte) 0));
         chr.announce(Wedding.OnNotifyWeddingPartnerTransfer(0, 0));
@@ -240,7 +241,7 @@ public final class RingActionHandler extends AbstractMaplePacketHandler {
         if(chr.haveItem(marriageitemid)) {
             MapleInventoryManipulator.removeById(chr.getClient(), MapleInventoryType.ETC, marriageitemid, (short) 1, false, false);
         }
-        chr.dropMessage(5, "You have successfully break the engagement with " + MapleCharacter.getNameById(partnerid) + ".");
+        chr.dropMessage(5, "You have successfully break the engagement with " + CharactersTbl.loadNameById(partnerid) + ".");
         
         //chr.announce(Wedding.OnMarriageResult((byte) 0));
         chr.announce(Wedding.OnNotifyWeddingPartnerTransfer(0, 0));
@@ -381,8 +382,8 @@ public final class RingActionHandler extends AbstractMaplePacketHandler {
                     return;
                 }
                 
-                String groom = c.getPlayer().getName(), bride = MapleCharacter.getNameById(c.getPlayer().getPartnerId());
-                int guest = MapleCharacter.getIdByName(name);
+                String groom = c.getPlayer().getName(), bride = CharactersTbl.loadNameById(c.getPlayer().getPartnerId());
+                int guest = CharactersTbl.loadIdByName(name);
                 if (groom == null || bride == null || groom.equals("") || bride.equals("") || guest <= 0) {
                     c.getPlayer().dropMessage(5, "Unable to find " + name + "!");
                     return;
@@ -450,7 +451,7 @@ public final class RingActionHandler extends AbstractMaplePacketHandler {
                     Pair<Integer, Integer> coupleId = c.getWorldServer().getWeddingCoupleForGuest(c.getPlayer().getId(), invitationid == 4031407);
                     if (coupleId != null) {
                         int groomId = coupleId.getLeft(), brideId = coupleId.getRight();
-                        c.announce(Wedding.sendWeddingInvitation(MapleCharacter.getNameById(groomId), MapleCharacter.getNameById(brideId)));
+                        c.announce(Wedding.sendWeddingInvitation(CharactersTbl.loadNameById(groomId), CharactersTbl.loadNameById(brideId)));
                     }
                 }
                 

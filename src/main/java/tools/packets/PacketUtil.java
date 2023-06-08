@@ -6,6 +6,7 @@ import client.newyear.NewYearCardRecord;
 import constants.ExpTable;
 import constants.GameConstants;
 import constants.ItemConstants;
+import database.tables.CharactersTbl;
 import net.server.PlayerCoolDownValueHolder;
 import net.server.guild.MapleGuild;
 import net.server.guild.MapleGuildCharacter;
@@ -402,8 +403,8 @@ public class PacketUtil {
                 mplew.writeInt(1112803); // Engagement Ring's Outcome (doesn't matter for engagement)
                 mplew.writeInt(1112803); // Engagement Ring's Outcome (doesn't matter for engagement)
             }
-            mplew.writeAsciiString(StringUtil.getRightPaddedStr(chr.getGender() == 0 ? chr.getName() : MapleCharacter.getNameById(chr.getPartnerId()), '\0', 13));
-            mplew.writeAsciiString(StringUtil.getRightPaddedStr(chr.getGender() == 0 ? MapleCharacter.getNameById(chr.getPartnerId()) : chr.getName(), '\0', 13));
+            mplew.writeAsciiString(StringUtil.getRightPaddedStr(chr.getGender() == 0 ? chr.getName() : CharactersTbl.loadNameById(chr.getPartnerId()), '\0', 13));
+            mplew.writeAsciiString(StringUtil.getRightPaddedStr(chr.getGender() == 0 ? CharactersTbl.loadNameById(chr.getPartnerId()) : chr.getName(), '\0', 13));
         } else {
             mplew.writeShort(0);
         }

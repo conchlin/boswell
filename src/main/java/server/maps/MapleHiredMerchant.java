@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 
+import database.tables.CharactersTbl;
 import enums.BroadcastMessageType;
 import net.server.audit.locks.factory.MonitoredReentrantLockFactory;
 import net.server.Server;
@@ -294,31 +295,8 @@ public class MapleHiredMerchant extends AbstractMapleMapObject {
 
                     announceItemSold(newItem, price, getQuantityLeft(pItem.getItem().getItemId()));
 
-                    MapleCharacter owner = Server.getInstance().getWorld(world).getPlayerStorage().getCharacterByName(ownerName);
-                    if (owner != null) {
-                        owner.addMerchantMesos(price);
-                    } else {
-                        try (Connection con = DatabaseConnection.getConnection()) {
-                            long merchantMesos = 0;
-                            try (PreparedStatement ps = con.prepareStatement("SELECT MerchantMesos FROM characters WHERE id = ?")) {
-                                ps.setInt(1, ownerId);
-                                try (ResultSet rs = ps.executeQuery()) {
-                                    if (rs.next()) {
-                                        merchantMesos = rs.getInt(1);
-                                    }
-                                }
-                            }
-                            merchantMesos += price;
-                            
-                            try (PreparedStatement ps = con.prepareStatement("UPDATE characters SET MerchantMesos = ? WHERE id = ?", Statement.RETURN_GENERATED_KEYS)) {
-                                ps.setInt(1, (int) Math.min(merchantMesos, Integer.MAX_VALUE));
-                                ps.setInt(2, ownerId);
-                                ps.executeUpdate();
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
+                    long currentAmount = CharactersTbl.loadMerchantMesos(ownerId);
+                    CharactersTbl.updateMerchantMesos((int) (currentAmount + price), ownerId);
                 } else {
                     c.getPlayer().dropMessage(1, "Your inventory is full. Please clear a slot before buying this item.");
                     c.announce(WvsContext.Packet.enableActions());
@@ -379,14 +357,7 @@ public class MapleHiredMerchant extends AbstractMapleMapObject {
         if(player != null) {
             player.setHasMerchant(false);
         } else {
-            try (Connection con = DatabaseConnection.getConnection()) {
-                try (PreparedStatement ps = con.prepareStatement("UPDATE characters SET hasmerchant = false WHERE id = ?", Statement.RETURN_GENERATED_KEYS)) {
-                    ps.setInt(1, ownerId);
-                    ps.executeUpdate();
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+            CharactersTbl.updateHasMerchant(false, ownerId);
         }
 
         map = null;
@@ -412,12 +383,7 @@ public class MapleHiredMerchant extends AbstractMapleMapObject {
             if(player != null) {
                 player.setHasMerchant(false);
             } else {
-                try (Connection con = DatabaseConnection.getConnection()) {
-                    try (PreparedStatement ps = con.prepareStatement("UPDATE characters SET hasmerchant = false WHERE id = ?", Statement.RETURN_GENERATED_KEYS)) {
-                        ps.setInt(1, ownerId);
-                        ps.executeUpdate();
-                    }
-                }
+                CharactersTbl.updateHasMerchant(false, ownerId);
             }
 
             List<MaplePlayerShopItem> copyItems = getItems();

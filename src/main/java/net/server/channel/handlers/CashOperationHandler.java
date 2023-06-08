@@ -34,6 +34,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
+import database.tables.CharactersTbl;
 import enums.BroadcastMessageType;
 import enums.CashItemResultType;
 import net.AbstractMaplePacketHandler;
@@ -104,7 +105,7 @@ public final class CashOperationHandler extends AbstractMaplePacketHandler {
                 } else if (action == 0x04) {//TODO check for gender
                     int birthday = slea.readInt();
                     CashItem cItem = CashItemFactory.getItem(slea.readInt());
-                    Map<String, String> recipient = MapleCharacter.getCharacterFromDatabase(slea.readMapleAsciiString());
+                    Map<String, String> recipient = CharactersTbl.loadIdsFromUsername(slea.readMapleAsciiString());
                     String message = slea.readMapleAsciiString();
                     if (!canBuy(chr, cItem, cs.getCash(4)) || message.length() < 1 || message.length() > 73) {
                         c.enableCSActions();

@@ -55,23 +55,15 @@ CREATE TABLE accounts (
     tempban timestamp(0) without time zone DEFAULT '1970-01-01 00:00:00'::timestamp without time zone,
     greason integer DEFAULT 0,
     tos boolean DEFAULT false,
-    sitelogged character varying(255),
-    webadmin boolean DEFAULT false,
-    nick character varying(255),
     mute boolean DEFAULT false,
-    email character varying(255),
     ip character varying(255),
     lastknownip character varying(255),
-    rewardpoints integer DEFAULT 0,
     hwid character varying(255) DEFAULT ''::character varying,
-    clearance integer DEFAULT 0,
     gm integer DEFAULT 0,
     last_vote timestamp(0) without time zone DEFAULT '1920-01-01 00:00:00'::timestamp without time zone,
     cheater boolean DEFAULT false,
     inserted_at timestamp(0) without time zone NOT NULL,
-    updated_at timestamp(0) without time zone NOT NULL,
-    cygnusbuff smallint DEFAULT 0,
-    trophy integer DEFAULT 0
+    updated_at timestamp(0) without time zone NOT NULL
 );
 
 CREATE UNIQUE INDEX accounts_email_index ON accounts USING btree (email);
@@ -226,8 +218,7 @@ CREATE TABLE characters (
     ariantpoints integer DEFAULT 0,
     partysearch boolean DEFAULT false,
     inserted_at timestamp(0) without time zone DEFAULT now(),
-    updated_at timestamp(0) without time zone DEFAULT now(),
-    clearance integer DEFAULT 0
+    updated_at timestamp(0) without time zone DEFAULT now()
 );
 
 CREATE INDEX characters_ranking1 ON characters USING btree (level, exp);

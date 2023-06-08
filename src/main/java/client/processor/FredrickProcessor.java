@@ -38,6 +38,8 @@ import java.util.LinkedList;
 import java.util.List;
 import client.inventory.manipulator.MapleInventoryManipulator;
 import java.util.Collections;
+
+import database.tables.CharactersTbl;
 import net.server.Server;
 import net.server.world.World;
 import network.packet.StoreBank;
@@ -136,7 +138,7 @@ public class FredrickProcessor {
     private static void removeFredrickReminders(List<Pair<Integer, Integer>> expiredCids) {
         List<String> expiredCnames = new LinkedList<>();
         for (Pair<Integer, Integer> id : expiredCids) {
-            String name = MapleCharacter.getNameById(id.getLeft());
+            String name = CharactersTbl.loadNameById(id.getLeft());
             if (name != null) {
                 expiredCnames.add(name);
             }

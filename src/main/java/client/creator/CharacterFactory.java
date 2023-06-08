@@ -31,6 +31,8 @@ import server.MapleItemInformationProvider;
 import tools.FilePrinter;
 import tools.MaplePacketCreator;
 
+import java.sql.SQLException;
+
 /**
  *
  * @author RonanLana
@@ -57,7 +59,6 @@ public abstract class CharacterFactory {
                 newchar.setLevel(recipe.getLevel());
                 newchar.setJob(recipe.getJob());
                 newchar.setMapId(recipe.getMap());
-                newchar.setClearance(15);
                 
                 MapleInventory equipped = newchar.getInventory(MapleInventoryType.EQUIPPED);
                 MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
@@ -92,7 +93,11 @@ public abstract class CharacterFactory {
 
                 if (!newchar.insertNewChar(recipe)) return -2;
 
-                c.announce(CLogin.Packet.addNewCharEntry(newchar));
+                try {
+                    c.announce(CLogin.Packet.addNewCharEntry(newchar));
+                } catch (Error e) {
+                    e.printStackTrace();
+                }
                 
                 Server.getInstance().createCharacterEntry(newchar);
                 Server.getInstance().broadcastGMMessage(c.getWorld(), MaplePacketCreator.sendYellowTip("[New Char]: " + c.getAccountName() + " has created a new character with IGN " + name));

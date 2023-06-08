@@ -22,11 +22,11 @@
 package net.server.handlers.login;
 
 import client.MapleClient;
+import database.tables.AccountsTbl;
 import enums.LoginResultType;
 import net.MaplePacketHandler;
 import database.DatabaseConnection;
 import net.server.Server;
-import database.DatabaseStatements;
 import network.packet.CLogin;
 import tools.*;
 import tools.data.input.SeekableLittleEndianAccessor;
@@ -52,14 +52,8 @@ public final class CheckPasswordHandler implements MaplePacketHandler {
         int loginok = c.login(login, pwd, HexTool.toCompressedString(hwidNibbles));
 
         if (loginok <= -10) { // -10 means migration to bcrypt, -23 means TOS wasn't accepted
-            try (Connection con = DatabaseConnection.getConnection()) {
-                try (PreparedStatement ps = con.prepareStatement("UPDATE accounts SET password = ? WHERE name = ?;")) {
-                    ps.setString(1, BCrypt.hashpw(pwd, BCrypt.gensalt("$2b", 12)));
-                    ps.setString(2, login.toLowerCase());
-                    ps.executeUpdate();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+            try  {
+                AccountsTbl.updatePassword(login.toLowerCase(), BCrypt.hashpw(pwd, BCrypt.gensalt("$2b", 12)));
             } finally {
                 loginok = (loginok == -10) ? 0 : 23;
             }
@@ -75,7 +69,8 @@ public final class CheckPasswordHandler implements MaplePacketHandler {
         Calendar tempban = c.getTempBanCalendar();
         if (tempban != null) {
             if (tempban.getTimeInMillis() > System.currentTimeMillis()) {
-                c.announce(CLogin.Packet.getTempBan(tempban.getTimeInMillis(), c.getGReason()));
+                byte reason = AccountsTbl.loadGriefReason(c.getAccID());
+                c.announce(CLogin.Packet.getTempBan(tempban.getTimeInMillis(), reason));
                 return;
             }
         }
@@ -88,16 +83,7 @@ public final class CheckPasswordHandler implements MaplePacketHandler {
         }
         if (c.finishLogin() == 0) {
             c.checkChar(c.getAccID());
-            try (Connection con = DatabaseConnection.getConnection()) {
-                DatabaseStatements.Update statement = new DatabaseStatements.Update("accounts");
-                statement.cond("name", login.toLowerCase());
-                statement.set("lastknownip", c.getSession().getRemoteAddress().toString());
-                statement.execute(con);
-            } catch (SQLException e) {
-                e.printStackTrace();
-                FilePrinter.print(FilePrinter.LOGIN_ATTEMPTS, "Updating the lastknownip "
-                        + c.getSession().getRemoteAddress().toString() + " has failed for player " + login.toLowerCase());
-            }
+            AccountsTbl.updateLastKnownIP(login, c);
             login(c);
         } else {
             c.announce(CLogin.Packet.getLoginFailed(LoginResultType.AlreadyLoggedIn.getReason()));

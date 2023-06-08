@@ -21,15 +21,11 @@
 */
 package net.server.channel.handlers;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import constants.ServerConstants;
+import database.tables.CharactersTbl;
 import enums.WhisperResultType;
 import net.AbstractMaplePacketHandler;
 import net.server.world.World;
-import database.DatabaseConnection;
 import network.packet.field.CField;
 import tools.FilePrinter;
 import tools.LogHelper;
@@ -37,7 +33,6 @@ import tools.data.input.SeekableLittleEndianAccessor;
 import client.MapleCharacter;
 import client.MapleClient;
 import client.autoban.AutobanFactory;
-import java.sql.Connection;
 
 /**
  *
@@ -102,27 +97,17 @@ public final class WhisperHandler extends AbstractMaplePacketHandler {
                     c.announce(CField.Packet.onWhisper(victim.getName(), c.getPlayer().getName(), WhisperResultType.FindReply.getResult(), victim.getMap().getId(), 1));
                 }
             } else if (c.getPlayer().isGM()) { // not found
-                try (Connection con = DatabaseConnection.getConnection()) {
-                    try (PreparedStatement ps = con.prepareStatement("SELECT gm FROM characters WHERE name = ?")) {
-                        ps.setString(1, recipient);
-                        try (ResultSet rs = ps.executeQuery()) {
-                            if (rs.next()) {
-                                if (rs.getInt("gm") >= c.getPlayer().gmLevel()) {
-                                    c.announce(CField.Packet.onWhisper(recipient, c.getPlayer().getName(), WhisperResultType.WhisperReply.getResult(), 0));
-                                    return;
-                                }
-                            }
-                        }
-                    }
+                int gmLevel = CharactersTbl.loadGMLevel(recipient);
+                if (gmLevel >= c.getPlayer().gmLevel()) {
+                    c.announce(CField.Packet.onWhisper(recipient, c.getPlayer().getName(), WhisperResultType.WhisperReply.getResult(), 0));
+                    return;
+                }
 
-                    byte channel = (byte) (c.getWorldServer().find(recipient) - 1);
-                    if (channel > -1) {
-                        c.announce(CField.Packet.onWhisper(recipient, c.getPlayer().getName(), WhisperResultType.FindReply.getResult(), channel, 3));
-                    } else {
-                        c.announce(CField.Packet.onWhisper(recipient, c.getPlayer().getName(), WhisperResultType.WhisperReply.getResult(), 0));
-                    }
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                byte channel = (byte) (c.getWorldServer().find(recipient) - 1);
+                if (channel > -1) {
+                    c.announce(CField.Packet.onWhisper(recipient, c.getPlayer().getName(), WhisperResultType.FindReply.getResult(), channel, 3));
+                } else {
+                    c.announce(CField.Packet.onWhisper(recipient, c.getPlayer().getName(), WhisperResultType.WhisperReply.getResult(), 0));
                 }
             } else {
                 c.announce(CField.Packet.onWhisper(recipient, c.getPlayer().getName(), WhisperResultType.WhisperReply.getResult(), 0));

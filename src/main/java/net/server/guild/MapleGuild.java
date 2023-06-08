@@ -23,6 +23,8 @@ package net.server.guild;
 
 import client.MapleCharacter;
 import client.MapleClient;
+import database.tables.CharactersTbl;
+import database.tables.GuildsTbl;
 import enums.GuildResultType;
 import enums.WvsMessageType;
 import net.server.PlayerStorage;
@@ -166,11 +168,8 @@ public class MapleGuild {
                         .set("notice", notice)
                         .execute(con);
             } else {
-                new DatabaseStatements.Update("characters")
-                        .set("guildid", 0)
-                        .set("guildrank", 5)
-                        .where("guildid", this.id).execute(con);
-                DatabaseStatements.Delete.from("guilds").where("guildid", this.id).execute(con);
+                CharactersTbl.disbandGuild(this.id);
+                GuildsTbl.deleteGuild(this.id);
 
                 membersLock.lock();
                 try {
@@ -397,33 +396,18 @@ public class MapleGuild {
     }
 
     public static int createGuild(int leaderId, String name) {
-        try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement("SELECT guildid FROM guilds WHERE name = ?")) {
-            ps.setString(1, name);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return 0;
-                }
-            }
-
-            int guildId = DatabaseStatements.Insert.into("guilds")
-                    .add("leader", leaderId)
-                    .add("name", name)
-                    .add("signature", (int) System.currentTimeMillis())
-                    .executeUpdate(con);
-
-            if (guildId > 0) {
-                new DatabaseStatements.Update("characters").set("guildid", guildId).where("id", leaderId).execute(con);
-
-                System.out.println("guild done");
-                return guildId;
-            }
-            System.out.println("guild fail");
-            return 0;
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (!GuildsTbl.checkNameAvailability(name)) {
+            // guild name already exists
             return 0;
         }
+
+        int guildId = GuildsTbl.createGuild(leaderId, name);
+        if (guildId > 0) {
+            CharactersTbl.updateGuild(guildId, leaderId);
+            return guildId;
+        }
+
+        return 0;
     }
 
     public int addGuildMember(MapleGuildCharacter mgc, MapleCharacter chr) {
@@ -744,11 +728,7 @@ public class MapleGuild {
 
     public void setAllianceId(int aid) {
         this.allianceId = aid;
-        try (Connection con = DatabaseConnection.getConnection()) {
-            new DatabaseStatements.Update("guilds").set("allianceid", aid).where("guildid", id).execute(con);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        GuildsTbl.updateAllianceId(id, aid);
     }
 
     public void resetAllianceGuildPlayersRank() {
@@ -763,11 +743,7 @@ public class MapleGuild {
             membersLock.unlock();
         }
 
-        try (Connection con = DatabaseConnection.getConnection()) {
-            new DatabaseStatements.Update("characters").set("allianceRank", 5).where("guildid", id).execute(con);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        CharactersTbl.resetAllianceRanks(id);
     }
 
     public static int getIncreaseGuildCost(int size) {

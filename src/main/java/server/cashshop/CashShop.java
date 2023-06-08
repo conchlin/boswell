@@ -24,6 +24,8 @@ package server.cashshop;
 import client.inventory.*;
 import constants.ItemConstants;
 import constants.ServerConstants;
+import database.tables.AccountsTbl;
+import kotlin.Triple;
 import net.server.Server;
 import net.server.audit.locks.MonitoredLockType;
 import net.server.audit.locks.factory.MonitoredReentrantLockFactory;
@@ -37,8 +39,6 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import database.DatabaseStatements;
-
-import javax.xml.crypto.Data;
 
 /*
  * @author Flav
@@ -76,16 +76,11 @@ public class CashShop {
         }
 
         try (Connection con = DatabaseConnection.getConnection()) {
-            try (PreparedStatement ps = con.prepareStatement("SELECT nxCredit, maplePoint, nxPrepaid FROM accounts WHERE id = ?")) {
-                ps.setInt(1, accountId);
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        this.nxCredit = rs.getInt("nxCredit");
-                        this.maplePoint = rs.getInt("maplePoint");
-                        this.nxPrepaid = rs.getInt("nxPrepaid");
-                    }
-                }
-            }
+            Triple<Integer, Integer, Integer> cash = AccountsTbl.loadNXCash(accountId);
+            this.nxCredit = cash.getFirst();
+            this.maplePoint = cash.getSecond();
+            this.nxPrepaid = cash.getThird();
+
 
             for (Pair<Item, MapleInventoryType> item : factory.loadItems(accountId, false)) {
                 inventory.add(item.getLeft());
@@ -260,12 +255,7 @@ public class CashShop {
     }
 
     public void save(Connection con) throws SQLException {
-        new DatabaseStatements.Update("accounts")
-                .set("nxcredit", nxCredit)
-                .set("maplepoint", maplePoint)
-                .set("nxprepaid", nxPrepaid)
-                .where("id", accountId)
-                .execute(con);
+        AccountsTbl.updateNXCash(accountId, nxCredit, maplePoint, nxPrepaid);
         List<Pair<Item, MapleInventoryType>> itemsWithType = new ArrayList<>();
 
         List<Item> inv = getInventory();
