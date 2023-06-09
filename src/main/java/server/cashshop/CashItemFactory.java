@@ -69,7 +69,6 @@ public class CashItemFactory {
         blockedCashItems.clear();
         ArrayList<Integer> blockedItems = CashShopTbl.loadBlockedItems();
         blockedCashItems.addAll(blockedItems);
-        System.out.println("blocked items are -> "+ blockedCashItems);
     }
 
     public static void loadDiscountedCategories() {

@@ -4242,7 +4242,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
             DatabaseStatements.Insert.into("fame_log")
                     .add("characterid", getId())
                     .add("characterid_to", to.getId())
-                    .execute(con);
+                    .executeUpdate(con);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -6260,7 +6260,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                 statement.add("name", name);
                 statement.add("world", world);
 
-                statement.execute(con);
+                this.id = statement.executeUpdate(con);
 
                 if (this.id == -1) {
                     FilePrinter.printError(FilePrinter.INSERT_CHAR, "Error trying to insert " + name);
@@ -6781,7 +6781,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                     .add("message", msg)
                     .add("timestamp", Server.getInstance().getCurrentTime())
                     .add("fame", fame)
-                    .execute(con);
+                    .executeStatement(con);
         } catch (SQLException e) {
             e.printStackTrace();
         }

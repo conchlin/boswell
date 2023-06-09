@@ -166,7 +166,7 @@ class CharactersTbl {
                     statement.add("accountid", accountId)
                     statement.add("name", name)
                     statement.add("world", world)
-                    statement.execute(con!!)
+                    statement.executeUpdate(con!!)
                 }
             } catch (e: SQLException) {
                 e.printStackTrace()
