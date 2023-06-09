@@ -199,7 +199,7 @@ public class CashShop {
                     .add("message", message)
                     .add("sn", sn)
                     .add("ringid", ringid)
-                    .execute(con);
+                    .executeUpdate(con);
         } catch (SQLException e) {
             e.printStackTrace();
         }

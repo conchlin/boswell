@@ -317,7 +317,7 @@ public class MapleClient {
     public void banHWID() {
         try (Connection con = DatabaseConnection.getConnection()) {
             loadHWIDIfNescessary();
-            DatabaseStatements.Insert.into("hwid_bans").add("hwid", hwid).execute(con);
+            DatabaseStatements.Insert.into("hwid_bans").add("hwid", hwid).executeUpdate(con);
         } catch (SQLException e) {
             e.printStackTrace();
         }

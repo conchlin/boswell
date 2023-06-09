@@ -114,7 +114,7 @@ class GuildsTbl {
                                 .add("postercid", client.player.id)
                                 .add("timestamp", Server.getInstance().currentTime)
                                 .add("content", text)
-                                .execute(con)
+                                .executeUpdate(con)
                             con.prepareStatement("UPDATE bbs_threads SET replycount = replycount + 1 WHERE threadid = ?")
                                 .use { psb ->
                                     psb.setInt(1, threadid)
@@ -197,7 +197,7 @@ class GuildsTbl {
                         .add("startpost", text)
                         .add("guildid", client.player.guildId)
                         .add("localthreadid", nextId)
-                        .execute(con!!)
+                        .executeUpdate(con!!)
                     GuildBBSOperationHandler.displayThread(client, nextId)
                 }
             } catch (se: SQLException) {

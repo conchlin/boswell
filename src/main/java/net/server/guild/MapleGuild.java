@@ -464,7 +464,7 @@ public class MapleGuild {
                                         .add("\"from\"", initiator.getName())
                                         .add("message", "You have been expelled from the guild.")
                                         .add("timestamp", System.currentTimeMillis())
-                                        .execute(con);
+                                        .executeUpdate(con);
                             } catch (SQLException e) {
                                 e.printStackTrace();
                                 System.out.println("expelMember - MapleGuild " + e);

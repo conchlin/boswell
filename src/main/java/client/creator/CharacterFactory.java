@@ -93,12 +93,7 @@ public abstract class CharacterFactory {
 
                 if (!newchar.insertNewChar(recipe)) return -2;
 
-                try {
-                    c.announce(CLogin.Packet.addNewCharEntry(newchar));
-                } catch (Error e) {
-                    e.printStackTrace();
-                }
-                
+                c.announce(CLogin.Packet.addNewCharEntry(newchar));
                 Server.getInstance().createCharacterEntry(newchar);
                 Server.getInstance().broadcastGMMessage(c.getWorld(), MaplePacketCreator.sendYellowTip("[New Char]: " + c.getAccountName() + " has created a new character with IGN " + name));
                 FilePrinter.print(FilePrinter.CREATED_CHAR + c.getAccountName() + ".txt", c.getAccountName() + " created character with IGN " + name);

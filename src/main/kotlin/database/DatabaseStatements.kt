@@ -3,6 +3,7 @@ package database
 import java.sql.*
 import java.util.*
 
+
 class DatabaseStatements {
 
     class Insert(private val table: String) : DatabaseOperation {
@@ -23,38 +24,7 @@ class DatabaseStatements {
         }
 
         @Throws(SQLException::class)
-        override fun execute(con: Connection) {
-            if (values.isEmpty()) {
-                throw SQLException("No values to insert")
-            }
-
-            val sb = StringBuilder("insert into $table (")
-            sb.append(columns.joinToString(", "))
-            sb.append(") values (")
-            sb.append(Collections.nCopies(values.size, "?").joinToString(", "))
-            sb.append(")")
-
-            val ps = con.prepareStatement(sb.toString(), Statement.RETURN_GENERATED_KEYS)
-            ps.use { ps ->
-                setValues(ps, values)
-
-                columns.clear()
-                values.clear()
-
-                if (ps.executeUpdate() <= 0) {
-                    throw SQLException("Insert failed")
-                }
-
-                val rs = ps.generatedKeys
-                rs.use { rs ->
-                    if (rs.next()) {
-                        return
-                    }
-                }
-
-                throw SQLException("Insert failed")
-            }
-        }
+        override fun execute(con: Connection) {}
 
         /**
          * returns the result so that we can see if the statement was successful or not

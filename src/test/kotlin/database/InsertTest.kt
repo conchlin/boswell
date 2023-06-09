@@ -21,7 +21,7 @@ class InsertTest {
                 .add("name", "John")
                 .add("age", 30)
 
-            insert.execute(con)
+            insert.executeUpdate(con)
 
             val select = "select * from $testTable where name = 'John' and age = 30"
             val ps: PreparedStatement = con.prepareStatement(select)
