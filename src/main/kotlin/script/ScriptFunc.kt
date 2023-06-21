@@ -2,6 +2,7 @@ package script
 
 import client.MapleCharacter
 import client.MapleQuestStatus
+import game.field.FieldInstance
 import network.packet.ScriptMan
 import server.quest.MapleQuest
 import java.lang.NullPointerException
@@ -252,4 +253,9 @@ class ScriptFunc(
     }
 
     /* -- end of Quest scripting functions -- */
+
+    fun transferNewFieldInstance(fieldId: Int) {
+        val instance = FieldInstance(user, fieldId)
+        instance.init()
+    }
 }

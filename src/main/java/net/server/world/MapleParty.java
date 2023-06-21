@@ -35,6 +35,7 @@ import java.util.Comparator;
 
 import enums.BroadcastMessageType;
 import enums.PartyResultType;
+import game.field.FieldInstance;
 import net.server.audit.LockCollector;
 import net.server.audit.locks.MonitoredReentrantLock;
 import net.server.audit.locks.MonitoredLockType;
@@ -61,6 +62,7 @@ public class MapleParty {
     private Map<Integer, MapleDoor> doors = new HashMap<>();
 
     private MonitoredReentrantLock lock = MonitoredReentrantLockFactory.createLock(MonitoredLockType.PARTY, true);
+    private FieldInstance fieldInstance;
 
     public MapleParty(int id, MaplePartyCharacter chrfor) {
         this.leaderId = chrfor.getId();
@@ -284,6 +286,14 @@ public class MapleParty {
                 emptyLocks();
             }
         });
+    }
+
+    public FieldInstance getInstance() {
+        return fieldInstance;
+    }
+
+    public void setInstance(FieldInstance fieldInstance) {
+        this.fieldInstance = fieldInstance;
     }
 
     private void emptyLocks() {
