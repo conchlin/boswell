@@ -13,3 +13,4 @@
 int secondJobMap = 108000100
 
 script.transferNewFieldInstance(secondJobMap)
+script.appendFieldClock(30)

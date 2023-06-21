@@ -2,6 +2,7 @@ package script
 
 import client.MapleCharacter
 import client.MapleQuestStatus
+import game.field.Clock
 import game.field.FieldInstance
 import network.packet.ScriptMan
 import server.quest.MapleQuest
@@ -257,5 +258,10 @@ class ScriptFunc(
     fun transferNewFieldInstance(fieldId: Int) {
         val instance = FieldInstance(user, fieldId)
         instance.init()
+    }
+
+    fun appendFieldClock(minutes: Int) {
+        val clock = Clock(user.map, minutes * 60)
+        clock.create()
     }
 }

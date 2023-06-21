@@ -47,6 +47,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 
+import game.field.Clock;
 import net.server.audit.locks.MonitoredLockType;
 import net.server.audit.locks.MonitoredReentrantReadWriteLock;
 import net.server.audit.locks.factory.MonitoredReentrantLockFactory;
@@ -118,6 +119,7 @@ public class MapleMap {
     private int channel, world;
     private int seats;
     private boolean clock;
+    private Clock fieldClock;
     private boolean boat;
     private boolean docked = false;
     /*private EventInstanceManager event = null;*/
@@ -2470,8 +2472,7 @@ public class MapleMap {
         }
 
         if (hasClock()) {
-            Calendar cal = Calendar.getInstance();
-            chr.getClient().announce(CField.Packet.onClock(false, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), cal.get(Calendar.SECOND)));
+            this.getFieldClock().show();
         }
         if (hasBoat() > 0) {
             if (hasBoat() == 1) {
@@ -3181,6 +3182,14 @@ public class MapleMap {
 
     public boolean hasClock() {
         return clock;
+    }
+
+    public void setFieldClock(Clock fieldClock) {
+        this.fieldClock = fieldClock;
+    }
+
+    public Clock getFieldClock() {
+        return fieldClock;
     }
 
     public void setTown(boolean isTown) {
@@ -4285,5 +4294,4 @@ public class MapleMap {
 
         return pchars;
     }
-
 }
