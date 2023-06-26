@@ -24,14 +24,12 @@ class FieldInstance(private var user: MapleCharacter, private var fieldId: Int) 
      * members, and warps them to field.
      */
     fun init() {
-        val map = user.client?.channelServer?.mapFactory?.getDisposableMap(fieldId)
+        val map = user.client?.channelServer?.mapFactory?.makeDisposableMap(fieldId)
 
         if (map != null) {
             forcedReturnField = map.forcedReturnId
             fields[map.id] = map
         }
-
-        println("this is the fields map: $fields")
 
         if (party != null) {
             chars = ArrayList(user.partyMembersOnSameMap)
@@ -43,7 +41,7 @@ class FieldInstance(private var user: MapleCharacter, private var fieldId: Int) 
 
         for (users in chars) {
             user.instance = this
-            user.changeMap(fields[fieldId])
+            user.changeMap(fieldId)
         }
     }
 
