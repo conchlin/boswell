@@ -32,6 +32,7 @@ import database.tables.CharactersTbl;
 import database.tables.GuildsTbl;
 import enums.*;
 import database.*;
+import game.field.FieldInstance;
 import network.packet.*;
 import network.packet.context.*;
 import network.packet.field.CField;
@@ -264,6 +265,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     protected List<DamageListener> damage_listeners = new ArrayList<DamageListener>();
     protected ArrayList<MobKilledListener> mob_killed_listeners = new ArrayList<MobKilledListener>();
     //protected List<DropListener> drop_listeners = new ArrayList<DropListener>();
+    private FieldInstance fieldInstance;
 
     private MapleCharacter() {
         super.setListener(new AbstractCharacterListener() {
@@ -1144,11 +1146,9 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 
     public MapleMap getWarpMap(int map) {
         MapleMap warpMap;
-        //EventInstanceManager eim = getEventInstance();
-        //if (eim != null) {
-        //    warpMap = eim.getMapInstance(map);
-        //}
-        if (this.getMonsterCarnival() != null && this.getMonsterCarnival().getEventMap().getId() == map) {
+        if (this.getInstance() != null) {
+            warpMap = this.getInstance().getInstanceFields(map);
+        } else if (this.getMonsterCarnival() != null && this.getMonsterCarnival().getEventMap().getId() == map) {
             warpMap = this.getMonsterCarnival().getEventMap();
         } else {
             warpMap = client.getChannelServer().getMapFactory().getMap(map);
@@ -1160,21 +1160,6 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
     public void warpAhead(int map) {
         newWarpMap = map;
     }
-
-    //private void eventChangedMap(int map) {
-    //    EventInstanceManager eim = getEventInstance();
-    //    if (eim != null) {
-    //        eim.changedMap(this, map);
-    //    }
-    //}
-
-    //private void eventAfterChangedMap(int map) {
-    //    EventInstanceManager eim = getEventInstance();
-    //    if (eim != null) {
-    //        eim.afterChangedMap(this, map);
-    //    }
-    //}
-
     public boolean canRecoverLastBanish() {
         return System.currentTimeMillis() - this.banishTime < 5 * 60 * 1000;
     }
@@ -1213,14 +1198,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 
     public void changeMap(int map) {
         MapleMap warpMap;
-        //EventInstanceManager eim = getEventInstance();
-
-        //if (eim != null) {
-        //    warpMap = eim.getMapInstance(map);
-        //} else {
-            warpMap = client.getChannelServer().getMapFactory().getMap(map);
-        //}
-
+        warpMap = client.getChannelServer().getMapFactory().getMap(map);
         changeMap(warpMap, warpMap.getRandomPlayerSpawnpoint());
     }
 
@@ -1518,12 +1496,6 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
             newWarpMap = -1;
             changeMap(temp);
         } else {
-            // if this event map has a gate already opened, render it
-            //EventInstanceManager eim = getEventInstance();
-            //if (eim != null) {
-            //    eim.recoverOpenedGate(this, map.getId());
-            //}
-
             // if this map has obstacle components moving, make it do so for this client
             announce(MaplePacketCreator.environmentMoveList(map.getEnvironment().entrySet()));
         }
@@ -6781,7 +6753,7 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
                     .add("message", msg)
                     .add("timestamp", Server.getInstance().getCurrentTime())
                     .add("fame", fame)
-                    .executeStatement(con);
+                    .executeUpdate(con);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -8897,6 +8869,14 @@ public class MapleCharacter extends AbstractMapleCharacterObject {
 
     public void incrementDistanceHackCounter() {
         this.distanceHackCounter++;
+    }
+
+    public FieldInstance getInstance() {
+        return fieldInstance;
+    }
+
+    public void setInstance(FieldInstance fieldInstance) {
+        this.fieldInstance = fieldInstance;
     }
 
     protected static class MapleBuffStatValueHolder {

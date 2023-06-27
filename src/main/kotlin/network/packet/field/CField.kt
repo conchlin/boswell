@@ -261,18 +261,21 @@ class CField {
          * @param create true create new timer or false get old time remaining
          * @param args specifying the amount of time remaining (hour, minute, second)
          */
-        fun onClock(create: Boolean, vararg args: Int): ByteArray? {
+        fun onClock(create: Boolean, seconds: Int): ByteArray? {
             val mplew = MaplePacketLittleEndianWriter()
             mplew.writeShort(SendOpcode.Clock.value)
             if (create) {
                 //if you want to create a new clock instance you need to specify time in seconds
                 mplew.write(2)
-                mplew.writeInt(args[0]) //seconds for new timer
+                mplew.writeInt(seconds)
             } else {
+                val hours = seconds / 1200
+                val minutes = hours - (seconds / 60)
+                val second = minutes - seconds
                 mplew.write(1)
-                mplew.write(args[0]) //hours
-                mplew.write(args[1]) // min
-                mplew.write(args[2]) //seconds
+                mplew.write(hours)
+                mplew.write(minutes)
+                mplew.write(second)
             }
             return mplew.packet
         }

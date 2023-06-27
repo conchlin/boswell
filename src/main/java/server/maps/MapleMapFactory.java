@@ -27,14 +27,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
+
 import net.server.audit.locks.MonitoredLockType;
 import net.server.audit.locks.MonitoredReentrantReadWriteLock;
 import provider.MapleData;
@@ -79,17 +76,16 @@ public class MapleMapFactory {
     }
 
     public MapleMap resetMap(int mapid) {
-        mapsWLock.lock();
-        try {
-            maps.remove(Integer.valueOf(mapid));
-        } finally {
-            mapsWLock.unlock();
-        }
-
+        maps.remove(mapid);
         return getMap(mapid);
     }
 
-    private void loadLifeFromWz(MapleMap map, MapleData mapData) {
+    /**
+     * load life from wz that's associated with MapleMap instance
+     * @param map map instance
+     * @param mapData
+     */
+    private void loadLife(MapleMap map, MapleData mapData) {
         for (MapleData life : mapData.getChildByPath("life")) {
             life.getName();
             String id = MapleDataTool.getString(life.getChildByPath("id"));
@@ -162,24 +158,17 @@ public class MapleMapFactory {
         }
     }
 
-    private synchronized MapleMap loadMapFromWz(int mapid, Integer omapid, boolean cache) {
+    /**
+     * load map data directly from wz file
+     * @param mapid
+     * @return
+     */
+    private synchronized MapleMap loadMap(int mapid) {
+        Integer omapid = mapid;
         MapleMap map;
 
         if (mapid < 0) { //performance ftw?
             return null;
-        }
-
-        if (cache) {
-            mapsRLock.lock();
-            try {
-                map = maps.get(omapid);
-            } finally {
-                mapsRLock.unlock();
-            }
-
-            if (map != null) {
-                return map;
-            }
         }
 
         String mapName = getMapName(mapid);
@@ -309,7 +298,7 @@ public class MapleMapFactory {
             }
         //}
 
-        loadLifeFromWz(map, mapData);
+        loadLife(map, mapData);
         loadLifeFromDb(map);
 
         if (map.isCPQMap()) {
@@ -402,43 +391,37 @@ public class MapleMapFactory {
         map.setBackgroundTypes(backTypes);
         //map.generateMapDropRangeCache();
 
-        if (cache) {
-            mapsWLock.lock();
-            try {
-                maps.put(omapid, map);
-            } finally {
-                mapsWLock.unlock();
-            }
-        }
-
         return map;
     }
 
+    /**
+     * checks for already existing MapleMap map or loads map from wz
+     * and returns that map
+     * @param mapid
+     * @return
+     */
     public MapleMap getMap(int mapid) {
-        Integer omapid = Integer.valueOf(mapid);
-        MapleMap map;
-
-        mapsRLock.lock();
-        try {
-            map = maps.get(omapid);
-        } finally {
-            mapsRLock.unlock();
+        MapleMap map = maps.get(mapid);
+        if (map == null) {
+            map = loadMap(mapid);
+            if (map == null) {
+                return null;
+            }
         }
-
-        return (map != null) ? map : loadMapFromWz(mapid, omapid, true);
-    }
-    
-    public MapleMap getDisposableMap(int mapid) {
-        return loadMapFromWz(mapid, mapid, false);
+        MapleMap existing = maps.putIfAbsent(mapid, map);
+        if (existing != null) {
+            map = existing;
+        }
+        return map;
     }
 
-    public boolean isMapLoaded(int mapId) {
-        mapsRLock.lock();
-        try {
-            return maps.containsKey(mapId);
-        } finally {
-            mapsRLock.unlock();
-        }
+    /**
+     * disposable copy of a map that can be used for event instances
+     * @param mapid
+     * @return
+     */
+    public MapleMap makeDisposableMap(int mapid) {
+        return loadMap(mapid);
     }
 
     private AbstractLoadedMapleLife loadLife(int id, String type, int cy, int f, int fh, int rx0, int rx1, int x, int y, int hide) {

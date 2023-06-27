@@ -2,6 +2,8 @@ package script
 
 import client.MapleCharacter
 import client.MapleQuestStatus
+import game.field.Clock
+import game.field.FieldInstance
 import network.packet.ScriptMan
 import server.quest.MapleQuest
 import java.lang.NullPointerException
@@ -252,4 +254,22 @@ class ScriptFunc(
     }
 
     /* -- end of Quest scripting functions -- */
+
+    fun transferNewFieldInstance(fieldId: Int) {
+        val instance = FieldInstance(user, fieldId)
+        instance.init()
+    }
+
+    /**
+     * returns the user to the specified returnFieldId set in the FieldInstance.
+     * It also clears the FieldInstance and effectively ends the "event"
+     */
+    fun transferOutFieldInstance(instance: FieldInstance) {
+        instance.clear()
+    }
+
+    fun appendFieldClock(minutes: Int) {
+        val clock = Clock(user.map, minutes * 60)
+        clock.create()
+    }
 }

@@ -41,7 +41,7 @@ public class MonsterCarnival {
             Channel cs = Server.getInstance().getWorld(p2.getLeader().getWorld()).getChannel(p2.getLeader().getChannel());
             p1.setEnemy(p2);
             p2.setEnemy(p1);
-            map = cs.getMapFactory().getDisposableMap(mapid);
+            map = cs.getMapFactory().makeDisposableMap(mapid);
             startTime = System.currentTimeMillis() + 10 * 60 * 1000;
             int redPortal = 0;
             int bluePortal = 0;
