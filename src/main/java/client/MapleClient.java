@@ -748,7 +748,9 @@ public class MapleClient {
             final MapleGuildCharacter chrg = player.getMGC();
             final MapleGuild guild = player.getGuild();
 
-            //player.cancelMagicDoor();
+            if (player.getInstance() != null) {
+                player.getInstance().clear();
+            }
 
             final World wserv = getWorldServer();   // obviously wserv is NOT null if this player was online on it
             try {

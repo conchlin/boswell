@@ -260,6 +260,14 @@ class ScriptFunc(
         instance.init()
     }
 
+    /**
+     * returns the user to the specified returnFieldId set in the FieldInstance.
+     * It also clears the FieldInstance and effectively ends the "event"
+     */
+    fun transferOutFieldInstance(instance: FieldInstance) {
+        instance.clear()
+    }
+
     fun appendFieldClock(minutes: Int) {
         val clock = Clock(user.map, minutes * 60)
         clock.create()

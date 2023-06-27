@@ -45,6 +45,20 @@ class FieldInstance(private var user: MapleCharacter, private var fieldId: Int) 
         }
     }
 
+    fun clear() {
+        if (party != null) {
+            party!!.instance = null
+        }
+
+        for (user in chars) {
+            user.instance = null
+            user.changeMap(forcedReturnField)
+        }
+
+        fields.clear()
+        chars.clear()
+    }
+
     fun getInstanceFields(fieldId: Int): MapleMap? {
         return if (fields.containsKey(fieldId)) {
             fields[fieldId]
