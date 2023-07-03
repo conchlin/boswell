@@ -79,4 +79,8 @@ class FieldInstance(private var user: MapleCharacter, private var fieldId: Int) 
             null
         }
     }
+
+    fun getFields(): MutableMap<Int, MapleMap> {
+        return fields
+    }
 }

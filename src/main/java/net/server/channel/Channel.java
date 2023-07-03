@@ -425,6 +425,11 @@ public final class Channel {
             for (MapleMap map : mapFactory.getMaps().values()) {
                 map.respawn();
             }
+            for (MapleCharacter users : players.getAllCharacters()) {
+                for (MapleMap map : users.getInstance().getFields().values()) {
+                    map.respawn();
+                }
+            }
         }
     }
 
