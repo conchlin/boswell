@@ -23,7 +23,6 @@ if (user.getMapId() == 240020500) {
         }
     } else {
         script.transferNewFieldInstance(roundTableDungeon)
-        script.appendFieldClock(60)
     }
 } else {
     // when trying to leave

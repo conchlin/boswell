@@ -17,13 +17,11 @@ if (user.getMapId() == 240040520) {
     if (user.getParty() != null) {
         if (user.getId() == user.getParty().getLeaderId()) {
             script.transferNewFieldInstance(protectDungeon)
-            script.appendFieldClock(60)
         } else {
             user.message("Please have your party leader enter, or leave your party.")
         }
     } else {
         script.transferNewFieldInstance(protectDungeon)
-        script.appendFieldClock(60)
     }
 } else {
     // when trying to leave

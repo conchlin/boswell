@@ -20,7 +20,7 @@ class Clock(private val field: MapleMap, private val seconds: Int) {
         field.broadcastMessage(CField.onClock(false, getRemainingTime()))
     }
 
-    private fun destroy() {
+    fun destroy() {
         if (field.hasClock()) {
             field.broadcastMessage(CField.onDestroyClock())
         }

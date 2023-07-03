@@ -18,13 +18,19 @@ class FieldInstance(private var user: MapleCharacter, private var fieldId: Int) 
     private var forcedReturnField = 0
     private var chars: ArrayList<MapleCharacter> = ArrayList()
     private var fields: MutableMap<Int, MapleMap> = mutableMapOf()
+    private var clock: Clock? = null
 
     /**
      * Create the field instance. Compiles list of valid instance
      * members, and warps them to field.
+     *
+     * This will also search for the timeLimit map node and add a
+     * clock to the map based on that number. If the timeLimit node
+     * does not exist it will need to be manually added.
      */
     fun init() {
         val map = user.client?.channelServer?.mapFactory?.makeDisposableMap(fieldId)
+        val timeLimit = map?.timeLimit
 
         if (map != null) {
             forcedReturnField = map.forcedReturnId
@@ -43,6 +49,12 @@ class FieldInstance(private var user: MapleCharacter, private var fieldId: Int) 
             user.instance = this
             user.changeMap(fieldId)
         }
+
+        if (timeLimit != null) {
+            map.setClock(true)
+            clock = fields[map.id]?.let { Clock(it, timeLimit) }!!
+            clock!!.create()
+        }
     }
 
     fun clear() {
@@ -57,6 +69,7 @@ class FieldInstance(private var user: MapleCharacter, private var fieldId: Int) 
 
         fields.clear()
         chars.clear()
+        clock?.destroy()
     }
 
     fun getInstanceFields(fieldId: Int): MapleMap? {
