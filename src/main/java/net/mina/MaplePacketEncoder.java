@@ -25,6 +25,7 @@ import constants.ServerConstants;
 import client.MapleClient;
 import constants.OpcodeConstants;
 import net.server.coordinator.MapleSessionCoordinator;
+import network.encryption.Shanda;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolEncoder;
@@ -67,7 +68,7 @@ public class MaplePacketEncoder implements ProtocolEncoder {
                 System.arraycopy(input, 0, unencrypted, 0, input.length);
                 final byte[] ret = new byte[unencrypted.length + 4];
                 final byte[] header = send_crypto.getPacketHeader(unencrypted.length);
-                MapleCustomEncryption.encryptData(unencrypted);
+                Shanda.Companion.encrypt(unencrypted);
             
                 send_crypto.crypt(unencrypted);
                 System.arraycopy(header, 0, ret, 0, 4);
