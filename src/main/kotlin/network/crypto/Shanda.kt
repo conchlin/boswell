@@ -48,10 +48,11 @@ class Shanda {
         }
 
         fun decrypt(data: ByteArray): ByteArray {
+            var nextRemember: Byte
             for (j in 1..6) {
                 var remember: Byte = 0
                 var dataLength: Byte = (data.size and 0xFF).toByte()
-                var nextRemember: Byte = 0
+        
                 if (j % 2 == 0) {
                     for (i in data.indices) {
                         var cur: Byte = data[i]
