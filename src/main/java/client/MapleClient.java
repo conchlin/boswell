@@ -48,6 +48,7 @@ import database.tables.AccountsTbl;
 import enums.BroadcastMessageType;
 import enums.PartyResultType;
 import database.*;
+import network.crypto.ClientEncryption;
 import network.packet.CCashShop;
 import network.packet.CLogin;
 import network.packet.UserLocal;
@@ -92,8 +93,8 @@ public class MapleClient {
     public static final String CLIENT_NIBBLEHWID = "HWID2";
     public static final String CLIENT_REMOTE_ADDRESS = "REMOTE_IP";
     public static final String CLIENT_TRANSITION = "TRANSITION";
-    private MapleAESOFB send;
-    private MapleAESOFB receive;
+    private ClientEncryption send;
+    private ClientEncryption receive;
     private final IoSession session;
     private MapleCharacter player;
     private int channel = 1;
@@ -132,17 +133,17 @@ public class MapleClient {
 		}*/
     }
 
-    public MapleClient(MapleAESOFB send, MapleAESOFB receive, IoSession session) {
+    public MapleClient(ClientEncryption send, ClientEncryption receive, IoSession session) {
         this.send = send;
         this.receive = receive;
         this.session = session;
     }
 
-    public MapleAESOFB getReceiveCrypto() {
+    public ClientEncryption getReceiveCrypto() {
         return receive;
     }
 
-    public MapleAESOFB getSendCrypto() {
+    public ClientEncryption getSendCrypto() {
         return send;
     }
 

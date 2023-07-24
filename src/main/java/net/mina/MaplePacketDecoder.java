@@ -25,12 +25,13 @@ import constants.ServerConstants;
 import client.MapleClient;
 import constants.OpcodeConstants;
 import net.server.coordinator.MapleSessionCoordinator;
+import network.crypto.ClientEncryption;
+import network.encryption.Shanda;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.CumulativeProtocolDecoder;
 import org.apache.mina.filter.codec.ProtocolDecoderOutput;
 import tools.HexTool;
-import tools.MapleAESOFB;
 import tools.data.input.ByteArrayByteStream;
 import tools.data.input.GenericLittleEndianAccessor;
 import tools.FilePrinter;
@@ -56,23 +57,23 @@ public class MaplePacketDecoder extends CumulativeProtocolDecoder {
             session.setAttribute(DECODER_STATE_KEY, decoderState);
         }
         
-        MapleAESOFB rcvdCrypto = client.getReceiveCrypto();
+        ClientEncryption rcvdCrypto = client.getReceiveCrypto();
         if (in.remaining() >= 4 && decoderState.packetlength == -1) {
             int packetHeader = in.getInt();
             if (!rcvdCrypto.checkPacket(packetHeader)) {
                 MapleSessionCoordinator.getInstance().closeSession(session, true);
                 return false;
             }
-            decoderState.packetlength = MapleAESOFB.getPacketLength(packetHeader);
+            decoderState.packetlength = ClientEncryption.Companion.getPacketLength(packetHeader);
         } else if (in.remaining() < 4 && decoderState.packetlength == -1) {
             return false;
         }
         if (in.remaining() >= decoderState.packetlength) {
-            byte decryptedPacket[] = new byte[decoderState.packetlength];
+            byte[] decryptedPacket = new byte[decoderState.packetlength];
             in.get(decryptedPacket, 0, decoderState.packetlength);
             decoderState.packetlength = -1;
-            rcvdCrypto.crypt(decryptedPacket);
-            MapleCustomEncryption.decryptData(decryptedPacket);
+            rcvdCrypto.aesCrypt(decryptedPacket);
+            Shanda.Companion.decrypt(decryptedPacket);
             out.write(decryptedPacket);
             if (ServerConstants.USE_DEBUG_SHOW_PACKET){ // packet traffic log: Atoot's idea, applied using auto-identation thanks to lrenex
                 int packetLen = decryptedPacket.length;
