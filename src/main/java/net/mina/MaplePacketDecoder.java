@@ -72,7 +72,7 @@ public class MaplePacketDecoder extends CumulativeProtocolDecoder {
             byte[] decryptedPacket = new byte[decoderState.packetlength];
             in.get(decryptedPacket, 0, decoderState.packetlength);
             decoderState.packetlength = -1;
-            rcvdCrypto.crypt(decryptedPacket);
+            rcvdCrypto.aesCrypt(decryptedPacket);
             Shanda.Companion.decrypt(decryptedPacket);
             out.write(decryptedPacket);
             if (ServerConstants.USE_DEBUG_SHOW_PACKET){ // packet traffic log: Atoot's idea, applied using auto-identation thanks to lrenex

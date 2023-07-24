@@ -1,63 +1,55 @@
 package network.crypto
 
-import javax.crypto.BadPaddingException
 import javax.crypto.Cipher
-import javax.crypto.IllegalBlockSizeException
 import javax.crypto.spec.SecretKeySpec
+import kotlin.experimental.xor
 
 class ClientEncryption(private var iv: ByteArray, private var mapleVersion: Short) {
     private var cipher: Cipher? = null
 
     init {
+        // initialize the cipher object using the aesKey reverse engineered from the client.
+        // aesKey changes depending on version
         cipher = Cipher.getInstance("AES")
-        cipher?.init(Cipher.ENCRYPT_MODE, skey) ?: throw IllegalStateException("Cipher initialization failed")
-
-        setIv(iv)
+        cipher?.init(Cipher.ENCRYPT_MODE, aesKey) ?: throw IllegalStateException("Cipher initialization failed")
         mapleVersion = (mapleVersion.toInt() shr 8 and 0xFF or (mapleVersion.toInt() shl 8 and 0xFF00)).toShort()
     }
 
-    private fun setIv(iv: ByteArray) {
-        this.iv = iv
-    }
-
     @Synchronized
-    fun crypt(data: ByteArray): ByteArray {
+    fun aesCrypt(data: ByteArray): ByteArray {
+        //Maple's OFB is done in piecemeal every 1460 bytes (I'm guessing it has
+        //to deal with maximum segment size). First piece is only 1456 bytes
+        //because the header, although not encrypted, adds 4 blocks to the first
+        //segment.
         var remaining = data.size
-        var llength = 0x5B0
-        var start = 0
+        var pieceSize = 1456
+        var offset = 0
         while (remaining > 0) {
             val myIv = multiplyBytes(iv, 4, 4)
-            if (remaining < llength) {
-                llength = remaining
+            if (remaining < pieceSize) {
+                pieceSize = remaining
             }
-            for (x in start until start + llength) {
-                if ((x - start) % myIv.size == 0) {
-                    try {
-                        val newIv = cipher!!.doFinal(myIv)
-                        for (j in myIv.indices) {
-                            myIv[j] = newIv[j]
-                        }
-                    } catch (e: IllegalBlockSizeException) {
-                        e.printStackTrace()
-                    } catch (e: BadPaddingException) {
-                        e.printStackTrace()
+            //loops through each 1460 byte piece (with first piece only 1456 bytes)
+            for (x in offset until offset + pieceSize) {
+                if ((x - offset) % myIv.size == 0) {
+                    val newIv = cipher!!.doFinal(myIv)
+                    for (j in myIv.indices) {
+                        myIv[j] = newIv[j]
                     }
                 }
-                data[x] = (data[x].toInt() xor myIv[(x - start) % myIv.size].toInt()).toByte()
+                data[x] = (data[x].toInt() xor myIv[(x - offset) % myIv.size].toInt()).toByte()
             }
-            start += llength
-            remaining -= llength
-            llength = 0x5B4
+            offset += pieceSize
+            remaining -= pieceSize
+            pieceSize = 1460
         }
-        updateIv()
+        iv = shiftIv(iv)
         return data
     }
 
-    @Synchronized
-    private fun updateIv() {
-        iv = getNewIv(iv)
-    }
-
+    /**
+     * Generates a packet header for the specified packet length.
+     */
     fun getPacketHeader(length: Int): ByteArray {
         var iiv = iv[3].toInt() and 0xFF
         iiv = iiv or (iv[2].toInt() shl 8 and 0xFF00)
@@ -73,9 +65,13 @@ class ClientEncryption(private var iv: ByteArray, private var mapleVersion: Shor
     }
 
     private fun checkPacket(packet: ByteArray): Boolean {
-        return packet[0].toInt() xor iv[2].toInt() and 0xFF == mapleVersion.toInt() shr 8 and 0xFF && packet[1].toInt() xor iv[3].toInt() and 0xFF == mapleVersion.toInt() and 0xFF
+        return packet[0].toInt() xor iv[2].toInt() and 0xFF == mapleVersion.toInt() shr 8 and 0xFF 
+        && packet[1].toInt() xor iv[3].toInt() and 0xFF == mapleVersion.toInt() and 0xFF
     }
 
+    /**
+     * Checks the validity of a packet using its header.
+     */
     fun checkPacket(packetHeader: Int): Boolean {
         val packetHeaderBuf = ByteArray(2)
         packetHeaderBuf[0] = (packetHeader shr 24 and 0xFF).toByte()
@@ -84,7 +80,7 @@ class ClientEncryption(private var iv: ByteArray, private var mapleVersion: Shor
     }
 
     companion object {
-        private val skey = SecretKeySpec(
+        private val aesKey = SecretKeySpec(
             byteArrayOf(
                 0x13,
                 0x00,
@@ -379,6 +375,10 @@ class ClientEncryption(private var iv: ByteArray, private var mapleVersion: Shor
             0x49.toByte()
         )
 
+        /**
+         * Multiplies the input ByteArray by repeating its elements mul 
+         * times to create a new ByteArray.
+         */
         private fun multiplyBytes(`in`: ByteArray, count: Int, mul: Int): ByteArray {
             val ret = ByteArray(count * mul)
             for (x in 0 until count * mul) {
@@ -387,51 +387,52 @@ class ClientEncryption(private var iv: ByteArray, private var mapleVersion: Shor
             return ret
         }
 
+        /**
+         * Extracts the packet length from the given packet header.
+         */
         fun getPacketLength(packetHeader: Int): Int {
             var packetLength = packetHeader ushr 16 xor (packetHeader and 0xFFFF)
             packetLength = packetLength shl 8 and 0xFF00 or (packetLength ushr 8 and 0xFF)
             return packetLength
         }
 
-        fun getNewIv(oldIv: ByteArray): ByteArray {
-            val `in` = byteArrayOf(0xf2.toByte(), 0x53, 0x50.toByte(), 0xc6.toByte())
-            for (x in 0..3) {
-                funnyShit(oldIv[x], `in`)
-            }
-            return `in`
-        }
+        /**
+         * Shifts and transforms the input IV using the maple's 
+         * custom protocol as defined in the client
+         * 
+         * @param oldIv The current IV to be shifted and transformed.
+         * @return A new ByteArray containing the shifted and transformed IV.
+         */
+        fun shiftIv(oldIv: ByteArray): ByteArray {
+            val newIv = byteArrayOf(0xf2.toByte(), 0x53, 0x50.toByte(), 0xc6.toByte())
+            for (element in oldIv) {
+                var temp1 = newIv[1]
+                var temp3: Byte = ivShiftKey[temp1.toInt() and 0xFF]
+                temp3 = (temp3 - element).toByte()
+                newIv[0] = (newIv[0] + temp3).toByte()
+                temp3 = newIv[2]
+                temp3 = temp3 xor ivShiftKey[element.toInt() and 0xFF]
+                temp1 = (temp1 - temp3).toByte()
+                newIv[1] = temp1
+                temp1 = newIv[3]
+                temp3 = temp1
+                temp1 = (temp1 - newIv[0]).toByte()
+                temp3 = ivShiftKey[temp3.toInt() and 0xFF]
+                temp3 = (temp3 + element).toByte()
+                temp3 = temp3 xor newIv[2]
+                newIv[2] = temp3
+                temp1 = (temp1 + ivShiftKey[element.toInt() and 0xFF]).toByte()
+                newIv[3] = temp1
 
-        private fun funnyShit(inputByte: Byte, input: ByteArray): ByteArray {
-            var elina = input[1]
-            var moritz = ivShiftKey[elina.toInt() and 0xFF]
-            moritz = (moritz - inputByte).toByte()
-            input[0] = (input[0] + moritz).toByte()
-            moritz = input[2]
-            moritz = (moritz.toInt() xor ivShiftKey[inputByte.toInt() and 0xFF].toInt()).toByte()
-            elina = (elina - (moritz.toInt() and 0xFF).toByte()).toByte()
-            input[1] = elina
-            elina = input[3]
-            moritz = elina
-            elina = (elina - (input[0].toInt() and 0xFF).toByte()).toByte()
-            moritz = ivShiftKey[moritz.toInt() and 0xFF]
-            moritz = (moritz + inputByte).toByte()
-            moritz = (moritz.toInt() xor input[2].toInt()).toByte()
-            input[2] = moritz
-            elina = (elina + (ivShiftKey[inputByte.toInt() and 0xFF].toInt() and 0xFF).toByte()).toByte()
-            input[3] = elina
-            var merry = input[0].toInt() and 0xFF
-            merry = merry or (input[1].toInt() shl 8 and 0xFF00)
-            merry = merry or (input[2].toInt() shl 16 and 0xFF0000)
-            merry = merry or (input[3].toInt() shl 24 and -0x1000000)
-            var retValue = merry
-            retValue = retValue ushr 0x1d
-            merry = merry shl 3
-            retValue = retValue or merry
-            input[0] = (retValue and 0xFF).toByte()
-            input[1] = (retValue shr 8 and 0xFF).toByte()
-            input[2] = (retValue shr 16 and 0xFF).toByte()
-            input[3] = (retValue shr 24 and 0xFF).toByte()
-            return input
+                //essentially reverses the byte order of newIv, rotates all bits
+                //3 to the left, then reverses the byte order again
+                temp1 = ((newIv[3].toInt() and 0xFF ushr 5)).toByte() //the "carry"
+                newIv[3] = ((newIv[3].toInt() shl 3 or (newIv[2].toInt() and 0xFF ushr 5))).toByte()
+                newIv[2] = ((newIv[2].toInt() shl 3 or (newIv[1].toInt() and 0xFF ushr 5))).toByte()
+                newIv[1] = ((newIv[1].toInt() shl 3 or (newIv[0].toInt() and 0xFF ushr 5))).toByte()
+                newIv[0] = ((newIv[0].toInt() shl 3 or temp1.toInt())).toByte()
+            }
+            return newIv
         }
     }
 }

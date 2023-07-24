@@ -69,7 +69,7 @@ public class MaplePacketEncoder implements ProtocolEncoder {
                 final byte[] ret = new byte[unencrypted.length + 4];
                 final byte[] header = send_crypto.getPacketHeader(unencrypted.length);
                 Shanda.Companion.encrypt(unencrypted);
-                send_crypto.crypt(unencrypted);
+                send_crypto.aesCrypt(unencrypted);
                 System.arraycopy(header, 0, ret, 0, 4);
                 System.arraycopy(unencrypted, 0, ret, 4, unencrypted.length);
 
